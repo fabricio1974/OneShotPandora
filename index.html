@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trilha do Cordeiro</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Marcellus&display=swap">
+<style>
+/* Layout: faixa de personagens no topo, duas abas (Seleção para preparar, Sessão para a mesa) e barra de reprodução fixa embaixo. */
+:root{
+  --fundo:#0e0b09; --painel:#1a1512; --painel2:#241d18; --linha:#3a2f27;
+  --marfim:#efe6d2; --apagado:#a8998a; --terracota:#d9763f; --terracota2:#8f4a26; --ouro:#c9a24a; --erro:#e0685a;
+  --titulo:'Marcellus SC','Marcellus',Georgia,serif; --texto:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--fundo);color:var(--marfim);font:15px/1.45 var(--texto);padding:0 max(16px,env(safe-area-inset-right,0px)) 300px max(16px,env(safe-area-inset-left,0px))}
+header,main{max-width:1100px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:18px 14px;border-bottom:1px solid var(--linha)}
+h1{font:400 22px/1 var(--titulo);letter-spacing:.12em;margin:0;color:var(--terracota)}
+.abas{display:flex;gap:6px;margin-left:auto}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--linha);background:var(--painel2);border-radius:6px;padding:8px 14px}
+button:hover{border-color:var(--terracota2)}
+button.peq{padding:5px 10px;font-size:13px}
+button.perigo{border-color:#7a2a22;background:#3a1512}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+.abas button[aria-selected="true"]{background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.aviso{margin:14px 0;padding:12px 14px;border:1px solid var(--erro);border-radius:6px;background:#2a1512;color:#ffd9d2;display:flex;gap:12px;align-items:start}
+.aviso span{flex:1}
+.aviso code{background:#0006;padding:1px 5px;border-radius:3px}
+/* Personagens */
+.elenco{display:flex;gap:8px;overflow-x:auto;padding:14px 0 10px;scrollbar-width:thin}
+.chip{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:999px;white-space:nowrap;flex:none}
+.chip.so{padding-left:12px}
+.chip[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.rosto{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--linha);display:grid;place-items:center;font:400 14px/1 var(--titulo);color:var(--marfim);flex:none}
+.chip .n{font-size:11px;opacity:.7}
+h2{font:400 20px/1.2 var(--titulo);letter-spacing:.1em;margin:0;color:var(--marfim)}
+h3{font:400 14px/1.2 var(--titulo);letter-spacing:.12em;margin:26px 0 10px;color:var(--terracota)}
+.sub{color:var(--apagado);margin:0;font-size:13px}
+/* Cabeçalho do personagem */
+.pers{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:14px 0 18px;padding:14px;border:1px solid var(--linha);border-radius:10px;background:var(--painel)}
+.retrato{width:112px;height:112px;border-radius:8px;object-fit:cover;background:var(--painel2);border:1px solid var(--linha);display:grid;place-items:center;font:400 40px/1 var(--titulo);color:var(--terracota2);flex:none}
+.pers .info{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.pers .acoes{display:flex;flex-wrap:wrap;gap:6px}
+.pers input.nome{font:400 18px/1.2 var(--titulo);letter-spacing:.06em;width:100%}
+.pers input.subt{width:100%;font-size:13px}
+.banner{display:flex;gap:16px;align-items:center;margin:18px 0 12px}
+.banner .retrato{width:88px;height:88px}
+/* Faixas */
+.faixa{display:grid;grid-template-columns:auto 1fr auto;gap:10px 14px;align-items:start;padding:14px;border:1px solid var(--linha);border-radius:8px;background:var(--painel);margin-bottom:10px}
+.faixa.fora{opacity:.6}
+.faixa .usar{margin-top:3px;width:20px;height:20px;accent-color:var(--terracota)}
+.faixa .nome{font-weight:600}
+.st{color:var(--ouro);margin-right:4px}
+.faixa .momento{color:var(--apagado);font-size:13px}
+.faixa .estado{font-size:12px;margin-top:4px;color:var(--apagado)}
+.faixa .estado.ruim{color:var(--erro)}
+.ctrl{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:end}
+label.c{display:flex;flex-direction:column;gap:3px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--apagado)}
+label.lin{display:flex;align-items:center;gap:6px;font-size:13px;padding-bottom:7px}
+input[type=number],input[type=text],select,textarea{font:inherit;color:var(--marfim);background:var(--fundo);border:1px solid var(--linha);border-radius:5px;padding:6px 8px;max-width:100%}
+input[type=number]{width:74px}
+input[type=text]{width:230px}
+input[type=text].largo{width:340px}
+input[type=range]{accent-color:var(--terracota);width:110px}
+.ouvir.tocando{background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.editar{grid-column:2/-1;margin:0;border:0;padding:0;background:none}
+.editar summary{font-size:12px;color:var(--apagado);font-weight:400}
+.editar .ctrl{margin-top:10px}
+a{color:var(--terracota)}
+details.cx{margin:14px 0;border:1px solid var(--linha);border-radius:8px;padding:10px 14px;background:var(--painel)}
+summary{cursor:pointer;font-weight:600}
+.novo{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:end;margin-top:12px}
+textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consolas,monospace}
+.lin2{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+/* Sessão */
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.cena{display:flex;flex-direction:column;gap:6px;text-align:left;min-height:104px;padding:14px;border-radius:8px;background:var(--painel)}
+.cena .papel{font:400 11px/1 var(--titulo);letter-spacing:.14em;color:var(--terracota)}
+.cena .t{font-weight:600;font-size:16px;line-height:1.25}
+.cena .m{font-size:12.5px;color:var(--apagado)}
+.cena .tecla{margin-top:auto;font-size:11px;color:var(--apagado)}
+.cena.tocando{background:var(--terracota);border-color:var(--terracota);color:#1a0f08}
+.cena.tocando .papel,.cena.tocando .m,.cena.tocando .tecla{color:#3a1d0c}
+.vazio{color:var(--apagado);padding:14px 0}
+/* Barra */
+.barra{position:fixed;left:0;right:0;bottom:0;background:#120e0b;border-top:1px solid var(--terracota2);padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:5}
+.barra .in{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.agora{flex:1 1 240px;min-width:0;display:flex;gap:12px;align-items:center}
+.agora .rosto{width:44px;height:44px}
+.agora .tx{min-width:0}
+.agora .rot{font:400 11px/1 var(--titulo);letter-spacing:.14em;color:var(--apagado)}
+.agora .tit{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agora .tempo{font-size:12px;color:var(--apagado);font-variant-numeric:tabular-nums}
+.barra .vol{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--apagado)}
+.barra .vol input{width:140px}
+.players{display:flex;gap:8px}
+.players .cx{width:200px;height:200px;background:#000;border:1px solid var(--linha);border-radius:4px;overflow:hidden}
+.players.mini{position:absolute;left:-9999px}
+@media (max-width:640px){.faixa{grid-template-columns:auto 1fr}.faixa .ouvir{grid-column:2;justify-self:start}.ctrl,.editar{grid-column:1/-1}.players .cx{width:150px;height:150px}body{padding-bottom:380px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Trilha do Cordeiro</h1>
+  <div class="abas" role="tablist">
+    <button role="tab" id="abaSel" aria-selected="true">Seleção</button>
+    <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
+  </div>
+</header>
+<main>
+  <div id="avisos"></div>
+  <nav class="elenco" id="elenco" aria-label="Personagens"></nav>
+  <section id="selecao"></section>
+  <section id="sessao" hidden></section>
+</main>
+
+<div class="barra"><div class="in">
+  <div class="agora">
+    <span id="agoraRosto"></span>
+    <div class="tx">
+      <div class="rot" id="agoraRot">Tocando agora</div>
+      <div class="tit" id="agoraTit">Silêncio</div>
+      <div class="tempo" id="agoraTempo">&nbsp;</div>
+    </div>
+  </div>
+  <label class="vol">Volume geral <input type="range" id="mestre" min="0" max="100" value="80"></label>
+  <button id="btBaixar" title="Tecla B">Baixar aos poucos</button>
+  <button id="btSil" class="perigo" title="Tecla Esc">Silêncio</button>
+  <button id="btVid" title="Mostra os vídeos, para pular um anúncio">Mostrar vídeos</button>
+  <div class="players mini" id="players"><div class="cx"><div id="p0"></div></div><div class="cx"><div id="p1"></div></div></div>
+</div></div>
+<input type="file" id="arqImg" accept="image/*" hidden>
+<input type="file" id="arqDados" accept=".json,application/json" hidden>
+
+<script>
+// ---------- Trilha padrão. Cada música tem várias gravações (códigos de vídeo do YouTube), tentadas em ordem. ----------
+const F = (id, nome, momento, papel, st, videos) => ({id, nome, momento, papel, st, videos});
+const PADRAO = [
+ { id:'esau', nome:'Esaú — o caçador', sub:'Canto difônico, caça, lobo.', faixas:[
+  F('esau-kongurei','Huun-Huur-Tu — “Kongurei”','Entrada: o caçador ferido na estrada','entrada',1,['_Kvv_tNaXC0','NLErTLjep7M','ppEEAqLuiAU','AYSrbrXiXOY']),
+  F('esau-60horses','Huun-Huur-Tu — álbum “60 Horses in My Herd”','Fundo enquanto ele marca o acampamento','momento',0,['KY-6x6ygwK8','hIODrGtYlg8','3_vI8kJ_lD8']),
+  F('esau-alash','Alash Ensemble — “Kara Duruyaa”','Entrada mais calma e solene','entrada',0,['H1poWuu8MpI','sK0npp2NLaY','2uY-u9w07S4']),
+  F('esau-kaakhem','Yat-Kha — “Kaa-Khem”','Combate cru, quase rock','combate',0,['BKeDseoUZXg','HO39qZK1NNY','pBA_5mD0bnw','KQ1267NG4-I']),
+  F('esau-wolftotem','The HU — “Wolf Totem”','Combate: canto difônico com bateria pesada','combate',0,['jM8dCGIm6yc','WQ7XW0_teB4','rMbH9zimuG0','sv29DzgiXZA']),
+  F('esau-yuve','The HU — “Yuve Yuve Yu”','Combate alternativo','combate',0,['v4xZUr0BEfE','KpqERx0nyw0','1Gtn1RPXdsg','HqVjBiuRg0c']),
+  F('esau-helvegen','Wardruna — “Helvegen”','A flecha que mata a Rafaela (volta 1)','momento',0,['DD65K4VR6Lw','n90SVmnomdM','Fjm93-0ssFo','CuWPsx6U8rU']),
+ ]},
+ { id:'ezequiel', nome:'Ezequiel — o vidente', sub:'Órgão de tubos.', faixas:[
+  F('eze-apparition','Messiaen — “Apparition de l’église éternelle”','Entrada: lenta, esmagadora, cresce até o insuportável','entrada',1,['NPpS5QxqGT0','-kPQC4ET9yk','U55l83hRplE','wMgtq-2mLvg']),
+  F('eze-volumina','Ligeti — “Volumina”','Quando ele usa o Presságio','momento',0,['G7bdwarV6SQ','w6U0qXfBArc','_hnoMNgKrwg','5ih0Mc4cG8M']),
+  F('eze-passacaglia','Bach — Passacaglia em Dó menor, BWV 582','Combate: implacável, como destino','combate',0,['I8A4vyLvO4M','M_YbYOamKCc','0U1IXmxADFE','3v2dWK8N5OE']),
+  F('eze-tocata','Bach — Tocata e Fuga em Ré menor, BWV 565','Combate (clássico, todo mundo reconhece)','combate',0,['Nnuq9PXbywA','8tpzyYFqJWM','erXG9vnN-GI','dkQrj-eEs-M']),
+  F('eze-caution','Hans Zimmer — “No Time for Caution” (Interstellar)','Combate moderno, órgão e urgência','combate',0,['m3zvVGJrTP8','2o9KfyPqQzY','pXEiGpchK1U','rpWC9-VBjPM']),
+  F('eze-dieu','Messiaen — “Dieu parmi nous”','Quando ele percebe que já viveu aquilo (a partir da volta 2)','momento',0,['1wZnq7S3LPg','cMlYI2hCd-Y','Mg9qeDZnVW4','1oRSr6t0n7M']),
+  F('eze-annum','Arvo Pärt — “Annum per annum”','Entrada alternativa, fria e meditativa','entrada',0,['HyO9Qt4QNQM','13ODUyBxIRg','xb78DY2UMHE','Wf7Wln0tQA8']),
+ ]},
+ { id:'jael', nome:'Jael — a força bruta', sub:'Taikô e tambores de guerra.', faixas:[
+  F('jael-odaiko','Kodo — “O-Daiko”','Combate: o grande tambor','combate',1,['3cqOTcW-upA','QiFS6if581A','C7HL5wYqAbU','uTJQV2-WRts']),
+  F('jael-yatai','Kodo — “Yatai-Bayashi”','Combate acelerando, quando ela fica abaixo de metade','combate',0,['DU6ail8qOS4','-tyjc46psek','k7UviOLmytI','HNtuo8YSKUg']),
+  F('jael-monochrome','Kodo — “Monochrome”','Entrada: começa quase em silêncio e cresce','entrada',0,['sjRYUr4HQyc','IFm-79qoh3c']),
+  F('jael-yamato','Yamato — “The Drummers of Japan”','Combate alternativo, mais rápido','combate',0,['tVames7B5P8','XTlxkQBTTtA','B-2QEeTgDLw','KOcc-ybd1Rs']),
+  F('jael-krigsgaldr','Heilung — “Krigsgaldr”','Entrada ritual, canto de guerra','entrada',0,['VZZjSb393L4','QRg_8NNPTD8']),
+  F('jael-battle','Hans Zimmer — “The Battle” (Gladiador)','Combate cinematográfico','combate',0,['4A3tP6Ium80','xdJ5dWYwIn0','DMi8AgoHqdM','qUwbhKkLK4c']),
+ ]},
+ { id:'hildegarda', nome:'Hildegarda — a clériga', sub:'Hildegard von Bingen. Melhores gravações: Sequentia, Gothic Voices, Anonymous 4.', faixas:[
+  F('hil-ovis','“O vis aeternitatis”','Entrada: a oração antes da luta','entrada',1,['1SlL-hBeSA4','9eFPJa95qQE','_Vcv2HdApcs','GMW6AD2F2-4']),
+  F('hil-spiritus','“Spiritus Sanctus vivificans vitam”','Quando ela cura a família','momento',1,['hLQ0s03-950','HnTOdiTcU7U','YpZbmXgavfY','4_hXaoqYIIo']),
+  F('hil-angeli','“O vos angeli”','3ª rodada: o chamado','momento',1,['q8piailwbCY','cw_6laGm6jM','CyQ4L4Y11mY','7ALF2U5R5Dw']),
+  F('hil-ave','“Ave generosa”','Quando ela pede perdão pela Rafaela','momento',1,['vwDWXltH7KU','RJzeD4HHnxs','mQhQc4luDlQ','yEjiX-9SQ_w']),
+  F('hil-ignis','“O ignis Spiritus Paracliti”','Combate: mais vivo e ardente','combate',0,['5zdUZ9WEyfM','pRCRQcgbWtA','uX9fmBNGS00','_iHMdmrZ_ec']),
+  F('hil-virtus','“O virtus Sapientiae”','Entrada alternativa, curta e luminosa','entrada',0,['T9cZv9A8h50','q0zhnNh4D9k','lQXaDwkcQAk','xBtmxupy0Mw']),
+  F('hil-columba','“Columba aspexit”','Quando ela morre de vez','momento',0,['puAOTgq3Wkc','ULzsbJPCXuE','p5EtfnhD8_g','e1czFcmmkUg']),
+  F('hil-ordo','“Ordo Virtutum”','Reserva para o final: as Virtudes lutando por uma alma','momento',0,['zUMlhtoGTzY','WBGgRSPyUFQ','yq7Gm7eKY0I','38bHeVw_nAA']),
+ ]},
+ { id:'demonio', nome:'O “demônio”', sub:'O sagrado que soa aterrorizante.', faixas:[
+  F('dem-lux','Ligeti — “Lux Aeterna”','Quando ele desce: um coro santo e assustador','entrada',0,['j2cRjiC4ODI','vxLzzF2_nJA','CXULsghOD4o','YM3jPUK278I']),
+  F('dem-kyrie','Ligeti — Réquiem, “Kyrie”','Combate: o coro de 2001, Uma Odisseia no Espaço','combate',0,['SAZRM3my10A','EYlrBiWdUcs','jqaGdIIUUQY','Z3EiL5HjeC4']),
+  F('dem-trenodia','Penderecki — “Trenodia”','Combate: cordas gritando','combate',0,['Pu371CDZ0ws','7YZghOf5ryI','Jte-75mt_mE','H05nlyt9AMQ']),
+  F('dem-heptapod','Jóhann Jóhannsson — “Heptapod B” (A Chegada)','Entrada: vozes que não parecem humanas','entrada',0,['KzaqrQuwr1k','1cAKKKpnGoU','ndasBUpI9WY','g8GcuUnHQb0']),
+  F('dem-diesirae','Verdi — Réquiem, “Dies Irae”','Combate épico, se a mesa gostar de exagero','combate',0,['60mRj_9Rybc','oV5UKScdHUU','CUGMZlvrR4c','aVJTQcOMLQw']),
+ ]},
+ { id:'raquel', nome:'Raquel — a escudeira', sub:'Luta junto com o Ozymandias. Estas são para os momentos dela.', faixas:[
+  F('raq-gorecki','Górecki — Sinfonia nº 3, 2º movimento','Quando ela se coloca na frente dele e não sai','momento',0,['g5fg8-VWNo0','9NkQsfYI4T0','V-3ND_VSXpE','zY9Z0GLoeM8']),
+  F('raq-daylight','Max Richter — “On the Nature of Daylight”','Quando ela morre de vez','momento',0,['InyT9Gyoz_o','b_YHE4Sx-08','tUMc_-Bcunk','GNFuiMZYDpQ']),
+  F('raq-barber','Barber — “Adágio para Cordas”','Alternativa para a morte dela','momento',0,['WAoLJ8GbA4Y','KylMqxLzNGo','fmaP17h8jqA','Ai6F1pWxayA']),
+ ]},
+ { id:'ozy', nome:'Ozymandias — o líder', sub:'Holst e música cósmica.', faixas:[
+  F('ozy-saturno','Holst — “Saturno, o Portador da Velhice”','Entrada e primeira fala','entrada',1,['USGZ-yCc4f8','_x7yg_HnUK8','gyrkt4iFMPA','mU04EScW4rM']),
+  F('ozy-marte','Holst — “Marte, o Portador da Guerra”','Combate','combate',1,['xZfIUz1S97U','yBGrdJM5XNk','l0rYwQByJs8','Xmuzpg7ucb8']),
+  F('ozy-urano','Holst — “Urano, o Mágico”','Quando ele arranca a terra e vira a gravidade','momento',1,['ETF_uEgACuo','DEb1gtMljyA','fUyVFKA1MaU','gCMf2oENmEM']),
+  F('ozy-netuno','Holst — “Netuno, o Místico”','Quando ele cai ou vai embora','momento',1,['pcyfAgnlO-8','oFMXNUHuWug','2w8Bz6vNVlw','JnemonlWKjU']),
+  F('ozy-zaratustra','Richard Strauss — “Assim Falou Zaratustra” (abertura)','Fase 2: quando ele chega à metade da vida','momento',0,['dK-QO3v41a0','SLuW-GBaJ8k','YrosMLXK7mo','6mmuNxYLxTs']),
+  F('ozy-atmospheres','Ligeti — “Atmosphères”','Quando ele lembra das voltas (a partir da volta 4)','momento',0,['jUaPwTL5vL8','E-bemE-bCXQ','zDP3DJYFqEA','STFREC64OvA']),
+  F('ozy-mountains','Hans Zimmer — “Mountains” (Interstellar)','Combate alternativo: tempo e gravidade','combate',0,['OtOd3Aa-xqg','wAf-UE0g2bk','hXFqaVlL7pA','arNkB9vxS3Q']),
+ ]},
+ { id:'momentos', nome:'Momentos da história', sub:'A anja, as crianças e a revelação.', faixas:[
+  F('mom-spiegel','Arvo Pärt — “Spiegel im Spiegel”','A anja aparece e oferece as virtudes','momento',0,['81ZMz3I5CNU','FZe3mXlnfNc','07bj8oKVSeQ','RePPskWiV6g']),
+  F('mom-alina','Arvo Pärt — “Für Alina”','Alternativa para a anja','momento',0,['TzIZPZN5K60','DPNaUxd-mHA','Zj0sd4i_2AE','zLiRelVWwxw']),
+  F('mom-departure','Max Richter — “The Departure”','A estrada com a Rafaela e o Tobias (Ato 1)','momento',0,['kB0ie1ZGE6s','PCYLMpKKt-A','bM8BvWaWtdI','O1H0SIPFvaQ']),
+  F('mom-stabat','Pergolesi — “Stabat Mater”, primeiro movimento','A morte da Rafaela na volta 1','momento',0,['A588x5mDL8w','44d7tnEyAgk','D-VhAU_YGxY','wje7QYAgV-E']),
+  F('mom-dido','Purcell — “Lamento de Dido”','Alternativa para a morte da Rafaela','momento',0,['jq1K_cnVo6Q','-VzxRaHhF2U','f00nKLzCRrI','xaWglMNo1ro']),
+  F('mom-lacrimosa','Mozart — Réquiem, “Lacrimosa”','Quando uma pétala é arrancada','momento',0,['G-kJVmEWWV8','xzvvpHASXt4','j-Cy4DqZelo','UZalR6UcfPk']),
+  F('mom-miserere','Allegri — “Miserere mei, Deus”','A revelação, no fim da sessão','momento',0,['H3v9unphfi0','36Y_ztEW1NE','XNknz7PrmoU','4lC7V8hG198']),
+ ]},
+];
+const PAPEIS = {entrada:'Entrada', combate:'Combate', momento:'Momento'};
+const ORDEM = ['entrada','combate','momento'];
+const CHAVE = 'trilha-cordeiro-v2', CHAVE_V1 = 'trilha-cordeiro-v1';
+
+// ---------- Estado (tudo salvo no navegador) ----------
+const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel, st:f.st?1:0, videos:f.videos.slice(),
+  usar:!!f.st, grav:0, link:'', inicio:0, vol:100, repetir:f.papel==='combate'});
+const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:'', faixas:g.faixas.map(novaFaixa)});
+function estadoPadrao(){ return {v:2, mestre:80, cruzar:1.5, rem:[], grupos:PADRAO.map(novoGrupo)}; }
+function carregar(){
+  let s = null; try { s = JSON.parse(localStorage.getItem(CHAVE) || 'null'); } catch(e){}
+  if (!s || !Array.isArray(s.grupos)) {
+    s = estadoPadrao();
+    try { const v1 = JSON.parse(localStorage.getItem(CHAVE_V1) || 'null');   // traz as escolhas da primeira versão
+      if (v1 && v1.f) { s.mestre = v1.mestre ?? 80; s.grupos.forEach(g => g.faixas.forEach(f => Object.assign(f, v1.f[f.id] || {}))); } } catch(e){}
+    return s;
+  }
+  s.rem = s.rem || []; s.cruzar = s.cruzar ?? 1.5;
+  for (const pg of PADRAO) {                                // músicas novas do padrão entram sem apagar nada do que foi mexido
+    if (s.rem.includes(pg.id)) continue;
+    let g = s.grupos.find(x => x.id === pg.id);
+    if (!g) { s.grupos.push(novoGrupo(pg)); continue; }
+    for (const pf of pg.faixas) if (!s.rem.includes(pf.id) && !g.faixas.some(x => x.id === pf.id)) g.faixas.push(novaFaixa(pf));
+  }
+  return s;
+}
+let E = carregar();
+function salvar(){ try { localStorage.setItem(CHAVE, JSON.stringify(E)); } catch(e){ aviso('Não consegui salvar no navegador (espaço cheio?). Use imagens menores ou baixe um arquivo das escolhas.'); } }
+const todas = () => E.grupos.flatMap(g => g.faixas);
+const grupoDe = f => E.grupos.find(g => g.faixas.includes(f));
+function idDoLink(s){
+  s = (s||'').trim(); if (!s) return '';
+  const m = s.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([\w-]{11})/) || s.match(/^([\w-]{11})$/);
+  return m ? m[1] : '';
+}
+const videoDe = f => idDoLink(f.link) || f.videos[f.grav % f.videos.length] || '';
+const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+const el = (t, a={}, ...k) => { const e = document.createElement(t);
+  for (const [n,v] of Object.entries(a)) { if (n==='class') e.className=v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else if (v===true) e.setAttribute(n,''); else if (v!==false && v!=null) e.setAttribute(n,v); }
+  for (const c of k) if (c!=null && c!==false) e.append(c); return e; };
+const rosto = (g, cls='rosto') => g && g.img ? el('img',{class:cls, src:g.img, alt:''}) : el('span',{class:cls, 'aria-hidden':'true'}, g ? (g.nome.replace(/^[^A-Za-zÀ-ÿ]+/,'')[0]||'?').toUpperCase() : '');
+
+// ---------- Players do YouTube: dois, para cruzar uma música na outra ----------
+let P = [null,null], pronto = [false,false], ativo = 0, emP = [null,null], fades = [null,null], tocando = null;
+const falhou = {}, estados = {};
+const alvoDe = f => Math.round(f.vol * E.mestre / 100);
+function fade(i, ate, ms, fim){
+  clearInterval(fades[i]); if (!pronto[i]) return;
+  let de = 0; try { de = P[i].getVolume(); } catch(e){}
+  const passos = Math.max(1, Math.round(ms/50)); let n = 0;
+  fades[i] = setInterval(() => { n++; try { P[i].setVolume(Math.max(0,Math.min(100, de + (ate-de)*n/passos))); } catch(e){}
+    if (n >= passos) { clearInterval(fades[i]); fim && fim(); } }, 50);
+}
+function tocar(f, ms){
+  if (!pronto[0] || !pronto[1]) { aviso('O player do YouTube ainda não carregou. Confira a internet e recarregue a página.'); return; }
+  if (!videoDe(f)) { estados[f.id] = 'Esta música não tem vídeo. Cole um link do YouTube.'; desenhar(); return; }
+  if (tocando === f) { parar(1200); return; }
+  ms = ms ?? E.cruzar*1000;
+  const novo = 1-ativo, velho = ativo;
+  if (emP[velho]) { emP[velho] = null; fade(velho, 0, ms, () => { try { P[velho].pauseVideo(); } catch(e){} }); }
+  emP[novo] = f; tocando = f; ativo = novo; delete estados[f.id]; falhou[f.id] = 0;
+  clearInterval(fades[novo]); P[novo].setVolume(0); P[novo].unMute();
+  P[novo].loadVideoById({videoId:videoDe(f), startSeconds:+f.inicio||0});
+  fade(novo, alvoDe(f), ms); marcar();
+}
+function parar(ms=0){
+  for (const i of [0,1]) { if (!pronto[i]) continue;
+    if (ms) fade(i, 0, ms, () => { try { P[i].pauseVideo(); } catch(e){} });
+    else { clearInterval(fades[i]); try { P[i].pauseVideo(); P[i].setVolume(0); } catch(e){} }
+    emP[i] = null; }
+  tocando = null; marcar();
+}
+function aoMudar(i, ev){
+  const f = emP[i]; if (!f || ev.data !== 0) return;
+  if (f.repetir) { P[i].seekTo(+f.inicio||0, true); P[i].playVideo(); }
+  else if (tocando === f) { emP[i] = null; tocando = null; marcar(); }
+}
+function aoErro(i, ev){
+  const f = emP[i]; if (!f) return;
+  if (ev.data === 153) { aviso('O YouTube recusou tocar porque a página foi aberta direto do arquivo. Use o endereço do GitHub ou o <code>abrir_trilha.bat</code>.'); parar(); return; }
+  falhou[f.id] = (falhou[f.id]||0) + 1;
+  if (!idDoLink(f.link) && falhou[f.id] < f.videos.length) {      // esta gravação não toca fora do YouTube: tenta a próxima
+    f.grav = (f.grav+1) % f.videos.length; salvar();
+    P[i].loadVideoById({videoId:videoDe(f), startSeconds:+f.inicio||0}); desenhar();
+  } else { estados[f.id] = 'Nenhuma gravação tocou aqui. Cole outro link do YouTube.'; parar(); }
+}
+window.onYouTubeIframeAPIReady = () => { [0,1].forEach(i => { P[i] = new YT.Player('p'+i, { width:'100%', height:'100%',
+  playerVars:{playsinline:1, rel:0, controls:1, origin:location.origin},
+  events:{ onReady:()=>{ pronto[i]=true; }, onStateChange:ev=>aoMudar(i,ev), onError:ev=>aoErro(i,ev) } }); }); };
+(function(){ const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
+  s.onerror = () => aviso('Não consegui carregar o player do YouTube. Confira a internet.'); document.head.append(s); })();
+
+// ---------- Avisos ----------
+function aviso(html){ const a = document.getElementById('avisos'); if ([...a.querySelectorAll('span')].some(x => x.innerHTML === html)) return;
+  const sp = el('span'); sp.innerHTML = html; const cx = el('div',{class:'aviso'}, sp, el('button',{class:'peq', onclick:()=>cx.remove()},'Fechar')); a.append(cx); }
+if (location.protocol === 'file:') aviso('Esta página foi aberta direto do arquivo, e o YouTube costuma recusar tocar assim. Use o endereço do GitHub ou o <code>abrir_trilha.bat</code>.');
+
+// ---------- Navegação ----------
+let modo = 'sel', atual = E.grupos[0] ? E.grupos[0].id : null, atualSes = 'todos', editando = {};
+function confirmar(bt, acao){                               // remoção em dois toques, sem janela de confirmação
+  if (bt.dataset.c) { acao(); return; }
+  const t = bt.textContent; bt.dataset.c = 1; bt.textContent = 'Confirmar?';
+  setTimeout(() => { if (bt.isConnected) { delete bt.dataset.c; bt.textContent = t; } }, 3000);
+}
+function desenharElenco(){
+  const nav = document.getElementById('elenco'); nav.replaceChildren();
+  const sel = modo === 'sel' ? atual : atualSes;
+  if (modo === 'ses') nav.append(el('button',{class:'chip so', 'aria-pressed':String(sel==='todos'), onclick:()=>{ atualSes='todos'; desenhar(); }},'Todos'));
+  for (const g of E.grupos) {
+    const n = g.faixas.filter(f => f.usar).length;
+    if (modo === 'ses' && !n) continue;
+    nav.append(el('button',{class:'chip', 'aria-pressed':String(sel===g.id), onclick:()=>{ if (modo==='sel') atual=g.id; else atualSes=g.id; desenhar(); }},
+      rosto(g), g.nome.split(' — ')[0], el('span',{class:'n'}, modo==='sel' ? n+'/'+g.faixas.length : String(n))));
+  }
+  if (modo === 'sel') nav.append(el('button',{class:'chip so', onclick:()=>{ const g = {id:uid('g'), nome:'Novo personagem', sub:'', img:'', faixas:[]}; E.grupos.push(g); atual = g.id; salvar(); desenhar(); }},'＋ Personagem'));
+}
+
+// ---------- Imagens: reduzidas e guardadas no navegador ----------
+let imgPara = null;
+document.getElementById('arqImg').onchange = ev => {
+  const arq = ev.target.files[0], g = imgPara; ev.target.value = ''; if (!arq || !g) return;
+  const im = new Image(), url = URL.createObjectURL(arq);
+  im.onload = () => { const L = 512, k = Math.min(1, L/Math.max(im.width, im.height)), c = document.createElement('canvas');
+    c.width = Math.round(im.width*k); c.height = Math.round(im.height*k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+    g.img = c.toDataURL('image/jpeg', .82); URL.revokeObjectURL(url); salvar(); marcar(); };
+  im.onerror = () => aviso('Não consegui abrir essa imagem.');
+  im.src = url;
+};
+
+// ---------- Modo Seleção ----------
+function mover(lista, i, d){ const j = i+d; if (j<0 || j>=lista.length) return; [lista[i], lista[j]] = [lista[j], lista[i]]; salvar(); desenhar(); }
+function cartaoFaixa(g, f, i){
+  const mud = (k, conv=x=>x, redes=false) => ev => { f[k] = conv(ev.target.type==='checkbox' ? ev.target.checked : ev.target.value); salvar();
+    if (k==='vol' && tocando===f) { clearInterval(fades[ativo]); try { P[ativo].setVolume(alvoDe(f)); } catch(e){} }
+    if (redes) desenhar(); };
+  const sel = (id, ops, val, k, conv) => { const s = el('select',{id, onchange:mud(k,conv,true)}); ops.forEach(([v,t]) => s.append(el('option',{value:v, selected:String(v)===String(val)},t))); return s; };
+  const custom = idDoLink(f.link), v = videoDe(f);
+  return el('div',{class:'faixa'+(f.usar?'':' fora')},
+    el('input',{type:'checkbox', class:'usar', id:'u-'+f.id, checked:f.usar, onchange:mud('usar',x=>x,true), 'aria-label':'Usar '+f.nome}),
+    el('div',{}, el('div',{class:'nome'}, f.st ? el('span',{class:'st', title:'Sugestão'},'★') : null, f.nome), el('div',{class:'momento'}, f.momento),
+      el('div',{class:'estado'+(estados[f.id]?' ruim':'')}, estados[f.id] || (custom ? 'Usando o seu link.' : f.videos.length ? 'Gravação '+(f.grav%f.videos.length+1)+' de '+f.videos.length+'.' : 'Sem vídeo.'), ' ',
+        v ? el('a',{href:'https://www.youtube.com/watch?v='+v, target:'_blank', rel:'noopener'},'Abrir no YouTube') : null)),
+    el('button',{class:'ouvir'+(tocando===f?' tocando':''), onclick:()=>tocar(f,600)}, tocando===f ? 'Parar' : 'Ouvir'),
+    el('div',{class:'ctrl'},
+      el('label',{class:'c'},'Função', sel('p-'+f.id, Object.entries(PAPEIS), f.papel, 'papel')),
+      f.videos.length > 1 ? el('label',{class:'c'},'Gravação', sel('g-'+f.id, f.videos.map((x,n)=>[n,'Opção '+(n+1)]), f.grav%f.videos.length, 'grav', Number)) : null,
+      el('label',{class:'c'},'Ou cole um link do YouTube', el('input',{type:'text', id:'l-'+f.id, value:f.link, placeholder:'https://youtu.be/…', onchange:mud('link',x=>x,true)})),
+      el('label',{class:'c'},'Início (s)', el('input',{type:'number', id:'i-'+f.id, min:0, value:f.inicio, onchange:mud('inicio',Number)})),
+      el('label',{class:'c'},'Volume', el('input',{type:'range', id:'v-'+f.id, min:0, max:100, value:f.vol, oninput:mud('vol',Number)})),
+      el('label',{class:'lin'}, el('input',{type:'checkbox', id:'r-'+f.id, checked:f.repetir, onchange:mud('repetir')}), 'Repetir')),
+    el('details',{class:'editar', open:!!editando[f.id], ontoggle:ev=>{ editando[f.id] = ev.target.open; }}, el('summary',{},'Editar, mover ou remover'),
+      el('div',{class:'ctrl'},
+        el('label',{class:'c'},'Nome', el('input',{type:'text', class:'largo', id:'n-'+f.id, value:f.nome, onchange:mud('nome',x=>x.trim()||f.nome,true)})),
+        el('label',{class:'c'},'Momento de uso', el('input',{type:'text', class:'largo', id:'m-'+f.id, value:f.momento, onchange:mud('momento',x=>x,true)})),
+        el('label',{class:'lin'}, el('input',{type:'checkbox', id:'s-'+f.id, checked:!!f.st, onchange:mud('st',x=>x?1:0,true)}), '★ Favorita'),
+        el('button',{class:'peq', onclick:()=>mover(g.faixas,i,-1), disabled:i===0},'Subir'),
+        el('button',{class:'peq', onclick:()=>mover(g.faixas,i,1), disabled:i===g.faixas.length-1},'Descer'),
+        el('button',{class:'peq perigo', onclick:ev=>confirmar(ev.target, ()=>{ if (tocando===f) parar(); g.faixas.splice(i,1); E.rem.push(f.id); salvar(); desenhar(); })},'Remover música'))));
+}
+function desenharSelecao(){
+  const raiz = document.getElementById('selecao'); raiz.replaceChildren();
+  const gi = E.grupos.findIndex(x => x.id === atual), g = E.grupos[gi];
+  if (!g) { raiz.append(el('p',{class:'vazio'},'Nenhum personagem. Toque em “＋ Personagem” para criar um.')); }
+  else {
+    const mg = k => ev => { g[k] = ev.target.value.trim() || (k==='nome' ? g.nome : ''); salvar(); desenhar(); };
+    raiz.append(el('div',{class:'pers'}, rosto(g,'retrato'),
+      el('div',{class:'info'},
+        el('input',{type:'text', class:'nome', id:'gn-'+g.id, value:g.nome, onchange:mg('nome'), 'aria-label':'Nome do personagem'}),
+        el('input',{type:'text', class:'subt', id:'gs-'+g.id, value:g.sub, placeholder:'Anotação (só aparece aqui, não na Sessão)', onchange:mg('sub'), 'aria-label':'Anotação'}),
+        el('div',{class:'acoes'},
+          el('button',{class:'peq', onclick:()=>{ imgPara = g; document.getElementById('arqImg').click(); }}, g.img ? 'Trocar imagem' : 'Adicionar imagem'),
+          g.img ? el('button',{class:'peq', onclick:()=>{ g.img=''; salvar(); marcar(); }},'Tirar imagem') : null,
+          el('button',{class:'peq', onclick:()=>mover(E.grupos,gi,-1), disabled:gi===0},'← Mover'),
+          el('button',{class:'peq', onclick:()=>mover(E.grupos,gi,1), disabled:gi===E.grupos.length-1},'Mover →'),
+          el('button',{class:'peq perigo', onclick:ev=>confirmar(ev.target, ()=>{ if (tocando && g.faixas.includes(tocando)) parar(); E.grupos.splice(gi,1); E.rem.push(g.id); atual = (E.grupos[Math.max(0,gi-1)]||{}).id || null; salvar(); desenhar(); })},'Remover personagem')))));
+    if (!g.faixas.length) raiz.append(el('p',{class:'vazio'},'Este personagem ainda não tem músicas. Adicione a primeira abaixo.'));
+    g.faixas.forEach((f,i) => raiz.append(cartaoFaixa(g,f,i)));
+    // adicionar música
+    const nn = el('input',{type:'text', class:'largo', id:'nv-nome', placeholder:'Compositor — “Música”'}), nm = el('input',{type:'text', class:'largo', id:'nv-mom', placeholder:'Quando usar'}),
+      nl = el('input',{type:'text', class:'largo', id:'nv-link', placeholder:'https://www.youtube.com/watch?v=…'}), np = el('select',{id:'nv-papel'}, ...Object.entries(PAPEIS).map(([v,t]) => el('option',{value:v},t))), msg = el('span',{class:'sub'});
+    raiz.append(el('details',{class:'cx', open:!g.faixas.length}, el('summary',{},'Adicionar música a '+g.nome.split(' — ')[0]),
+      el('div',{class:'novo'}, el('label',{class:'c'},'Nome',nn), el('label',{class:'c'},'Momento de uso',nm), el('label',{class:'c'},'Função',np), el('label',{class:'c'},'Link do YouTube',nl),
+        el('button',{onclick:()=>{ const v = idDoLink(nl.value);
+          if (!nn.value.trim()) { msg.textContent = 'Dê um nome à música.'; return; }
+          if (!v) { msg.textContent = 'Cole um link de vídeo do YouTube (não de busca nem de playlist).'; return; }
+          const f = novaFaixa({id:uid('f'), nome:nn.value.trim(), momento:nm.value.trim(), papel:np.value, st:0, videos:[v]}); f.usar = true;
+          g.faixas.push(f); salvar(); desenhar(); }},'Adicionar')), msg));
+  }
+  // ajustes e cópia de segurança
+  const ta = el('textarea',{id:'dados', spellcheck:'false', placeholder:'Cole aqui o texto copiado de outro aparelho'});
+  const aplicar = txt => { try { const s = JSON.parse(txt); if (!Array.isArray(s.grupos)) throw 0; parar(); E = s; E.rem = E.rem||[]; E.cruzar = E.cruzar ?? 1.5; atual = (E.grupos[0]||{}).id || null; salvar(); document.getElementById('mestre').value = E.mestre; desenhar(); } catch(e){ aviso('Esse conteúdo não é uma trilha válida.'); } };
+  raiz.append(el('details',{class:'cx'}, el('summary',{},'Ajustes e cópia das escolhas'),
+    el('div',{class:'lin2'}, el('label',{class:'c'},'Transição entre músicas (s)', el('input',{type:'number', id:'cruzar', min:0, max:10, step:.5, value:E.cruzar, onchange:ev=>{ E.cruzar = Math.max(0, +ev.target.value||0); salvar(); }}))),
+    el('p',{class:'sub', style:'margin-top:14px'},'As escolhas e imagens ficam salvas só neste navegador. Para usar em outro aparelho, baixe o arquivo aqui e carregue lá.'),
+    el('div',{class:'lin2'},
+      el('button',{onclick:()=>{ const a = el('a',{href:URL.createObjectURL(new Blob([JSON.stringify(E)],{type:'application/json'})), download:'trilha-do-cordeiro.json'}); document.body.append(a); a.click(); a.remove(); }},'Baixar arquivo'),
+      el('button',{onclick:()=>document.getElementById('arqDados').click()},'Carregar arquivo'),
+      el('button',{onclick:()=>{ ta.value = JSON.stringify(E); ta.select(); navigator.clipboard && navigator.clipboard.writeText(ta.value).catch(()=>{}); }},'Copiar como texto'),
+      el('button',{onclick:()=>aplicar(ta.value)},'Aplicar texto colado')), ta,
+    el('button',{class:'perigo', onclick:ev=>confirmar(ev.target, ()=>{ parar(); E = estadoPadrao(); atual = E.grupos[0].id; salvar(); document.getElementById('mestre').value = E.mestre; desenhar(); })},'Restaurar a trilha original')));
+  document.getElementById('arqDados').onchange = ev => { const a = ev.target.files[0]; ev.target.value = ''; if (a) a.text().then(aplicar); };
+}
+
+// ---------- Modo Sessão ----------
+let atalhos = [];
+function desenharSessao(){
+  const raiz = document.getElementById('sessao'); raiz.replaceChildren(); atalhos = [];
+  const grupos = E.grupos.filter(g => (atualSes==='todos' || g.id===atualSes) && g.faixas.some(f => f.usar));
+  if (!grupos.length) { raiz.append(el('p',{class:'vazio'},'Nenhuma música marcada. Escolha na aba Seleção.')); return; }
+  for (const g of grupos) {
+    const esc = g.faixas.filter(f => f.usar).sort((a,b) => ORDEM.indexOf(a.papel) - ORDEM.indexOf(b.papel));
+    raiz.append(el('div',{class:'banner'}, g.img ? rosto(g,'retrato') : null, el('h2',{}, g.nome)));
+    const grade = el('div',{class:'grade'});
+    for (const f of esc) { atalhos.push(f); const n = atalhos.length;
+      grade.append(el('button',{class:'cena'+(tocando===f?' tocando':''), onclick:()=>tocar(f)},
+        el('span',{class:'papel'}, PAPEIS[f.papel]), el('span',{class:'t'}, f.nome), el('span',{class:'m'}, f.momento), el('span',{class:'tecla'}, n<=9 ? 'Tecla '+n : ''))); }
+    raiz.append(grade);
+  }
+}
+function desenhar(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
+  if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
+  desenharElenco(); if (modo==='sel') desenharSelecao(); else desenharSessao(); }
+function marcar(){ const g = tocando && grupoDe(tocando);
+  document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
+  document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
+  document.getElementById('agoraRosto').replaceChildren(...(g && g.img ? [rosto(g)] : []));
+  desenhar(); }
+
+// ---------- Barra, abas e teclado ----------
+const fmt = s => isFinite(s) ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '–';
+setInterval(() => { const t = document.getElementById('agoraTempo');
+  if (!tocando || !pronto[ativo]) { t.innerHTML = '&nbsp;'; return; }
+  try { t.textContent = fmt(P[ativo].getCurrentTime()) + ' / ' + fmt(P[ativo].getDuration()) + (tocando.repetir ? ' · repetindo' : ''); } catch(e){} }, 500);
+const m = document.getElementById('mestre'); m.value = E.mestre;
+m.oninput = () => { E.mestre = +m.value; salvar(); if (tocando) { clearInterval(fades[ativo]); try { P[ativo].setVolume(alvoDe(tocando)); } catch(e){} } };
+document.getElementById('btBaixar').onclick = () => parar(4000);
+document.getElementById('btSil').onclick = () => parar(0);
+document.getElementById('btVid').onclick = ev => { const p = document.getElementById('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
+let trava = null;
+function aba(qual){ modo = qual;
+  document.getElementById('selecao').hidden = qual!=='sel'; document.getElementById('sessao').hidden = qual!=='ses';
+  document.getElementById('abaSel').setAttribute('aria-selected', qual==='sel'); document.getElementById('abaSes').setAttribute('aria-selected', qual==='ses');
+  if (qual==='ses' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga durante a sessão
+  desenhar(); }
+document.getElementById('abaSel').onclick = () => aba('sel');
+document.getElementById('abaSes').onclick = () => aba('ses');
+document.addEventListener('keydown', ev => {
+  if (/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+  if (ev.key === 'Escape') parar(0);
+  else if (ev.key.toLowerCase() === 'b') parar(4000);
+  else if (modo==='ses' && /^[1-9]$/.test(ev.key) && atalhos[+ev.key-1]) tocar(atalhos[+ev.key-1]);
+});
+desenhar();
+</script>
+</body>
+</html>
