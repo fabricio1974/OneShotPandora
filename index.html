@@ -14,8 +14,9 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{margin:0}
-body{background:var(--fundo);color:var(--marfim);font:15px/1.45 var(--texto);padding:0 max(16px,env(safe-area-inset-right,0px)) 300px max(16px,env(safe-area-inset-left,0px))}
+body{background:var(--fundo);color:var(--marfim);font:15px/1.45 var(--texto);padding:0 max(16px,env(safe-area-inset-right,0px)) 360px max(16px,env(safe-area-inset-left,0px))}
 header,main{max-width:1100px;margin:0 auto}
 header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:18px 14px;border-bottom:1px solid var(--linha)}
 h1{font:400 22px/1 var(--titulo);letter-spacing:.12em;margin:0;color:var(--terracota)}
@@ -96,10 +97,32 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .agora .tempo{font-size:12px;color:var(--apagado);font-variant-numeric:tabular-nums}
 .barra .vol{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--apagado)}
 .barra .vol input{width:140px}
+.transp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.transp #btPausa{min-width:104px;background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.linhaPos{flex:1 1 100%;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--apagado);font-variant-numeric:tabular-nums}
+.linhaPos input{flex:1;width:auto;min-width:0}
 .players{display:flex;gap:8px}
+/* Triagem */
+.tri-cfg{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin:18px 0}
+.tri-atual{display:flex;flex-wrap:wrap;gap:18px;align-items:center;padding:20px;margin:16px 0;border:1px solid var(--terracota2);border-radius:10px;background:var(--painel)}
+.tri-atual .tx{flex:1 1 300px;min-width:0}
+.tri-atual .de{font:400 12px/1 var(--titulo);letter-spacing:.14em;color:var(--terracota)}
+.tri-atual .t{font-size:22px;font-weight:600;line-height:1.25;margin:6px 0 4px}
+.tri-atual .resta{font-size:13px;color:var(--apagado);margin-top:8px;font-variant-numeric:tabular-nums}
+.tri-bot{display:flex;flex-wrap:wrap;gap:8px}
+.tri-bot button{padding:14px 22px;font-size:16px}
+.tri-bot .fica{background:#24402a;border-color:#3f7a4a}
+.tri-bot .sai{background:#3a1512;border-color:#7a2a22}
+.tri-lista{display:flex;flex-direction:column;gap:4px}
+.tri-lista button{display:flex;gap:10px;align-items:center;text-align:left;padding:7px 12px;background:none;border-color:transparent}
+.tri-lista button:hover{border-color:var(--linha)}
+.tri-lista button.atual{background:var(--painel2);border-color:var(--terracota2)}
+.tri-lista .marca{width:44px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--apagado);flex:none}
+.tri-lista .marca.fica{color:#7fc98c}
+.tri-lista .q{color:var(--apagado);font-size:12px;margin-left:auto;white-space:nowrap}
 .players .cx{width:200px;height:200px;background:#000;border:1px solid var(--linha);border-radius:4px;overflow:hidden}
 .players.mini{position:absolute;left:-9999px}
-@media (max-width:640px){.faixa{grid-template-columns:auto 1fr}.faixa .ouvir{grid-column:2;justify-self:start}.ctrl,.editar{grid-column:1/-1}.players .cx{width:150px;height:150px}body{padding-bottom:380px}}
+@media (max-width:640px){.faixa{grid-template-columns:auto 1fr}.faixa .ouvir{grid-column:2;justify-self:start}.ctrl,.editar{grid-column:1/-1}.players .cx{width:150px;height:150px}body{padding-bottom:470px}.tri-bot button{flex:1 1 40%}}
 </style>
 </head>
 <body>
@@ -107,6 +130,7 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
   <h1>Trilha do Cordeiro</h1>
   <div class="abas" role="tablist">
     <button role="tab" id="abaSel" aria-selected="true">Seleção</button>
+    <button role="tab" id="abaTri" aria-selected="false">Triagem</button>
     <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
   </div>
 </header>
@@ -114,6 +138,7 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
   <div id="avisos"></div>
   <nav class="elenco" id="elenco" aria-label="Personagens"></nav>
   <section id="selecao"></section>
+  <section id="triagem" hidden></section>
   <section id="sessao" hidden></section>
 </main>
 
@@ -126,6 +151,14 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
       <div class="tempo" id="agoraTempo">&nbsp;</div>
     </div>
   </div>
+  <div class="transp">
+    <button id="btAnt" class="peq" title="Tecla P">Anterior</button>
+    <button id="btMenos" class="peq" title="Seta para a esquerda">−10 s</button>
+    <button id="btPausa" title="Barra de espaço">Pausar</button>
+    <button id="btMais" class="peq" title="Seta para a direita">+10 s</button>
+    <button id="btProx" class="peq" title="Tecla N">Próxima</button>
+  </div>
+  <div class="linhaPos"><span id="tAgora">0:00</span><input type="range" id="pos" min="0" max="1000" value="0" aria-label="Posição na música"><span id="tTotal">0:00</span></div>
   <label class="vol">Volume geral <input type="range" id="mestre" min="0" max="100" value="80"></label>
   <button id="btBaixar" title="Tecla B">Baixar aos poucos</button>
   <button id="btSil" class="perigo" title="Tecla Esc">Silêncio</button>
@@ -249,39 +282,51 @@ const el = (t, a={}, ...k) => { const e = document.createElement(t);
 const rosto = (g, cls='rosto') => g && g.img ? el('img',{class:cls, src:g.img, alt:''}) : el('span',{class:cls, 'aria-hidden':'true'}, g ? (g.nome.replace(/^[^A-Za-zÀ-ÿ]+/,'')[0]||'?').toUpperCase() : '');
 
 // ---------- Players do YouTube: dois, para cruzar uma música na outra ----------
-let P = [null,null], pronto = [false,false], ativo = 0, emP = [null,null], fades = [null,null], tocando = null;
+// O volume é controlado só por esta página (vol[i]); o player é sempre "desmutado" quando começa a tocar.
+let P = [null,null], pronto = [false,false], ativo = 0, emP = [null,null], fades = [null,null], vol = [0,0], espera = [null,null];
+let tocando = null, fila = [], tri = null, triFim = '';
 const falhou = {}, estados = {};
 const alvoDe = f => Math.round(f.vol * E.mestre / 100);
+function aplicarVol(i){ try { P[i].unMute(); P[i].setVolume(Math.round(vol[i])); } catch(e){} }
 function fade(i, ate, ms, fim){
-  clearInterval(fades[i]); if (!pronto[i]) return;
-  let de = 0; try { de = P[i].getVolume(); } catch(e){}
-  const passos = Math.max(1, Math.round(ms/50)); let n = 0;
-  fades[i] = setInterval(() => { n++; try { P[i].setVolume(Math.max(0,Math.min(100, de + (ate-de)*n/passos))); } catch(e){}
-    if (n >= passos) { clearInterval(fades[i]); fim && fim(); } }, 50);
+  clearInterval(fades[i]); fades[i] = null; if (!pronto[i]) return;
+  const de = vol[i], passos = Math.max(1, Math.round(ms/50)); let n = 0;
+  fades[i] = setInterval(() => { n++; vol[i] = de + (ate-de)*n/passos; aplicarVol(i);
+    if (n >= passos) { clearInterval(fades[i]); fades[i] = null; fim && fim(); } }, 50);
 }
-function tocar(f, ms){
+function tocar(f, ms, op={}){
   if (!pronto[0] || !pronto[1]) { aviso('O player do YouTube ainda não carregou. Confira a internet e recarregue a página.'); return; }
   if (!videoDe(f)) { estados[f.id] = 'Esta música não tem vídeo. Cole um link do YouTube.'; desenhar(); return; }
-  if (tocando === f) { parar(1200); return; }
+  if (tocando === f && !op.forcar) { parar(1200); return; }
   ms = ms ?? E.cruzar*1000;
+  if (op.fila) fila = op.fila;
   const novo = 1-ativo, velho = ativo;
-  if (emP[velho]) { emP[velho] = null; fade(velho, 0, ms, () => { try { P[velho].pauseVideo(); } catch(e){} }); }
+  if (emP[velho]) { emP[velho] = null; espera[velho] = null; fade(velho, 0, ms, () => { try { P[velho].pauseVideo(); } catch(e){} }); }
   emP[novo] = f; tocando = f; ativo = novo; delete estados[f.id]; falhou[f.id] = 0;
-  clearInterval(fades[novo]); P[novo].setVolume(0); P[novo].unMute();
-  P[novo].loadVideoById({videoId:videoDe(f), startSeconds:+f.inicio||0});
-  fade(novo, alvoDe(f), ms); marcar();
+  clearInterval(fades[novo]); fades[novo] = null; vol[novo] = 0;
+  espera[novo] = {ms, meio:!!op.meio};                       // o volume sobe quando o vídeo começa de fato a tocar
+  P[novo].loadVideoById({videoId:videoDe(f), startSeconds:op.meio ? 0 : (+f.inicio||0)});
+  if (tri) tri.ms = 0;
+  marcar();
 }
 function parar(ms=0){
-  for (const i of [0,1]) { if (!pronto[i]) continue;
+  for (const i of [0,1]) { if (!pronto[i]) continue; espera[i] = null;
     if (ms) fade(i, 0, ms, () => { try { P[i].pauseVideo(); } catch(e){} });
-    else { clearInterval(fades[i]); try { P[i].pauseVideo(); P[i].setVolume(0); } catch(e){} }
+    else { clearInterval(fades[i]); fades[i] = null; vol[i] = 0; try { P[i].pauseVideo(); } catch(e){} }
     emP[i] = null; }
-  tocando = null; marcar();
+  tocando = null; tri = null; marcar();
 }
 function aoMudar(i, ev){
-  const f = emP[i]; if (!f || ev.data !== 0) return;
-  if (f.repetir) { P[i].seekTo(+f.inicio||0, true); P[i].playVideo(); }
-  else if (tocando === f) { emP[i] = null; tocando = null; marcar(); }
+  const f = emP[i]; if (!f) return;
+  if (ev.data === 1 && espera[i]) { const w = espera[i]; espera[i] = null;
+    if (w.meio) { let d = 0; try { d = P[i].getDuration(); } catch(e){}
+      if (d > 30) P[i].seekTo(Math.max(0, d/2 - (E.previa||120)/2), true); }   // a prévia fica centrada no meio da música
+    fade(i, alvoDe(f), w.ms); }
+  if (ev.data === 0) {
+    if (tri && tocando === f) triIr(1);
+    else if (f.repetir) { P[i].seekTo(+f.inicio||0, true); P[i].playVideo(); }
+    else if (tocando === f && !vizinha(1, true)) { emP[i] = null; tocando = null; marcar(); }
+  }
 }
 function aoErro(i, ev){
   const f = emP[i]; if (!f) return;
@@ -289,14 +334,71 @@ function aoErro(i, ev){
   falhou[f.id] = (falhou[f.id]||0) + 1;
   if (!idDoLink(f.link) && falhou[f.id] < f.videos.length) {      // esta gravação não toca fora do YouTube: tenta a próxima
     f.grav = (f.grav+1) % f.videos.length; salvar();
-    P[i].loadVideoById({videoId:videoDe(f), startSeconds:+f.inicio||0}); desenhar();
-  } else { estados[f.id] = 'Nenhuma gravação tocou aqui. Cole outro link do YouTube.'; parar(); }
+    P[i].loadVideoById({videoId:videoDe(f), startSeconds:espera[i] && espera[i].meio ? 0 : (+f.inicio||0)}); desenhar();
+  } else { estados[f.id] = 'Nenhuma gravação tocou aqui. Cole outro link do YouTube.'; if (tri) triIr(1); else parar(); }
 }
 window.onYouTubeIframeAPIReady = () => { [0,1].forEach(i => { P[i] = new YT.Player('p'+i, { width:'100%', height:'100%',
   playerVars:{playsinline:1, rel:0, controls:1, origin:location.origin},
   events:{ onReady:()=>{ pronto[i]=true; }, onStateChange:ev=>aoMudar(i,ev), onError:ev=>aoErro(i,ev) } }); }); };
 (function(){ const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
   s.onerror = () => aviso('Não consegui carregar o player do YouTube. Confira a internet.'); document.head.append(s); })();
+
+// ---------- Transporte: pausar, avançar e trocar de faixa ----------
+const estadoP = () => { try { return P[ativo].getPlayerState(); } catch(e){ return -1; } };
+function pausar(){ if (!tocando) return; try { if (estadoP() === 2) P[ativo].playVideo(); else P[ativo].pauseVideo(); } catch(e){} }
+function saltar(seg){ if (!tocando) return; try { P[ativo].seekTo(Math.max(0, P[ativo].getCurrentTime()+seg), true); } catch(e){} }
+function vizinha(d, auto){                                    // faixa anterior ou próxima da lista de onde a música foi tocada
+  if (tri) { triIr(d); return true; }
+  if (auto && modo !== 'ses') return false;                   // só a Sessão segue sozinha para a próxima
+  const n = fila[fila.indexOf(tocando)+d]; if (!n || !todas().includes(n)) return false;
+  if (auto) return false;
+  tocar(n, null, {forcar:true}); return true;
+}
+
+// ---------- Triagem: toca um trecho do meio de cada música, para decidir quais ficam ----------
+function triLista(){ const esc = E.triEsc||'todos', q = E.triQuais||'todas';
+  return E.grupos.filter(g => esc==='todos' || g.id===esc).flatMap(g => g.faixas).filter(f => q==='todas' || (q==='marcadas') === !!f.usar); }
+function triComecar(){ const l = triLista(); if (!l.length) return;
+  triFim = ''; tri = {lista:l, pos:0, ms:0, visto:{}}; tocar(l[0], 600, {forcar:true, meio:E.meio!==false}); }
+function triIr(d){ if (!tri) return; const p = tri.pos + d; if (p < 0) return;
+  if (p >= tri.lista.length) { triFim = 'Triagem concluída: ' + tri.lista.filter(f => f.usar).length + ' de ' + tri.lista.length + ' músicas ficam.'; parar(1200); return; }
+  tri.pos = p; tocar(tri.lista[p], 600, {forcar:true, meio:E.meio!==false}); }
+function triDecidir(fica){ if (!tri) return; const f = tri.lista[tri.pos]; f.usar = fica; tri.visto[f.id] = 1; salvar(); triIr(1); }
+function desenharTriagem(){
+  const raiz = document.getElementById('triagem'); raiz.replaceChildren();
+  if (!tri) {
+    const mud = (k, conv=x=>x) => ev => { E[k] = conv(ev.target.type==='checkbox' ? ev.target.checked : ev.target.value); salvar(); desenhar(); };
+    const sel = (id, ops, val, k) => { const x = el('select',{id, onchange:mud(k)}); ops.forEach(([v,t]) => x.append(el('option',{value:v, selected:v===val},t))); return x; };
+    const n = triLista().length;
+    raiz.append(el('h2',{style:'margin-top:18px'},'Triagem'),
+      el('p',{class:'sub', style:'margin-top:6px'},'Toca um trecho de cada música, uma depois da outra. Em cada uma você decide se ela fica ou sai da Sessão. Sem decisão, a página passa para a próxima sozinha e mantém a marcação atual.'),
+      triFim ? el('p',{style:'color:var(--ouro);margin:14px 0 0'}, triFim) : null,
+      el('div',{class:'tri-cfg'},
+        el('label',{class:'c'},'Personagem', sel('triEsc', [['todos','Todos'], ...E.grupos.map(g => [g.id, g.nome.split(' — ')[0]])], E.triEsc||'todos', 'triEsc')),
+        el('label',{class:'c'},'Quais músicas', sel('triQuais', [['todas','Todas'],['marcadas','Só as marcadas'],['desmarcadas','Só as desmarcadas']], E.triQuais||'todas', 'triQuais')),
+        el('label',{class:'c'},'Duração do trecho (s)', el('input',{type:'number', id:'previa', min:15, max:600, step:15, value:E.previa||120, onchange:mud('previa', v => Math.max(15, +v||120))})),
+        el('label',{class:'lin'}, el('input',{type:'checkbox', id:'meio', checked:E.meio!==false, onchange:mud('meio')}), 'Começar pelo meio da música'),
+        el('button',{onclick:triComecar, disabled:!n, style:'background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600'}, n ? 'Começar ('+n+' músicas)' : 'Nenhuma música nesse filtro')));
+    return;
+  }
+  const f = tri.lista[tri.pos], g = grupoDe(f);
+  raiz.append(el('div',{class:'tri-atual'}, g && g.img ? rosto(g,'retrato') : null,
+    el('div',{class:'tx'}, el('div',{class:'de'}, (g ? g.nome.split(' — ')[0] : '') + ' · ' + (tri.pos+1) + ' de ' + tri.lista.length),
+      el('div',{class:'t'}, f.nome), el('div',{class:'sub'}, PAPEIS[f.papel] + (f.momento ? ' · ' + f.momento : '')),
+      el('div',{class:'resta', id:'triResta'}, estados[f.id] || 'Carregando…')),
+    el('div',{class:'tri-bot'},
+      el('button',{class:'fica', onclick:()=>triDecidir(true), title:'Tecla F'},'Fica'),
+      el('button',{class:'sai', onclick:()=>triDecidir(false), title:'Tecla S'},'Sai'),
+      el('button',{onclick:()=>triIr(-1), disabled:tri.pos===0},'Voltar'),
+      el('button',{onclick:()=>triIr(1)},'Pular'),
+      el('button',{onclick:()=>{ triFim = 'Triagem interrompida na música ' + (tri.pos+1) + ' de ' + tri.lista.length + '.'; parar(800); }},'Encerrar'))));
+  const lista = el('div',{class:'tri-lista'});
+  tri.lista.forEach((x,i) => { const gx = grupoDe(x);
+    lista.append(el('button',{class: i===tri.pos ? 'atual' : '', onclick:()=>triIr(i-tri.pos)},
+      el('span',{class:'marca'+(x.usar?' fica':'')}, x.usar ? 'Fica' : 'Sai'), el('span',{}, x.nome),
+      el('span',{class:'q'}, (gx ? gx.nome.split(' — ')[0] : '') + (tri.visto[x.id] ? ' · decidida' : '')))); });
+  raiz.append(lista);
+}
 
 // ---------- Avisos ----------
 function aviso(html){ const a = document.getElementById('avisos'); if ([...a.querySelectorAll('span')].some(x => x.innerHTML === html)) return;
@@ -339,7 +441,7 @@ document.getElementById('arqImg').onchange = ev => {
 function mover(lista, i, d){ const j = i+d; if (j<0 || j>=lista.length) return; [lista[i], lista[j]] = [lista[j], lista[i]]; salvar(); desenhar(); }
 function cartaoFaixa(g, f, i){
   const mud = (k, conv=x=>x, redes=false) => ev => { f[k] = conv(ev.target.type==='checkbox' ? ev.target.checked : ev.target.value); salvar();
-    if (k==='vol' && tocando===f) { clearInterval(fades[ativo]); try { P[ativo].setVolume(alvoDe(f)); } catch(e){} }
+    if (k==='vol' && tocando===f) { clearInterval(fades[ativo]); fades[ativo] = null; vol[ativo] = alvoDe(f); aplicarVol(ativo); }
     if (redes) desenhar(); };
   const sel = (id, ops, val, k, conv) => { const s = el('select',{id, onchange:mud(k,conv,true)}); ops.forEach(([v,t]) => s.append(el('option',{value:v, selected:String(v)===String(val)},t))); return s; };
   const custom = idDoLink(f.link), v = videoDe(f);
@@ -348,7 +450,7 @@ function cartaoFaixa(g, f, i){
     el('div',{}, el('div',{class:'nome'}, f.st ? el('span',{class:'st', title:'Sugestão'},'★') : null, f.nome), el('div',{class:'momento'}, f.momento),
       el('div',{class:'estado'+(estados[f.id]?' ruim':'')}, estados[f.id] || (custom ? 'Usando o seu link.' : f.videos.length ? 'Gravação '+(f.grav%f.videos.length+1)+' de '+f.videos.length+'.' : 'Sem vídeo.'), ' ',
         v ? el('a',{href:'https://www.youtube.com/watch?v='+v, target:'_blank', rel:'noopener'},'Abrir no YouTube') : null)),
-    el('button',{class:'ouvir'+(tocando===f?' tocando':''), onclick:()=>tocar(f,600)}, tocando===f ? 'Parar' : 'Ouvir'),
+    el('button',{class:'ouvir'+(tocando===f?' tocando':''), onclick:()=>tocar(f,600,{fila:g.faixas})}, tocando===f ? 'Parar' : 'Ouvir'),
     el('div',{class:'ctrl'},
       el('label',{class:'c'},'Função', sel('p-'+f.id, Object.entries(PAPEIS), f.papel, 'papel')),
       f.videos.length > 1 ? el('label',{class:'c'},'Gravação', sel('g-'+f.id, f.videos.map((x,n)=>[n,'Opção '+(n+1)]), f.grav%f.videos.length, 'grav', Number)) : null,
@@ -420,14 +522,14 @@ function desenharSessao(){
     raiz.append(el('div',{class:'banner'}, g.img ? rosto(g,'retrato') : null, el('h2',{}, g.nome)));
     const grade = el('div',{class:'grade'});
     for (const f of esc) { atalhos.push(f); const n = atalhos.length;
-      grade.append(el('button',{class:'cena'+(tocando===f?' tocando':''), onclick:()=>tocar(f)},
+      grade.append(el('button',{class:'cena'+(tocando===f?' tocando':''), onclick:()=>tocar(f,null,{fila:atalhos})},
         el('span',{class:'papel'}, PAPEIS[f.papel]), el('span',{class:'t'}, f.nome), el('span',{class:'m'}, f.momento), el('span',{class:'tecla'}, n<=9 ? 'Tecla '+n : ''))); }
     raiz.append(grade);
   }
 }
 function desenhar(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  desenharElenco(); if (modo==='sel') desenharSelecao(); else desenharSessao(); }
+  document.getElementById('elenco').hidden = modo==='tri'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else desenharSessao(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -435,28 +537,61 @@ function marcar(){ const g = tocando && grupoDe(tocando);
   desenhar(); }
 
 // ---------- Barra, abas e teclado ----------
-const fmt = s => isFinite(s) ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '–';
-setInterval(() => { const t = document.getElementById('agoraTempo');
-  if (!tocando || !pronto[ativo]) { t.innerHTML = '&nbsp;'; return; }
-  try { t.textContent = fmt(P[ativo].getCurrentTime()) + ' / ' + fmt(P[ativo].getDuration()) + (tocando.repetir ? ' · repetindo' : ''); } catch(e){} }, 500);
-const m = document.getElementById('mestre'); m.value = E.mestre;
-m.oninput = () => { E.mestre = +m.value; salvar(); if (tocando) { clearInterval(fades[ativo]); try { P[ativo].setVolume(alvoDe(tocando)); } catch(e){} } };
-document.getElementById('btBaixar').onclick = () => parar(4000);
-document.getElementById('btSil').onclick = () => parar(0);
-document.getElementById('btVid').onclick = ev => { const p = document.getElementById('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
+const fmt = s => isFinite(s) && s >= 0 ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '0:00';
+const $ = id => document.getElementById(id);
+let arrastando = false;
+setInterval(() => {
+  const st = tocando && pronto[ativo] ? estadoP() : -1;
+  $('btPausa').textContent = st === 2 ? 'Continuar' : 'Pausar';
+  for (const b of ['btPausa','btMenos','btMais']) $(b).disabled = !tocando;
+  $('btAnt').disabled = !(tri ? tri.pos > 0 : tocando && fila.indexOf(tocando) > 0);
+  $('btProx').disabled = !(tri ? true : tocando && fila.indexOf(tocando) >= 0 && fila.indexOf(tocando) < fila.length-1);
+  if (!tocando || !pronto[ativo]) { $('agoraTempo').innerHTML = '&nbsp;'; $('tAgora').textContent = $('tTotal').textContent = '0:00'; if (!arrastando) $('pos').value = 0; return; }
+  let t = 0, d = 0; try { t = P[ativo].getCurrentTime(); d = P[ativo].getDuration(); } catch(e){}
+  $('tAgora').textContent = fmt(t); $('tTotal').textContent = fmt(d); if (!arrastando && d) $('pos').value = Math.round(1000*t/d);
+  $('agoraTempo').textContent = st === 2 ? 'Em pausa' : st === 3 || espera[ativo] ? 'Carregando…' : tocando.repetir && !tri ? 'Repetindo' : ' ';
+  // se o YouTube abrir mudo ou com outro volume, corrige
+  if (st === 1 && !fades[ativo] && !espera[ativo]) { try { if (P[ativo].isMuted() || Math.abs(P[ativo].getVolume() - alvoDe(tocando)) > 2) { vol[ativo] = alvoDe(tocando); aplicarVol(ativo); } } catch(e){} }
+  if (tri) { if (st === 1) tri.ms += 500;
+    const r = $('triResta'), resta = Math.max(0, (E.previa||120) - tri.ms/1000);
+    if (r && !estados[tocando.id]) r.textContent = st === 1 ? 'Passa para a próxima em ' + fmt(resta) : st === 2 ? 'Em pausa' : 'Carregando…';
+    if (tri.ms >= (E.previa||120)*1000) triIr(1); }
+}, 500);
+const m = $('mestre'); m.value = E.mestre;
+m.oninput = () => { E.mestre = +m.value; salvar(); if (tocando && !espera[ativo]) { clearInterval(fades[ativo]); fades[ativo] = null; vol[ativo] = alvoDe(tocando); aplicarVol(ativo); } };
+const pos = $('pos');
+pos.addEventListener('pointerdown', () => { arrastando = true; });
+pos.addEventListener('change', () => { arrastando = false; if (!tocando) return; try { P[ativo].seekTo(P[ativo].getDuration()*pos.value/1000, true); } catch(e){} });
+$('btPausa').onclick = pausar;
+$('btMenos').onclick = () => saltar(-10);
+$('btMais').onclick = () => saltar(10);
+$('btAnt').onclick = () => vizinha(-1);
+$('btProx').onclick = () => vizinha(1);
+$('btBaixar').onclick = () => parar(4000);
+$('btSil').onclick = () => parar(0);
+$('btVid').onclick = ev => { const p = $('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
 let trava = null;
 function aba(qual){ modo = qual;
-  document.getElementById('selecao').hidden = qual!=='sel'; document.getElementById('sessao').hidden = qual!=='ses';
-  document.getElementById('abaSel').setAttribute('aria-selected', qual==='sel'); document.getElementById('abaSes').setAttribute('aria-selected', qual==='ses');
-  if (qual==='ses' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga durante a sessão
+  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['ses','sessao','abaSes']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
+  if (qual!=='sel' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga
   desenhar(); }
-document.getElementById('abaSel').onclick = () => aba('sel');
-document.getElementById('abaSes').onclick = () => aba('ses');
+$('abaSel').onclick = () => aba('sel');
+$('abaTri').onclick = () => aba('tri');
+$('abaSes').onclick = () => aba('ses');
 document.addEventListener('keydown', ev => {
   if (/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) || ev.ctrlKey || ev.metaKey || ev.altKey) return;
-  if (ev.key === 'Escape') parar(0);
-  else if (ev.key.toLowerCase() === 'b') parar(4000);
-  else if (modo==='ses' && /^[1-9]$/.test(ev.key) && atalhos[+ev.key-1]) tocar(atalhos[+ev.key-1]);
+  const k = ev.key.toLowerCase();
+  if (k === ' ' && ev.target.tagName === 'BUTTON') return;
+  if (k === 'escape') parar(0);
+  else if (k === 'b') parar(4000);
+  else if (k === ' ') { ev.preventDefault(); pausar(); }
+  else if (k === 'arrowright') saltar(10);
+  else if (k === 'arrowleft') saltar(-10);
+  else if (k === 'n') vizinha(1);
+  else if (k === 'p') vizinha(-1);
+  else if (tri && k === 'f') triDecidir(true);
+  else if (tri && k === 's') triDecidir(false);
+  else if (modo==='ses' && /^[1-9]$/.test(k) && atalhos[+k-1]) tocar(atalhos[+k-1], null, {fila:atalhos});
 });
 desenhar();
 </script>
