@@ -775,7 +775,11 @@ function palco(){
   return el('div',{class:'palco'}, src ? el('img',{class:'arte', src, alt:''}) : el('div',{class:'arte'}, '♪'),
     el('div',{class:'tx'}, el('div',{class:'de'}, g ? g.nome : 'Silêncio'), el('div',{class:'t'}, tocando ? tocando.nome : 'Nada tocando'),
       el('div',{class:'sub'}, tocando ? PAPEIS[tocando.papel] + (tocando.momento ? ' · ' + tocando.momento : '') : 'Escolha uma cena na aba Sessão.'),
-      g && ALT_PADRAO[g.id] ? el('div',{class:'lin2'}, el('button',{class:'peq', onclick:()=>{ E.m.alt[g.id] = !E.m.alt[g.id]; salvar(); desenhar(); }}, 'Trocar a versão da arte')) : null));
+      el('div',{class:'lin2'},
+        g && ALT_PADRAO[g.id] ? el('button',{class:'peq', onclick:()=>{ E.m.alt[g.id] = !E.m.alt[g.id]; salvar(); atualizarTela(); desenhar(); }}, 'Trocar a versão da arte') : null,
+        el('button',{class:'peq', onclick:abrirTela, title:'Abre uma janela só com a arte, para o projetor ou segunda tela (duplo clique nela: tela cheia)'}, telaViva() ? 'Tela dos jogadores (aberta)' : 'Abrir tela dos jogadores'),
+        telaViva() ? el('button',{class:'peq', onclick:()=>{ telaPreta = !telaPreta; atualizarTela(); desenhar(); }}, telaPreta ? 'Mostrar a arte' : 'Tela preta') : null,
+        el('button',{class:'peq', onclick:folhaMestre, title:'Abre a folha de consulta em outra aba, pronta para imprimir'}, 'Folha do Mestre'))));
 }
 function elencoApoio(){
   return el('div',{class:'painel'}, el('h3',{},'Elenco de apoio'),
@@ -809,7 +813,43 @@ function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
   document.getElementById('agoraRosto').replaceChildren(...(g && g.img ? [rosto(g)] : []));
-  desenhar(); }
+  atualizarTela(); desenhar(); }
+
+
+// ---------- Tela dos jogadores (segunda janela) e Folha do Mestre (impressão) ----------
+let telaJ = null, telaPreta = false;
+const telaViva = () => telaJ && !telaJ.closed;
+function atualizarTela(){
+  if (!telaViva()) return;
+  try {
+    const g = tocando && grupoDe(tocando), alt = g && ALT_PADRAO[g.id] && E.m.alt[g.id];
+    const src = telaPreta ? '' : (alt ? ALT_PADRAO[g.id] : (g && g.img)) || '';
+    const d = telaJ.document, im = d.getElementById('im'), nm = d.getElementById('nm');
+    if (!im) return;
+    if (src) { const u = new URL(src, location.href).href; if (im.dataset.u !== u) { im.style.opacity = 0; setTimeout(() => { im.src = u; im.dataset.u = u; im.style.opacity = 1; }, 450); } }
+    else { im.style.opacity = 0; im.dataset.u = ''; }
+    nm.style.opacity = 0;                      // sem legenda: o nome do personagem pode entregar a surpresa
+  } catch(e){}
+}
+function abrirTela(){
+  if (telaViva()) { telaJ.focus(); atualizarTela(); return; }
+  telaJ = window.open('', 'telaJogadoresCordeiro', 'width=900,height=700');
+  if (!telaJ) { aviso('O navegador bloqueou a nova janela. Permita pop-ups para esta página e tente de novo.'); return; }
+  telaJ.document.write('<!doctype html><meta charset="utf-8"><title>Tela dos jogadores</title><style>html,body{margin:0;height:100%;background:#000;overflow:hidden;cursor:none}body{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2vh}#im{max-width:94vw;max-height:86vh;object-fit:contain;opacity:0;transition:opacity .45s}#nm{color:#d9c9a8;font:italic 4vh Georgia,serif;letter-spacing:.08em;opacity:0;transition:opacity .45s}</style><img id="im" alt=""><div id="nm"></div><script>addEventListener("dblclick",function(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()})<\/script>');
+  telaJ.document.close(); setTimeout(atualizarTela, 200); desenhar();
+}
+function folhaMestre(){
+  const w = window.open('', '_blank'); if (!w) { aviso('O navegador bloqueou a nova janela. Permita pop-ups e tente de novo.'); return; }
+  const esc = t => String(t ?? '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const rot = E.roteiro.map((r,i) => { const f = faixaPorId(r.faixa); return '<tr><td>'+(i+1)+'</td><td><b>'+esc(r.titulo)+'</b><br><span>'+esc(r.nota)+'</span></td><td>'+esc(f ? f.nome : '—')+'</td></tr>'; }).join('');
+  const chars = E.grupos.filter(g => g.faixas.some(f => f.usar)).map(g => '<div class="c"><h3>'+esc(g.nome.split(' — ')[0])+'</h3>'+g.faixas.filter(f => f.usar).sort((a,b) => ORDEM.indexOf(a.papel)-ORDEM.indexOf(b.papel)).map(f => '<p><b>'+esc(PAPEIS[f.papel])+':</b> '+esc(f.nome)+(f.momento ? ' <i>('+esc(f.momento)+')</i>' : '')+'</p>').join('')+'</div>').join('');
+  w.document.write('<!doctype html><meta charset="utf-8"><title>Folha do Mestre</title><style>@page{size:A4;margin:12mm}body{font:11px/1.35 Georgia,serif;color:#111;margin:0}h1{font-size:18px;margin:0 0 4px}h2{font-size:13px;margin:10px 0 4px;border-bottom:1px solid #444}h3{font-size:12px;margin:0 0 2px}table{border-collapse:collapse;width:100%}td{border:1px solid #999;padding:2px 5px;vertical-align:top}td span{color:#444}.g{columns:2;column-gap:14px}.c{break-inside:avoid;margin-bottom:6px}p{margin:0}.k td:first-child{width:90px;font-weight:bold}</style>'
+   + '<h1>O Cordeiro e o Lobo — Folha do Mestre</h1>'
+   + '<h2>Regras da noite</h2><p>6 voltas, lírio branco de 6 pétalas (uma pétala cai a cada volta). Abate só vale com a anja em combate. Rodada 3: Hildegarda invoca. Vitória: abater Hildegarda, Jael, Esaú, Ezequiel, Raquel, Ozymandias e o Anjo. Derrota: os Bellacord levam o Tobias.</p>'
+   + '<h2>Teclas</h2><table class="k"><tr><td>1 – 9</td><td>tocar o pad</td></tr><tr><td>Espaço</td><td>pausar / continuar</td></tr><tr><td>V</td><td>voz: abaixa a música (toque liga/desliga, segurar solta ao soltar)</td></tr><tr><td>R</td><td>voltar à música anterior, de onde parou</td></tr><tr><td>T</td><td>repetir a faixa</td></tr><tr><td>− / +</td><td>volume da faixa</td></tr><tr><td>← / →</td><td>±10 s</td></tr><tr><td>N / P</td><td>próxima / anterior</td></tr><tr><td>] / [</td><td>próxima / anterior cena do roteiro</td></tr><tr><td>B</td><td>baixar aos poucos</td></tr><tr><td>Esc</td><td>silêncio imediato</td></tr><tr><td>Shift + clique</td><td>entrar sem transição</td></tr></table>'
+   + '<h2>Roteiro</h2><table>'+rot+'</table><h2>Músicas escolhidas</h2><div class="g">'+chars+'</div>');
+  w.document.close();
+}
 
 // ---------- Barra, abas e teclado ----------
 const fmt = s => isFinite(s) && s >= 0 ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '0:00';
