@@ -160,6 +160,23 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .ab .ok{color:#7fc98c;font-size:12px}
 .fim{margin-top:12px;padding:14px;border:1px solid #3f7a4a;border-radius:8px;background:#162a1b}
 textarea.notas{height:120px;font:14px/1.45 var(--texto)}
+
+.rot{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto;margin-top:10px;padding-right:4px}
+.pas{display:grid;grid-template-columns:30px 1fr auto;gap:4px 10px;align-items:center;padding:8px 10px;border:1px solid var(--linha);border-radius:8px;background:var(--painel2)}
+.pas.atual{border-color:var(--terracota);background:#2a1d14}
+.pas.feito{opacity:.55}
+.pas .num{font:400 13px/1 var(--titulo);color:var(--terracota);text-align:center}
+.pas .tt{font-weight:600;line-height:1.25}
+.pas .fx{font-size:12px;color:var(--apagado)}
+.pas .nota{grid-column:2/-1;font-size:13px;color:var(--marfim);opacity:.85}
+.pas .ed{grid-column:1/-1}
+.rot-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rot-top .grow{flex:1}
+.gat{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.gat button{display:flex;gap:10px;text-align:left;align-items:center}
+.gat button.fora{opacity:.55}
+.gat button .q{font-weight:600}
+.gat button .t{color:var(--apagado);font-size:12px}
 </style>
 </head>
 <body>
@@ -303,6 +320,27 @@ const PADRAO = [
   F('via-mushishi','Lucy Rose — “Shiver” (Mushishi)','Noite de chuva, floresta, tensão baixa','momento',0,['1YoYbpBGaJM','HeGOII4mKjA','VZyJDN_dC20']),
  ]},
 ];
+
+const ROTEIRO_PADRAO = [
+ {titulo:'Ato 1 · A estrada', nota:'A Rafaela e o Tobias na estrada. Deixe cada jogador se apresentar e dizer como conhece o pai da Rafaela.', faixa:'mom-departure'},
+ {titulo:'Ato 1 · Esaú, o caçador ferido', nota:'O caçador aparece ferido, na estrada.', faixa:'esau-kongurei'},
+ {titulo:'Ato 1 · Chegada a Maré-Alta', nota:'Primeira vista do mar. A casa onde a mãe da Rafaela nasceu.', faixa:'via-kiki'},
+ {titulo:'A anja aparece', nota:'Ela oferece as quatro virtudes. Cada uma só pode ser escolhida uma vez.', faixa:'mom-spiegel'},
+ {titulo:'Volta 1 · A flecha', nota:'Esaú atira de longe.', faixa:'esau-helvegen'},
+ {titulo:'Volta 1 · A morte da Rafaela', nota:'', faixa:'mom-stabat'},
+ {titulo:'Esaú · combate', nota:'', faixa:'esau-wolftotem'},
+ {titulo:'Ezequiel · entrada', nota:'', faixa:'eze-apparition'},
+ {titulo:'Ezequiel · combate', nota:'', faixa:'eze-passacaglia'},
+ {titulo:'Jael · entrada', nota:'', faixa:'jael-monochrome'},
+ {titulo:'Jael · combate', nota:'', faixa:'jael-odaiko'},
+ {titulo:'Hildegarda · entrada', nota:'', faixa:'hil-ovis'},
+ {titulo:'Hildegarda · 3ª rodada', nota:'Ela invoca os “demônios”, que na verdade são anjos de verdade.', faixa:'hil-angeli'},
+ {titulo:'Os “demônios” · combate', nota:'', faixa:'dem-kyrie'},
+ {titulo:'Raquel', nota:'', faixa:'raq-gorecki'},
+ {titulo:'Ozymandias · entrada', nota:'', faixa:'ozy-saturno'},
+ {titulo:'Ozymandias · combate', nota:'', faixa:'ozy-marte'},
+ {titulo:'Revelação (fora do jogo)', nota:'Contar a revelação em voz alta, fora da ficção.', faixa:'mom-miserere'}
+];
 const IMG_PADRAO = {esau:'img/esau.jpg', ezequiel:'img/ezequiel.jpg', jael:'img/jael.jpg', hildegarda:'img/hildegarda.jpg', demonio:'img/diabo.jpg', momentos:'img/anja.jpg', viagem:'img/rafaela.jpg'};
 const ALT_PADRAO = {esau:'img/esau_acena.jpg'};            // segunda versão da arte (Esaú sorrindo e acenando)
 const APOIO = [
@@ -319,7 +357,9 @@ const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel,
   usar:!!f.st, grav:0, link:'', inicio:0, vol:100, repetir:f.papel==='combate'});
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:''});
-function garantir(){ E.m = Object.assign(M0(), E.m||{}); }
+function garantir(){ E.m = Object.assign(M0(), E.m||{});
+  if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
+  if (typeof E.rpos !== 'number') E.rpos = -1; }
 function estadoPadrao(){ return {v:2, mestre:80, cruzar:1.5, rem:[], grupos:PADRAO.map(novoGrupo)}; }
 function carregar(){
   let s = null; try { s = JSON.parse(localStorage.getItem(CHAVE) || 'null'); } catch(e){}
@@ -653,6 +693,52 @@ function painelNoite(){
 }
 setInterval(() => { const c = document.getElementById('cronT'); if (c) c.textContent = tempoCron(); }, 1000);
 
+
+// ---------- Roteiro da noite e gatilhos ----------
+let editRot = false, gatilhoDe = null;
+const faixaPorId = id => todas().find(x => x.id === id);
+function irCena(i){ const r = E.roteiro; if (!r.length) return; i = Math.max(0, Math.min(r.length-1, i)); E.rpos = i; salvar();
+  const f = faixaPorId(r[i].faixa); if (f && tocando !== f) tocar(f, null, {fila:[f]}); else desenhar(); }
+function passoCena(d){ irCena(E.rpos < 0 ? 0 : E.rpos + d); }
+function painelRoteiro(){
+  const r = E.roteiro;
+  const topo = el('div',{class:'rot-top'},
+    el('button',{onclick:()=>passoCena(-1), disabled:E.rpos<=0, title:'Tecla ['}, '◀ Cena anterior'),
+    el('button',{style:'background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600', onclick:()=>passoCena(1), disabled:E.rpos>=r.length-1, title:'Tecla ]'}, E.rpos < 0 ? 'Começar ▶' : 'Próxima cena ▶'),
+    el('span',{class:'sub grow'}, r.length ? (E.rpos < 0 ? 'Ainda não começou' : 'Cena ' + (E.rpos+1) + ' de ' + r.length) : 'Roteiro vazio'),
+    el('button',{class:'peq', onclick:()=>{ editRot = !editRot; desenhar(); }}, editRot ? 'Terminar edição' : 'Editar roteiro'));
+  const lista = el('div',{class:'rot', id:'rotLista'});
+  r.forEach((c,i) => { const f = faixaPorId(c.faixa);
+    const mudar = (k, conv=x=>x) => ev => { c[k] = conv(ev.target.value); salvar(); };
+    const mv = d => () => { const j = i+d; if (j<0 || j>=r.length) return; [r[i], r[j]] = [r[j], r[i]]; if (E.rpos===i) E.rpos = j; else if (E.rpos===j) E.rpos = i; salvar(); desenhar(); };
+    const sel = el('select',{onchange:mudar('faixa'), 'aria-label':'Música desta cena'}, el('option',{value:''},'(sem música)'), ...E.grupos.filter(g => g.faixas.length).map(g => { const o = el('optgroup',{label:g.nome.split(' — ')[0]}); g.faixas.forEach(x => o.append(el('option',{value:x.id, selected:x.id===c.faixa}, x.nome))); return o; }));
+    lista.append(el('div',{class:'pas'+(i===E.rpos?' atual':'')+(i<E.rpos?' feito':'')},
+      el('span',{class:'num'}, String(i+1)),
+      el('div',{}, el('div',{class:'tt'}, c.titulo), el('div',{class:'fx'}, f ? '♪ ' + f.nome : c.faixa ? '♪ música removida' : 'sem música')),
+      el('button',{class:'peq', onclick:()=>irCena(i), 'aria-label':'Ir para a cena ' + c.titulo}, i===E.rpos && f && tocando===f ? '● Tocando' : '▶ Ir'),
+      c.nota && !editRot ? el('div',{class:'nota'}, c.nota) : null,
+      editRot ? el('div',{class:'ed ctrl'},
+        el('label',{class:'c'},'Título', el('input',{type:'text', class:'largo', value:c.titulo, onchange:mudar('titulo', x=>x.trim()||c.titulo)})),
+        el('label',{class:'c'},'Música', sel),
+        el('label',{class:'c'},'Lembrete para narrar', el('input',{type:'text', class:'largo', value:c.nota||'', onchange:mudar('nota')})),
+        el('button',{class:'peq', onclick:mv(-1), disabled:i===0},'Subir'), el('button',{class:'peq', onclick:mv(1), disabled:i===r.length-1},'Descer'),
+        el('button',{class:'peq perigo', onclick:ev=>confirmar(ev.target, ()=>{ r.splice(i,1); if (E.rpos>=i) E.rpos--; salvar(); desenhar(); })},'Remover cena')) : null)); });
+  const rodape = editRot ? el('div',{class:'lin2'},
+    el('button',{onclick:()=>{ r.push({id:uid('r'), titulo:'Nova cena', nota:'', faixa:''}); salvar(); desenhar(); setTimeout(()=>{ const l = document.getElementById('rotLista'); if (l) l.scrollTop = l.scrollHeight; }, 0); }}, '＋ Adicionar cena'),
+    el('button',{class:'peq perigo', onclick:ev=>confirmar(ev.target, ()=>{ E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x)); E.rpos = -1; salvar(); desenhar(); })},'Voltar ao roteiro sugerido')) : null;
+  return el('div',{class:'painel'}, el('h3',{},'Roteiro da noite'), el('p',{class:'sub', style:'margin:0 0 10px'},'Ordem sugerida pelo app. Ajuste à sua mesa em “Editar roteiro”.'), topo, lista, rodape);
+}
+function painelGatilhos(){
+  const gs = E.grupos.filter(g => g.faixas.some(f => f.papel === 'momento'));
+  const tg = tocando && grupoDe(tocando);
+  if (!gatilhoDe || !gs.some(g => g.id === gatilhoDe)) gatilhoDe = (tg && gs.includes(tg) ? tg : gs[0] || {}).id;
+  const g = gs.find(x => x.id === gatilhoDe); if (!g) return null;
+  return el('div',{class:'painel'}, el('h3',{},'Gatilhos'), el('p',{class:'sub', style:'margin:0 0 10px'},'Músicas de momento: toque quando a cena chegar naquele ponto.'),
+    el('div',{class:'seg'}, ...gs.map(x => el('button',{class:'peq', 'aria-pressed':String(x.id===gatilhoDe), onclick:()=>{ gatilhoDe = x.id; desenhar(); }}, x.nome.split(' — ')[0]))),
+    el('div',{class:'gat'}, ...g.faixas.filter(f => f.papel === 'momento').map(f =>
+      el('button',{class:(f.usar?'':'fora')+(tocando===f?' tocando':''), onclick:()=>tocar(f, null, {fila:[f]})}, el('span',{class:'q'}, tocando===f ? '● ' : '▶ '), el('span',{}, el('div',{class:'q'}, f.momento || f.nome), el('div',{class:'t'}, f.nome))))));
+}
+
 // ---------- Aba Mestre: palco, controle da noite e elenco de apoio ----------
 function palco(){
   const g = tocando && grupoDe(tocando), alt = g && ALT_PADRAO[g.id] && E.m.alt[g.id];
@@ -668,7 +754,7 @@ function elencoApoio(){
 }
 function desenharMestre(){
   const raiz = document.getElementById('painelMestre'); raiz.replaceChildren();
-  raiz.append(palco(), ...painelNoite(), elencoApoio());
+  raiz.append(palco(), painelRoteiro(), painelGatilhos(), ...painelNoite(), elencoApoio());
 }
 
 // ---------- Modo Sessão ----------
@@ -750,6 +836,8 @@ document.addEventListener('keydown', ev => {
   else if (k === 'arrowleft') saltar(-10);
   else if (k === 'n') vizinha(1);
   else if (k === 'p') vizinha(-1);
+  else if (k === ']') passoCena(1);
+  else if (k === '[') passoCena(-1);
   else if (tri && k === 'f') triDecidir(true);
   else if (tri && k === 's') triDecidir(false);
   else if (modo==='ses' && /^[1-9]$/.test(k) && atalhos[+k-1]) tocar(atalhos[+k-1], null, {fila:atalhos});
