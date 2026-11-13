@@ -16,7 +16,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
-body{background:var(--fundo);color:var(--marfim);font:15px/1.45 var(--texto);padding:0 max(16px,env(safe-area-inset-right,0px)) 360px max(16px,env(safe-area-inset-left,0px))}
+body{background:var(--fundo);color:var(--marfim);font:15px/1.45 var(--texto);padding:0 max(16px,env(safe-area-inset-right,0px)) calc(var(--barra-h,360px) + 76px) max(16px,env(safe-area-inset-left,0px))}
 header,main{max-width:1100px;margin:0 auto}
 header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:18px 14px;border-bottom:1px solid var(--linha)}
 h1{font:400 22px/1 var(--titulo);letter-spacing:.12em;margin:0;color:var(--terracota)}
@@ -122,7 +122,7 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .tri-lista .q{color:var(--apagado);font-size:12px;margin-left:auto;white-space:nowrap}
 .players .cx{width:200px;height:200px;background:#000;border:1px solid var(--linha);border-radius:4px;overflow:hidden}
 .players.mini{position:absolute;left:-9999px}
-@media (max-width:640px){.faixa{grid-template-columns:auto 1fr}.faixa .ouvir{grid-column:2;justify-self:start}.ctrl,.editar{grid-column:1/-1}.players .cx{width:150px;height:150px}body{padding-bottom:470px}.tri-bot button{flex:1 1 40%}}
+@media (max-width:640px){.faixa{grid-template-columns:auto 1fr}.faixa .ouvir{grid-column:2;justify-self:start}.ctrl,.editar{grid-column:1/-1}.players .cx{width:150px;height:150px}.tri-bot button{flex:1 1 40%}}
 
 /* Mestre */
 .palco{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:16px 0;padding:16px;border:1px solid var(--terracota2);border-radius:12px;background:linear-gradient(135deg,var(--painel),#120e0b)}
@@ -222,6 +222,31 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .inm-lin button,.inm-rec{min-height:40px}
 .inm-usar{background:var(--terracota2);border-color:var(--terracota)}
 .inm-res{margin-top:6px;padding:6px 10px;border-radius:6px;background:#0e0b09;border:1px solid var(--ouro);color:var(--ouro);font-variant-numeric:tabular-nums;font-size:14px;overflow-wrap:anywhere}
+
+/* Rodada 2: iniciativa integrada, favoritas, aplicar, faixa de turno */
+.inm-topo{flex-wrap:wrap}.inm-topo.vez img{outline:2px solid var(--ouro)}
+.inm-ini{flex:1 1 100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.inm-ini input{min-height:40px;width:4.6em}.inm-ini input.inv{border-color:var(--erro);box-shadow:0 0 0 1px var(--erro)}
+.inm-ini button{min-height:40px;min-width:40px}
+.inm-na{font-size:13px;color:#6fcf8f;font-weight:600}.inm-pv{display:flex;flex-wrap:wrap;gap:6px}
+.inm-vez{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;padding:6px 10px;border:1px solid var(--ouro);border-radius:8px;background:color-mix(in srgb,var(--ouro) 14%,transparent)}
+.inm-vez button{min-height:40px}
+.inm-faixa{margin-top:8px;padding:8px 10px;border-radius:8px;background:#2a2410;border:1px solid var(--ouro);font-size:14px}
+.inm-faixa div{margin-bottom:4px}.inm-faixa button{min-height:40px}
+.inm-fav{margin-left:auto;min-width:40px;min-height:40px;padding:0;background:none;border:0;font-size:20px;line-height:1;opacity:.45}.inm-fav[aria-pressed="true"]{opacity:1}
+.inm-pref{font-size:12px;color:var(--terracota)}
+.inm-favs{margin-top:16px;padding-top:4px;border-top:1px dashed var(--ouro)}.inm-favs h4{margin:8px 0 0;color:var(--ouro);font:400 15px/1.2 var(--titulo);letter-spacing:.08em}
+.inm-pas{margin-top:8px}.inm-pas summary{min-height:40px;display:flex;align-items:center;font-size:13px;color:var(--apagado);cursor:pointer}
+.inm-oc{margin:6px 0 0;font-size:12px;color:var(--apagado)}
+.inm-ap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}.inm-ap select{min-height:40px;max-width:100%}.inm-ap button{min-height:40px}
+.inm-dica{margin-top:8px;padding:6px 10px;border:1px dashed var(--linha);border-radius:8px;font-size:13px;color:var(--apagado);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.inm-card{scroll-margin-bottom:calc(var(--barra-h,360px) + 80px)}
+html{scroll-padding-bottom:calc(var(--barra-h,360px) + 80px)}
+#faixaTurno{position:fixed;right:10px;bottom:calc(var(--barra-h,0px) + 10px);z-index:6;max-width:calc(100vw - 20px);display:flex;gap:10px;align-items:center;padding:4px 4px 4px 12px;border-radius:999px;background:#2a2410;border:1px solid var(--ouro);box-shadow:0 2px 10px #000a;font-size:13px}
+#faixaTurno[hidden]{display:none}#faixaTurno .ft-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#faixaTurno .ft-r{color:var(--apagado);white-space:nowrap}
+#faixaTurno button{min-height:44px;border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600;white-space:nowrap}
+.barra.compacta .linhaPos,.barra.compacta .vol,.barra.compacta #btVoz,.barra.compacta #btVolta,.barra.compacta #btRep,.barra.compacta #btBaixar,.barra.compacta #btVid,.barra.compacta #btAnt,.barra.compacta #btProx,.barra.compacta #btMenos,.barra.compacta #btMais{display:none}
+#btCompacto{min-height:40px}
 </style>
 </head>
 <body>
@@ -243,7 +268,7 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
   <section id="painelMestre" hidden></section>
 </main>
 
-<div class="barra"><div class="in">
+<div class="barra" id="barra"><div class="in">
   <div class="agora">
     <span id="agoraRosto"></span>
     <div class="tx">
@@ -267,8 +292,10 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
   <button id="btBaixar" title="Tecla B">Baixar aos poucos</button>
   <button id="btSil" class="perigo" title="Tecla Esc">Silêncio</button>
   <button id="btVid" title="Mostra os vídeos, para pular um anúncio">Mostrar vídeos</button>
+  <button id="btCompacto" aria-pressed="false" title="Deixa o player pequeno para não cobrir o conteúdo">Recolher player</button>
   <div class="players mini" id="players"><div class="cx"><div id="p0"></div></div><div class="cx"><div id="p1"></div></div><div class="cx"><div id="p2"></div></div></div>
 </div></div>
+<div id="faixaTurno" hidden></div>
 <input type="file" id="arqImg" accept="image/*" hidden>
 <input type="file" id="arqDados" accept=".json,application/json" hidden>
 
@@ -412,8 +439,8 @@ const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel,
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:'',
   ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:[{n:'Pedro',nota:'',falou:false},{n:'Victor',nota:'',falou:false},{n:'Jogador 3',nota:'',falou:false},{n:'Jogador 4',nota:'',falou:false}],
-  voto:{s:0,n:0}, inm:{sel:'esau', todos:false, tag:'', tipo:'', uso:{}, rec:{}, ult:[]}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
-function garantir(){ E.m = Object.assign(M0(), E.m||{}); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = [];
+  voto:{s:0,n:0}, inm:{sel:'esau', todos:false, tag:'', tipo:'', uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:''}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
+function garantir(){ E.m = Object.assign(M0(), E.m||{}); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = []; if (!E.m.inm.fav || typeof E.m.inm.fav !== 'object') E.m.inm.fav = {}; if (!Array.isArray(E.m.inm.av)) E.m.inm.av = [];
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
   if (typeof E.rpos !== 'number') E.rpos = -1;
   if (!E.m.akariRot) { E.m.akariRot = true; if (!E.roteiro.some(r => r.faixa === 'aka-dragon')) { const k = E.roteiro.findIndex(r => r.faixa === 'ozy-saturno');
@@ -749,7 +776,7 @@ function painelNoite(){
           el('button',{class:'peq', onclick:()=>{ const f = todas().find(x => x.id === 'mom-lacrimosa'); if (f) tocar(f, 600, {fila:[f]}); }}, '♪ Lacrimosa'))),
       el('div',{class:'bloco'}, el('h4',{},'Rodada de combate'), el('div',{class:'grande', id:'rodadaN'}, String(m.rodada)),
         el('div',{class:'lin2', style:'justify-content:center'},
-          el('button',{onclick:mud(()=>{ m.rodada = Math.max(1, m.rodada-1); })}, '−'), el('button',{onclick:mud(()=>{ m.rodada++; })}, 'Próxima rodada'), el('button',{class:'peq', onclick:mud(()=>{ m.rodada = 1; })}, 'Zerar')),
+          el('button',{onclick:mud(()=>{ m.rodada = Math.max(1, m.rodada-1); })}, '−'), el('button',{onclick:mud(()=>{ m.rodada++; inmZerar('rodada'); })}, 'Próxima rodada'), el('button',{class:'peq', onclick:mud(()=>{ m.rodada = 1; })}, 'Zerar')),
         el('div',{class:'lin2', style:'justify-content:center'}, el('span',{class:'sub'},'Combate: '), el('b',{id:'cronT'}, tempoCron()),
           el('button',{class:'peq', onclick:()=>{ if (cron.ini) { cron.acum += Date.now()-cron.ini; cron.ini = null; } else cron.ini = Date.now(); desenhar(); }}, cron.ini ? 'Pausar' : 'Iniciar'),
           el('button',{class:'peq', onclick:()=>{ cron = {ini:null, acum:0}; desenhar(); }}, 'Zerar'))),
@@ -918,7 +945,7 @@ function painelIni(){
     el('div',{class:'lin2'}, nome, q, pv, el('button',{onclick:() => { if (!nome.value.trim()) return; const v = Math.max(0, +pv.value || 0); m.ini.push({n:nome.value.trim(), ini:+q.value || 0, pv:v, max:v, cond:''}); salvar(); desenhar(); }}, 'Adicionar')),
     el('div',{class:'lin2'},
       el('button',{class:'peq', onclick:mudar(() => { const at = m.ini[m.turno]; m.ini.sort((a,b) => b.ini - a.ini); m.turno = Math.max(0, m.ini.indexOf(at)); })}, 'Ordenar por iniciativa'),
-      el('button',{disabled:!m.ini.length, onclick:mudar(() => { m.turno = (m.turno + 1) % m.ini.length; if (m.turno === 0) m.rodada++; })}, 'Próximo turno'),
+      el('button',{disabled:!m.ini.length, onclick:proxTurno}, 'Próximo turno'),
       el('button',{class:'peq perigo', onclick:ev => confirmar(ev.target, mudar(() => { m.ini = []; m.turno = 0; }))}, 'Limpar')));
 }
 // ---------- Inimigos e ações (referência do Mestre; não altera nenhuma ficha) ----------
@@ -995,11 +1022,70 @@ function inmZerar(porQue){   // zera os usos de um tipo de contagem (luta, volta
     if (u && (porQue === 'luta' || u.por === porQue)) delete s.uso[k];
     if (porQue === 'luta' && a.uso === 'rec') delete s.rec[k]; }));
 }
-function cartaAcao(i, a){
+const rdN = n => 1 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * n);
+const rolTot = {}, rolAp = {}, rasc = {};
+const inmDeLinha = c => { const sc = slugInm(c.n || ''); return INIMIGOS.find(i => sc === i.id || sc === slugInm(i.nome) || sc.startsWith(slugInm(i.nome) + '-')); };
+const inmEsgotada = (i, a) => { const s = E.m.inm, k = i.id + ':' + a.id, u = inmUso(a), r = s.rec[k]; return !!((u && (s.uso[k] || 0) >= u.n) || (a.uso === 'rec' && r && !r.ok)); };
+const ajustaPV = (c, d) => { c.pv = Math.max(0, c.pv + d); if (c.max) c.pv = Math.min(c.max, c.pv); };
+function inicioTurno(){   // o turno caiu numa linha de inimigo: mostra, zera 1/turno e rola as recargas dele
+  const m = E.m, s = m.inm, c = m.ini[m.turno]; s.av = []; const i = c && inmDeLinha(c); if (!i) return;
+  s.todos = false; s.sel = i.id;
+  i.acoes.forEach(a => { const k = i.id + ':' + a.id, u = inmUso(a); if (u && u.por === 'turno') delete s.uso[k];
+    const r = s.rec[k]; if (a.uso === 'rec' && r && !r.ok) { const d = rdN(6); s.rec[k] = {r:d, ok:d >= 5}; s.av.push(i.nome + ': ' + a.nome + (d >= 5 ? ' recarregou (' + d + ')' : ' não recarregou (' + d + ')')); } });
+}
+function proxTurno(){
+  const m = E.m; if (!m.ini.length) return; const r0 = m.rodada;
+  m.turno = (m.turno + 1) % m.ini.length; if (m.turno === 0) m.rodada++;
+  if (m.rodada !== r0) inmZerar('rodada');
+  inicioTurno(); if (m.rodada !== r0) m.inm.av.unshift('Rodada ' + m.rodada + ': usos 1/rodada zerados.');
+  salvar(); desenhar();
+}
+function atualizaFaixa(){
+  const f = document.getElementById('faixaTurno'), m = E.m; if (!f) return;
+  const on = m && m.ini && m.ini.length && (modo === 'mes' || modo === 'ses'); f.hidden = !on; if (!on) return;
+  const c = m.ini[m.turno] || m.ini[0];
+  f.replaceChildren(el('span',{class:'ft-t'}, 'Vez de ', el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, 'Próximo ▶'));
+}
+function aplicar(i, a, k, metade){
+  const m = E.m, s = m.inm, c = m.ini.find(x => x.n === s.alvo) || m.ini[0]; if (!c) return;
+  const dano = a.tags.includes('dano') || a.tags.includes('area'), t = rolTot[k], v0 = c.pv; let n = t, msg;
+  if (dano) { if (metade) n = Math.floor(t / 2); c.pv = Math.max(0, c.pv - n); msg = '−' + n + (metade ? ' (metade)' : '') + ' em ' + c.n + ': PV ' + v0 + ' → ' + c.pv; }
+  else { c.pv = c.max ? Math.min(c.max, c.pv + n) : c.pv + n; msg = '+' + n + ' em ' + c.n + ': PV ' + v0 + ' → ' + c.pv; }
+  rolAp[k] = msg; s.ult.unshift({t:i.nome + ': ' + a.nome + ' → ' + msg, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); salvar(); desenhar();
+}
+function aplicarUI(i, a, k){
+  const m = E.m, s = m.inm; if (rolTot[k] == null) return null;
+  const dano = a.tags.includes('dano') || a.tags.includes('area'), cura = a.tags.includes('cura'); if (!dano && !cura) return null;
+  if (!m.ini.length) return el('div',{class:'inm-ap'}, el('span',{class:'inm-rot'}, 'Ponha alguém na iniciativa para aplicar o resultado.'));
+  const pad = (dano ? m.ini.find(c => inmDeLinha(c) !== i) : m.ini.find(c => inmDeLinha(c) === i)) || m.ini[0];
+  const alvo = m.ini.some(c => c.n === s.alvo) ? s.alvo : pad.n, t = rolTot[k];
+  s.alvo = alvo;
+  const sel = el('select',{'aria-label':'Alvo', onchange:ev => { s.alvo = ev.target.value; salvar(); }}, ...m.ini.map(c => el('option',{value:c.n, selected:c.n === alvo}, c.n + ' (PV ' + c.pv + ')')));
+  return el('div',{class:'inm-ap'}, sel,
+    el('button',{class:'inm-aplic', onclick:() => aplicar(i, a, k, false)}, dano ? 'Aplicar −' + t : 'Curar +' + t),
+    dano ? el('button',{class:'inm-meta', onclick:() => aplicar(i, a, k, true)}, 'Metade −' + Math.floor(t / 2)) : null,
+    rolAp[k] ? el('span',{class:'inm-rot pronta', role:'status'}, rolAp[k]) : null);
+}
+function ctlIni(i){
+  const m = E.m, c = m.ini.find(x => inmDeLinha(x) === i);
+  if (c) return el('div',{class:'inm-ini'}, el('span',{class:'inm-na'}, 'Na iniciativa ✓'), el('b',{class:'pvn'}, 'PV ' + c.pv + (c.max ? '/' + c.max : '')),
+    el('div',{class:'inm-pv'}, ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq', 'aria-label':(d > 0 ? 'Mais ' : 'Menos ') + Math.abs(d) + ' PV de ' + i.nome, onclick:mudar(() => ajustaPV(c, d))}, (d > 0 ? '+' : '−') + Math.abs(d)))));
+  const r = rasc[i.id] || (rasc[i.id] = {});
+  const pv = el('input',{type:'number', inputmode:'numeric', min:'1', placeholder:'PV', class:'q', 'aria-label':'PV de ' + i.nome, value:r.pv ?? '', oninput:ev => { r.pv = ev.target.value; ev.target.classList.remove('inv'); }});
+  const ini = el('input',{type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa de ' + i.nome, value:r.ini ?? '', oninput:ev => { r.ini = ev.target.value; }});
+  return el('div',{class:'inm-ini'}, pv, ini,
+    el('button',{class:'peq', 'aria-label':'Rolar d20 de iniciativa', onclick:() => { r.ini = String(rdN(20)); ini.value = r.ini; }}, '🎲'),
+    el('button',{class:'inm-poe', onclick:() => { const v = Math.floor(+r.pv); if (!(v > 0)) { pv.classList.add('inv'); pv.focus(); return; }
+      m.ini.push({n:i.nome, ini:+r.ini || 0, pv:v, max:v, cond:''}); delete rasc[i.id]; salvar(); desenhar(); }}, 'Pôr na iniciativa'));
+}
+const barraAlta = () => { const b = document.getElementById('barra'); return !!b && !b.classList.contains('compacta') && b.offsetHeight > innerHeight * 0.3; };
+function cartaAcao(i, a, pref){
   const m = E.m, s = m.inm, k = i.id + ':' + a.id, u = inmUso(a), usado = s.uso[k] || 0, rec = s.rec[k], gasta = a.uso === 'rec' && rec && !rec.ok;
   const esgotada = (u && usado >= u.n) || gasta;
-  const cab = el('div',{class:'inm-cab'}, el('b',{class:'inm-nome'}, a.nome),
-    ...a.tipo.map(t => el('span',{class:'inm-tipo t-'+t}, TIPOS_ACAO[t])));
+  const fav = !!s.fav[k];
+  const cab = el('div',{class:'inm-cab'}, pref ? el('span',{class:'inm-pref'}, i.nome + ' ·') : null, el('b',{class:'inm-nome'}, a.nome),
+    ...a.tipo.map(t => el('span',{class:'inm-tipo t-'+t}, TIPOS_ACAO[t])),
+    el('button',{class:'inm-fav', 'aria-pressed':fav ? 'true' : 'false', 'aria-label':(fav ? 'Tirar das favoritas: ' : 'Favoritar: ') + a.nome, onclick:mudar(() => { if (fav) delete s.fav[k]; else s.fav[k] = 1; })}, fav ? '⭐' : '☆'));
   const etq = el('div',{class:'inm-tags'}, ...a.tags.map(t => el('span',{class:'inm-tag', style:'--tc:'+TAGS[t][2]}, TAGS[t][0] + ' ' + TAGS[t][1])));
   const uso = el('div',{class:'inm-uso'});
   if (u) { uso.append(...Array.from({length:u.n}, (_, d) => el('button',{class:'inm-bol'+(d < usado ? ' on' : ''), 'aria-label':'Uso '+(d+1)+' de '+u.n+(d < usado ? ', gasto' : ', disponível'), 'aria-pressed':d < usado ? 'true' : 'false',
@@ -1014,9 +1100,9 @@ function cartaAcao(i, a){
       if (u && usado < u.n) s.uso[k] = usado + 1;
       if (a.uso === 'rec') s.rec[k] = {r:rec ? rec.r : 0, ok:false};
       s.ult.unshift({t:i.nome + ': ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); })}, 'Usar'),
-    ...dados.map(d => el('button',{class:'inm-dado', onclick:() => { rolInm[k] = rolarExpr(d).txt; desenhar(); }}, '🎲 ' + d)));
+    ...dados.map(d => el('button',{class:'inm-dado', onclick:() => { const r = rolarExpr(d); rolInm[k] = r.txt; rolTot[k] = r.t; delete rolAp[k]; desenhar(); }}, '🎲 ' + d)));
   return el('div',{class:'inm-card'+(esgotada ? ' esgotada' : '')+(a.tipo[0] === 'passiva' && a.tipo.length === 1 ? ' pass' : '')}, cab, etq, el('p',{class:'inm-txt'}, a.txt), uso, lin,
-    rolInm[k] ? el('div',{class:'inm-res', role:'status'}, rolInm[k]) : null);
+    rolInm[k] ? el('div',{class:'inm-res', role:'status'}, rolInm[k]) : null, rolInm[k] ? aplicarUI(i, a, k) : null);
 }
 function painelInimigos(){
   const m = E.m, s = m.inm, atual = inmPorId(s.sel), lista = s.todos ? INIMIGOS : [atual];
@@ -1029,19 +1115,33 @@ function painelInimigos(){
       el('img',{src:i.img, alt:''}), i.nome)));
   const chipT = Object.keys(TAGS).filter(t => contaT[t] || s.tag === t).map(t => el('button',{class:'inm-f', style:'--tc:'+TAGS[t][2], 'aria-pressed':s.tag === t ? 'true' : 'false', onclick:mudar(() => { s.tag = s.tag === t ? '' : t; })}, TAGS[t][0] + ' ' + TAGS[t][1] + ' ', el('small',{}, contaT[t] || 0)));
   const chipP = Object.keys(TIPOS_ACAO).filter(t => contaP[t] || s.tipo === t).map(t => el('button',{class:'inm-f tp', 'aria-pressed':s.tipo === t ? 'true' : 'false', onclick:mudar(() => { s.tipo = s.tipo === t ? '' : t; })}, TIPOS_ACAO[t] + ' ', el('small',{}, contaP[t] || 0)));
+  const cur = m.ini[m.turno], curI = cur && inmDeLinha(cur);
+  const puraPass = a => a.tipo.length === 1 && a.tipo[0] === 'passiva' && !inmUso(a);
   const bloco = i => {
-    const ac = i.acoes.filter(casa); if (!ac.length) return null;
+    let ac = i.acoes.filter(a => casa(a) && !s.fav[i.id + ':' + a.id]); if (!ac.length && s.todos) return null;
+    let ocultas = 0; const pas = [];
+    if (s.disp) { const vis = []; ac.forEach(a => { if (inmEsgotada(i, a)) ocultas++; else if (puraPass(a)) pas.push(a); else vis.push(a); }); ac = vis; }
     const av = [];
     if (i.percebe) av.push(el('span',{class:'inm-av'+(i.desde && m.volta >= i.desde ? ' agora' : '')}, '⟳ ' + i.percebe + (i.desde && m.volta >= i.desde ? ' (agora: volta ' + m.volta + ')' : '')));
     i.avisos.forEach(t => av.push(el('span',{class:'inm-av'+(i.rodadaAnjo && /anjos/.test(t) && m.rodada >= i.rodadaAnjo ? ' agora' : '')}, t)));
     return el('section',{class:'inm-bl'},
-      el('div',{class:'inm-topo'}, el('img',{src:i.img, alt:''}), el('div',{}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, ...av))),
-      ...ac.map(a => cartaAcao(i, a)));
+      el('div',{class:'inm-topo'+(curI === i ? ' vez' : '')}, el('img',{src:i.img, alt:''}), el('div',{}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, curI === i ? el('span',{class:'inm-av agora'}, 'Vez de ' + i.nome) : null, ...av)), ctlIni(i)),
+      ...ac.map(a => cartaAcao(i, a)),
+      pas.length ? el('details',{class:'inm-pas', open:abertas.has('pas-' + i.id), ontoggle:ev => { ev.target.open ? abertas.add('pas-' + i.id) : abertas.delete('pas-' + i.id); }},
+        el('summary',{}, 'Passivas (' + pas.length + '): ' + pas.map(a => a.nome).join(', ')), ...pas.map(a => cartaAcao(i, a))) : null,
+      ocultas ? el('p',{class:'inm-oc'}, ocultas + (ocultas > 1 ? ' ações esgotadas ocultas' : ' ação esgotada oculta')) : null,
+      !ac.length && !pas.length && !ocultas ? el('p',{class:'sub'}, 'Nenhuma ação com esses filtros.') : null);
   };
   const blocos = lista.map(bloco).filter(Boolean);
   setTimeout(() => { const a = document.getElementById('inm_abas'); if (a) a.scrollLeft = inmSL; }, 0);
+  const favs = []; INIMIGOS.forEach(i => i.acoes.forEach(a => { if (s.fav[i.id + ':' + a.id] && casa(a)) favs.push([i, a]); }));
   return caixa('inm','Inimigos e ações',
     el('p',{class:'sub'}, 'Referência das cartas dos Bellacord. Os usos ficam só neste navegador; nenhuma ficha é alterada.'),
+    barraAlta() ? el('div',{class:'inm-dica'}, 'O player cobre boa parte da tela.', el('button',{class:'peq', onclick:() => $('btCompacto').click()}, 'Recolher player')) : null,
+    cur ? el('div',{class:'inm-vez'}, el('b',{}, 'Vez de ' + cur.n), el('span',{class:'inm-rot'}, 'Rodada ' + m.rodada),
+      curI && (s.todos || s.sel !== curI.id) ? el('button',{class:'peq', onclick:mudar(() => { s.todos = false; s.sel = curI.id; })}, 'Ver ' + curI.nome) : null) : null,
+    s.av.length ? el('div',{class:'inm-faixa', role:'status'}, ...s.av.map(t => el('div',{}, t)), el('button',{class:'peq', onclick:mudar(() => { s.av = []; })}, 'Ok')) : null,
+    el('div',{class:'inm-fil'}, el('button',{class:'inm-f', 'aria-pressed':s.disp ? 'true' : 'false', onclick:mudar(() => { s.disp = !s.disp; })}, 'Disponíveis agora')),
     abas,
     el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Tipo'), ...chipP),
     el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Efeito'), ...chipT),
@@ -1051,6 +1151,7 @@ function painelInimigos(){
       el('button',{onclick:mudar(() => inmZerar('volta'))}, 'Pétala arrancada'),
       el('button',{onclick:mudar(() => { inmZerar('turno'); inmZerar('rodada'); })}, 'Nova rodada')),
     s.ult.length ? el('div',{class:'inm-ult'}, el('b',{}, 'Últimas ações'), ...s.ult.map(x => el('div',{}, 'Rod. ' + x.r + ' · ' + x.t))) : null,
+    favs.length ? el('section',{class:'inm-favs'}, el('h4',{}, '⭐ Favoritas'), ...favs.map(([i, a]) => cartaAcao(i, a, true))) : null,
     ...(blocos.length ? blocos : [el('p',{class:'sub'}, 'Nenhuma ação com esses filtros.')]));
 }
 function painelApoioEstado(){
@@ -1180,7 +1281,7 @@ function desenharSessao(){
 }
 function desenhar(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='mes') desenharMestre(); else desenharSessao(); }
+  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -1294,6 +1395,13 @@ document.addEventListener('keydown', ev => {
   else if (tri && k === 's') triDecidir(false);
   else if (modo==='ses' && /^[1-9]$/.test(k) && atalhos[+k-1]) tocar(atalhos[+k-1], null, {fila:atalhos});
 });
+(function(){ const b = document.getElementById('barra'), bt = document.getElementById('btCompacto'); const K = 'trilha-barra-compacta';
+  const alt = () => document.documentElement.style.setProperty('--barra-h', b.offsetHeight + 'px');
+  const aplica = c => { b.classList.toggle('compacta', c); bt.setAttribute('aria-pressed', String(c)); bt.textContent = c ? 'Expandir player' : 'Recolher player'; alt(); };
+  let c0 = false; try { c0 = localStorage.getItem(K) === '1'; } catch(e){}
+  aplica(c0);
+  bt.onclick = () => { const c = !b.classList.contains('compacta'); aplica(c); try { localStorage.setItem(K, c ? '1' : '0'); } catch(e){} if (modo === 'mes') desenhar(); };
+  if (window.ResizeObserver) new ResizeObserver(alt).observe(b); addEventListener('resize', alt); alt(); })();
 desenhar();
 </script>
 </body>

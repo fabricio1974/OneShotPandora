@@ -21,6 +21,14 @@ Para usar sem internet de hospedagem, rode `abrir_trilha.bat` (precisa de Python
 
 Painel de referência dos Bellacord (Esaú, Jael, Ezequiel, Hildegarda, Raquel, Ozymandias e o Anjo) com as ações das cartas v4: tipo de ação, tags (dano, área, cura, movimentação, controle, defesa, buff, debuff, informação, invocação), texto e uso. Escolha o inimigo ou "Todos", filtre por tipo e efeito, marque os usos (N/luta, N/volta, 1/turno, 1/rodada) tocando nas bolinhas, role a Recarga 5–6, use "Usar" para registrar em "Últimas ações" e toque em 🎲 para rolar os dados do texto. "Nova luta" (duplo toque), "Pétala arrancada" e "Nova rodada" zeram os usos. Tudo fica salvo no navegador e nenhuma ficha é alterada.
 
+### Luta no celular (iniciativa integrada)
+
+- **Pôr na iniciativa**: no cabeçalho de cada inimigo, digite o PV (e a iniciativa, ou toque em 🎲 para um d20) e toque no botão. Depois aparece "Na iniciativa ✓" com os botões −10 −5 −1 +1 +5, que mexem na mesma linha de *Iniciativa e PV*. O vínculo é pelo nome da linha ("Jael", "Jael 2").
+- **Próximo turno** (também na faixa fixa no canto, visível na aba Mestre e na Sessão quando há iniciativa): se a vez cair num inimigo, o painel mostra esse inimigo ("Vez de Jael"), zera os usos 1/turno dele, rola as recargas gastas dele (faixa de aviso: "Jael: Pino na Testa recarregou (5)") e, ao virar a rodada, zera os usos 1/rodada.
+- **Disponíveis agora**: esconde ações esgotadas e recolhe as passivas sem contador numa linha. **⭐** fixa ações favoritas no topo (continuam visíveis mesmo esgotadas).
+- **Aplicar**: depois de um 🎲 de dano, escolha o alvo (linhas da iniciativa) e toque em "Aplicar −N" ou "Metade −N"; cura vira "Curar +N". Fica registrado em *Últimas ações*. As fichas originais não mudam.
+- **Recolher player**: o player fixo do rodapé ocupa quase metade da tela no celular; o botão o reduz, e o conteúdo ganha margem conforme a altura real dele.
+
 ## Cartas de Poder (para os jogadores)
 
 `cartas.html` é a página que os jogadores abrem no celular: eles rolam 1d4 (baralho: S, A, M, H) e 1d12 (carta), digitam o código (por exemplo M07) e veem a carta, com a mão guardada no próprio celular, o Eco da Fome somado e marcadores de uso por luta, por volta e recarga. Endereço depois de ativar o Pages: https://fabricio1974.github.io/OneShotPandora/cartas.html
