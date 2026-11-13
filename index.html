@@ -123,6 +123,22 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .players .cx{width:200px;height:200px;background:#000;border:1px solid var(--linha);border-radius:4px;overflow:hidden}
 .players.mini{position:absolute;left:-9999px}
 @media (max-width:640px){.faixa{grid-template-columns:auto 1fr}.faixa .ouvir{grid-column:2;justify-self:start}.ctrl,.editar{grid-column:1/-1}.players .cx{width:150px;height:150px}body{padding-bottom:470px}.tri-bot button{flex:1 1 40%}}
+
+/* Mestre */
+.palco{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:16px 0;padding:16px;border:1px solid var(--terracota2);border-radius:12px;background:linear-gradient(135deg,var(--painel),#120e0b)}
+.palco .arte{width:150px;height:210px;object-fit:cover;object-position:top;border-radius:8px;border:1px solid var(--linha);background:var(--painel2);flex:none;display:grid;place-items:center;font:400 44px/1 var(--titulo);color:var(--terracota2)}
+.palco .tx{flex:1 1 280px;min-width:0}
+.palco .de{font:400 12px/1 var(--titulo);letter-spacing:.14em;color:var(--terracota)}
+.palco .t{font-size:24px;font-weight:600;line-height:1.2;margin:8px 0 4px}
+.painel{margin:14px 0;padding:14px;border:1px solid var(--linha);border-radius:10px;background:var(--painel)}
+.painel h3{margin-top:0}
+.apoio{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.apoio .ap{display:flex;gap:12px;padding:12px;border:1px solid var(--linha);border-radius:10px;background:var(--painel)}
+.apoio .ap img{width:74px;height:104px;object-fit:cover;object-position:top;border-radius:6px;flex:none;background:var(--painel2)}
+.apoio .ap .n{font:400 15px/1.2 var(--titulo);letter-spacing:.06em}
+.apoio .ap .p{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--terracota);margin:2px 0 6px}
+.apoio .ap .d{font-size:13px;color:var(--apagado);line-height:1.4}
+.cena .mini{width:100%;height:84px;object-fit:cover;object-position:top;border-radius:5px;margin:-4px 0 4px;opacity:.9}
 </style>
 </head>
 <body>
@@ -132,6 +148,7 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
     <button role="tab" id="abaSel" aria-selected="true">Seleção</button>
     <button role="tab" id="abaTri" aria-selected="false">Triagem</button>
     <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
+    <button role="tab" id="abaMes" aria-selected="false">Mestre</button>
   </div>
 </header>
 <main>
@@ -140,6 +157,7 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
   <section id="selecao"></section>
   <section id="triagem" hidden></section>
   <section id="sessao" hidden></section>
+  <section id="painelMestre" hidden></section>
 </main>
 
 <div class="barra"><div class="in">
@@ -264,6 +282,13 @@ const PADRAO = [
   F('via-mushishi','Lucy Rose — “Shiver” (Mushishi)','Noite de chuva, floresta, tensão baixa','momento',0,['1YoYbpBGaJM','HeGOII4mKjA','VZyJDN_dC20']),
  ]},
 ];
+const IMG_PADRAO = {esau:'img/esau.jpg', ezequiel:'img/ezequiel.jpg', jael:'img/jael.jpg', hildegarda:'img/hildegarda.jpg', demonio:'img/diabo.jpg', momentos:'img/anja.jpg', viagem:'img/rafaela.jpg'};
+const ALT_PADRAO = {esau:'img/esau_acena.jpg'};            // segunda versão da arte (Esaú sorrindo e acenando)
+const APOIO = [
+ {id:'rafaela', nome:'Rafaela', papel:'A curandeira', img:'img/rafaela.jpg', nota:'Cura o que ninguém mais cura, e as mãos brilham. Nasceu com poder celestial: a mãe, Marina, matou um demônio grávida e morreu no parto. Na volta 1 é morta pela flecha de Esaú.'},
+ {id:'tobias', nome:'Tobias', papel:'O Cordeiro (a Gula)', img:'img/tobias.jpg', nota:'Não luta. Os Bellacord querem levá-lo: se os jogadores perderem, ele é levado. Anda sempre com pão no bolso.'},
+ {id:'anja', nome:'A anja', papel:'A Entidade / o Lobo', img:'img/anja.jpg', nota:'Voz dentro das mentes dos jogadores. Oferece quatro virtudes invertidas (Libertação, Paz, Fartura, Vida), cada uma escolhida uma só vez, com item, cavalo fantasma e Porta Dimensional 1/dia. Só com ela em combate a morte é permanente.'}
+];
 const PAPEIS = {entrada:'Entrada', combate:'Combate', momento:'Momento'};
 const ORDEM = ['entrada','combate','momento'];
 const CHAVE = 'trilha-cordeiro-v2', CHAVE_V1 = 'trilha-cordeiro-v1';
@@ -271,7 +296,9 @@ const CHAVE = 'trilha-cordeiro-v2', CHAVE_V1 = 'trilha-cordeiro-v1';
 // ---------- Estado (tudo salvo no navegador) ----------
 const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel, st:f.st?1:0, videos:f.videos.slice(),
   usar:!!f.st, grav:0, link:'', inicio:0, vol:100, repetir:f.papel==='combate'});
-const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:'', faixas:g.faixas.map(novaFaixa)});
+const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
+const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:''});
+function garantir(){ E.m = Object.assign(M0(), E.m||{}); }
 function estadoPadrao(){ return {v:2, mestre:80, cruzar:1.5, rem:[], grupos:PADRAO.map(novoGrupo)}; }
 function carregar(){
   let s = null; try { s = JSON.parse(localStorage.getItem(CHAVE) || 'null'); } catch(e){}
@@ -286,11 +313,12 @@ function carregar(){
     if (s.rem.includes(pg.id)) continue;
     let g = s.grupos.find(x => x.id === pg.id);
     if (!g) { s.grupos.push(novoGrupo(pg)); continue; }
+    if (!g.img && !g.imgTirada && IMG_PADRAO[pg.id]) g.img = IMG_PADRAO[pg.id];
     for (const pf of pg.faixas) if (!s.rem.includes(pf.id) && !g.faixas.some(x => x.id === pf.id)) g.faixas.push(novaFaixa(pf));
   }
   return s;
 }
-let E = carregar();
+let E = carregar(); garantir();
 function salvar(){ try { localStorage.setItem(CHAVE, JSON.stringify(E)); } catch(e){ aviso('Não consegui salvar no navegador (espaço cheio?). Use imagens menores ou baixe um arquivo das escolhas.'); } }
 const todas = () => E.grupos.flatMap(g => g.faixas);
 const grupoDe = f => E.grupos.find(g => g.faixas.includes(f));
@@ -504,7 +532,7 @@ function desenharSelecao(){
         el('input',{type:'text', class:'subt', id:'gs-'+g.id, value:g.sub, placeholder:'Anotação (só aparece aqui, não na Sessão)', onchange:mg('sub'), 'aria-label':'Anotação'}),
         el('div',{class:'acoes'},
           el('button',{class:'peq', onclick:()=>{ imgPara = g; document.getElementById('arqImg').click(); }}, g.img ? 'Trocar imagem' : 'Adicionar imagem'),
-          g.img ? el('button',{class:'peq', onclick:()=>{ g.img=''; salvar(); marcar(); }},'Tirar imagem') : null,
+          g.img ? el('button',{class:'peq', onclick:()=>{ g.img=''; g.imgTirada=true; salvar(); marcar(); }},'Tirar imagem') : null,
           el('button',{class:'peq', onclick:()=>mover(E.grupos,gi,-1), disabled:gi===0},'← Mover'),
           el('button',{class:'peq', onclick:()=>mover(E.grupos,gi,1), disabled:gi===E.grupos.length-1},'Mover →'),
           el('button',{class:'peq perigo', onclick:ev=>confirmar(ev.target, ()=>{ if (tocando && g.faixas.includes(tocando)) parar(); E.grupos.splice(gi,1); E.rem.push(g.id); atual = (E.grupos[Math.max(0,gi-1)]||{}).id || null; salvar(); desenhar(); })},'Remover personagem')))));
@@ -523,7 +551,7 @@ function desenharSelecao(){
   }
   // ajustes e cópia de segurança
   const ta = el('textarea',{id:'dados', spellcheck:'false', placeholder:'Cole aqui o texto copiado de outro aparelho'});
-  const aplicar = txt => { try { const s = JSON.parse(txt); if (!Array.isArray(s.grupos)) throw 0; parar(); E = s; E.rem = E.rem||[]; E.cruzar = E.cruzar ?? 1.5; atual = (E.grupos[0]||{}).id || null; salvar(); document.getElementById('mestre').value = E.mestre; desenhar(); } catch(e){ aviso('Esse conteúdo não é uma trilha válida.'); } };
+  const aplicar = txt => { try { const s = JSON.parse(txt); if (!Array.isArray(s.grupos)) throw 0; parar(); E = s; garantir(); E.rem = E.rem||[]; E.cruzar = E.cruzar ?? 1.5; atual = (E.grupos[0]||{}).id || null; salvar(); document.getElementById('mestre').value = E.mestre; desenhar(); } catch(e){ aviso('Esse conteúdo não é uma trilha válida.'); } };
   raiz.append(el('details',{class:'cx'}, el('summary',{},'Ajustes e cópia das escolhas'),
     el('div',{class:'lin2'}, el('label',{class:'c'},'Transição entre músicas (s)', el('input',{type:'number', id:'cruzar', min:0, max:10, step:.5, value:E.cruzar, onchange:ev=>{ E.cruzar = Math.max(0, +ev.target.value||0); salvar(); }}))),
     el('p',{class:'sub', style:'margin-top:14px'},'As escolhas e imagens ficam salvas só neste navegador. Para usar em outro aparelho, baixe o arquivo aqui e carregue lá.'),
@@ -532,8 +560,27 @@ function desenharSelecao(){
       el('button',{onclick:()=>document.getElementById('arqDados').click()},'Carregar arquivo'),
       el('button',{onclick:()=>{ ta.value = JSON.stringify(E); ta.select(); navigator.clipboard && navigator.clipboard.writeText(ta.value).catch(()=>{}); }},'Copiar como texto'),
       el('button',{onclick:()=>aplicar(ta.value)},'Aplicar texto colado')), ta,
-    el('button',{class:'perigo', onclick:ev=>confirmar(ev.target, ()=>{ parar(); E = estadoPadrao(); atual = E.grupos[0].id; salvar(); document.getElementById('mestre').value = E.mestre; desenhar(); })},'Restaurar a trilha original')));
+    el('button',{class:'perigo', onclick:ev=>confirmar(ev.target, ()=>{ parar(); E = estadoPadrao(); garantir(); atual = E.grupos[0].id; salvar(); document.getElementById('mestre').value = E.mestre; desenhar(); })},'Restaurar a trilha original')));
   document.getElementById('arqDados').onchange = ev => { const a = ev.target.files[0]; ev.target.value = ''; if (a) a.text().then(aplicar); };
+}
+
+
+// ---------- Aba Mestre: palco, elenco de apoio e (nas próximas partes) controle da noite ----------
+function palco(){
+  const g = tocando && grupoDe(tocando), alt = g && ALT_PADRAO[g.id] && E.m.alt[g.id];
+  const src = alt ? ALT_PADRAO[g.id] : (g && g.img);
+  return el('div',{class:'palco'}, src ? el('img',{class:'arte', src, alt:''}) : el('div',{class:'arte'}, '♪'),
+    el('div',{class:'tx'}, el('div',{class:'de'}, g ? g.nome : 'Silêncio'), el('div',{class:'t'}, tocando ? tocando.nome : 'Nada tocando'),
+      el('div',{class:'sub'}, tocando ? PAPEIS[tocando.papel] + (tocando.momento ? ' · ' + tocando.momento : '') : 'Escolha uma cena na aba Sessão.'),
+      g && ALT_PADRAO[g.id] ? el('div',{class:'lin2'}, el('button',{class:'peq', onclick:()=>{ E.m.alt[g.id] = !E.m.alt[g.id]; salvar(); desenhar(); }}, 'Trocar a versão da arte')) : null));
+}
+function elencoApoio(){
+  return el('div',{class:'painel'}, el('h3',{},'Elenco de apoio'),
+    el('div',{class:'apoio'}, ...APOIO.map(a => el('div',{class:'ap'}, el('img',{src:a.img, alt:a.nome}), el('div',{}, el('div',{class:'n'}, a.nome), el('div',{class:'p'}, a.papel), el('div',{class:'d'}, a.nota))))));
+}
+function desenharMestre(){
+  const raiz = document.getElementById('painelMestre'); raiz.replaceChildren();
+  raiz.append(palco(), elencoApoio());
 }
 
 // ---------- Modo Sessão ----------
@@ -548,13 +595,13 @@ function desenharSessao(){
     const grade = el('div',{class:'grade'});
     for (const f of esc) { atalhos.push(f); const n = atalhos.length;
       grade.append(el('button',{class:'cena'+(tocando===f?' tocando':''), onclick:()=>tocar(f,null,{fila:atalhos})},
-        el('span',{class:'papel'}, PAPEIS[f.papel]), el('span',{class:'t'}, f.nome), el('span',{class:'m'}, f.momento), el('span',{class:'tecla'}, n<=9 ? 'Tecla '+n : ''))); }
+        g.img ? el('img',{class:'mini', src:g.img, alt:''}) : null, el('span',{class:'papel'}, PAPEIS[f.papel]), el('span',{class:'t'}, f.nome), el('span',{class:'m'}, f.momento), el('span',{class:'tecla'}, n<=9 ? 'Tecla '+n : ''))); }
     raiz.append(grade);
   }
 }
 function desenhar(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  document.getElementById('elenco').hidden = modo==='tri'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else desenharSessao(); }
+  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='mes') desenharMestre(); else desenharSessao(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -597,12 +644,13 @@ $('btSil').onclick = () => parar(0);
 $('btVid').onclick = ev => { const p = $('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
 let trava = null;
 function aba(qual){ modo = qual;
-  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['ses','sessao','abaSes']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
+  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
   if (qual!=='sel' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga
   desenhar(); }
 $('abaSel').onclick = () => aba('sel');
 $('abaTri').onclick = () => aba('tri');
 $('abaSes').onclick = () => aba('ses');
+$('abaMes').onclick = () => aba('mes');
 document.addEventListener('keydown', ev => {
   if (/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) || ev.ctrlKey || ev.metaKey || ev.altKey) return;
   const k = ev.key.toLowerCase();
