@@ -295,6 +295,27 @@ body.lg .inm-txt{font-size:17px}body.lg .inm-nome{font-size:17px}
 body.lg button,body.lg input,body.lg select{min-height:46px}body.lg input,body.lg select,body.lg textarea{font-size:17px}body.lg .abas button{padding-inline:10px}
 body.lg .inm-bol{min-height:46px;min-width:46px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+/* Fichas reais dos inimigos (bestiário) */
+.inm-tipo.t-acao{background:var(--terracota2)}.inm-tipo.t-recarga{background:#6b3a22}.inm-tipo.t-passiva{background:#3a2f27}.inm-tipo.t-lend{background:#4a2d6b}.inm-tipo.t-amb{background:#2d5a55}
+.inm-sem{font-size:12px;padding:1px 8px;border-radius:999px;background:#3b1f3f;border:1px solid #b48be0;color:#f1e4ff;font-weight:600;white-space:nowrap}
+.inm-chs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.inm-cd{font-size:15px;font-weight:700;padding:2px 10px;border-radius:8px;background:#2a2410;border:1px solid var(--ouro);color:#ffd98a;font-variant-numeric:tabular-nums}.inm-cd.te{font-size:13px;font-weight:600}
+.inm-atk{min-height:40px;border-color:var(--ouro);color:#ffd98a;font-weight:600}
+.inm-res{white-space:pre-line}
+.inm-sub{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;width:100%}
+.inm-ficha,.inm-sec,.inm-regras{margin-top:8px}.inm-ficha summary,.inm-sec summary,.inm-regras summary{min-height:40px;display:flex;align-items:center;font-size:14px;color:#d8cbb4;cursor:pointer;font-weight:600}
+.inm-fg{display:grid;gap:6px;padding:6px 2px;font-size:14px}
+.inm-fl{display:flex;flex-wrap:wrap;gap:2px 8px}.inm-fl b{color:var(--ouro);font-weight:600}.inm-fl span{min-width:0;overflow-wrap:anywhere}
+.inm-atr{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;text-align:center}.inm-atr div{display:flex;flex-direction:column;border:1px solid var(--linha);border-radius:6px;padding:2px 0;font-size:12.5px}.inm-atr b{color:var(--ouro);font-size:11px}
+.inm-nota,.inm-nh,.inm-pres{margin-top:8px;padding:8px 10px;border:1px solid var(--linha);border-radius:8px;background:var(--painel2);font-size:14px}
+.inm-nh.passou{border-color:var(--erro)}.inm-nh>b,.inm-pres>b{display:block}
+.inm-nh input{width:5.5em}
+.inm-pd{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.inm-pdw{display:inline-flex;gap:2px;align-items:center}
+.inm-die{min-width:44px;min-height:44px;padding:0;border-radius:10px;font-size:18px;font-weight:700;border-color:var(--ouro);color:#ffd98a;font-variant-numeric:tabular-nums}
+.inm-die.usado{background:#171210;border-style:dashed;color:#b4a595;text-decoration:line-through}
+.inm-regras p{margin:6px 0;font-size:14px}.inm-regras p.inm-hoje{border-left:3px solid var(--ouro);padding-left:8px}
+.inm-fs[aria-pressed="true"]{background:#b48be0;border-color:#b48be0;color:#1a0f08}
+body.lg .inm-cd,body.lg .inm-sem,body.lg .inm-fl,body.lg .inm-nh,body.lg .inm-pres,body.lg .inm-regras p,body.lg .inm-fg{font-size:16px}
 </style>
 </head>
 <body>
@@ -490,8 +511,10 @@ const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel,
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:'',
   ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:[{n:'Pedro',nota:'',falou:false},{n:'Victor',nota:'',falou:false},{n:'Jogador 3',nota:'',falou:false},{n:'Jogador 4',nota:'',falou:false}],
-  voto:{s:0,n:0}, inm:{sel:'esau', todos:false, tag:'', tipo:'', uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:'', pvLuta:{}, lutaSel:{}}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
-function garantir(){ E.m = Object.assign(M0(), E.m||{}); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = []; if (!E.m.inm.fav || typeof E.m.inm.fav !== 'object') E.m.inm.fav = {}; if (!Array.isArray(E.m.inm.av)) E.m.inm.av = []; ['pvLuta','lutaSel'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; });
+  voto:{s:0,n:0}, inm:{v:2, sel:'esau', todos:false, tag:'', tipo:'', sem:false, uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:'', pvLuta:{}, lutaSel:{}, lend:{}, nh:{}, amb:{}, pres:null, f2:false, f2man:false, raqLonge:false}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
+function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m.inm && E.m.inm.v !== 2); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = []; if (!E.m.inm.fav || typeof E.m.inm.fav !== 'object') E.m.inm.fav = {}; if (!Array.isArray(E.m.inm.av)) E.m.inm.av = []; ['pvLuta','lutaSel','lend','nh','amb'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; });
+  { const s = E.m.inm; if (inmVelho) { s.v = 2; s.uso = {}; s.rec = {}; s.fav = {}; s.ult = []; s.pvLuta = {}; s.lend = {}; s.nh = {}; s.amb = {}; s.pres = null; s.f2 = false; s.f2man = false; }   // fichas novas: ids de ações novos, estado antigo das cartas é descartado
+    if (!['acao','bonus','recarga','passiva','reacao','lend','amb'].includes(s.tipo)) s.tipo = ''; if (typeof s.sem !== 'boolean') s.sem = false; s.f2 = !!s.f2; s.f2man = !!s.f2man; s.raqLonge = !!s.raqLonge; if (!s.pres || !Array.isArray(s.pres.d)) s.pres = null; }
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
   if (typeof E.rpos !== 'number') E.rpos = -1;
   if (!E.m.akariRot) { E.m.akariRot = true; if (!E.roteiro.some(r => r.faixa === 'aka-dragon')) { const k = E.roteiro.findIndex(r => r.faixa === 'ozy-saturno');
@@ -818,7 +841,7 @@ function painelNoite(){
   const noite = el('div',{class:'painel'}, el('h3',{},'A noite'),
     el('div',{class:'noite'},
       el('div',{class:'bloco'}, el('h4',{},'Volta'),
-        el('div',{class:'seg'}, ...[1,2,3,4,5,6].map(n => el('button',{'aria-pressed':String(m.volta===n), onclick:mud(()=>{ m.volta = n; m.rodada = 1; cron = {ini:null, acum:0}; })}, String(n)))),
+        el('div',{class:'seg'}, ...[1,2,3,4,5,6].map(n => el('button',{'aria-pressed':String(m.volta===n), onclick:mud(()=>{ m.volta = n; m.rodada = 1; inmNovaVolta(); cron = {ini:null, acum:0}; })}, String(n)))),
         el('p',{class:'sub', style:'margin:10px 0 0'},'Trocar de volta zera a rodada e o cronômetro.')),
       el('div',{class:'bloco'}, el('h4',{},'Pétalas do lírio'), lir,
         el('div',{class:'lin2', style:'justify-content:center'},
@@ -827,7 +850,7 @@ function painelNoite(){
           el('button',{class:'peq', onclick:()=>{ const f = todas().find(x => x.id === 'mom-lacrimosa'); if (f) tocar(f, 600, {fila:[f]}); }}, '♪ Lacrimosa'))),
       el('div',{class:'bloco'}, el('h4',{},'Rodada de combate'), el('div',{class:'grande', id:'rodadaN'}, String(m.rodada)),
         el('div',{class:'lin2', style:'justify-content:center'},
-          el('button',{'aria-label':'Rodada anterior', onclick:mud(()=>{ m.rodada = Math.max(1, m.rodada-1); })}, '−'), el('button',{onclick:mud(()=>{ m.rodada++; inmZerar('rodada'); })}, 'Próxima rodada'), el('button',{class:'peq', onclick:mud(()=>{ m.rodada = 1; })}, 'Zerar')),
+          el('button',{'aria-label':'Rodada anterior', onclick:mud(()=>{ m.rodada = Math.max(1, m.rodada-1); })}, '−'), el('button',{onclick:mud(()=>{ m.rodada++; novaRodadaInm(); })}, 'Próxima rodada'), el('button',{class:'peq', onclick:mud(()=>{ m.rodada = 1; })}, 'Zerar')),
         el('div',{class:'lin2', style:'justify-content:center'}, el('span',{class:'sub'},'Combate: '), el('b',{id:'cronT'}, tempoCron()),
           el('button',{class:'peq', onclick:()=>{ if (cron.ini) { cron.acum += Date.now()-cron.ini; cron.ini = null; } else cron.ini = Date.now(); desenhar(); }}, cron.ini ? 'Pausar' : 'Iniciar'),
           el('button',{class:'peq', onclick:()=>{ cron = {ini:null, acum:0}; desenhar(); }}, 'Zerar'))),
@@ -980,7 +1003,7 @@ function painelEspecial(){
       el('button',{class:'peq', onclick:()=>{ E.m.alt.akari = !E.m.alt.akari; salvar(); atualizarTela(); desenhar(); }}, E.m.alt.akari ? 'Mostrar a Akari' : 'Mostrar o Thorian')),
     el('p',{class:'sub', style:'margin:8px 0 0'},'Ela confronta o Ozymandias por ter atacado as pessoas comuns. A tela dos jogadores mostra a arte escolhida.'));
 }
-const CONDS = ['Derrubado','Impedido','Cravado','Atordoado','Sem reações','Deslocamento 0','Marcado'];
+const CONDS = ['Derrubado','Impedido','Cravado','Atordoado','Amedrontado','Cego','Sem reações','Deslocamento 0','Marcado'];
 let condAberta = null, durCond = 0;
 const txtDur = t => t > 0 ? ' · ' + t + (t > 1 ? ' turnos' : ' turno') : '';
 const badgesCond = c => [...(c.cs || []).map(x => el('span',{class:'cb'}, x.k + txtDur(x.t))), ...(c.cond && c.cond.trim() ? [el('span',{class:'cb tx'}, c.cond.trim())] : [])];
@@ -1018,90 +1041,233 @@ function painelIni(){
 const TAGS = {dano:['⚔','Dano','#e0685a'], area:['◎','Dano em área','#ee9a5c'], cura:['✚','Cura','#6fcf8f'], movimento:['➜','Movimentação','#6fb6e8'],
   controle:['⛓','Controle','#b48be0'], defesa:['🛡','Defesa','#d0b25a'], buff:['▲','Buff','#e6d36a'], debuff:['▼','Debuff','#e08ab4'],
   info:['👁','Informação','#8fd0c8'], invocacao:['✧','Invocação','#e0a8ff']};
-const TIPOS_ACAO = {passiva:'Passiva', livre:'Ação livre', bonus:'Ação bônus', padrao:'Ação padrão', reacao:'Reação'};
+const TIPOS_ACAO = {acao:'Ação', bonus:'Ação bônus', recarga:'Recarga', passiva:'Passiva', reacao:'Reação', lend:'Lendária', amb:'Ambiente'};
+const ORDEM_CAT = ['acao','bonus','recarga','passiva','reacao','lend','amb'];
 const slugInm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
-const A = (nome, tipo, uso, tags, txt) => ({id:slugInm(nome), nome, tipo:tipo.split('+'), uso, tags:tags.split(' '), txt});
+// Fichas copiadas do bestiário "O Cordeiro e o Lobo" (texto, bônus, CDs e dados sem alteração). cat: acao, bonus, recarga, passiva, reacao, lend, amb.
+// sem = ◆ (sem salvaguarda ou anula Resistência Lendária); rec = recarga (5 = 5–6, 6 = só 6); custo = ação lendária; ref = usa os números de outra ação da mesma ficha;
+// atk = bônus de ataque; cd = salvaguardas; teste = testes com CD; dano = dados (k: d dano, c cura, p PV temporários, n contagem de efeitos).
 const INIMIGOS = [
- {id:'esau', nome:'Esaú', img:'img/esau.jpg', avisos:['Caçador: arco e cães','Mata a Rafaela com flecha de longe'], percebe:'Não percebe as voltas', acoes:[
-  A('Pele de Lobo','passiva','','defesa','Resistência a dano perfurante e cortante; +2 CA contra ataques à distância.'),
-  A('Arpão de Corrente','bonus','2/luta','dano controle','Ataque à distância 18 m, 4d10+4 (26) perfurante; se acertar, impedido até o fim do próximo turno dele, sem salvaguarda.'),
-  A('Marca do Caçador','bonus','','dano debuff','Marca uma criatura; acertos nela +4d6 (14) e ignoram resistência e cobertura.'),
-  A('Flecha de Ferro','passiva','','dano','Ataques à distância +3d6 (10), todo o dano vira perfurante, crítico com 18–20.'),
-  A('Chuva de Ferro','bonus','rec','dano','Três flechas, cada 2d10 (11) perfurante.'),
-  A('Direito de Primogenitura','passiva','','buff','Não pode ser surpreendido; na 1ª rodada faz dois turnos completos.'),
-  A('Laço','bonus','3/luta','controle debuff','Salvaguarda de For; falha: impedido, sem reações, ataques contra ele com vantagem até o fim do próximo turno dele.'),
-  A('Correntes do Caçador','bonus','2/luta','area controle dano','Correntes em 2 pontos de 3 m a até 18 m, salvaguarda de Des: 2d8 (9), impedido, sem teletransporte.')]},
- {id:'jael', nome:'Jael', img:'img/jael.jpg', avisos:['Martelo de guerra e estaca','Força bruta'], acoes:[
-  A('Segundo Fôlego do Tambor','livre','2/luta','cura','Gatilho: abaixo de metade dos PV. Recupera 6d10+10 (43) PV.'),
-  A('Estaca','livre','1/turno','dano controle','Ao acertar: +3d8 (13) perfurante; alvo cravado até o início do próximo turno dele: deslocamento 0, sem reações, sem teletransporte, sem salvaguarda.'),
-  A('Martelo Ressoante','passiva','','dano','Golpes corpo a corpo +3d8 (13) e todo o dano vira trovejante.'),
-  A('Muralha','passiva','','defesa','+20 PV máximos; não pode ser derrubado, empurrado nem puxado; dano contundente pela metade.'),
-  A('Pino na Testa','padrao','rec','dano controle','Ataque corpo a corpo ou à distância 6d10+8 (41) perfurante; se o alvo terminar com metade dos PV ou menos, atordoado até o fim do próximo turno dele, sem salvaguarda.'),
-  A('Rufar','bonus','1/luta','buff','Por 2 rodadas os golpes de Jael e aliados +2d6 (7) e imunes a medo.')]},
- {id:'ezequiel', nome:'Ezequiel', img:'img/ezequiel.jpg', avisos:['Vidente; rodas de fogo'], percebe:'Percebe as voltas a partir da volta 2', desde:2, acoes:[
-  A('Presságio','passiva','','info','No início da luta rola 3d20 e guarda; troca qualquer rolagem (dele ou de um inimigo visível) por um deles; cada dado vale uma vez.'),
-  A('Contramágica Vista','reacao','2/luta','controle defesa','Uma magia ou ação de recarga a até 18 m falha.'),
-  A('Já Vi Esse Golpe','reacao','3/luta','defesa','+5 CA contra um ataque.'),
-  A('Golpe Visto','livre','3/luta','dano','Antes de rolar um ataque: o ataque acerta e é crítico.'),
-  A('Rodas de Fogo','padrao','rec','area dano','Linha de 18 m, salvaguarda de Con: 6d10 (33) fogo e radiante, metade se passar.'),
-  A('Profecia','bonus','2/luta','controle info','Diz o que um inimigo fará no próximo turno; se fizer, a ação falha.'),
-  A('Quebra-Coroa','reacao','2/luta','debuff','Uma Resistência Lendária do alvo é gasta e não funciona; ele perde uma ação lendária na próxima rodada.'),
-  A('O Fim que Eu Vi','padrao','1/luta','dano','Alvo a até 36 m, salvaguarda de Sab: 6d10+20 (53) psíquico, metade se passar; se ficar com 50 PV ou menos, cai a 0.')]},
- {id:'hildegarda', nome:'Hildegarda', img:'img/hildegarda.jpg', avisos:['Clériga da vida; canta','Chama os anjos na 3ª rodada'], rodadaAnjo:3, acoes:[
-  A('Milagre Menor','reacao','1/luta','cura defesa','Gatilho: cai a 0 PV. Fica com 1 PV e recupera 50 PV.'),
-  A('Spiritus','passiva','','cura','No início do turno dela, se tiver 1 PV ou mais, recupera 15 PV.'),
-  A('Maça Sagrada','passiva','1/turno','dano','Um acerto corpo a corpo +4d8 (18) radiante.'),
-  A('Raio Sagrado','bonus','1/rodada','dano','Ataque mágico 36 m, 6d8 (27) radiante.'),
-  A('Palavra Curativa Máxima','bonus','1/rodada','cura','Aliado a até 18 m recupera 40 PV.'),
-  A('Ave Generosa','padrao','rec','area dano cura','Inimigos a até 9 m, salvaguarda de Con: 6d8 (27) radiante, metade se passar; ela recupera metade do dano causado.'),
-  A('O vos angeli','padrao','1/volta','invocacao dano','Chama UM anjo aliado até o fim da luta: CA 18, 60 PV, voo 18 m, 2 ataques +9 de 2d8+5 (14) radiante; age logo depois dela. Os jogadores o veem como demônio, mas ele luta do lado deles.')]},
- {id:'raquel', nome:'Raquel', img:'img/cartas/vin_raquel.jpg', avisos:['Escudeira; jurou proteger o Ozymandias','Só luta junto com ele'], acoes:[
-  A('Escudo de Torre','passiva','','defesa','+3 CA; Reação: vira o alvo de um ataque contra um aliado a até 1,5 m.'),
-  A('Lança de Falange','passiva','','dano','+1,5 m de alcance e +3d6 (10) nos golpes corpo a corpo.'),
-  A('Golpe de Escudo','bonus','1/rodada','controle movimento dano','Criatura a até 1,5 m é empurrada 3 m e cai derrubada, sem salvaguarda; o próximo golpe corpo a corpo na rodada +3d6 (10) com vantagem.'),
-  A('Interpor','passiva+reacao','','defesa movimento','+2 CA para ela e um aliado; Reação: troca de lugar com aliado a até 9 m e vira o alvo; sofre metade do dano.')]},
- {id:'ozy', nome:'Ozymandias', img:'img/ozymandias.jpg', avisos:['O líder; muda a gravidade','Impede reviver a Rafaela'], percebe:'Percebe as voltas a partir da volta 4', desde:4, acoes:[
-  A('Campo de Massa','passiva','','defesa','Ataques à distância contra ele têm desvantagem.'),
-  A('Corpo de Planeta','passiva','','defesa','+50 PV máximos.'),
-  A('Mão de Órbita','passiva','','dano movimento','Golpes corpo a corpo +3d8 (13), todo o dano vira energia e puxam o alvo 3 m.'),
-  A('Pedra Orbital','padrao','vontade','dano controle','Ataque à distância 36 m, 6d10+3 (36) contundente; alvo cai derrubado.'),
-  A('Inverter','bonus','rec','area dano movimento controle','Gravidade vira numa esfera de 6 m a até 36 m: 6d6 (21) contundente e derrubado, sem salvaguarda.'),
-  A('Peso da Conta','padrao','rec','area dano controle','Esfera de 6 m a até 36 m, salvaguarda de For: 6d12 (39) energia e deslocamento 0; metade se passar.'),
-  A('Isso Também é Meu','passiva','','cura debuff','Enquanto vivo, toda cura e regeneração dos inimigos cai pela metade e ele recupera o mesmo tanto.'),
-  A('Confisco','bonus','1/luta','debuff','Salvaguarda de Car; falha: o alvo perde uma ação lendária até o fim da luta.'),
-  A('Troca de Lugar','reacao','3/luta','defesa movimento','Um ataque que acertaria um aliado a até 18 m erra: ele o troca de lugar.')]},
- {id:'anjo', nome:'Anjo', img:'img/diabo.jpg', avisos:['Segredo do Mestre: desce na 3ª rodada; conta como demônio; é o Tobias devorando a Rafaela','Os ataques do anjo chamado por Hildegarda estão em "O vos angeli"'], acoes:[
-  A('Espada do Demônio','passiva','1/turno','dano','Um acerto causa +6d8 (27) radiante; visão verdadeira a 9 m.')]}
+{"id":"esau","nome":"Esaú","titulo":"Esaú, o Caçador","img":"img/esau.jpg","sub":"Humano Médio (Bellacord), leal e mau","ca":19,"caTxt":"19 (couro de lobo reforçado)","pv":420,"pvTxt":"420 (40d10 + 200)","desl":"15 m, escalada 9 m","atr":["18 (+4)","24 (+7)","20 (+5)","12 (+1)","20 (+5)","10 (+0)"],"salv":"Des +13, Con +11, Sab +11","per":"Furtividade +13, Percepção +17, Sobrevivência +17","sent":"visão no escuro 36 m, Percepção passiva 27","idi":"Comum, Élfico","mus":"canto difônico tuvano (Huun-Huur-Tu)","nd":"20 (25.000 XP)","prof":"+6","lend":3,"nh":150,"ambTitulo":"O Campo de Correntes","ambIntro":"O chão inteiro está cheio de correntes enterradas. Na contagem 20, escolha uma:","lendIntro":"Esaú pode realizar 3 ações lendárias, escolhidas entre as opções abaixo. Só pode usar uma por vez, no fim do turno de outra criatura. Recupera as ações gastas no início do próprio turno.","acoes":[
+  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"Esaú faz três ataques: qualquer combinação de Flecha de Ferro e Facão. Ele pode trocar um deles por Arpão de Corrente.","multi":[{"lab":"3 × Flecha de Ferro","seq":["flecha-de-ferro","flecha-de-ferro","flecha-de-ferro"]},{"lab":"3 × Facão","seq":["facao","facao","facao"]}]},
+  {"id":"flecha-de-ferro","nome":"Flecha de Ferro","cat":"acao","tags":["dano"],"txt":"*Ataque à Distância com Arma:* +13, alcance 45/180 m, um alvo. *Acerto:* **2d8 + 7 (16)** perfurante mais **2d10 (11)** necrótico. Contra uma criatura impedida, o crítico acontece com 19 ou 20.","atk":{"k":"dist","b":13,"crit":19},"dano":[{"e":"2d8+7","m":16,"t":"perfurante","k":"d"},{"e":"2d10","m":11,"t":"necrótico","k":"d"}]},
+  {"id":"facao","nome":"Facão","cat":"acao","tags":["dano"],"txt":"*Ataque Corpo a Corpo com Arma:* +13, alcance 1,5 m, um alvo. *Acerto:* **2d6 + 7 (14)** cortante mais **2d10 (11)** necrótico.","atk":{"k":"cc","b":13},"dano":[{"e":"2d6+7","m":14,"t":"cortante","k":"d"},{"e":"2d10","m":11,"t":"necrótico","k":"d"}]},
+  {"id":"arpao-de-corrente","nome":"Arpão de Corrente","cat":"acao","sem":1,"tags":["dano","controle","movimento"],"txt":"*Ataque à Distância com Arma:* +13, alcance 30 m, um alvo. *Acerto:* **3d10 + 7 (23)** perfurante, e o alvo é **puxado 9 m** na direção de Esaú e fica **impedido**, sem salvaguarda. Para escapar: ação e teste de For ou Des (Atletismo ou Acrobacia) CD 21, ou destruir a corrente (CA 18, 30 PV, imune a psíquico e veneno).","atk":{"k":"dist","b":13},"teste":[["For ou Des (Atletismo ou Acrobacia)",21]],"dano":[{"e":"3d10+7","m":23,"t":"perfurante","k":"d"}]},
+  {"id":"cao-de-corrente","nome":"Cão de Corrente","cat":"bonus","tags":["dano","controle"],"txt":"Um dos dois cães de caça de Esaú, feitos de corrente e sombra (não podem ser alvo), morde uma criatura a até 18 m dele. +13 para acertar. *Acerto:* **2d10 + 7 (18)** perfurante, e o alvo cai **derrubado**.","atk":{"k":"esp","b":13},"dano":[{"e":"2d10+7","m":18,"t":"perfurante","k":"d"}]},
+  {"id":"marca-do-cacador","nome":"Marca do Caçador","cat":"bonus","tags":["debuff","buff"],"txt":"Esaú marca uma criatura que consiga ver. Até marcar outra, os ataques dele contra ela causam **+2d8 (9)** e ignoram meia cobertura e três quartos de cobertura. A criatura marcada não se beneficia de invisibilidade contra ele.","dano":[{"e":"2d8","m":9,"t":"e","k":"d"}]},
+  {"id":"chuva-de-ferro","nome":"Chuva de Ferro","cat":"recarga","par":"Recarga 5–6","tags":["area","dano"],"txt":"Esaú dispara para o alto. Cilindro de 9 m de raio e 18 m de altura num ponto a até 90 m. Salvaguarda de Des CD 21. *Falha:* **10d10 (55)** perfurante. *Sucesso:* metade.","rec":5,"cd":[["Des",21]],"dano":[{"e":"10d10","m":55,"t":"perfurante","k":"d"}]},
+  {"id":"prato-de-lentilhas","nome":"Prato de Lentilhas","cat":"recarga","par":"Recarga 6","tags":["debuff","controle"],"txt":"Uma criatura a até 18 m faz salvaguarda de Sab CD 21. *Falha:* Esaú **toma uma carta de poder** dela (o jogador escolhe qual). Até o fim do próximo turno de Esaú, o jogador não pode usá-la e **Esaú pode usá-la uma vez**.","rec":6,"cd":[["Sab",21]]},
+  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se Esaú falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
+  {"id":"direito-de-primogenitura","nome":"Direito de Primogenitura","cat":"passiva","tags":["buff"],"txt":"Esaú não pode ser surpreendido e, na primeira rodada, age antes de todos, seja qual for a iniciativa."},
+  {"id":"corrente-viva","nome":"Corrente Viva","cat":"passiva","sem":1,"tags":["controle"],"txt":"Uma criatura impedida por uma corrente de Esaú **não pode se teletransportar**. *Porta Dimensional* falha e o uso não é gasto."},
+  {"id":"instinto-do-cacador","nome":"Instinto do Caçador","cat":"passiva","tags":["defesa"],"txt":"Quando Esaú é alvo de um efeito que permite salvaguarda de Des para sofrer metade do dano, ele não sofre dano se passar e sofre metade se falhar."},
+  {"id":"laco","nome":"Laço","cat":"reacao","sem":1,"tags":["controle","movimento"],"txt":"*Gatilho:* uma criatura a até 18 m de Esaú se teletransporta, voa para longe dele ou sai do chão. A criatura faz salvaguarda de For CD 21. *Falha:* uma corrente a prende antes que ela termine o movimento; ela fica **impedida** no ponto de partida e o teletransporte falha.","cd":[["For",21]]},
+  {"id":"rolar-para-tras","nome":"Rolar para Trás","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* um ataque que Esaú consegue ver o acerta. O dano daquele ataque é reduzido à metade."},
+  {"id":"l-disparo","nome":"Disparo","cat":"lend","par":"custa 1","tags":["dano"],"txt":"Esaú faz um ataque de Flecha de Ferro.","custo":1,"ref":"flecha-de-ferro"},
+  {"id":"l-corrente-do-chao","nome":"Corrente do Chão","cat":"lend","par":"custa 1","sem":1,"tags":["dano","controle"],"txt":"Uma corrente brota debaixo de uma criatura a até 30 m que esteja no chão ou voando a até 6 m de altura. Salvaguarda de Des CD 21. *Falha:* **2d10 (11)** contundente e fica **impedida**.","custo":1,"cd":[["Des",21]],"dano":[{"e":"2d10","m":11,"t":"contundente","k":"d"}]},
+  {"id":"l-sumir-no-capim","nome":"Sumir no Capim","cat":"lend","par":"custa 1","tags":["movimento","defesa"],"txt":"Esaú se move até metade do deslocamento sem provocar ataques de oportunidade e faz a ação Esconder.","custo":1},
+  {"id":"l-arpao","nome":"Arpão","cat":"lend","par":"custa 2","tags":["dano","controle","movimento"],"txt":"Esaú faz um ataque de Arpão de Corrente.","custo":2,"ref":"arpao-de-corrente"},
+  {"id":"l-matilha","nome":"Matilha","cat":"lend","par":"custa 2","tags":["dano","controle"],"txt":"Os dois cães atacam com Cão de Corrente, em alvos diferentes ou no mesmo.","custo":2,"ref":"cao-de-corrente"},
+  {"id":"a-correntes-brotam","nome":"Correntes Brotam","cat":"amb","sem":1,"tags":["area","dano","controle"],"txt":"1d4 + 1 correntes saem do chão em pontos à escolha do Mestre. Toda criatura a até 3 m de um ponto faz salvaguarda de Des CD 19. *Falha:* **2d8 (9)** contundente e fica **impedida**.","cd":[["Des",19]],"dano":[{"e":"2d8","m":9,"t":"contundente","k":"d"},{"e":"1d4+1","t":"correntes","k":"n"}]},
+  {"id":"a-grilhao","nome":"Grilhão","cat":"amb","tags":["area","dano","controle"],"txt":"Toda criatura impedida por corrente sofre **4d6 (14)** contundente quando as correntes apertam.","dano":[{"e":"4d6","m":14,"t":"contundente","k":"d"}]},
+  {"id":"a-o-cerco","nome":"O Cerco","cat":"amb","tags":["area","dano","controle"],"txt":"As correntes formam um anel de 18 m de raio em volta da arena até a próxima contagem 20. Uma criatura que atravesse o anel, andando ou voando a até 9 m de altura, faz salvaguarda de For CD 19. *Falha:* para no anel e sofre **3d10 (16)** contundente.","cd":[["For",19]],"dano":[{"e":"3d10","m":16,"t":"contundente","k":"d"}]},
+  {"id":"a-ponte-de-ferro","nome":"Ponte de Ferro","cat":"amb","tags":["defesa","controle"],"txt":"Correntes se erguem e formam uma parede de 9 m de comprimento e 3 m de altura (cobertura de três quartos). Esaú pode ficar em cima dela."}
+]},
+{"id":"jael","nome":"Jael","titulo":"Jael, a Martelada","img":"img/jael.jpg","sub":"Humana Média (Bellacord), leal e neutra","ca":20,"caTxt":"20 (placas)","pv":513,"pvTxt":"513 (38d12 + 266)","desl":"12 m","atr":["26 (+8)","12 (+1)","24 (+7)","10 (+0)","16 (+3)","14 (+2)"],"salv":"For +14, Con +13, Sab +9","per":"Atletismo +14, Intimidação +8","imun":"derrubado, enfeitiçado, amedrontado","sent":"Percepção passiva 13","idi":"Comum","mus":"taikô e tambores de guerra","nd":"21 (33.000 XP)","prof":"+7","lend":3,"nh":150,"ambTitulo":"O Ritmo de Guerra","ambIntro":"O chão pulsa no compasso dos tambores. Na contagem 20, escolha uma:","lendIntro":"Jael pode realizar 3 ações lendárias.","acoes":[
+  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"Jael faz três ataques de Martelo de Guerra. Ela pode trocar um deles por Estaca ou por Arremessar Estaca.","multi":[{"lab":"3 × Martelo de Guerra","seq":["martelo-de-guerra","martelo-de-guerra","martelo-de-guerra"]}]},
+  {"id":"martelo-de-guerra","nome":"Martelo de Guerra","cat":"acao","tags":["dano"],"txt":"*Ataque Corpo a Corpo com Arma:* +15, alcance 3 m, um alvo. *Acerto:* **4d8 + 8 (26)** contundente mais **2d6 (7)** trovejante.","atk":{"k":"cc","b":15},"dano":[{"e":"4d8+8","m":26,"t":"contundente","k":"d"},{"e":"2d6","m":7,"t":"trovejante","k":"d"}]},
+  {"id":"estaca","nome":"Estaca","cat":"acao","sem":1,"tags":["dano","controle"],"txt":"*Ataque Corpo a Corpo com Arma:* +15, alcance 1,5 m, um alvo. *Acerto:* **2d10 + 8 (19)** perfurante, e o alvo fica **cravado** até o fim do próximo turno de Jael, sem salvaguarda: deslocamento 0, não pode se teletransportar e, se estava voando, cai. Uma criatura a 1,5 m pode usar uma ação e fazer um teste de For CD 22 para arrancar a estaca.","atk":{"k":"cc","b":15},"teste":[["For",22]],"dano":[{"e":"2d10+8","m":19,"t":"perfurante","k":"d"}]},
+  {"id":"arremessar-estaca","nome":"Arremessar Estaca","cat":"acao","sem":1,"tags":["dano","controle"],"txt":"*Ataque à Distância com Arma:* +15, alcance 18/36 m, um alvo. *Acerto:* **3d10 + 8 (24)** perfurante, e o alvo fica **cravado**, como acima.","atk":{"k":"dist","b":15},"dano":[{"e":"3d10+8","m":24,"t":"perfurante","k":"d"}]},
+  {"id":"batida-do-tambor","nome":"Batida do Tambor","cat":"bonus","tags":["area","dano","controle"],"txt":"Jael bate o pé. Toda criatura a até 4,5 m faz salvaguarda de For CD 22. *Falha:* **2d8 (9)** trovejante e cai **derrubada**.","cd":[["For",22]],"dano":[{"e":"2d8","m":9,"t":"trovejante","k":"d"}]},
+  {"id":"avanco","nome":"Avanço","cat":"bonus","tags":["area","dano","movimento"],"txt":"Jael se move até o deslocamento dela em linha reta. Toda criatura no caminho faz salvaguarda de For CD 22. *Falha:* é empurrada 3 m para o lado e sofre **2d8 + 8 (17)** contundente.","cd":[["For",22]],"dano":[{"e":"2d8+8","m":17,"t":"contundente","k":"d"}]},
+  {"id":"a-tenda-desaba","nome":"A Tenda Desaba","cat":"recarga","par":"Recarga 5–6","tags":["area","dano","debuff"],"txt":"Jael crava o martelo no chão. Toda criatura a até 12 m faz salvaguarda de Con CD 22. *Falha:* **10d10 (55)** trovejante e fica surda até o fim do próximo turno de Jael. *Sucesso:* metade.","rec":5,"cd":[["Con",22]],"dano":[{"e":"10d10","m":55,"t":"trovejante","k":"d"}]},
+  {"id":"pino-na-testa","nome":"Pino na Testa","cat":"recarga","par":"Recarga 6","sem":1,"tags":["dano","controle"],"txt":"*Ataque Corpo a Corpo com Arma:* +15, alcance 1,5 m, um alvo. *Acerto:* **8d10 + 8 (52)** perfurante. Se o alvo ficar com metade dos PV máximos ou menos, ele fica **atordoado** até o fim do próximo turno dele, sem salvaguarda.","rec":6,"atk":{"k":"cc","b":15},"dano":[{"e":"8d10+8","m":52,"t":"perfurante","k":"d"}]},
+  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se Jael falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
+  {"id":"muralha","nome":"Muralha","cat":"passiva","tags":["defesa"],"txt":"Jael não pode ser empurrada, puxada nem movida contra a vontade dela, e não pode ficar impedida nem agarrada."},
+  {"id":"segundo-folego-do-tambor","nome":"Segundo Fôlego do Tambor","cat":"passiva","tags":["buff"],"txt":"A primeira vez que Jael fica abaixo de metade dos PV, ela faz um turno extra imediatamente, logo depois do turno da criatura que causou o dano."},
+  {"id":"contragolpe","nome":"Contragolpe","cat":"reacao","tags":["dano"],"txt":"*Gatilho:* Jael é acertada por um ataque corpo a corpo. Ela faz um ataque de Martelo de Guerra contra quem a acertou."},
+  {"id":"firmar","nome":"Firmar","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* Jael falha numa salvaguarda de For ou Des. Ela soma +5 ao resultado, o que pode fazer o teste passar."},
+  {"id":"l-martelo","nome":"Martelo","cat":"lend","par":"custa 1","tags":["dano"],"txt":"Jael faz um ataque de Martelo de Guerra.","custo":1,"ref":"martelo-de-guerra"},
+  {"id":"l-batida","nome":"Batida","cat":"lend","par":"custa 1","tags":["area","dano","controle"],"txt":"Jael usa Batida do Tambor.","custo":1,"ref":"batida-do-tambor"},
+  {"id":"l-estaca-arremessada","nome":"Estaca Arremessada","cat":"lend","par":"custa 2","tags":["dano","controle"],"txt":"Jael usa Arremessar Estaca.","custo":2,"ref":"arremessar-estaca"},
+  {"id":"l-rufar","nome":"Rufar","cat":"lend","par":"custa 2","tags":["area","debuff","controle"],"txt":"Toda criatura a até 18 m que consiga ouvir Jael faz salvaguarda de Sab CD 20. *Falha:* fica **amedrontada** até o fim do próximo turno de Jael e não pode se aproximar dela.","custo":2,"cd":[["Sab",20]]},
+  {"id":"a-pulso","nome":"Pulso","cat":"amb","tags":["controle"],"txt":"Até a próxima contagem 20, todo o chão é terreno difícil para todos menos Jael."},
+  {"id":"a-estacas-do-chao","nome":"Estacas do Chão","cat":"amb","sem":1,"tags":["area","dano","controle"],"txt":"1d6 estacas saem do chão em pontos à escolha do Mestre. Toda criatura a até 3 m de um ponto faz salvaguarda de Des CD 19. *Falha:* **3d8 (13)** perfurante e fica **cravada** até a próxima contagem 20.","cd":[["Des",19]],"dano":[{"e":"3d8","m":13,"t":"perfurante","k":"d"},{"e":"1d6","t":"estacas","k":"n"}]},
+  {"id":"a-contratempo","nome":"Contratempo","cat":"amb","tags":["controle","debuff"],"txt":"Até a próxima contagem 20, quem lançar uma magia faz salvaguarda de Con CD 18. *Falha:* a magia falha, mas o espaço não é gasto.","cd":[["Con",18]]},
+  {"id":"a-tambor-no-peito","nome":"Tambor no Peito","cat":"amb","tags":["area","dano"],"txt":"Todas as criaturas a até 9 m de Jael sofrem **2d10 (11)** trovejante, sem salvaguarda.","dano":[{"e":"2d10","m":11,"t":"trovejante","k":"d"}]}
+]},
+{"id":"ezequiel","nome":"Ezequiel","titulo":"Ezequiel, o Vidente","img":"img/ezequiel.jpg","sub":"Humano Médio (Bellacord), neutro","ca":17,"caTxt":"17 (rodas de olhos)","pv":375,"pvTxt":"375 (50d8 + 150)","desl":"9 m, voo 9 m (pairar)","atr":["10 (+0)","16 (+3)","16 (+3)","22 (+6)","24 (+7)","16 (+3)"],"salv":"Int +12, Sab +13, Car +9","per":"Arcanismo +12, Intuição +19, Percepção +19","imun":"cego, surpreso","sent":"visão verdadeira 36 m, Percepção passiva 29","idi":"todos","mus":"órgão de tubos, notas graves e longas","nd":"20 (25.000 XP)","prof":"+6","lend":3,"nh":150,"ambTitulo":"A Sala das Rodas","ambIntro":"Rodas enormes, cobertas de olhos, giram em volta da arena. Na contagem 20, escolha uma:","lendIntro":"Ezequiel pode realizar 3 ações lendárias.","acoes":[
+  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"Ezequiel usa Raio da Roda duas vezes, ou Raio da Roda e Visão Esmagadora.","multi":[{"lab":"2 × Raio da Roda","seq":["raio-da-roda","raio-da-roda"]}]},
+  {"id":"raio-da-roda","nome":"Raio da Roda","cat":"acao","tags":["dano"],"txt":"*Ataque à Distância com Magia:* +13, alcance 36 m, um alvo. *Acerto:* **4d10 + 6 (28)** radiante.","atk":{"k":"distm","b":13},"dano":[{"e":"4d10+6","m":28,"t":"radiante","k":"d"}]},
+  {"id":"visao-esmagadora","nome":"Visão Esmagadora","cat":"acao","tags":["dano","debuff"],"txt":"Uma criatura a até 36 m faz salvaguarda de Sab CD 21. *Falha:* **6d10 (33)** psíquico, e o próximo d20 que ela rolar é rolado duas vezes, ficando o **menor**. *Sucesso:* metade do dano e nenhum outro efeito.","cd":[["Sab",21]],"dano":[{"e":"6d10","m":33,"t":"psíquico","k":"d"}]},
+  {"id":"magias","nome":"Magias","cat":"acao","tags":["controle","defesa","info"],"txt":"Ezequiel lança magias sem componentes materiais (CD 21, +13 para acertar com magia). À vontade: *detectar pensamentos*, *lentidão*. 3/dia cada: *contramágica*, *banimento*, *imobilizar monstro*. 1/dia: *parar o tempo*.","atk":{"k":"mag","b":13},"cd":[["Magias",21]],"subs":[{"id":"detectar-pensamentos","nome":"detectar pensamentos","n":0},{"id":"lentidao","nome":"lentidão","n":0},{"id":"contramagica","nome":"contramágica","n":3},{"id":"banimento","nome":"banimento","n":3},{"id":"imobilizar-monstro","nome":"imobilizar monstro","n":3},{"id":"parar-o-tempo","nome":"parar o tempo","n":1}]},
+  {"id":"girar-a-roda","nome":"Girar a Roda","cat":"bonus","tags":["info"],"txt":"Ezequiel rola de novo um dos seus dados de Presságio ainda não usados e fica com o novo resultado."},
+  {"id":"passo-ja-visto","nome":"Passo Já Visto","cat":"bonus","tags":["movimento"],"txt":"Ezequiel se teletransporta até 9 m para um espaço que consiga ver."},
+  {"id":"rodas-de-fogo","nome":"Rodas de Fogo","cat":"recarga","par":"Recarga 5–6","tags":["area","dano"],"txt":"Três rodas de fogo rolam em linhas de 18 m e 3 m de largura, em direções que Ezequiel escolhe. Salvaguarda de Des CD 21 para cada linha em que a criatura estiver. *Falha:* **8d10 (44)** fogo e radiante. *Sucesso:* metade.","rec":5,"cd":[["Des",21]],"dano":[{"e":"8d10","m":44,"t":"fogo e radiante","k":"d"}]},
+  {"id":"o-fim-que-eu-vi","nome":"O Fim que Eu Vi","cat":"recarga","par":"Recarga 6","tags":["dano"],"txt":"Uma criatura a até 36 m faz salvaguarda de Sab CD 21. *Falha:* se ela tiver **60 PV ou menos**, cai a 0 PV. Se tiver mais, sofre **8d10 (44)** psíquico. *Sucesso:* metade de 8d10 (22).","rec":6,"cd":[["Sab",21]],"dano":[{"e":"8d10","m":44,"t":"psíquico","k":"d"}]},
+  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se Ezequiel falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
+  {"id":"pressagio-maior","nome":"Presságio Maior","cat":"passiva","tags":["info","buff"],"txt":"No início do combate, Ezequiel rola d20 e guarda os resultados: **3 dados na 1ª volta, 4 na 2ª e na 3ª, 5 da 4ª em diante** (ele lembra das voltas). Quando ele ou uma criatura que ele vê fizer um ataque, um teste ou uma salvaguarda, Ezequiel pode **trocar o d20 rolado por um dos dados de Presságio**. Ele pode fazer isso **depois de ver a rolagem**, mas antes de o resultado ser anunciado. Cada dado só é usado uma vez. Ao trocar, ele diz em voz alta: *\"Eu já vi esse número.\"*"},
+  {"id":"ja-vi-isso","nome":"Já Vi Isso","cat":"passiva","par":"2ª volta em diante","tags":["info","defesa"],"txt":"Se um jogador repetir contra Ezequiel uma ação que já fez contra ele numa volta anterior (a mesma magia, o mesmo golpe, a mesma tática), Ezequiel tem vantagem na salvaguarda ou o ataque tem desvantagem. O Mestre decide o que conta como repetição.","desdeVolta":2},
+  {"id":"rodas-de-olhos","nome":"Rodas de Olhos","cat":"passiva","tags":["defesa"],"txt":"Ezequiel não pode ser surpreendido, e ataques contra ele nunca têm vantagem."},
+  {"id":"quebra-coroa","nome":"Quebra-Coroa","cat":"reacao","sem":1,"tags":["debuff"],"txt":"*Gatilho:* uma criatura a até 36 m usa uma Resistência Lendária. Ela é gasta, mas não funciona: a falha continua. Ezequiel diz: *\"Você sempre faz isso.\"* (3/dia)","uso":"3/dia"},
+  {"id":"desvio-previsto","nome":"Desvio Previsto","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* Ezequiel é alvo de um ataque. Ele ganha +5 na CA contra esse ataque."},
+  {"id":"l-ler-a-roda","nome":"Ler a Roda","cat":"lend","par":"custa 1","tags":["info"],"txt":"Ezequiel rola 1d20 e acrescenta o resultado aos dados de Presságio (no máximo 6 guardados).","custo":1},
+  {"id":"l-raio","nome":"Raio","cat":"lend","par":"custa 1","tags":["dano"],"txt":"Ezequiel usa Raio da Roda.","custo":1,"ref":"raio-da-roda"},
+  {"id":"l-olhar","nome":"Olhar","cat":"lend","par":"custa 2","tags":["dano","debuff"],"txt":"Ezequiel usa Visão Esmagadora.","custo":2,"ref":"visao-esmagadora"},
+  {"id":"l-profecia","nome":"Profecia","cat":"lend","par":"custa 3","sem":1,"tags":["controle","info"],"txt":"Ezequiel aponta para um jogador e diz em voz alta o que ele vai fazer no próximo turno (por exemplo: *\"Você vai atacar com a foice\"*, *\"Você vai lançar uma magia\"*, *\"Você vai fugir\"*). Se o jogador fizer isso antes do próximo turno de Ezequiel, a ação **falha automaticamente**: o ataque erra, a magia se perde (o espaço é gasto) ou o movimento não acontece. Se o jogador fizer outra coisa, ganha vantagem na próxima rolagem.","custo":3},
+  {"id":"a-as-rodas-giram","nome":"As Rodas Giram","cat":"amb","tags":["area","movimento","controle"],"txt":"Toda criatura que Ezequiel escolher faz salvaguarda de Sab CD 18. *Falha:* é teletransportada até 9 m, na direção que ele escolher.","cd":[["Sab",18]]},
+  {"id":"a-eco-do-futuro","nome":"Eco do Futuro","cat":"amb","sem":1,"tags":["debuff","info"],"txt":"Um jogador aleatório rola o próximo d20 duas vezes, e **Ezequiel escolhe** qual resultado vale."},
+  {"id":"a-nota-grave","nome":"Nota Grave","cat":"amb","tags":["area","dano","controle"],"txt":"O órgão toca a nota mais grave. Toda criatura faz salvaguarda de Con CD 18. *Falha:* **3d10 (16)** trovejante e perde a concentração.","cd":[["Con",18]],"dano":[{"e":"3d10","m":16,"t":"trovejante","k":"d"}]},
+  {"id":"a-olhos-abertos","nome":"Olhos Abertos","cat":"amb","tags":["info","controle"],"txt":"Até a próxima contagem 20, nenhuma criatura pode ficar invisível nem escondida na arena."}
+]},
+{"id":"hildegarda","nome":"Hildegarda","titulo":"Hildegarda, a Clériga da Vida","img":"img/hildegarda.jpg","sub":"Humana Média (Bellacord), leal e boa","ca":21,"caTxt":"21 (placas, escudo)","pv":427,"pvTxt":"427 (45d8 + 225)","desl":"9 m","atr":["16 (+3)","10 (+0)","20 (+5)","14 (+2)","24 (+7)","18 (+4)"],"salv":"Con +11, Sab +13, Car +10","per":"Medicina +13, Religião +8, Intuição +13","res":"necrótico, radiante","imun":"amedrontado, enfeitiçado","sent":"Percepção passiva 17","idi":"Comum, Celestial","mus":"Hildegard von Bingen (\"O vis aeternitatis\", \"Spiritus Sanctus vivificans vitam\", \"O vos angeli\", \"Ave generosa\")","nd":"20 (25.000 XP)","prof":"+6","lend":3,"nh":150,"ambTitulo":"A Capela de Luz","ambIntro":"Vitrais imensos flutuam no ar em volta da arena. Na contagem 20, escolha uma:","lendIntro":"Hildegarda pode realizar 3 ações lendárias.","acoes":[
+  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"Hildegarda faz dois ataques de Maça Sagrada, ou lança Chama Sagrada Maior duas vezes.","multi":[{"lab":"2 × Maça Sagrada","seq":["maca-sagrada","maca-sagrada"]},{"lab":"2 × Chama Sagrada Maior","seq":["chama-sagrada-maior","chama-sagrada-maior"]}]},
+  {"id":"maca-sagrada","nome":"Maça Sagrada","cat":"acao","tags":["dano"],"txt":"*Ataque Corpo a Corpo com Arma:* +12, alcance 1,5 m, um alvo. *Acerto:* **3d8 + 7 (20)** contundente mais **3d8 (13)** radiante.","atk":{"k":"cc","b":12},"dano":[{"e":"3d8+7","m":20,"t":"contundente","k":"d"},{"e":"3d8","m":13,"t":"radiante","k":"d"}]},
+  {"id":"chama-sagrada-maior","nome":"Chama Sagrada Maior","cat":"acao","tags":["dano"],"txt":"Uma criatura a até 36 m faz salvaguarda de Des CD 21 e não se beneficia de cobertura. *Falha:* **5d8 (22)** radiante.","cd":[["Des",21]],"dano":[{"e":"5d8","m":22,"t":"radiante","k":"d"}]},
+  {"id":"o-vos-angeli","nome":"O vos angeli","cat":"acao","par":"só a partir da 3ª rodada","tags":["invocacao"],"txt":"Hildegarda canta e se concentra (como numa magia). **Os anjos chegam**: muitos aparecem no céu, **um desce** e entra no combate na contagem de iniciativa seguinte à dela (ver *O Anjo*). Se Hildegarda estiver incapacitada, silenciada ou morta antes do turno dela na 3ª rodada, os anjos não vêm nesta volta.","desdeRodada":3},
+  {"id":"palavra-curativa","nome":"Palavra Curativa","cat":"bonus","tags":["cura"],"txt":"Hildegarda ou uma criatura a até 18 m recupera **4d8 + 7**, que por Discípula da Vida vira sempre **39 PV**.","dano":[{"e":"39","m":39,"t":"PV","k":"c"}]},
+  {"id":"arma-espiritual","nome":"Arma Espiritual","cat":"bonus","tags":["dano"],"txt":"Um martelo de luz ataca uma criatura a até 18 m. +13 para acertar. *Acerto:* **2d8 + 7 (16)** energia.","atk":{"k":"esp","b":13},"dano":[{"e":"2d8+7","m":16,"t":"energia","k":"d"}]},
+  {"id":"sino-de-bronze","nome":"Sino de Bronze","cat":"bonus","tags":["area","debuff","controle"],"txt":"Toda criatura que Hildegarda escolher a até 9 m faz salvaguarda de Sab CD 21. *Falha:* fica **amedrontada** até o fim do próximo turno dela.","cd":[["Sab",21]]},
+  {"id":"ave-generosa","nome":"Ave Generosa","cat":"recarga","par":"Recarga 5–6","tags":["area","dano","cura"],"txt":"Toda criatura que Hildegarda escolher a até 9 m faz salvaguarda de Con CD 21. *Falha:* **10d8 (45)** radiante. *Sucesso:* metade. Hildegarda recupera metade do dano total causado.","rec":5,"cd":[["Con",21]],"dano":[{"e":"10d8","m":45,"t":"radiante","k":"d"}]},
+  {"id":"cura-plena","nome":"Cura Plena","cat":"recarga","par":"Recarga 5–6","tags":["cura"],"txt":"Hildegarda recupera **70 PV** e encerra uma condição em si mesma.","rec":5,"dano":[{"e":"70","m":70,"t":"PV","k":"c"}]},
+  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se Hildegarda falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
+  {"id":"discipula-da-vida","nome":"Discípula da Vida","cat":"passiva","tags":["cura"],"txt":"Toda cura que Hildegarda causa é sempre o máximo dos dados."},
+  {"id":"spiritus-vivificans","nome":"Spiritus Vivificans","cat":"passiva","tags":["cura"],"txt":"No início de cada turno dela, se tiver pelo menos 1 PV, Hildegarda recupera **20 PV**. Se ela sofreu dano necrótico ou um efeito que impede cura desde o fim do turno anterior, isso não acontece nesse turno.","dano":[{"e":"20","m":20,"t":"PV","k":"c"}]},
+  {"id":"protecao-divina","nome":"Proteção Divina","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* Hildegarda é acertada por um ataque. Ela ganha +4 na CA contra esse ataque, o que pode fazê-lo errar."},
+  {"id":"milagre","nome":"Milagre","cat":"reacao","par":"1/dia","tags":["cura","defesa"],"txt":"*Gatilho:* Hildegarda cai a 0 PV. Ela fica com **1 PV** e recupera **50 PV** imediatamente.","uso":"1/dia","dano":[{"e":"50","m":50,"t":"PV","k":"c"}]},
+  {"id":"l-maca","nome":"Maça","cat":"lend","par":"custa 1","tags":["dano"],"txt":"Hildegarda faz um ataque de Maça Sagrada.","custo":1,"ref":"maca-sagrada"},
+  {"id":"l-chama","nome":"Chama","cat":"lend","par":"custa 1","tags":["dano"],"txt":"Hildegarda usa Chama Sagrada Maior.","custo":1,"ref":"chama-sagrada-maior"},
+  {"id":"l-palavra","nome":"Palavra","cat":"lend","par":"custa 1","tags":["cura"],"txt":"Hildegarda usa Palavra Curativa.","custo":1,"ref":"palavra-curativa"},
+  {"id":"l-hino","nome":"Hino","cat":"lend","par":"custa 2","tags":["area","debuff","controle"],"txt":"Toda criatura que Hildegarda escolher a até 18 m faz salvaguarda de Sab CD 21. *Falha:* não pode usar reações e tem o deslocamento reduzido à metade até o fim do próximo turno dela.","custo":2,"cd":[["Sab",21]]},
+  {"id":"l-bencao-do-coro","nome":"Bênção do Coro","cat":"lend","par":"custa 2","tags":["defesa","buff"],"txt":"Hildegarda ganha **30 PV temporários**.","custo":2,"dano":[{"e":"30","m":30,"t":"PV temporários","k":"p"}]},
+  {"id":"a-vitrais","nome":"Vitrais","cat":"amb","tags":["area","dano"],"txt":"Três feixes de luz de 18 m por 1,5 m atravessam a arena. Salvaguarda de Des CD 19. *Falha:* **4d8 (18)** radiante.","cd":[["Des",19]],"dano":[{"e":"4d8","m":18,"t":"radiante","k":"d"}]},
+  {"id":"a-santuario","nome":"Santuário","cat":"amb","tags":["cura"],"txt":"Um círculo de 3 m de raio brilha no chão. Se Hildegarda terminar o turno dentro dele, recupera mais **20 PV**.","dano":[{"e":"20","m":20,"t":"PV","k":"c"}]},
+  {"id":"a-silencio-sagrado","nome":"Silêncio Sagrado","cat":"amb","tags":["controle","debuff"],"txt":"Até a próxima contagem 20, quem lançar uma magia com componente verbal faz salvaguarda de Con CD 18. *Falha:* a magia falha, mas o espaço não é gasto.","cd":[["Con",18]]},
+  {"id":"a-coro-distante","nome":"Coro Distante","cat":"amb","tags":["debuff"],"txt":"Até a próxima contagem 20, toda cura recebida pelos jogadores é reduzida à metade."}
+]},
+{"id":"raquel","nome":"Raquel","titulo":"Raquel, a Escudeira","img":"img/cartas/vin_raquel.jpg","sub":"Humana Média (Bellacord), leal e neutra","ca":22,"caTxt":"22 (placas, escudo de torre)","pv":460,"pvTxt":"460 (40d10 + 240)","desl":"9 m","atr":["24 (+7)","12 (+1)","22 (+6)","12 (+1)","16 (+3)","14 (+2)"],"salv":"For +13, Con +12, Sab +9","per":"Atletismo +13, Percepção +9","imun":"derrubado, amedrontado","sent":"Percepção passiva 19","idi":"Comum","mus":"a mesma do Ozymandias (\"Os Planetas\", de Holst). **Raquel só luta junto com o Ozymandias.**","nd":"19 (22.000 XP)","prof":"+6","lend":2,"nh":150,"lendIntro":"Raquel pode realizar 2 ações lendárias.","acoes":[
+  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"Raquel faz dois ataques de Lança e um de Golpe de Escudo.","multi":[{"lab":"2 × Lança + Golpe de Escudo","seq":["lanca","lanca","golpe-de-escudo"]}]},
+  {"id":"lanca","nome":"Lança","cat":"acao","tags":["dano"],"txt":"*Ataque Corpo a Corpo com Arma:* +13, alcance 3 m, um alvo. *Acerto:* **3d10 + 7 (23)** perfurante.","atk":{"k":"cc","b":13},"dano":[{"e":"3d10+7","m":23,"t":"perfurante","k":"d"}]},
+  {"id":"golpe-de-escudo","nome":"Golpe de Escudo","cat":"acao","sem":1,"tags":["dano","movimento","controle"],"txt":"*Ataque Corpo a Corpo com Arma:* +13, alcance 1,5 m, um alvo. *Acerto:* **2d8 + 7 (16)** contundente; o alvo é **empurrado 4,5 m** e cai **derrubado**, sem salvaguarda.","atk":{"k":"cc","b":13},"dano":[{"e":"2d8+7","m":16,"t":"contundente","k":"d"}]},
+  {"id":"desafio","nome":"Desafio","cat":"bonus","tags":["debuff","controle"],"txt":"Uma criatura a até 18 m faz salvaguarda de Sab CD 21. *Falha:* até o fim do próximo turno de Raquel, tem desvantagem em ataques contra qualquer alvo que não seja Raquel.","cd":[["Sab",21]]},
+  {"id":"investida-de-falange","nome":"Investida de Falange","cat":"recarga","par":"Recarga 5–6","tags":["area","dano","movimento","controle"],"txt":"Raquel avança até 18 m em linha reta com o escudo à frente. Toda criatura na linha faz salvaguarda de For CD 21. *Falha:* **8d10 + 7 (51)** contundente e cai **derrubada**. *Sucesso:* metade.","rec":5,"cd":[["For",21]],"dano":[{"e":"8d10+7","m":51,"t":"contundente","k":"d"}]},
+  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se Raquel falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
+  {"id":"juramento","nome":"Juramento","cat":"passiva","tags":["buff","defesa"],"txt":"Enquanto Raquel estiver a até 9 m do Ozymandias, ele tem +2 na CA."},
+  {"id":"gravidade-amiga","nome":"Gravidade Amiga","cat":"passiva","tags":["defesa"],"txt":"Raquel não é afetada pelas mudanças de gravidade do Ozymandias nem pelas Ações de Ambiente dele."},
+  {"id":"interpor","nome":"Interpor","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* o Ozymandias, a até 9 m de Raquel, é alvo de um ataque. Os dois trocam de lugar e Raquel vira o alvo, usando a CA dela."},
+  {"id":"escudo-refletor","nome":"Escudo Refletor","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* Raquel passa numa salvaguarda contra uma magia que tinha só ela ou o Ozymandias como alvo. A magia volta contra quem a lançou, usando a mesma CD."},
+  {"id":"l-lanca","nome":"Lança","cat":"lend","par":"custa 1","tags":["dano"],"txt":"Raquel faz um ataque de Lança.","custo":1,"ref":"lanca"},
+  {"id":"l-avancar","nome":"Avançar","cat":"lend","par":"custa 1","tags":["movimento"],"txt":"Raquel se move até o deslocamento dela sem provocar ataques de oportunidade, terminando a até 1,5 m do Ozymandias.","custo":1},
+  {"id":"l-muralha-de-escudo","nome":"Muralha de Escudo","cat":"lend","par":"custa 2","tags":["defesa"],"txt":"Até o início do próximo turno de Raquel, ataques à distância contra o Ozymandias **erram automaticamente** se Raquel estiver entre ele e o atacante.","custo":2}
+]},
+{"id":"ozy","nome":"Ozymandias","titulo":"Ozymandias Bellacord Donovan","img":"img/ozymandias.jpg","sub":"Humano Médio (Bellacord), a Avareza, neutro e mau. Perto dos 90 anos.","ca":21,"caTxt":"21 (campo de massa; 23 com Raquel a até 9 m)","pv":625,"pvTxt":"625 (50d10 + 350)","desl":"9 m, voo 18 m (pairar)","atr":["20 (+5)","14 (+2)","24 (+7)","24 (+7)","22 (+6)","24 (+7)"],"salv":"Con +15, Int +15, Sab +14, Car +15","imun":"derrubado, impedido, agarrado","sent":"Percepção passiva 16","idi":"todos","mus":"Holst, \"Os Planetas\": **Saturno** (entrada), **Marte** (combate), **Urano** (quando arranca a terra), **Netuno** (quando cai ou vai embora)","nd":"24 (62.000 XP)","prof":"+7","lend":3,"nh":200,"ambTitulo":"O Céu que Cai","ambIntro":"Pedaços de terra flutuam por toda a arena. Na contagem 20, escolha uma (duas na Fase 2):","lendIntro":"O Ozymandias pode realizar 3 ações lendárias (4 na Fase 2).","acoes":[
+  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"O Ozymandias faz três ataques de Mão de Órbita, ou dois ataques de Mão de Órbita e um de Pedra Orbital.","multi":[{"lab":"3 × Mão de Órbita","seq":["mao-de-orbita","mao-de-orbita","mao-de-orbita"]},{"lab":"2 × Mão de Órbita + Pedra Orbital","seq":["mao-de-orbita","mao-de-orbita","pedra-orbital"]}]},
+  {"id":"mao-de-orbita","nome":"Mão de Órbita","cat":"acao","tags":["dano","movimento"],"txt":"*Ataque Corpo a Corpo com Magia:* +15, alcance 4,5 m, um alvo. *Acerto:* **3d10 + 8 (24)** energia, e o alvo é puxado 3 m na direção dele.","atk":{"k":"ccm","b":15},"dano":[{"e":"3d10+8","m":24,"t":"energia","k":"d"}]},
+  {"id":"pedra-orbital","nome":"Pedra Orbital","cat":"acao","tags":["dano","controle"],"txt":"*Ataque à Distância com Magia:* +15, alcance 90 m, um alvo. *Acerto:* **6d10 + 8 (41)** contundente, e o alvo cai **derrubado** (se estiver voando, cai).","atk":{"k":"distm","b":15},"dano":[{"e":"6d10+8","m":41,"t":"contundente","k":"d"}]},
+  {"id":"inverter","nome":"Inverter","cat":"bonus","sem":1,"tags":["area","movimento","controle"],"txt":"A gravidade vira numa esfera de 9 m de raio num ponto a até 36 m, até o início do próximo turno dele. Quem não estiver voando \"cai para cima\" 18 m e fica no alto. Quando a gravidade volta, cai e sofre **6d6 (21)** contundente. É efeito de terreno, sem salvaguarda.","dano":[{"e":"6d6","m":21,"t":"contundente","k":"d"}]},
+  {"id":"cobranca","nome":"Cobrança","cat":"bonus","tags":["debuff"],"txt":"Uma criatura a até 18 m que tenha usado uma carta de poder ou uma Bênção desde o último turno dele faz salvaguarda de Car CD 23. *Falha:* ele **confisca** aquele poder até o fim do próximo turno dele e pode usá-lo uma vez.","cd":[["Car",23]]},
+  {"id":"peso-da-conta","nome":"Peso da Conta","cat":"recarga","par":"Recarga 5–6","tags":["area","dano","controle"],"txt":"Esfera de 9 m de raio num ponto a até 36 m. Salvaguarda de For CD 23. *Falha:* **12d8 (54)** energia, cai **derrubada** e fica com deslocamento 0 (**pesada**) até o fim do próximo turno dele. *Sucesso:* metade e nenhum outro efeito.","rec":5,"cd":[["For",23]],"dano":[{"e":"12d8","m":54,"t":"energia","k":"d"}]},
+  {"id":"saturno","nome":"Saturno","cat":"recarga","par":"Recarga 6","tags":["dano"],"txt":"Uma criatura a até 36 m faz salvaguarda de Con CD 23. *Falha:* **16d10 (88)** energia, enquanto o corpo dela pesa como um planeta. *Sucesso:* metade.","rec":6,"cd":[["Con",23]],"dano":[{"e":"16d10","m":88,"t":"energia","k":"d"}]},
+  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"4/Dia; 5 a partir da 4ª volta","sem":1,"tags":["defesa"],"txt":"Se o Ozymandias falhar numa salvaguarda, pode escolher passar. ◆ A cada Resistência Lendária que um **jogador** usar a até 36 m dele, ele recupera uma das suas já gastas (Avareza).","uso":"4/dia","nVolta":[4,5]},
+  {"id":"isso-tambem-e-meu","nome":"Isso Também é Meu","cat":"passiva","tags":["debuff","cura"],"txt":"Quando uma criatura a até 36 m recupera PV, o Ozymandias rouba **metade** dessa cura como PV temporários. A criatura recebe só a outra metade."},
+  {"id":"campo-de-massa","nome":"Campo de Massa","cat":"passiva","tags":["defesa"],"txt":"Ataques à distância com arma contra o Ozymandias têm desvantagem: os projéteis entram em órbita em volta dele."},
+  {"id":"memoria-das-voltas","nome":"Memória das Voltas","cat":"passiva","par":"4ª volta em diante","tags":["info"],"txt":"O Ozymandias percebe as voltas. Ele tem vantagem na iniciativa e escolhe sempre como primeiro alvo **quem segura a flor**.","desdeVolta":4},
+  {"id":"fase-2-urano","nome":"Fase 2: Urano","cat":"passiva","tags":["buff"],"txt":"Quando cai abaixo de **312 PV**, o Ozymandias arranca o chão inteiro. Daí em diante, ele faz **duas Ações de Ambiente por rodada** e tem **4 ações lendárias**."},
+  {"id":"proibicao","nome":"Proibição","cat":"reacao","sem":1,"tags":["controle","movimento"],"txt":"*Gatilho:* uma criatura a até 60 m tenta reviver a Rafaela, ou tocar no corpo dela com uma cura. O Ozymandias **teletransporta essa criatura** 30 m para um ponto que ele vê, ou **inverte a gravidade** debaixo dela. A magia ou o efeito falha, mas o espaço ou o uso não é gasto. Sem salvaguarda. *\"Isso é meu agora.\"*"},
+  {"id":"desvio-orbital","nome":"Desvio Orbital","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* o Ozymandias é acertado por um ataque à distância. O projétil muda de rumo e acerta outra criatura a até 9 m dele, escolhida por ele (role o mesmo dano)."},
+  {"id":"l-mao","nome":"Mão","cat":"lend","par":"custa 1","tags":["dano","movimento"],"txt":"Ele faz um ataque de Mão de Órbita.","custo":1,"ref":"mao-de-orbita"},
+  {"id":"l-cobranca","nome":"Cobrança","cat":"lend","par":"custa 1","tags":["debuff"],"txt":"Ele usa Cobrança.","custo":1,"ref":"cobranca"},
+  {"id":"l-troca-de-lugar","nome":"Troca de Lugar","cat":"lend","par":"custa 1","sem":1,"tags":["movimento","controle"],"txt":"Duas criaturas a até 36 m dele trocam de lugar, sem salvaguarda. Ele pode ser uma delas.","custo":1},
+  {"id":"l-pedra","nome":"Pedra","cat":"lend","par":"custa 2","tags":["dano","controle"],"txt":"Ele faz um ataque de Pedra Orbital.","custo":2,"ref":"pedra-orbital"},
+  {"id":"l-inverter","nome":"Inverter","cat":"lend","par":"custa 2","tags":["area","movimento","controle"],"txt":"Ele usa Inverter.","custo":2,"ref":"inverter"},
+  {"id":"a-ilhas-flutuantes","nome":"Ilhas Flutuantes","cat":"amb","tags":["movimento","controle"],"txt":"1d4 blocos de terra de 6 × 6 m se soltam do chão e sobem 9 m, levando quem estiver em cima. Quem cair de uma ilha sofre o dano normal de queda.","dano":[{"e":"1d4","t":"blocos de terra","k":"n"}]},
+  {"id":"a-chuva-de-rochas","nome":"Chuva de Rochas","cat":"amb","tags":["area","dano"],"txt":"Três pontos que o Mestre escolhe, cada um com 3 m de raio. Salvaguarda de Des CD 21. *Falha:* **6d10 (33)** contundente. *Sucesso:* metade.","cd":[["Des",21]],"dano":[{"e":"6d10","m":33,"t":"contundente","k":"d"}]},
+  {"id":"a-gravidade-pesada","nome":"Gravidade Pesada","cat":"amb","sem":1,"tags":["controle"],"txt":"Até a próxima contagem 20, deslocamentos de voo caem pela metade, ninguém pode saltar, e quem anda no chão tem o deslocamento reduzido à metade (exceto o Ozymandias e a Raquel). Sem salvaguarda."},
+  {"id":"a-orbita","nome":"Órbita","cat":"amb","tags":["area","movimento","controle"],"txt":"Toda criatura voando faz salvaguarda de For CD 21. *Falha:* é arrastada 9 m em círculo em volta do Ozymandias, para um ponto que ele escolhe.","cd":[["For",21]]}
+]},
+{"id":"anjo","nome":"Anjo","titulo":"O Anjo","img":"img/diabo.jpg","sub":"Celestial Grande. Para as regras do jogo, conta como demônio.","ca":21,"caTxt":"21 (armadura natural)","pv":500,"pvTxt":"500 (40d10 + 280)","desl":"9 m, voo 27 m (pairar)","atr":["26 (+8)","18 (+4)","24 (+7)","18 (+4)","24 (+7)","24 (+7)"],"salv":"Con +14, Sab +14, Car +14","res":"radiante; contundente, cortante e perfurante","imun":"amedrontado, enfeitiçado, exaustão","sent":"visão verdadeira 36 m, Percepção passiva 24","idi":"todos","mus":"continua a da Hildegarda, \"O vos angeli\"","nd":"21 (33.000 XP)","prof":"+7","lend":3,"nh":150,"notaMestre":"Os jogadores veem um demônio: chifres, pele de brasa, asas de couro. É um anjo verdadeiro. Tudo que funciona contra demônios funciona contra ele. Descreva sempre o que eles veem, nunca o que ele é.","lendIntro":"O Anjo pode realizar 3 ações lendárias.","acoes":[
+  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"O Anjo faz três ataques de Espada Flamejante.","multi":[{"lab":"3 × Espada Flamejante","seq":["espada-flamejante","espada-flamejante","espada-flamejante"]}]},
+  {"id":"espada-flamejante","nome":"Espada Flamejante","cat":"acao","tags":["dano"],"txt":"*Ataque Corpo a Corpo com Arma:* +15, alcance 3 m, um alvo. *Acerto:* **3d8 + 8 (21)** cortante mais **4d8 (18)** radiante.","atk":{"k":"cc","b":15},"dano":[{"e":"3d8+8","m":21,"t":"cortante","k":"d"},{"e":"4d8","m":18,"t":"radiante","k":"d"}]},
+  {"id":"asas","nome":"Asas","cat":"bonus","tags":["movimento"],"txt":"O Anjo se teletransporta até 18 m para um espaço que consiga ver."},
+  {"id":"socorro","nome":"Socorro","cat":"bonus","tags":["cura"],"txt":"Hildegarda, se estiver a até 18 m, recupera **40 PV**.","dano":[{"e":"40","m":40,"t":"PV","k":"c"}]},
+  {"id":"julgamento","nome":"Julgamento","cat":"recarga","par":"Recarga 5–6","tags":["area","dano","debuff"],"txt":"Cone de 18 m. Salvaguarda de Sab CD 22. *Falha:* **12d10 (66)** radiante, e a criatura fica **cega** até o fim do próximo turno do Anjo. *Sucesso:* metade e não fica cega.","rec":5,"cd":[["Sab",22]],"dano":[{"e":"12d10","m":66,"t":"radiante","k":"d"}]},
+  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se o Anjo falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
+  {"id":"resistencia-a-magia","nome":"Resistência à Magia","cat":"passiva","tags":["defesa"],"txt":"O Anjo tem vantagem nas salvaguardas contra magias e outros efeitos mágicos."},
+  {"id":"luz-insuportavel","nome":"Luz Insuportável","cat":"passiva","sem":1,"tags":["area","dano"],"txt":"Uma criatura que comece o turno a até 3 m do Anjo sofre **2d10 (11)** radiante, sem salvaguarda.","dano":[{"e":"2d10","m":11,"t":"radiante","k":"d"}]},
+  {"id":"escudo-de-asas","nome":"Escudo de Asas","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* Hildegarda ou o Anjo é acertado por um ataque que o Anjo consegue ver. O dano daquele ataque é reduzido à metade."},
+  {"id":"l-espada","nome":"Espada","cat":"lend","par":"custa 1","tags":["dano"],"txt":"O Anjo faz um ataque de Espada Flamejante.","custo":1,"ref":"espada-flamejante"},
+  {"id":"l-voo","nome":"Voo","cat":"lend","par":"custa 1","tags":["movimento"],"txt":"O Anjo voa até metade do deslocamento de voo sem provocar ataques de oportunidade.","custo":1},
+  {"id":"l-clarao","nome":"Clarão","cat":"lend","par":"custa 2","tags":["area","debuff"],"txt":"Toda criatura a até 9 m faz salvaguarda de Con CD 22. *Falha:* fica **cega** até o fim do próximo turno do Anjo.","custo":2,"cd":[["Con",22]]}
+]}
 ];
 const inmPorId = id => INIMIGOS.find(i => i.id === id) || INIMIGOS[0];
-const inmUso = a => { const x = /^(\d+)\/(luta|volta|turno|rodada)$/.exec(a.uso); return x ? {n:+x[1], por:x[2]} : null; };
-const rolInm = {}; let inmSL = 0;
+const inmAcao = (i, id) => i.acoes.find(a => a.id === id);
+const efe = (i, a) => { const r = a.ref && inmAcao(i, a.ref); return {atk:a.atk || (r && r.atk) || null, cd:a.cd || (r && r.cd) || null, teste:a.teste || (r && r.teste) || null, dano:a.dano || (r && r.dano) || null, via:r || null}; };
+const inmUso = a => { const x = /^(\d+)\/(luta|volta|turno|rodada|dia)$/.exec(a.uso || ''); if (!x) return null; let n = +x[1]; if (a.nVolta && E.m.volta >= a.nVolta[0]) n = a.nVolta[1]; return {n, por:x[2]}; };
+const rolInm = {}, rolAt = {}, rolTip = {}; let inmSL = 0;
+const F2_PV = 312;
+const presN = v => v <= 1 ? 3 : v <= 3 ? 4 : 5;
+const lendMax = i => i.id === 'ozy' && E.m.inm.f2 ? 4 : i.lend;
+const lendGasto = i => Math.min(E.m.inm.lend[i.id] || 0, lendMax(i));
+const ambLim = i => i.id === 'ozy' && E.m.inm.f2 ? 2 : 1;
+const ambEst = i => { const x = E.m.inm.amb[i.id]; return {ant:(x && x.ant) || [], atual:(x && x.atual) || []}; };
+const ambBloq = (i, a) => { const x = ambEst(i); return x.ant.includes(a.id) || (!x.atual.includes(a.id) && x.atual.length >= ambLim(i)); };
 function rolarExpr(ex){
   const x = /^(\d+)d(\d+)(?:\+(\d+))?$/.exec(ex), n = +x[1], f = +x[2], b = +(x[3]||0), rs = [];
   for (let k = 0; k < n; k++) rs.push(1 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * f));
   const t = rs.reduce((p,q) => p + q, 0) + b;
   return {t, txt: ex + ' = ' + t + '  [' + rs.join(' + ') + ']' + (b ? ' + ' + b : '')};
 }
-function inmZerar(porQue){   // zera os usos de um tipo de contagem (luta, volta, turno, rodada); 'luta' também zera recargas
-  const s = E.m.inm;
-  INIMIGOS.forEach(i => i.acoes.forEach(a => { const k = i.id + ':' + a.id, u = inmUso(a);
-    if (u && (porQue === 'luta' || u.por === porQue)) delete s.uso[k];
-    if (porQue === 'luta' && a.uso === 'rec') delete s.rec[k]; }));
-}
+const rolarX = ex => /^\d+$/.test(ex) ? {t:+ex, txt:ex + ' (fixo) = ' + ex} : rolarExpr(ex);
 const rdN = n => 1 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * n);
-const rolTot = {}, rolAp = {}, rasc = {};
+function rolarAtk(b, crit){
+  const n = rdN(20), t = n + b;
+  return {n, t, txt:'d20 [' + n + '] + ' + b + ' = ' + t + (n === 20 ? ' · 20 natural: crítico!' : n === 1 ? ' · 1 natural: erra' : crit && n >= crit ? ' · ' + n + ' natural: crítico se o alvo estiver impedido' : '')};
+}
+const fmtE = e => e.replace('+', ' + ');
+const mdLite = t => { const out = [], re = /\*\*(.+?)\*\*|\*(.+?)\*/g; let p = 0, m; while ((m = re.exec(t))) { if (m.index > p) out.push(t.slice(p, m.index)); out.push(m[1] != null ? el('b',{}, m[1]) : el('i',{}, m[2])); p = re.lastIndex; } if (p < t.length) out.push(t.slice(p)); return out; };
+function inmZerar(porQue){   // zera os usos: luta (também recargas, lendárias, Não Hoje, ambiente, Fase 2), volta, turno ou rodada
+  const s = E.m.inm, grupo = {luta:['luta','dia'], volta:['volta','dia'], turno:['turno'], rodada:['rodada']}[porQue] || [porQue];
+  INIMIGOS.forEach(i => i.acoes.forEach(a => { const k = i.id + ':' + a.id, u = inmUso(a);
+    if (u && grupo.includes(u.por)) delete s.uso[k];
+    (a.subs || []).forEach(b => { if (b.n && grupo.includes('dia')) delete s.uso[k + ':' + b.id]; });
+    if (porQue === 'luta' && a.rec) delete s.rec[k]; }));
+  if (porQue === 'luta') { s.lend = {}; s.nh = {}; s.amb = {}; s.pres = null; s.f2 = false; s.f2man = false; s.raqLonge = false; }
+}
+function novaRodadaInm(){   // vira a rodada: usos 1/rodada, Não Hoje e ambiente (a de agora vira "da rodada anterior")
+  const s = E.m.inm; inmZerar('rodada'); s.nh = {};
+  Object.keys(s.amb).forEach(id => { s.amb[id] = {ant:s.amb[id].atual || [], atual:[]}; });
+}
+const inmNovaVolta = () => { const s = E.m.inm; s.nh = {}; s.amb = {}; };
+const rolTot = {}, rolAp = {}, rasc = {}, rnh = {};
 const inmDeLinha = c => { const sc = slugInm(c.n || ''); return INIMIGOS.find(i => sc === i.id || sc === slugInm(i.nome) || sc.startsWith(slugInm(i.nome) + '-')); };
-const inmEsgotada = (i, a) => { const s = E.m.inm, k = i.id + ':' + a.id, u = inmUso(a), r = s.rec[k]; return !!((u && (s.uso[k] || 0) >= u.n) || (a.uso === 'rec' && r && !r.ok)); };
-const ajustaPV = (c, d) => { c.pv = Math.max(0, c.pv + d); if (c.max) c.pv = Math.min(c.max, c.pv); };
-function inicioTurno(){   // o turno caiu numa linha de inimigo: mostra, zera 1/turno e rola as recargas dele
+const inmEsgotada = (i, a) => { const s = E.m.inm, k = i.id + ':' + a.id, u = inmUso(a), r = s.rec[k];
+  return !!((u && (s.uso[k] || 0) >= u.n) || (a.rec && r && !r.ok) || (a.cat === 'lend' && a.custo > lendMax(i) - lendGasto(i)) || (a.desdeRodada && E.m.rodada < a.desdeRodada) || (a.cat === 'amb' && ambBloq(i, a))); };
+const raquelAtiva = () => E.m.ini.some(c => inmDeLinha(c) === inmPorId('raquel') && c.pv > 0);
+const caDe = i => i.id === 'ozy' ? (raquelAtiva() && !E.m.inm.raqLonge ? 23 : 21) : i.ca;
+function vigia(){   // Ozymandias abaixo de 312 PV: Fase 2 (aviso automático, uma vez)
+  const s = E.m.inm, o = inmPorId('ozy'), c = E.m.ini.find(x => inmDeLinha(x) === o);
+  if (c && c.pv < F2_PV && !s.f2 && !s.f2man) { s.f2 = true; const t = 'Ozymandias abaixo de ' + F2_PV + ' PV: Fase 2 (Urano). Duas Ações de Ambiente por rodada e 4 ações lendárias.'; s.av.push(t); toast(t); return true; }
+  return false;
+}
+function danoNomeado(c, n){   // Não Hoje: passou do limite de dano na rodada, o que vier a mais vale pela metade
+  const i = inmDeLinha(c), s = E.m.inm; if (!i) return {n, nota:''};
+  const lim = i.nh, cur = s.nh[i.id] || 0; let ef = n;
+  if (cur >= lim) ef = Math.floor(n / 2); else if (cur + n > lim) ef = (lim - cur) + Math.floor((cur + n - lim) / 2);
+  s.nh[i.id] = cur + ef; return {n:ef, nota:ef !== n ? ' (Não Hoje: ' + n + ' → ' + ef + ')' : ''};
+}
+const ajustaPV = (c, d) => { const v0 = c.pv; c.pv = Math.max(0, c.pv + d); if (c.max) c.pv = Math.min(c.max, c.pv);
+  const i = inmDeLinha(c); if (i && c.pv < v0) E.m.inm.nh[i.id] = (E.m.inm.nh[i.id] || 0) + (v0 - c.pv); vigia(); };
+function inicioTurno(){   // o turno caiu numa linha de inimigo: mostra, recupera lendárias, zera 1/turno e rola as recargas dele
   const m = E.m, s = m.inm, c = m.ini[m.turno]; s.av = []; const i = c && inmDeLinha(c); if (!i) return;
-  s.todos = false; s.sel = i.id;
+  s.todos = false; s.sel = i.id; delete s.lend[i.id];
   i.acoes.forEach(a => { const k = i.id + ':' + a.id, u = inmUso(a); if (u && u.por === 'turno') delete s.uso[k];
-    const r = s.rec[k]; if (a.uso === 'rec' && r && !r.ok) { const d = rdN(6); s.rec[k] = {r:d, ok:d >= 5}; s.av.push(i.nome + ': ' + a.nome + (d >= 5 ? ' recarregou (' + d + ')' : ' não recarregou (' + d + ')')); } });
+    const r = s.rec[k]; if (a.rec && r && !r.ok) { const d = rdN(6); s.rec[k] = {r:d, ok:d >= a.rec}; s.av.push(i.nome + ': ' + a.nome + (d >= a.rec ? ' recarregou (' + d + ')' : ' não recarregou (' + d + ')')); } });
 }
 // ---------- Desfazer (um nível por ação, pilha de 5; só em memória, não entra no estado salvo) ----------
 let pilhaDes = [], toastT = 0, ofer = null;
-const snapM = () => { const m = E.m, n = m.inm; return JSON.stringify({ini:m.ini, turno:m.turno, rodada:m.rodada, inm:{uso:n.uso, rec:n.rec, ult:n.ult, av:n.av, sel:n.sel, todos:n.todos}}); };
+const SNAP_K = ['uso','rec','ult','av','sel','todos','lend','nh','amb','pres','f2','f2man','raqLonge'];
+const snapM = () => { const m = E.m, n = m.inm, o = {}; SNAP_K.forEach(k => { o[k] = n[k]; }); return JSON.stringify({ini:m.ini, turno:m.turno, rodada:m.rodada, inm:o}); };
 function anuncia(t){ const l = document.getElementById('vezLive'); if (l) { l.textContent = ''; setTimeout(() => { l.textContent = t; }, 30); } }
 function toast(msg, acao){
   const t = document.getElementById('toast'); if (!t) return; clearTimeout(toastT);
@@ -1128,7 +1294,7 @@ function passo(dir){
   let j = v, k = 1, idx = v;
   for (; k <= n; k++) { idx = v + dir * k; j = ((idx % n) + n) % n; if (zero || m.ini[j].pv > 0) break; }
   m.rodada = Math.max(1, m.rodada + Math.floor(idx / n)); m.turno = j;
-  if (m.rodada !== r0 && dir > 0) inmZerar('rodada');
+  if (m.rodada !== r0 && dir > 0) novaRodadaInm();
   if (dir > 0) { inicioTurno(); if (m.rodada !== r0) s.av.unshift('Rodada ' + m.rodada + ': usos 1/rodada zerados.'); s.av.push(...fim); } else { s.av = []; focoTurno(); }
   const c = m.ini[m.turno]; vibra(); anuncia('Vez de ' + c.n + '. Rodada ' + m.rodada + '.');
 }
@@ -1144,14 +1310,14 @@ const proxTurno = () => desf('Próximo turno', () => passo(1));
 const antTurno = () => desf('Turno anterior', () => passo(-1));
 function aplicar(i, a, k, metade){
   const m = E.m, s = m.inm, c = m.ini.find(x => x.n === s.alvo) || m.ini[0]; if (!c) return;
-  const dano = a.tags.includes('dano') || a.tags.includes('area'), t = rolTot[k], v0 = c.pv; let n = t, msg;
-  if (dano) { if (metade) n = Math.floor(t / 2); c.pv = Math.max(0, c.pv - n); msg = '−' + n + (metade ? ' (metade)' : '') + ' em ' + c.n + ': PV ' + v0 + ' → ' + c.pv; }
+  const dano = rolTip[k] === 'd', t = rolTot[k], v0 = c.pv; let n = t, msg, nota = '';
+  if (dano) { if (metade) n = Math.floor(t / 2); const r = danoNomeado(c, n); n = r.n; nota = r.nota; c.pv = Math.max(0, c.pv - n); msg = '−' + n + (metade ? ' (metade)' : '') + nota + ' em ' + c.n + ': PV ' + v0 + ' → ' + c.pv; }
   else { c.pv = c.max ? Math.min(c.max, c.pv + n) : c.pv + n; msg = '+' + n + ' em ' + c.n + ': PV ' + v0 + ' → ' + c.pv; }
-  rolAp[k] = msg; s.ult.unshift({t:i.nome + ': ' + a.nome + ' → ' + msg, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); salvar(); desenhar();
+  vigia(); rolAp[k] = msg; s.ult.unshift({t:i.nome + ': ' + a.nome + ' → ' + msg, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); salvar(); desenhar();
 }
 function aplicarUI(i, a, k){
   const m = E.m, s = m.inm; if (rolTot[k] == null) return null;
-  const dano = a.tags.includes('dano') || a.tags.includes('area'), cura = a.tags.includes('cura'); if (!dano && !cura) return null;
+  const dano = rolTip[k] === 'd', cura = rolTip[k] === 'c'; if (!dano && !cura) return null;
   if (!m.ini.length) return el('div',{class:'inm-ap'}, el('span',{class:'inm-rot'}, 'Ponha alguém na iniciativa para aplicar o resultado.'));
   const pad = (dano ? m.ini.find(c => inmDeLinha(c) !== i) : m.ini.find(c => inmDeLinha(c) === i)) || m.ini[0];
   const alvo = m.ini.some(c => c.n === s.alvo) ? s.alvo : pad.n, t = rolTot[k];
@@ -1167,16 +1333,21 @@ function ctlIni(i){
   if (c) return el('div',{class:'inm-ini'}, el('span',{class:'inm-na'}, 'Na iniciativa ✓'), el('b',{class:'pvn'}, 'PV ' + c.pv + (c.max ? '/' + c.max : '')),
     el('div',{class:'inm-pv'}, ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq', 'aria-label':(d > 0 ? 'Mais ' : 'Menos ') + Math.abs(d) + ' PV de ' + i.nome, onclick:() => desf((d > 0 ? '+' : '−') + Math.abs(d) + ' PV em ' + c.n, () => ajustaPV(c, d))}, (d > 0 ? '+' : '−') + Math.abs(d)))));
   const r = rasc[i.id] || (rasc[i.id] = {});
-  const pv = el('input',{type:'number', inputmode:'numeric', min:'1', placeholder:'PV', class:'q', 'aria-label':'PV de ' + i.nome, value:r.pv ?? '', oninput:ev => { r.pv = ev.target.value; ev.target.classList.remove('inv'); }});
+  const pv = el('input',{type:'number', inputmode:'numeric', min:'1', placeholder:'PV', class:'q', 'aria-label':'PV de ' + i.nome + ' (ficha: ' + i.pv + ')', value:r.pv ?? i.pv, oninput:ev => { r.pv = ev.target.value; ev.target.classList.remove('inv'); }});
   const ini = el('input',{type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa de ' + i.nome, value:r.ini ?? '', oninput:ev => { r.ini = ev.target.value; }});
   return el('div',{class:'inm-ini'}, pv, ini,
     el('button',{class:'peq', 'aria-label':'Rolar d20 de iniciativa', onclick:() => { r.ini = String(rdN(20)); ini.value = r.ini; }}, '🎲'),
-    el('button',{class:'inm-poe', onclick:() => { const v = Math.floor(+r.pv); if (!(v > 0)) { pv.classList.add('inv'); pv.focus(); return; }
+    el('button',{class:'inm-poe', onclick:() => { const v = Math.floor(+(r.pv ?? i.pv)); if (!(v > 0)) { pv.classList.add('inv'); pv.focus(); return; }
       desf(i.nome + ' na iniciativa', () => { m.ini.push({n:i.nome, ini:+r.ini || 0, pv:v, max:v, cond:''}); delete rasc[i.id]; }); }}, 'Pôr na iniciativa'));
 }
 const barraAlta = () => { const b = document.getElementById('barra'); return !!b && !b.classList.contains('compacta') && b.offsetHeight > innerHeight * 0.3; };
-const ACAO_COND = {'esau:laco':[['Impedido','Sem reações'],1], 'esau:arpao-de-corrente':[['Impedido'],1], 'jael:estaca':[['Cravado'],1], 'jael:pino-na-testa':[['Atordoado'],1],
-  'raquel:golpe-de-escudo':[['Derrubado'],0], 'ozy:pedra-orbital':[['Derrubado'],0], 'ozy:inverter':[['Derrubado'],0], 'ozy:peso-da-conta':[['Deslocamento 0'],1]};
+const ACAO_COND = {'esau:arpao-de-corrente':[['Impedido'],0], 'esau:l-arpao':[['Impedido'],0], 'esau:cao-de-corrente':[['Derrubado'],0], 'esau:l-matilha':[['Derrubado'],0], 'esau:laco':[['Impedido'],0],
+  'esau:l-corrente-do-chao':[['Impedido'],0], 'esau:a-correntes-brotam':[['Impedido'],0], 'esau:marca-do-cacador':[['Marcado'],0],
+  'jael:estaca':[['Cravado'],1], 'jael:arremessar-estaca':[['Cravado'],1], 'jael:l-estaca-arremessada':[['Cravado'],1], 'jael:a-estacas-do-chao':[['Cravado'],0], 'jael:pino-na-testa':[['Atordoado'],1],
+  'jael:batida-do-tambor':[['Derrubado'],0], 'jael:l-batida':[['Derrubado'],0], 'jael:l-rufar':[['Amedrontado'],1],
+  'raquel:golpe-de-escudo':[['Derrubado'],0], 'raquel:investida-de-falange':[['Derrubado'],0],
+  'ozy:pedra-orbital':[['Derrubado'],0], 'ozy:l-pedra':[['Derrubado'],0], 'ozy:peso-da-conta':[['Derrubado','Deslocamento 0'],1],
+  'hildegarda:sino-de-bronze':[['Amedrontado'],1], 'hildegarda:l-hino':[['Sem reações'],1], 'anjo:julgamento':[['Cego'],1], 'anjo:l-clarao':[['Cego'],1]};
 function ofertaUI(i, a, k){
   const m = E.m, s = m.inm, [cs, dur] = ACAO_COND[k];
   if (!m.ini.length) return el('div',{class:'inm-ap oferta'}, el('span',{class:'inm-rot'}, 'Ponha alguém na iniciativa para aplicar a condição (' + cs.join(' + ') + ').'), el('button',{class:'peq', 'aria-label':'Dispensar', onclick:() => { ofer = null; desenhar(); }}, '×'));
@@ -1186,31 +1357,61 @@ function ofertaUI(i, a, k){
     el('button',{class:'inm-aplic', onclick:() => { const c = m.ini.find(x => x.n === alvo); if (!c) return; desf(cs.join(' + ') + ' em ' + alvo, () => { cs.forEach(x => poeCond(c, x, dur)); ofer = null; }); }}, cs.join(' + ') + txtDur(dur)),
     el('button',{class:'peq', 'aria-label':'Dispensar a oferta de condição', onclick:() => { ofer = null; desenhar(); }}, '×'));
 }
+function rolarMulti(i, mu){   // sequência de ataques da ficha: d20 + bônus e dados de cada um
+  let total = 0;
+  const linhas = mu.seq.map((id, n) => { const b = inmAcao(i, id), ef = efe(i, b), p = [];
+    if (ef.atk) p.push(rolarAtk(ef.atk.b, ef.atk.crit).txt);
+    (ef.dano || []).filter(d => d.k === 'd').forEach(d => { const r = rolarX(d.e); total += r.t; p.push(fmtE(d.e) + ' ' + d.t + ' = ' + r.t); });
+    if (ef.cd) p.push(ef.cd.map(c => c[0] + ' CD ' + c[1]).join(', '));
+    return (n + 1) + ') ' + b.nome + ': ' + p.join(' · '); });
+  return linhas.join('\n') + '\nSe todos acertarem/falharem a salvaguarda: ' + total + ' de dano no total.';
+}
 function cartaAcao(i, a, pref){
-  const m = E.m, s = m.inm, k = i.id + ':' + a.id, u = inmUso(a), usado = s.uso[k] || 0, rec = s.rec[k], gasta = a.uso === 'rec' && rec && !rec.ok;
-  const esgotada = (u && usado >= u.n) || gasta;
-  const fav = !!s.fav[k];
+  const m = E.m, s = m.inm, k = i.id + ':' + a.id, u = inmUso(a), usado = s.uso[k] || 0, rec = s.rec[k], gasta = !!(a.rec && rec && !rec.ok);
+  const ef = efe(i, a), esgotada = inmEsgotada(i, a), fav = !!s.fav[k], trava = a.desdeRodada && m.rodada < a.desdeRodada;
+  const mostraPar = a.par && !a.rec && !a.custo && !a.uso;
   const cab = el('div',{class:'inm-cab'}, pref ? el('span',{class:'inm-pref'}, i.nome + ' ·') : null, el('b',{class:'inm-nome'}, a.nome),
-    ...a.tipo.map(t => el('span',{class:'inm-tipo t-'+t}, TIPOS_ACAO[t])),
+    a.sem ? el('span',{class:'inm-sem'}, '◆ sem salvaguarda') : null,
+    el('span',{class:'inm-tipo t-' + a.cat}, TIPOS_ACAO[a.cat] + (a.rec ? ' ' + (a.rec === 6 ? '6' : '5–6') : '') + (a.custo ? ' · custa ' + a.custo : '') + (mostraPar ? ' · ' + a.par : '')),
     el('button',{class:'inm-fav', 'aria-pressed':fav ? 'true' : 'false', 'aria-label':(fav ? 'Tirar das favoritas: ' : 'Favoritar: ') + a.nome, onclick:mudar(() => { if (fav) delete s.fav[k]; else s.fav[k] = 1; })}, fav ? '⭐' : '☆'));
-  const etq = el('div',{class:'inm-tags'}, ...a.tags.map(t => el('span',{class:'inm-tag', style:'--tc:'+TAGS[t][2]}, TAGS[t][0] + ' ' + TAGS[t][1])));
+  const etq = el('div',{class:'inm-tags'}, ...a.tags.map(t => el('span',{class:'inm-tag', style:'--tc:' + TAGS[t][2]}, TAGS[t][0] + ' ' + TAGS[t][1])));
+  const chips = [...(ef.cd || []).map(c => el('span',{class:'inm-cd'}, c[0] + ' CD ' + c[1])), ...(ef.teste || []).map(c => el('span',{class:'inm-cd te'}, 'Teste ' + c[0] + ' CD ' + c[1]))];
   const uso = el('div',{class:'inm-uso'});
-  if (u) { uso.append(...Array.from({length:u.n}, (_, d) => el('button',{class:'inm-bol'+(d < usado ? ' on' : ''), 'aria-label':'Uso '+(d+1)+' de '+u.n+(d < usado ? ', gasto' : ', disponível'), 'aria-pressed':d < usado ? 'true' : 'false',
-      onclick:mudar(() => { s.uso[k] = d < usado ? d : d + 1; })}, el('i'))),
-    el('span',{class:'inm-rot'}, u.n + '/' + (u.por === 'luta' ? 'luta' : u.por === 'volta' ? 'volta' : u.por) + ' · restam ' + (u.n - usado))); }
-  else if (a.uso === 'rec') uso.append(el('button',{class:'inm-rec', onclick:mudar(() => { const r = 1 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * 6); s.rec[k] = {r, ok:r >= 5}; })}, '🎲 Recarga 5–6'),
-    el('span',{class:'inm-rot '+(gasta ? 'gasta' : 'pronta')}, gasta ? 'Gasta · d6 = ' + rec.r : rec ? 'Recarregou · d6 = ' + rec.r : 'Pronta'));
-  else if (a.uso === 'vontade') uso.append(el('span',{class:'inm-rot'}, 'À vontade'));
-  const dados = [...new Set(a.txt.match(/\d+d\d+(?:\+\d+)?/g) || [])].slice(0,3);
-  const lin = el('div',{class:'inm-lin'},
-    el('button',{class:'inm-usar', 'aria-label':'Usar ' + a.nome, onclick:() => desf('Usar ' + a.nome, () => {
+  const bols = (kk, n, us, lab) => uso.append(...Array.from({length:n}, (_, d) => el('button',{class:'inm-bol' + (d < us ? ' on' : ''), 'aria-label':lab + ': uso ' + (d + 1) + ' de ' + n + (d < us ? ', gasto' : ', disponível'), 'aria-pressed':d < us ? 'true' : 'false',
+      onclick:mudar(() => { s.uso[kk] = d < us ? d : d + 1; })}, el('i'))));
+  if (u) { bols(k, u.n, usado, a.nome); uso.append(el('span',{class:'inm-rot'}, u.n + '/' + u.por + ' · restam ' + (u.n - usado))); }
+  else if (a.rec) uso.append(el('button',{class:'inm-rec', onclick:mudar(() => { const r = rdN(6); s.rec[k] = {r, ok:r >= a.rec}; })}, '🎲 Recarga ' + (a.rec === 6 ? '6' : '5–6')),
+    el('span',{class:'inm-rot ' + (gasta ? 'gasta' : 'pronta')}, gasta ? 'Gasta · d6 = ' + rec.r : rec ? 'Recarregou · d6 = ' + rec.r : 'Pronta'));
+  if (a.subs) a.subs.forEach(b => { const kk = k + ':' + b.id, us = s.uso[kk] || 0;
+    uso.append(el('div',{class:'inm-sub'}, el('span',{class:'inm-rot'}, b.nome + (b.n ? ' · ' + b.n + '/dia' : ' · à vontade')), ...(b.n ? Array.from({length:b.n}, (_, d) => el('button',{class:'inm-bol' + (d < us ? ' on' : ''), 'aria-label':b.nome + ': uso ' + (d + 1) + ' de ' + b.n + (d < us ? ', gasto' : ', disponível'), 'aria-pressed':d < us ? 'true' : 'false', onclick:mudar(() => { s.uso[kk] = d < us ? d : d + 1; })}, el('i'))) : []))); });
+  if (a.cat === 'lend') uso.append(el('span',{class:'inm-rot'}, 'Custo ' + a.custo + ' · restam ' + (lendMax(i) - lendGasto(i)) + ' de ' + lendMax(i) + (ef.via && a.ref ? ' · usa ' + ef.via.nome : '')));
+  if (trava) uso.append(el('span',{class:'inm-rot gasta'}, 'Só a partir da ' + a.desdeRodada + 'ª rodada (agora: rodada ' + m.rodada + ')'));
+  else if (a.desdeRodada) uso.append(el('span',{class:'inm-rot pronta'}, 'Disponível (rodada ' + m.rodada + ')'));
+  const lin = el('div',{class:'inm-lin'});
+  if (a.cat === 'amb') { const x = ambEst(i), on = x.atual.includes(a.id), ant = x.ant.includes(a.id);
+    lin.append(el('button',{class:'inm-usar', 'aria-pressed':on ? 'true' : 'false', disabled:!on && ambBloq(i, a), 'aria-label':(on ? 'Desmarcar ' : 'Usar nesta rodada: ') + a.nome,
+      onclick:() => desf('Ambiente: ' + a.nome, () => { const e = s.amb[i.id] || (s.amb[i.id] = {ant:[], atual:[]}); if (on) e.atual = e.atual.filter(y => y !== a.id); else { e.atual.push(a.id); s.ult.unshift({t:i.nome + ' (ambiente): ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); } ofer = ACAO_COND[k] && !on ? {k} : null; })},
+      on ? '✓ Usada nesta rodada' : 'Usar nesta rodada'),
+      ...(ant ? [el('span',{class:'inm-rot gasta'}, 'Usada na rodada anterior: não repete')] : []));
+  } else if (a.cat === 'lend') {
+    const ok = a.custo <= lendMax(i) - lendGasto(i);
+    lin.append(el('button',{class:'inm-usar', 'aria-disabled':ok ? 'false' : 'true', 'aria-label':'Usar ' + a.nome + ' (custa ' + a.custo + ')', onclick:() => { if (!ok) { toast('Sem ações lendárias suficientes (custa ' + a.custo + ').'); return; }
+      desf('Lendária: ' + a.nome, () => { s.lend[i.id] = lendGasto(i) + a.custo; ofer = ACAO_COND[k] ? {k} : null; s.ult.unshift({t:i.nome + ' (lendária): ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); }); }}, 'Usar (−' + a.custo + ')'));
+  } else if (a.cat !== 'passiva' || u) {
+    lin.append(el('button',{class:'inm-usar', 'aria-label':'Usar ' + a.nome, onclick:() => desf('Usar ' + a.nome, () => {
       if (u && usado < u.n) s.uso[k] = usado + 1;
-      if (a.uso === 'rec') s.rec[k] = {r:rec ? rec.r : 0, ok:false};
+      if (a.rec) s.rec[k] = {r:rec ? rec.r : 0, ok:false};
       ofer = ACAO_COND[k] ? {k} : null;
-      s.ult.unshift({t:i.nome + ': ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); })}, 'Usar'),
-    ...dados.map(d => el('button',{class:'inm-dado', onclick:() => { const r = rolarExpr(d); rolInm[k] = r.txt; rolTot[k] = r.t; delete rolAp[k]; desenhar(); }}, '🎲 ' + d)));
-  return el('div',{class:'inm-card'+(esgotada ? ' esgotada' : '')+(a.tipo[0] === 'passiva' && a.tipo.length === 1 ? ' pass' : '')}, cab, etq, el('p',{class:'inm-txt'}, a.txt), uso, lin,
-    rolInm[k] ? el('div',{class:'inm-res', role:'status'}, rolInm[k]) : null, rolInm[k] ? aplicarUI(i, a, k) : null, ofer && ofer.k === k ? ofertaUI(i, a, k) : null);
+      s.ult.unshift({t:i.nome + ': ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); })}, 'Usar'));
+  }
+  if (i.id === 'ozy' && a.id === 'resistencia-lendaria') lin.append(el('button',{class:'peq', 'aria-label':'Um jogador usou Resistência Lendária: o Ozymandias recupera uma (Avareza)', onclick:() => desf('Avareza: recupera 1 Resistência', () => { s.uso[k] = Math.max(0, usado - 1); })}, 'Avareza: recuperar 1'));
+  if (ef.atk) lin.append(el('button',{class:'inm-atk', 'aria-label':'Rolar ataque de ' + a.nome + ' com bônus +' + ef.atk.b, onclick:() => { const r = rolarAtk(ef.atk.b, ef.atk.crit); rolAt[k] = r.txt; desenhar(); }}, 'Ataque +' + ef.atk.b));
+  (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk', onclick:() => { rolInm[k] = rolarMulti(i, mu); delete rolTot[k]; delete rolAp[k]; delete rolTip[k]; desenhar(); }}, '🎲 ' + mu.lab)));
+  (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = rolarX(d.e); rolInm[k] = r.txt + ' ' + d.t; rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; desenhar(); }},
+    '🎲 ' + (d.k === 'c' ? 'Curar ' : '') + fmtE(d.e) + ' ' + d.t)));
+  return el('div',{class:'inm-card' + (esgotada ? ' esgotada' : '') + (a.cat === 'passiva' ? ' pass' : '')}, cab, etq, chips.length ? el('div',{class:'inm-chs'}, ...chips) : null, el('p',{class:'inm-txt'}, ...mdLite(a.txt)), uso.children.length ? uso : null, lin.children.length ? lin : null,
+    rolAt[k] ? el('div',{class:'inm-res', role:'status'}, rolAt[k]) : null,
+    rolInm[k] ? el('div',{class:'inm-res multi', role:'status'}, rolInm[k]) : null, rolInm[k] ? aplicarUI(i, a, k) : null, ofer && ofer.k === k ? ofertaUI(i, a, k) : null);
 }
 let lutaAberta = false;
 const LUTA_PADRAO = ['esau','jael','ezequiel','hildegarda','raquel','ozy'];
@@ -1219,10 +1420,12 @@ function iniciarLuta(escolhidos){
   desf('Luta iniciada', () => {
     const ids = escolhidos.map(x => x.i.id);
     m.ini = m.ini.filter(c => { const i = inmDeLinha(c); return !(i && ids.includes(i.id)); });
-    escolhidos.forEach(x => m.ini.push({n:x.i.nome, ini:rdN(20), pv:x.pv, max:x.pv, cond:'', cs:[]}));
+    escolhidos.forEach(x => m.ini.push({n:x.i.nome, ini:x.i.id === 'ozy' && m.volta >= 4 ? Math.max(rdN(20), rdN(20)) : rdN(20), pv:x.pv, max:x.pv, cond:'', cs:[]}));
     m.ini.sort((p, q) => q.ini - p.ini); m.turno = 0; m.rodada = 1;
     inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; s.alvo = ''; ofer = null; condAberta = null; lutaAberta = false;
     inicioTurno(); focoTurno();
+    if (ids.includes('esau')) s.av.push('Esaú: Direito de Primogenitura. Na 1ª rodada ele age antes de todos, seja qual for a iniciativa.');
+    if (ids.includes('ozy') && m.volta >= 4) s.av.push('Ozymandias: Memória das Voltas. Vantagem na iniciativa (já rolada com vantagem); o 1º alvo é quem segura a flor.');
     const sem = m.ini.filter(c => !inmDeLinha(c) && !c.ini).map(c => c.n);
     if (sem.length) s.av.push('Defina a iniciativa de ' + sem.join(', ') + ' e toque em “Ordenar por iniciativa”.');
     const c = m.ini[0]; vibra(); anuncia('Luta iniciada. Vez de ' + c.n + '.');
@@ -1232,7 +1435,7 @@ function formLuta(){
   const m = E.m, s = m.inm, linhas = [];
   INIMIGOS.forEach(i => {
     const marcado = i.id in s.lutaSel ? !!s.lutaSel[i.id] : LUTA_PADRAO.includes(i.id);
-    const pv = el('input',{type:'number', inputmode:'numeric', min:'1', class:'q', placeholder:'PV', 'aria-label':'PV de ' + i.nome, value:s.pvLuta[i.id] || '', disabled:!marcado,
+    const pv = el('input',{type:'number', inputmode:'numeric', min:'1', class:'q', placeholder:'PV', 'aria-label':'PV de ' + i.nome + ' (ficha: ' + i.pv + ')', value:s.pvLuta[i.id] || i.pv, disabled:!marcado,
       oninput:ev => { s.pvLuta[i.id] = ev.target.value; ev.target.classList.remove('inv'); salvar(); }});
     const ck = el('input',{type:'checkbox', checked:marcado, onchange:ev => { s.lutaSel[i.id] = ev.target.checked; pv.disabled = !ev.target.checked; salvar(); }});
     linhas.push({i, ck, pv, el:el('div',{class:'luta-l'}, el('label',{}, ck, el('img',{src:i.img, alt:''}), el('span',{}, i.nome)), pv)});
@@ -1244,60 +1447,137 @@ function formLuta(){
     iniciarLuta(esc.map(l => ({i:l.i, pv:Math.floor(+l.pv.value)})));
   };
   return el('div',{class:'luta', role:'group', 'aria-label':'Iniciar luta'},
-    el('p',{class:'sub', style:'margin:0 0 6px'}, 'Marque quem entra, digite o PV de cada um (fica lembrado). Cada um rola 1d20 de iniciativa, a ordem é refeita e os usos por luta e as recargas voltam ao início. Quem já está na lista (jogadores) é mantido.'),
+    el('p',{class:'sub', style:'margin:0 0 6px'}, 'Marque quem entra. O PV já vem da ficha (Esaú 420, Jael 513, Ezequiel 375, Hildegarda 427, Raquel 460, Ozymandias 625) e pode ser editado. Cada um rola 1d20 de iniciativa, a ordem é refeita e os usos por luta e por dia, as recargas, as ações lendárias e o Não Hoje voltam ao início. Quem já está na lista (jogadores) é mantido.'),
     ...linhas.map(l => l.el),
     el('div',{class:'lin2'}, el('button',{class:'inm-aplic', onclick:go}, '🎲 Rolar iniciativa e começar'), el('button',{onclick:() => { lutaAberta = false; desenhar(); }}, 'Cancelar')));
 }
+// ---------- Regras do Mestre, por inimigo ----------
+const AVISOS = i => { const m = E.m, v = m.volta, r = m.rodada, o = [];
+  const add = (t, agora) => o.push({t, agora:!!agora});
+  if (i.id === 'esau') add('Direito de Primogenitura: na 1ª rodada age antes de todos', r === 1);
+  if (i.id === 'ezequiel') add(v >= 2 ? 'Já Vi Isso ativo (volta ' + v + '): vantagem na salvaguarda ou ataque com desvantagem se repetirem algo de uma volta anterior' : 'Já Vi Isso: só a partir da 2ª volta', v >= 2);
+  if (i.id === 'hildegarda') add(r >= 3 ? 'O vos angeli disponível (rodada ' + r + '): os anjos vêm, a menos que ela esteja incapacitada, silenciada ou morta antes do turno dela na 3ª rodada' : 'O vos angeli: só a partir da 3ª rodada', r >= 3);
+  if (i.id === 'raquel') { add('Só luta junto com o Ozymandias'); add('Juramento: dá +2 de CA a ele (CA 23) a até 9 m'); }
+  if (i.id === 'ozy') add(v >= 4 ? 'Memória das Voltas (volta ' + v + '): vantagem na iniciativa; 1º alvo é quem segura a flor' : 'Memória das Voltas: só a partir da 4ª volta', v >= 4);
+  if (i.id === 'anjo') { add('Conta como demônio para as regras do jogo', true); add('Descreva o que eles veem, nunca o que ele é', true); }
+  return o; };
+function pressUI(){
+  const s = E.m.inm, v = E.m.volta, n = presN(v), p = s.pres, atual = p && p.v === v;
+  const dados = p ? p.d.map((d, x) => el('span',{class:'inm-pdw'},
+    el('button',{class:'inm-die' + (d.u ? ' usado' : ''), 'aria-pressed':d.u ? 'true' : 'false', 'aria-label':'Dado de Presságio ' + (x + 1) + ': ' + d.v + (d.u ? ', usado' : ', disponível') + '. Toque para marcar ou desmarcar', onclick:mudar(() => { d.u = d.u ? 0 : 1; })}, String(d.v)),
+    d.u ? null : el('button',{class:'peq', 'aria-label':'Girar a Roda: rolar de novo o dado ' + (x + 1) + ' (' + d.v + ')', onclick:() => desf('Girar a Roda', () => { d.v = rdN(20); })}, '↻'))) : [];
+  return el('div',{class:'inm-pres'}, el('b',{}, 'Presságio Maior · volta ' + v + ': ' + n + ' dados de d20'),
+    el('div',{class:'inm-pd'}, ...dados),
+    p && !atual ? el('span',{class:'inm-rot gasta'}, 'Estes dados são da volta ' + p.v + '. Role de novo para a volta ' + v + '.') : null,
+    el('div',{class:'inm-lin'},
+      el('button',{class:'inm-atk', onclick:() => desf('Presságio rolado', () => { s.pres = {v, d:Array.from({length:n}, () => ({v:rdN(20), u:0}))}; })}, '🎲 ' + (atual ? 'Rolar de novo ' : 'Rolar ') + n + ' dados'),
+      p && p.d.length < 6 ? el('button',{class:'peq', 'aria-label':'Ler a Roda: acrescentar 1d20 (no máximo 6 guardados)', onclick:() => desf('Ler a Roda', () => { p.d.push({v:rdN(20), u:0}); })}, '+1d20 (Ler a Roda)') : null,
+      p && p.d.some(d => d.u) ? el('span',{class:'inm-rot'}, p.d.filter(d => !d.u).length + ' disponíveis') : null));
+}
+function nhUI(i){
+  const m = E.m, s = m.inm, c = m.ini.find(x => inmDeLinha(x) === i); if (!c) return null;
+  const cur = s.nh[i.id] || 0, lim = i.nh, passou = cur >= lim;
+  const inp = el('input',{type:'number', inputmode:'numeric', min:'1', class:'q', placeholder:'dano', 'aria-label':'Dano dos jogadores em ' + i.nome, value:rnh[i.id] ?? '', oninput:ev => { rnh[i.id] = ev.target.value; }});
+  return el('div',{class:'inm-nh' + (passou ? ' passou' : '')},
+    el('b',{}, 'Não Hoje: ' + cur + ' / ' + lim + ' nesta rodada'),
+    passou ? el('span',{class:'inm-rot gasta'}, 'Limite atingido: o dano a mais é pela metade.') : el('span',{class:'inm-rot'}, 'Faltam ' + (lim - cur) + ' para o limite.'),
+    el('div',{class:'inm-lin'}, inp, el('button',{class:'peq inm-nhbt', onclick:() => { const v = Math.floor(+inp.value); if (!(v > 0)) { inp.focus(); return; }
+      desf('Dano em ' + c.n, () => { const r = danoNomeado(c, v), v0 = c.pv; c.pv = Math.max(0, c.pv - r.n); vigia(); s.ult.unshift({t:'Jogadores → ' + c.n + ': −' + r.n + r.nota + ' (PV ' + v0 + ' → ' + c.pv + ')', r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); delete rnh[i.id]; }); }}, 'Aplicar dano com Não Hoje')));
+}
+function lendUI(i){
+  const s = E.m.inm, mx = lendMax(i), g = lendGasto(i);
+  return el('div',{class:'inm-uso'}, ...Array.from({length:mx}, (_, d) => el('button',{class:'inm-bol' + (d < g ? ' on' : ''), 'aria-label':'Ação lendária ' + (d + 1) + ' de ' + mx + (d < g ? ', gasta' : ', disponível'), 'aria-pressed':d < g ? 'true' : 'false', onclick:mudar(() => { s.lend[i.id] = d < g ? d : d + 1; })}, el('i'))),
+    el('span',{class:'inm-rot'}, 'restam ' + (mx - g) + ' de ' + mx + ' · voltam no início do turno dele'),
+    g ? el('button',{class:'peq', onclick:mudar(() => { delete s.lend[i.id]; })}, 'Recuperar todas') : null);
+}
+function fichaUI(i){
+  const ca = caDe(i), L = (r, v) => v ? el('div',{class:'inm-fl'}, el('b',{}, r), el('span',{}, v)) : null;
+  const ro = ['FOR','DES','CON','INT','SAB','CAR'];
+  return el('details',{class:'inm-ficha', open:abertas.has('fic-' + i.id), ontoggle:ev => { ev.target.open ? abertas.add('fic-' + i.id) : abertas.delete('fic-' + i.id); }},
+    el('summary',{}, 'Ficha · CA ' + ca + ' · PV ' + i.pv + ' · ND ' + i.nd.split(' ')[0]),
+    el('div',{class:'inm-fg'}, el('p',{class:'inm-rot', style:'margin:0'}, i.sub),
+      L('Classe de Armadura', i.id === 'ozy' ? i.caTxt + ' · agora: ' + ca : i.caTxt), L('Pontos de Vida', i.pvTxt), L('Deslocamento', i.desl),
+      el('div',{class:'inm-atr'}, ...i.atr.map((v, x) => el('div',{}, el('b',{}, ro[x]), el('span',{}, v)))),
+      L('Salvaguardas', i.salv), L('Perícias', i.per), L('Resistências a dano', i.res), L('Imunidade a condição', i.imun), L('Sentidos', i.sent), L('Idiomas', i.idi),
+      L('Nível de Desafio', i.nd + ' · Bônus de Proficiência ' + i.prof), L('Música', i.mus),
+      i.notaMestre ? el('div',{class:'inm-nota'}, el('b',{}, 'Para o Mestre. '), i.notaMestre) : null));
+}
 function painelInimigos(){
   const m = E.m, s = m.inm, atual = inmPorId(s.sel), lista = s.todos ? INIMIGOS : [atual];
-  const casa = a => (!s.tag || a.tags.includes(s.tag)) && (!s.tipo || a.tipo.includes(s.tipo));
-  const contaT = {}, contaP = {};
-  lista.forEach(i => i.acoes.forEach(a => { a.tags.forEach(t => { if (!s.tipo || a.tipo.includes(s.tipo)) contaT[t] = (contaT[t]||0) + 1; }); a.tipo.forEach(t => { if (!s.tag || a.tags.includes(s.tag)) contaP[t] = (contaP[t]||0) + 1; }); }));
+  if (vigia()) salvar();
+  const casa = a => (!s.tag || a.tags.includes(s.tag)) && (!s.tipo || a.cat === s.tipo) && (!s.sem || a.sem);
+  const filtrando = !!(s.tag || s.tipo || s.sem);
+  const contaT = {}, contaP = {}; let contaS = 0;
+  lista.forEach(i => i.acoes.forEach(a => { if ((!s.tipo || a.cat === s.tipo) && (!s.sem || a.sem)) a.tags.forEach(t => { contaT[t] = (contaT[t]||0) + 1; });
+    if ((!s.tag || a.tags.includes(s.tag)) && (!s.sem || a.sem)) contaP[a.cat] = (contaP[a.cat]||0) + 1;
+    if ((!s.tag || a.tags.includes(s.tag)) && (!s.tipo || a.cat === s.tipo) && a.sem) contaS++; }));
   const abas = el('div',{class:'inm-abas', id:'inm_abas', role:'tablist', onscroll:ev => { inmSL = ev.target.scrollLeft; }},
     el('button',{class:'inm-aba', role:'tab', 'aria-selected':s.todos ? 'true' : 'false', onclick:mudar(() => { s.todos = true; })}, el('span',{class:'inm-todos'}, '☰'), 'Todos'),
     ...INIMIGOS.map(i => el('button',{class:'inm-aba', role:'tab', 'aria-selected':!s.todos && i.id === atual.id ? 'true' : 'false', onclick:mudar(() => { s.todos = false; s.sel = i.id; })},
       el('img',{src:i.img, alt:''}), i.nome)));
-  const chipT = Object.keys(TAGS).filter(t => contaT[t] || s.tag === t).map(t => el('button',{class:'inm-f', style:'--tc:'+TAGS[t][2], 'aria-pressed':s.tag === t ? 'true' : 'false', onclick:mudar(() => { s.tag = s.tag === t ? '' : t; })}, TAGS[t][0] + ' ' + TAGS[t][1] + ' ', el('small',{}, contaT[t] || 0)));
-  const chipP = Object.keys(TIPOS_ACAO).filter(t => contaP[t] || s.tipo === t).map(t => el('button',{class:'inm-f tp', 'aria-pressed':s.tipo === t ? 'true' : 'false', onclick:mudar(() => { s.tipo = s.tipo === t ? '' : t; })}, TIPOS_ACAO[t] + ' ', el('small',{}, contaP[t] || 0)));
+  const chipT = Object.keys(TAGS).filter(t => contaT[t] || s.tag === t).map(t => el('button',{class:'inm-f', style:'--tc:' + TAGS[t][2], 'aria-pressed':s.tag === t ? 'true' : 'false', onclick:mudar(() => { s.tag = s.tag === t ? '' : t; })}, TAGS[t][0] + ' ' + TAGS[t][1] + ' ', el('small',{}, contaT[t] || 0)));
+  const chipP = ORDEM_CAT.filter(t => contaP[t] || s.tipo === t).map(t => el('button',{class:'inm-f tp', 'aria-pressed':s.tipo === t ? 'true' : 'false', onclick:mudar(() => { s.tipo = s.tipo === t ? '' : t; })}, TIPOS_ACAO[t] + ' ', el('small',{}, contaP[t] || 0)));
   const cur = m.ini[m.turno], curI = cur && inmDeLinha(cur);
-  const puraPass = a => a.tipo.length === 1 && a.tipo[0] === 'passiva' && !inmUso(a);
+  const det = (chave, titulo, filhos, forca) => el('details',{class:'inm-sec', open:abertas.has(chave) || filtrando || !!forca, ontoggle:ev => { if (filtrando || forca) return; ev.target.open ? abertas.add(chave) : abertas.delete(chave); }}, el('summary',{}, titulo), ...filhos);
   const bloco = i => {
-    let ac = i.acoes.filter(a => casa(a) && !s.fav[i.id + ':' + a.id]); if (!ac.length && s.todos) return null;
-    let ocultas = 0; const pas = [];
-    if (s.disp) { const vis = []; ac.forEach(a => { if (inmEsgotada(i, a)) ocultas++; else if (puraPass(a)) pas.push(a); else vis.push(a); }); ac = vis; }
-    const av = [];
-    if (i.percebe) av.push(el('span',{class:'inm-av'+(i.desde && m.volta >= i.desde ? ' agora' : '')}, '⟳ ' + i.percebe + (i.desde && m.volta >= i.desde ? ' (agora: volta ' + m.volta + ')' : '')));
-    i.avisos.forEach(t => av.push(el('span',{class:'inm-av'+(i.rodadaAnjo && /anjos/.test(t) && m.rodada >= i.rodadaAnjo ? ' agora' : '')}, t)));
+    const grupos = {}; let ocultas = 0;
+    ORDEM_CAT.forEach(c => { let ac = i.acoes.filter(a => a.cat === c && casa(a) && !s.fav[i.id + ':' + a.id]);
+      if (s.disp) ac = ac.filter(a => { if (inmEsgotada(i, a)) { ocultas++; return false; } return true; });
+      grupos[c] = ac; });
+    const tot = ORDEM_CAT.reduce((n, c) => n + grupos[c].length, 0); if (!tot && !ocultas && s.todos) return null;
+    const av = AVISOS(i).map(x => el('span',{class:'inm-av' + (x.agora ? ' agora' : '')}, x.t));
+    const cards = c => grupos[c].map(a => cartaAcao(i, a));
+    const x = ambEst(i), lg = lendMax(i) - lendGasto(i);
+    const strip = [];
+    if (i.id === 'ezequiel') strip.push(pressUI());
+    if (i.id === 'ozy') { const ra = raquelAtiva();
+      strip.push(el('div',{class:'inm-nh'}, el('b',{}, 'Fase 2: Urano (abaixo de ' + F2_PV + ' PV)'), el('span',{class:'inm-rot ' + (s.f2 ? 'gasta' : '')}, s.f2 ? 'ATIVA: 2 Ações de Ambiente por rodada e 4 ações lendárias' : 'inativa: 1 Ação de Ambiente por rodada e 3 ações lendárias'),
+        el('div',{class:'inm-lin'}, el('button',{class:'peq', 'aria-pressed':s.f2 ? 'true' : 'false', onclick:mudar(() => { s.f2 = !s.f2; s.f2man = !s.f2; })}, s.f2 ? 'Desligar Fase 2' : 'Ligar Fase 2'),
+          ra ? el('button',{class:'peq', 'aria-pressed':s.raqLonge ? 'true' : 'false', onclick:mudar(() => { s.raqLonge = !s.raqLonge; })}, s.raqLonge ? 'Raquel longe: CA 21 (tocar para CA 23)' : 'Raquel a até 9 m: CA 23 (tocar para CA 21)') : el('span',{class:'inm-rot'}, 'CA 21; 23 com a Raquel a até 9 m')))); }
+    const nh = nhUI(i); if (nh) strip.push(nh);
     return el('section',{class:'inm-bl'},
-      el('div',{class:'inm-topo'+(curI === i ? ' vez' : '')}, el('img',{src:i.img, alt:''}), el('div',{}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, curI === i ? el('span',{class:'inm-av agora'}, 'Vez de ' + i.nome) : null, ...av)), ctlIni(i)),
-      ...ac.map(a => cartaAcao(i, a)),
-      pas.length ? el('details',{class:'inm-pas', open:abertas.has('pas-' + i.id), ontoggle:ev => { ev.target.open ? abertas.add('pas-' + i.id) : abertas.delete('pas-' + i.id); }},
-        el('summary',{}, 'Passivas (' + pas.length + '): ' + pas.map(a => a.nome).join(', ')), ...pas.map(a => cartaAcao(i, a))) : null,
-      ocultas ? el('p',{class:'inm-oc'}, ocultas + (ocultas > 1 ? ' ações esgotadas ocultas' : ' ação esgotada oculta')) : null,
-      !ac.length && !pas.length && !ocultas ? el('p',{class:'sub'}, 'Nenhuma ação com esses filtros.') : null);
+      el('div',{class:'inm-topo' + (curI === i ? ' vez' : '')}, el('img',{src:i.img, alt:''}), el('div',{}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, curI === i ? el('span',{class:'inm-av agora'}, 'Vez de ' + i.nome) : null, el('span',{class:'inm-av'}, 'CA ' + caDe(i) + ' · PV ' + i.pv), ...av)), ctlIni(i)),
+      fichaUI(i), ...strip,
+      ...cards('acao'), ...cards('bonus'), ...cards('recarga'),
+      grupos.passiva.length ? det('pas-' + i.id, 'Passivas (' + grupos.passiva.length + ')', cards('passiva')) : null,
+      ...cards('reacao'),
+      grupos.lend.length ? det('lend-' + i.id, 'Ações lendárias (' + grupos.lend.length + ') · restam ' + lg + ' de ' + lendMax(i), [lendUI(i), el('p',{class:'inm-rot', style:'margin:4px 0 0'}, i.lendIntro), ...cards('lend')]) : null,
+      grupos.amb.length ? det('amb-' + i.id, 'Ações de ambiente (' + grupos.amb.length + ') · contagem 20', [el('p',{class:'inm-rot', style:'margin:4px 0 0'}, (i.ambTitulo ? i.ambTitulo + '. ' : '') + (i.ambIntro || '') + ' Máximo de ' + ambLim(i) + ' por rodada; usadas nesta rodada: ' + x.atual.length + '.'), ...cards('amb')]) : null,
+      ocultas ? el('p',{class:'inm-oc'}, ocultas + (ocultas > 1 ? ' ações indisponíveis ocultas' : ' ação indisponível oculta')) : null,
+      !tot && !ocultas ? el('p',{class:'sub'}, 'Nenhuma ação com esses filtros.') : null);
   };
   const blocos = lista.map(bloco).filter(Boolean);
   setTimeout(() => { const a = document.getElementById('inm_abas'); if (a) a.scrollLeft = inmSL; }, 0);
   const favs = []; INIMIGOS.forEach(i => i.acoes.forEach(a => { if (s.fav[i.id + ':' + a.id] && casa(a)) favs.push([i, a]); }));
+  const regras = el('details',{class:'inm-regras', open:abertas.has('inm-reg'), ontoggle:ev => { ev.target.open ? abertas.add('inm-reg') : abertas.delete('inm-reg'); }},
+    el('summary',{}, 'Regras da luta'),
+    el('p',{}, ...mdLite('**Não Hoje.** Quando um nomeado já recebeu **150 de dano numa mesma rodada** (200 para o Ozymandias), todo dano a mais nessa rodada é **reduzido à metade**. O contador de cada inimigo aparece no bloco dele quando está na iniciativa.')),
+    el('p',{}, ...mdLite('**Arena.** As **Ações de Ambiente** acontecem na **contagem 20 da iniciativa** (perdendo empates). Escolha uma opção por rodada e não repita a mesma em duas rodadas seguidas. Cada ação de ambiente tem o botão “Usar nesta rodada”; o Ozymandias na Fase 2 usa duas.')),
+    el('p',{}, ...mdLite('**Contra a Resistência Lendária dos jogadores.** Todo nomeado tem pelo menos um efeito que **não tem salvaguarda** ou que **anula** uma Resistência Lendária. Esses efeitos estão marcados com **◆**.')),
+    el('p',{class:m.volta === 2 ? 'inm-hoje' : ''}, ...mdLite('**Ritmo esperado, 2ª volta.** Um nomeado consegue derrubar **dois jogadores por rodada** quando concentra o dano.')),
+    el('p',{class:m.volta === 3 ? 'inm-hoje' : ''}, ...mdLite('**Ritmo esperado, 3ª volta.** Os jogadores já não morrem tão rápido, mas também **não matam ninguém em uma rodada**.')),
+    el('p',{class:'inm-rot'}, 'Volta atual: ' + m.volta + ' · rodada ' + m.rodada + '. A ordem nas fichas é: Ação, Ação bônus, Recarga, Passiva, Reação, Ação lendária, Ação de ambiente.'));
   return caixa('inm','Inimigos e ações',
-    el('p',{class:'sub'}, 'Referência das cartas dos Bellacord. Os usos ficam só neste navegador; nenhuma ficha é alterada.'),
+    el('p',{class:'sub'}, 'Fichas do bestiário “O Cordeiro e o Lobo”. Os usos ficam só neste navegador; nenhuma ficha é alterada.'),
+    regras,
     el('div',{class:'lin2'}, el('button',{class:'inm-luta-bt', 'aria-expanded':lutaAberta ? 'true' : 'false', onclick:() => { lutaAberta = !lutaAberta; desenhar(); }}, '⚔ Iniciar luta')),
     lutaAberta ? formLuta() : null,
     barraAlta() ? el('div',{class:'inm-dica'}, 'O player cobre boa parte da tela.', el('button',{class:'peq', onclick:() => $('btCompacto').click()}, 'Recolher player')) : null,
     cur ? el('div',{class:'inm-vez'}, el('button',{'aria-label':'Turno anterior', onclick:antTurno}, '◀'), el('b',{}, 'Vez de ' + cur.n), el('span',{class:'inm-rot'}, 'Rodada ' + m.rodada), el('button',{'aria-label':'Próximo turno', onclick:proxTurno}, '▶'), ...badgesCond(cur),
       curI && (s.todos || s.sel !== curI.id) ? el('button',{class:'peq', onclick:mudar(() => { s.todos = false; s.sel = curI.id; })}, 'Ver ' + curI.nome) : null) : null,
     s.av.length ? el('div',{class:'inm-faixa', role:'status'}, ...s.av.map(t => el('div',{}, t)), el('button',{class:'peq', onclick:mudar(() => { s.av = []; })}, 'Ok')) : null,
-    el('div',{class:'inm-fil'}, el('button',{class:'inm-f', 'aria-pressed':s.disp ? 'true' : 'false', onclick:mudar(() => { s.disp = !s.disp; })}, 'Disponíveis agora')),
+    el('div',{class:'inm-fil'}, el('button',{class:'inm-f', 'aria-pressed':s.disp ? 'true' : 'false', onclick:mudar(() => { s.disp = !s.disp; })}, 'Disponíveis agora'),
+      el('button',{class:'inm-f inm-fs', 'aria-pressed':s.sem ? 'true' : 'false', onclick:mudar(() => { s.sem = !s.sem; })}, '◆ sem salvaguarda ', el('small',{}, contaS))),
     abas,
-    el('details',{class:'inm-filtros', open:abertas.has('inm-fil') || !!(s.tag || s.tipo), ontoggle:ev => { ev.target.open ? abertas.add('inm-fil') : abertas.delete('inm-fil'); }},
-      el('summary',{}, 'Filtros por tipo e efeito' + ((s.tag || s.tipo) ? ' (ativos)' : '')),
+    el('details',{class:'inm-filtros', open:abertas.has('inm-fil') || filtrando, ontoggle:ev => { if (filtrando) return; ev.target.open ? abertas.add('inm-fil') : abertas.delete('inm-fil'); }},
+      el('summary',{}, 'Filtros por tipo e efeito' + (filtrando ? ' (ativos)' : '')),
       el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Tipo'), ...chipP),
       el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Efeito'), ...chipT),
-      (s.tag || s.tipo) ? el('button',{class:'peq inm-lim', onclick:mudar(() => { s.tag = ''; s.tipo = ''; })}, 'Limpar filtros') : null),
+      filtrando ? el('button',{class:'peq inm-lim', onclick:mudar(() => { s.tag = ''; s.tipo = ''; s.sem = false; })}, 'Limpar filtros') : null),
     el('div',{class:'lin2'},
       el('button',{onclick:ev => confirmar(ev.target, () => desf('Nova luta (usos zerados)', () => { inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; ofer = null; }))}, 'Zerar usos'),
       el('button',{onclick:mudar(() => inmZerar('volta'))}, 'Pétala arrancada'),
-      el('button',{onclick:mudar(() => { inmZerar('turno'); inmZerar('rodada'); })}, 'Nova rodada')),
+      el('button',{onclick:mudar(() => { inmZerar('turno'); novaRodadaInm(); })}, 'Nova rodada')),
     s.ult.length ? el('div',{class:'inm-ult'}, el('b',{}, 'Últimas ações'), ...s.ult.map(x => el('div',{}, 'Rod. ' + x.r + ' · ' + x.t))) : null,
     favs.length ? el('section',{class:'inm-favs'}, el('h4',{}, '⭐ Favoritas'), ...favs.map(([i, a]) => cartaAcao(i, a, true))) : null,
     ...(blocos.length ? blocos : [el('p',{class:'sub'}, 'Nenhuma ação com esses filtros.')]));
