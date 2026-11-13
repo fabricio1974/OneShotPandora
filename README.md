@@ -70,3 +70,7 @@ Os dados do app foram gerados a partir do `.md` do bestiário; para conferir dep
 `cartas.html` é a página que os jogadores abrem no celular: eles rolam 1d4 (baralho: S, A, M, H) e 1d12 (carta), digitam o código (por exemplo M07) e veem a carta, com a mão guardada no próprio celular, o Eco da Fome somado e marcadores de uso por luta, por volta e recarga. Endereço depois de ativar o Pages: https://fabricio1974.github.io/OneShotPandora/cartas.html
 
 `cartas.html#mestre` mostra todas as cartas e as frases completas. Não passe esse endereço aos jogadores.
+
+## Visual (design Arco)
+
+A aba Mestre usa o desenho "Arco": terracota sobre preto (a paleta dos vasos gregos das artes), Inter Tight nos títulos, retrato do inimigo dentro de um arco de vaso, fileira de medalhões com a ordem da iniciativa e a barra de PV de cada um (toque num inimigo para abrir as ações dele), greca como divisória e ícones de traço no lugar dos emojis. As cores e fontes ficam em `:root` no início de `index.html`; os ícones, no objeto `ICO`.

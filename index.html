@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trilha do Cordeiro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Marcellus&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Marcellus&display=swap"></noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
 <style>
 /* Layout: faixa de personagens no topo, duas abas (Seleção para preparar, Sessão para a mesa) e barra de reprodução fixa embaixo. */
 :root{
-  --fundo:#0e0b09; --painel:#1a1512; --painel2:#241d18; --linha:#3a2f27;
-  --marfim:#efe6d2; --apagado:#a8998a; --terracota:#d9763f; --terracota2:#8f4a26; --ouro:#c9a24a; --erro:#e0685a;
-  --titulo:'Marcellus SC','Marcellus',Georgia,serif; --texto:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --fundo:#0a0a0b; --painel:#121012; --painel2:#1a1612; --linha:#2f261d;
+  --marfim:#f1e8dc; --apagado:#9b8f80; --terracota:#dd8440; --terracota2:#8a4a22; --ouro:#c9a24a; --erro:#e0685a;
+  --titulo:'Inter Tight',system-ui,sans-serif; --texto:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -359,6 +359,48 @@ button:disabled:active{filter:none;transform:none}
 .inm-card{content-visibility:auto;contain-intrinsic-size:auto 300px}
 .palco .arte,.ab .ini{color:var(--terracota)}
 #faixaTurno.cd .vz{display:none}@media (max-width:420px){#faixaTurno.cd .px{display:none}#faixaTurno.cd .ft-l>button:not(.ft-b){min-width:56px}}#faixaTurno .ft-u{min-width:40px;padding-inline:6px;background:transparent;border-color:var(--ouro);color:var(--ouro)}
+
+/* Design H (Arco): terracota sobre preto, retrato em arco de vaso, medalhões, greca */
+h1{font:700 22px/1 var(--titulo);letter-spacing:.01em}h2{font:600 20px/1.2 var(--titulo);letter-spacing:0}h3{font:600 13px/1.2 var(--titulo);letter-spacing:.08em;text-transform:uppercase}
+.palco .de,.cena .papel,.noite .bloco h4,.inm-topo h4,.inm-favs h4,.tri-atual .de,.agora .rot{font-family:var(--titulo);font-weight:600;letter-spacing:.06em}
+.cena .papel,.agora .rot,.tri-atual .de,.palco .de{text-transform:uppercase;font-size:11px}
+.ic{display:inline-flex;vertical-align:-.2em;width:1.15em;height:1.15em;margin-right:.35em;flex:none}.ic svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.ic.cheio svg{fill:currentColor}
+button>.ic:only-child,.inm-fav .ic,.inm-todos .ic,.inm-vez button>.ic:only-child,.ft-b .ic{margin-right:0}
+.inm-fav{width:44px;height:44px;display:grid;place-items:center}.inm-fav .ic{width:22px;height:22px}
+.inm-todos .ic{width:18px;height:18px}
+button.inm-luta-bt,.inm-atk,.inm-rec,.inm-aplic,.inm-die{display:inline-flex;align-items:center;justify-content:center}
+.greca{height:12px;margin:14px 0 6px;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11H3V2H12V8H7V5' fill='none' stroke='%23dd8440' stroke-width='1.2'/%3E%3C/svg%3E") repeat-x center;opacity:.8}
+.inm-topo{flex-direction:column;align-items:center;gap:8px;margin-bottom:10px;text-align:center}
+.inm-topo .arco{width:236px;height:290px;max-width:70vw;max-height:calc(70vw * 1.23);border-radius:118px 118px 6px 6px;border:2px solid var(--linha);padding:5px;flex:none}
+.inm-topo.vez .arco{border-color:var(--terracota)}
+.inm-topo .arco img{width:100%;height:100%;border-radius:112px 112px 2px 2px;object-fit:cover;object-position:top;background:#000;outline:0}
+.inm-topo.vez img{outline:0}
+.inm-topo .inm-id{width:100%;min-width:0}
+.inm-topo h4{font:700 40px/1.05 var(--titulo);letter-spacing:-.02em;color:var(--marfim);text-transform:none;margin:0}
+.inm-topo.vez h4{color:var(--marfim)}
+.inm-topo .inm-avs{justify-content:center;margin-top:8px}
+.inm-av.agora{background:var(--terracota);border-color:var(--terracota);color:#1a0d04}
+.inm-topo .inm-ini{justify-content:center}
+.inm-topo.mini{flex-direction:row;text-align:left;align-items:center;gap:12px}
+.inm-topo.mini .arco{width:72px;height:90px;border-radius:36px 36px 4px 4px;padding:3px;max-width:none;max-height:none}
+.inm-topo.mini .arco img{border-radius:33px 33px 2px 2px}
+.inm-topo.mini h4{font-size:22px}
+.inm-topo.mini .inm-avs{justify-content:flex-start}
+.inm-ord{display:flex;flex-wrap:wrap;gap:8px 6px;padding:10px 0 4px;justify-content:center}
+.inm-ord .o{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 64px;width:64px;padding:2px;background:none;border:0;font:500 12px/1.1 var(--texto);color:var(--apagado);min-height:0;text-align:center}
+.inm-ord .o .on{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inm-ord .md{width:56px;height:56px;border-radius:50%;object-fit:cover;object-position:top;background:#000;border:1px solid var(--linha);display:grid;place-items:center;font:600 20px/1 var(--titulo);color:var(--terracota)}
+.inm-ord .o.vez .md{border:2px solid var(--terracota);box-shadow:0 0 0 3px var(--fundo),0 0 0 4px #dd844055}
+.inm-ord .o.vez{color:var(--marfim)}
+.inm-ord .o.caiu .md{filter:grayscale(1);opacity:.55}
+.inm-ord .bar{width:48px;height:3px;background:var(--linha);border-radius:2px;overflow:hidden}.inm-ord .bar i{display:block;height:100%;background:var(--terracota)}
+.inm-ord button.o:active{transform:none;filter:brightness(1.2)}
+.inm-vez{border-color:var(--linha);background:var(--painel)}
+.inm-vez button.inm-prox{border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:#1a0d04;font-weight:700;padding-inline:16px;display:inline-flex;align-items:center;gap:4px}.inm-vez button.inm-prox .ic{margin-right:0}
+.inm-vez b{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.inm-vez .inm-rot{flex:none;font-size:11px}
+.inm-card{border-left-color:var(--terracota2);border-radius:10px}
+.inm-tag{display:inline-flex;align-items:center}
+.inm-f{display:inline-flex;align-items:center}
 </style>
 </head>
 <body>
@@ -615,6 +657,12 @@ const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(
 const el = (t, a={}, ...k) => { const e = document.createElement(t); if (t === 'img' && !('loading' in a)) { e.loading = 'lazy'; e.decoding = 'async'; }
   for (const [n,v] of Object.entries(a)) { if (n==='class') e.className=v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else if (v===true) e.setAttribute(n,''); else if (v!==false && v!=null) e.setAttribute(n,v); }
   for (const c of k) if (c!=null && c!==false) e.append(c); return e; };
+const ICO = {espada:'<path d="M14 4l6-1-1 6-9 9-3-3z"/><path d="M6 15l3 3M4 20l3-3"/>', area:'<circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>',
+  cura:'<path d="M12 5v14M5 12h14"/>', seta:'<path d="M5 12h14M13 6l6 6-6 6"/>', elo:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  escudo:'<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/>', sobe:'<path d="M6 14l6-7 6 7"/>', desce:'<path d="M6 10l6 7 6-7"/>', olho:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  brilho:'<path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/>', dado:'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="15" r="1" fill="currentColor"/><circle cx="15" cy="9" r="1" fill="currentColor"/><circle cx="9" cy="15" r="1" fill="currentColor"/>',
+  estrela:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>', lista:'<path d="M5 6h14M5 12h14M5 18h14"/>', esq:'<path d="M15 6l-6 6 6 6"/>', dir:'<path d="M9 6l6 6-6 6"/>'};
+const ico = (n, cheio) => { const e = document.createElement('span'); e.className = 'ic' + (cheio ? ' cheio' : ''); e.setAttribute('aria-hidden','true'); e.innerHTML = '<svg viewBox="0 0 24 24">' + ICO[n] + '</svg>'; return e; };
 const rosto = (g, cls='rosto') => g && g.img ? el('img',{class:cls, src:g.img, alt:'', loading:'eager'}) : el('span',{class:cls, 'aria-hidden':'true'}, g ? (g.nome.replace(/^[^A-Za-zÀ-ÿ]+/,'')[0]||'?').toUpperCase() : '');
 
 // ---------- Players do YouTube: dois, para cruzar uma música na outra ----------
@@ -959,8 +1007,8 @@ function passoCena(d){ const j = E.rpos < 0 ? 0 : E.rpos + d; if (j < 0 || j >= 
 function painelRoteiro(){
   const r = E.roteiro;
   const topo = el('div',{class:'rot-top'},
-    el('button',{onclick:()=>passoCena(-1), disabled:E.rpos<=0, title:'Tecla ['}, '◀ Cena anterior'),
-    el('button',{style:'background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600', onclick:()=>passoCena(1), disabled:E.rpos>=r.length-1, title:'Tecla ]'}, E.rpos < 0 ? 'Começar ▶' : 'Próxima cena ▶'),
+    el('button',{onclick:()=>passoCena(-1), disabled:E.rpos<=0, title:'Tecla ['}, ico('esq'), 'Cena anterior'),
+    el('button',{style:'background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600', onclick:()=>passoCena(1), disabled:E.rpos>=r.length-1, title:'Tecla ]'}, E.rpos < 0 ? 'Começar' : 'Próxima cena', ico('dir')),
     el('span',{class:'sub grow'}, r.length ? (E.rpos < 0 ? 'Ainda não começou' : 'Cena ' + (E.rpos+1) + ' de ' + r.length) : 'Roteiro vazio'),
     el('button',{class:'peq', onclick:()=>{ editRot = !editRot; desenhar(); }}, editRot ? 'Terminar edição' : 'Editar roteiro'));
   const lista = el('div',{class:'rot', id:'rotLista', tabindex:'-1', 'aria-label':'Cenas do roteiro'});
@@ -1135,13 +1183,13 @@ function painelIni(){
     el('div',{class:'i-add'}, nome, q, pv, el('button',{onclick:adiciona}, 'Adicionar')),
     el('div',{class:'lin2'},
       el('button',{class:'peq', onclick:mudar(() => { const at = m.ini[m.turno]; m.ini.sort((a,b) => b.ini - a.ini); m.turno = Math.max(0, m.ini.indexOf(at)); })}, 'Ordenar por iniciativa'),
-      el('div',{class:'vezbar'}, el('button',{disabled:!m.ini.length, 'aria-label':'Turno anterior', onclick:antTurno}, '◀'), el('button',{disabled:!m.ini.length, onclick:proxTurno}, 'Próximo turno ▶')),
+      el('div',{class:'vezbar'}, el('button',{disabled:!m.ini.length, 'aria-label':'Turno anterior', onclick:antTurno}, ico('esq')), el('button',{disabled:!m.ini.length, onclick:proxTurno}, 'Próximo turno', ico('dir'))),
       el('button',{class:'peq perigo', onclick:ev => confirmar(ev.target, () => desf('Limpar iniciativa', () => { m.ini = []; m.turno = 0; condAberta = null; }, ['ini','inm']))}, 'Limpar')));
 }
 // ---------- Inimigos e ações (referência do Mestre; não altera nenhuma ficha) ----------
-const TAGS = {dano:['⚔','Dano','#e0685a'], area:['◎','Dano em área','#ee9a5c'], cura:['✚','Cura','#6fcf8f'], movimento:['➜','Movimentação','#6fb6e8'],
-  controle:['⛓','Controle','#b48be0'], defesa:['🛡','Defesa','#d0b25a'], buff:['▲','Buff','#e6d36a'], debuff:['▼','Debuff','#e08ab4'],
-  info:['👁','Informação','#8fd0c8'], invocacao:['✧','Invocação','#e0a8ff']};
+const TAGS = {dano:['espada','Dano','#e0685a'], area:['area','Dano em área','#ee9a5c'], cura:['cura','Cura','#6fcf8f'], movimento:['seta','Movimentação','#6fb6e8'],
+  controle:['elo','Controle','#b48be0'], defesa:['escudo','Defesa','#d0b25a'], buff:['sobe','Buff','#e6d36a'], debuff:['desce','Debuff','#e08ab4'],
+  info:['olho','Informação','#8fd0c8'], invocacao:['brilho','Invocação','#e0a8ff']};
 const TIPOS_ACAO = {acao:'Ação', bonus:'Ação bônus', recarga:'Recarga', passiva:'Passiva', reacao:'Reação', lend:'Lendária', amb:'Ambiente'};
 const ORDEM_CAT = ['acao','bonus','recarga','passiva','reacao','lend','amb'];
 const slugInm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
@@ -1430,7 +1478,7 @@ function atualizaFaixa(){
   const on = m && m.ini && m.ini.length && (modo === 'mes' || modo === 'ses'); f.hidden = !on; if (!on) { pillMax = 0; document.documentElement.style.setProperty('--pill-h', '0px'); return; }
   const c = m.ini[m.turno] || m.ini[0], bd0 = badgesCond(c); if (c.pv <= 0) bd0.unshift(el('span',{class:'cb cd'}, 'caído')); const bd = bd0.length > 3 ? [...bd0.slice(0,3), el('span',{class:'cb tx'}, '+' + (bd0.length - 3))] : bd0;
   const podeDes = pilhaDes.length && Date.now() - ultDes < 15000; f.classList.toggle('cd', !!podeDes);   // com Desfazer na pílula, o “Vez de” sai para o nome caber
-  f.replaceChildren(el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, '◀'), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), '▶'), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
+  f.replaceChildren(el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
     ...(bd.length ? [el('div',{class:'ft-c'}, ...bd)] : []));
   pillMax = Math.max(pillMax, f.offsetHeight); document.documentElement.style.setProperty('--pill-h', pillMax + 'px');
 }
@@ -1481,7 +1529,7 @@ function ctlIni(i){
   const pv = el('input',{type:'number', inputmode:'numeric', min:'1', placeholder:'PV', class:'q', 'aria-label':'PV de ' + i.nome + ' (ficha: ' + i.pv + ')', value:r.pv ?? i.pv, oninput:ev => { r.pv = ev.target.value; ev.target.classList.remove('inv'); }});
   const ini = el('input',{type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa de ' + i.nome, value:r.ini ?? '', oninput:ev => { r.ini = ev.target.value; }});
   return el('div',{class:'inm-ini'}, pv, ini,
-    el('button',{class:'peq', 'aria-label':'Rolar d20 de iniciativa', onclick:() => { r.ini = String(rdN(20)); ini.value = r.ini; }}, '🎲'),
+    el('button',{class:'peq', 'aria-label':'Rolar d20 de iniciativa', onclick:() => { r.ini = String(rdN(20)); ini.value = r.ini; }}, ico('dado')),
     el('button',{class:'inm-poe', onclick:() => { const v = Math.floor(+(r.pv ?? i.pv)); if (!(v > 0)) { pv.classList.add('inv'); pv.focus(); return; }
       desf(i.nome + ' na iniciativa', () => { m.ini.push(novaLinha({n:i.nome, ini:+r.ini || 0, pv:v, max:v, i:i.id})); delete rasc[i.id]; }, ['ini','inm']); }}, 'Pôr na iniciativa'));
 }
@@ -1519,14 +1567,14 @@ function cartaAcao(i, a, pref){
   const cab = el('div',{class:'inm-cab'}, pref ? el('span',{class:'inm-pref'}, i.nome + ' ·') : null, el('b',{class:'inm-nome'}, a.nome),
     a.sem ? el('span',{class:'inm-sem'}, '◆ sem salvaguarda') : null,
     el('span',{class:'inm-tipo t-' + a.cat}, TIPOS_ACAO[a.cat] + (a.rec ? ' ' + (a.rec === 6 ? '6' : '5–6') : '') + (a.custo ? ' · custa ' + a.custo : '') + (mostraPar ? ' · ' + a.par : '')),
-    el('button',{class:'inm-fav', 'aria-pressed':fav ? 'true' : 'false', 'aria-label':(fav ? 'Tirar das favoritas: ' : 'Favoritar: ') + a.nome, onclick:mudar(() => { if (fav) delete s.fav[k]; else s.fav[k] = 1; }, ['inm'])}, fav ? '⭐' : '☆'));
-  const etq = el('div',{class:'inm-tags'}, ...a.tags.map(t => el('span',{class:'inm-tag', style:'--tc:' + TAGS[t][2]}, TAGS[t][0] + ' ' + TAGS[t][1])));
+    el('button',{class:'inm-fav', 'aria-pressed':fav ? 'true' : 'false', 'aria-label':(fav ? 'Tirar das favoritas: ' : 'Favoritar: ') + a.nome, onclick:mudar(() => { if (fav) delete s.fav[k]; else s.fav[k] = 1; }, ['inm'])}, ico('estrela', fav)));
+  const etq = el('div',{class:'inm-tags'}, ...a.tags.map(t => el('span',{class:'inm-tag', style:'--tc:' + TAGS[t][2]}, ico(TAGS[t][0]), TAGS[t][1])));
   const chips = [...(ef.cd || []).map(c => el('span',{class:'inm-cd'}, c[0] + ' CD ' + c[1])), ...(ef.teste || []).map(c => el('span',{class:'inm-cd te'}, 'Teste ' + c[0] + ' CD ' + c[1]))];
   const uso = el('div',{class:'inm-uso'});
   const bols = (kk, n, us, lab) => uso.append(...Array.from({length:n}, (_, d) => el('button',{class:'inm-bol' + (d < us ? ' on' : ''), 'aria-label':lab + ': uso ' + (d + 1) + ' de ' + n + (d < us ? ', gasto' : ', disponível'), 'aria-pressed':d < us ? 'true' : 'false',
       onclick:mudar(() => { s.uso[kk] = d < us ? d : d + 1; }, escCard(k))}, el('i'))));
   if (u) { bols(k, u.n, usado, a.nome); uso.append(el('span',{class:'inm-rot'}, u.n + '/' + u.por + ' · restam ' + (u.n - usado))); }
-  else if (a.rec) uso.append(el('button',{class:'inm-rec', onclick:mudar(() => { const r = rdN(6); s.rec[k] = {r, ok:r >= a.rec}; }, escCard(k))}, '🎲 Recarga ' + (a.rec === 6 ? '6' : '5–6')),
+  else if (a.rec) uso.append(el('button',{class:'inm-rec', onclick:mudar(() => { const r = rdN(6); s.rec[k] = {r, ok:r >= a.rec}; }, escCard(k))}, ico('dado'), 'Recarga ' + (a.rec === 6 ? '6' : '5–6')),
     el('span',{class:'inm-rot ' + (gasta ? 'gasta' : 'pronta')}, gasta ? 'Gasta · d6 = ' + rec.r : rec ? 'Recarregou · d6 = ' + rec.r : 'Pronta'));
   if (a.subs) a.subs.forEach(b => { const kk = k + ':' + b.id, us = s.uso[kk] || 0;
     uso.append(el('div',{class:'inm-sub'}, el('span',{class:'inm-rot'}, b.nome + (b.n ? ' · ' + b.n + '/dia' : ' · à vontade')), ...(b.n ? Array.from({length:b.n}, (_, d) => el('button',{class:'inm-bol' + (d < us ? ' on' : ''), 'aria-label':b.nome + ': uso ' + (d + 1) + ' de ' + b.n + (d < us ? ', gasto' : ', disponível'), 'aria-pressed':d < us ? 'true' : 'false', onclick:mudar(() => { s.uso[kk] = d < us ? d : d + 1; }, escCard(k))}, el('i'))) : []))); });
@@ -1552,9 +1600,9 @@ function cartaAcao(i, a, pref){
   }
   if (i.id === 'ozy' && a.id === 'resistencia-lendaria') lin.append(el('button',{class:'peq', 'aria-label':'Um jogador usou Resistência Lendária: o Ozymandias recupera uma (Avareza)', onclick:() => desf('Avareza: recupera 1 Resistência', () => { s.uso[k] = Math.max(0, usado - 1); }, ['c:' + k])}, 'Avareza: recuperar 1'));
   if (ef.atk) lin.append(el('button',{class:'inm-atk', 'aria-label':'Rolar ataque de ' + a.nome + ' com bônus +' + ef.atk.b, onclick:() => { const r = rolarAtk(ef.atk.b, ef.atk.crit); rolAt[k] = r.txt; if (r.n === 20) rolCrit[k] = 1; else delete rolCrit[k]; desenhar(['c:' + k]); }}, 'Ataque +' + ef.atk.b));
-  (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk', onclick:() => { rolInm[k] = rolarMulti(i, mu); delete rolTot[k]; delete rolAp[k]; delete rolTip[k]; desenhar(['c:' + k]); }}, '🎲 ' + mu.lab)));
+  (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk', onclick:() => { rolInm[k] = rolarMulti(i, mu); delete rolTot[k]; delete rolAp[k]; delete rolTip[k]; desenhar(['c:' + k]); }}, ico('dado'), mu.lab)));
   (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = rolarX(d.e); rolInm[k] = r.txt + ' ' + d.t; rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; delete rolCrit[k]; if (d.k === 'd') { const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; } desenhar(['c:' + k]); }},
-    '🎲 ' + (d.k === 'c' ? 'Curar ' : '') + fmtE(d.e) + ' ' + d.t)));
+    ico('dado'), (d.k === 'c' ? 'Curar ' : '') + fmtE(d.e) + ' ' + d.t)));
   if (rolCrit[k] && (ef.dano || []).some(d => d.k === 'd')) lin.append(el('button',{class:'inm-dado inm-crit', 'aria-label':'Dano crítico: rola os dados de dano dobrados', onclick:() => { let tot = 0; const ps = ef.dano.filter(d => d.k === 'd').map(d => { const r = rolarX(dobraE(d.e)); tot += r.t; return r.txt + ' ' + d.t; });
     rolInm[k] = 'CRÍTICO (dados dobrados) = ' + tot + '\n' + ps.join('\n'); rolTot[k] = tot; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; desenhar(['c:' + k]); }}, '🎲 Dano crítico (dados dobrados)'));
   return el('div',{class:'inm-card' + (esgotada ? ' esgotada' : '') + (a.cat === 'passiva' ? ' pass' : ''), 'data-k':k, 'data-pref':pref ? '1' : '0'}, cab, etq, chips.length ? el('div',{class:'inm-chs'}, ...chips) : null, el('p',{class:'inm-txt'}, ...mdLite(a.txt)), uso.children.length ? uso : null, lin.children.length ? lin : null,
@@ -1598,7 +1646,7 @@ function formLuta(){
   return el('div',{class:'luta', role:'group', 'aria-label':'Iniciar luta'},
     el('p',{class:'sub', style:'margin:0 0 6px'}, 'Marque quem entra. O PV já vem da ficha (Esaú 420, Jael 513, Ezequiel 375, Hildegarda 427, Raquel 460, Ozymandias 625) e pode ser editado. Cada um rola 1d20 de iniciativa, a ordem é refeita e os usos por luta e por dia, as recargas, as ações lendárias e o Não Hoje voltam ao início. Quem já está na lista (jogadores) é mantido.'),
     ...linhas.map(l => l.el),
-    el('div',{class:'lin2'}, el('button',{class:'inm-aplic', onclick:go}, '🎲 Rolar iniciativa e começar'), el('button',{onclick:() => { lutaAberta = false; desenhar(); }}, 'Cancelar')));
+    el('div',{class:'lin2'}, el('button',{class:'inm-aplic', onclick:go}, ico('dado'), 'Rolar iniciativa e começar'), el('button',{onclick:() => { lutaAberta = false; desenhar(); }}, 'Cancelar')));
 }
 // ---------- Regras do Mestre, por inimigo ----------
 const AVISOS = i => { const m = E.m, v = m.volta, r = m.rodada, o = [];
@@ -1619,7 +1667,7 @@ function pressUI(){
     el('div',{class:'inm-pd'}, ...dados),
     p && !atual ? el('span',{class:'inm-rot gasta'}, 'Estes dados são da volta ' + p.v + '. Role de novo para a volta ' + v + '.') : null,
     el('div',{class:'inm-lin'},
-      el('button',{class:'inm-atk', onclick:() => desf('Presságio rolado', () => { s.pres = {v, d:Array.from({length:n}, () => ({v:rdN(20), u:0}))}; })}, '🎲 ' + (atual ? 'Rolar de novo ' : 'Rolar ') + n + ' dados'),
+      el('button',{class:'inm-atk', onclick:() => desf('Presságio rolado', () => { s.pres = {v, d:Array.from({length:n}, () => ({v:rdN(20), u:0}))}; })}, ico('dado'), (atual ? 'Rolar de novo ' : 'Rolar ') + n + ' dados'),
       p && p.d.length < 6 ? el('button',{class:'peq', 'aria-label':'Ler a Roda: acrescentar 1d20 (no máximo 6 guardados)', onclick:() => desf('Ler a Roda', () => { p.d.push({v:rdN(20), u:0}); })}, '+1d20 (Ler a Roda)') : null,
       p && p.d.some(d => d.u) ? el('span',{class:'inm-rot'}, p.d.filter(d => !d.u).length + ' disponíveis') : null));
 }
@@ -1658,7 +1706,7 @@ const ultUI = () => { const s = E.m.inm; return s.ult.length ? el('div',{class:'
 function topoUI(i){
   const m = E.m, cur = m.ini[m.turno], curI = cur && inmDeLinha(cur);
   const av = AVISOS(i).map(x => el('span',{class:'inm-av' + (x.agora ? ' agora' : '')}, x.t));
-  return el('div',{class:'inm-topo' + (curI === i ? ' vez' : '')}, el('img',{src:i.img, alt:''}), el('div',{}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, curI === i ? el('span',{class:'inm-av agora'}, 'Vez de ' + i.nome) : null, el('span',{class:'inm-av'}, 'CA ' + caDe(i) + ' · PV ' + i.pv), ...av)), ctlIni(i));
+  return el('div',{class:'inm-topo' + (curI === i ? ' vez' : '') + (m.inm.todos ? ' mini' : '')}, el('div',{class:'arco'}, el('img',{src:i.img, alt:''})), el('div',{class:'inm-id'}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, curI === i ? el('span',{class:'inm-av agora'}, 'Vez de ' + i.nome) : null, el('span',{class:'inm-av'}, 'CA ' + caDe(i) + ' · PV ' + i.pv), ...av)), ctlIni(i));
 }
 function stripUI(i){
   const m = E.m, s = m.inm, strip = [];
@@ -1673,13 +1721,23 @@ function stripUI(i){
 const hdUI = i => el('div',{class:'inm-hd'}, topoUI(i), fichaUI(i), stripUI(i));
 function vezUI(){
   const m = E.m, s = m.inm, cur = m.ini[m.turno], curI = cur && inmDeLinha(cur); if (!cur) return null;
-  return el('div',{class:'inm-vez'}, el('button',{'aria-label':'Turno anterior', onclick:antTurno}, '◀'), el('b',{}, 'Vez de ' + cur.n), el('span',{class:'inm-rot'}, 'Rodada ' + m.rodada), el('button',{'aria-label':'Próximo turno', onclick:proxTurno}, '▶'), ...badgesCond(cur),
+  return el('div',{class:'inm-vez'}, el('button',{'aria-label':'Turno anterior', onclick:antTurno}, ico('esq')), el('b',{}, 'Vez de ' + cur.n), el('span',{class:'inm-rot'}, 'Rodada ' + m.rodada), el('button',{class:'inm-prox', 'aria-label':'Próximo turno', onclick:proxTurno}, el('span',{class:'px'}, 'Próximo'), ico('dir')), ...badgesCond(cur),
     curI && (s.todos || s.sel !== curI.id) ? el('button',{class:'peq', onclick:mudar(() => { s.todos = false; s.sel = curI.id; })}, 'Ver ' + curI.nome) : null);
+}
+function ordemUI(){   // fileira de medalhões: a ordem da iniciativa, com barra de PV; toque num inimigo abre as ações dele
+  const m = E.m, s = m.inm; if (!m.ini.length) return null;
+  return el('div',{class:'inm-ord', role:'list', 'aria-label':'Ordem da iniciativa'}, ...m.ini.map((c, k) => {
+    const i = inmDeLinha(c), vez = m.turno === k, caido = c.pv <= 0, pct = c.max ? Math.max(0, Math.min(100, Math.round(c.pv / c.max * 100))) : 100;
+    const corpo = [i ? el('img',{class:'md', src:i.img, alt:''}) : el('span',{class:'md ltr', 'aria-hidden':'true'}, (c.n.trim()[0] || '?').toUpperCase()), el('span',{class:'on'}, c.n), el('span',{class:'bar'}, el('i',{style:'width:' + pct + '%'}))];
+    const cls = 'o' + (vez ? ' vez' : '') + (caido ? ' caiu' : ''), rot = c.n + (vez ? ', é a vez' : '') + ', PV ' + c.pv + (c.max ? ' de ' + c.max : '');
+    return i ? el('button',{class:cls, role:'listitem', 'aria-label':rot, 'aria-current':vez ? 'true' : null, onclick:mudar(() => { s.todos = false; s.sel = i.id; })}, ...corpo)
+             : el('div',{class:cls, role:'listitem', 'aria-label':rot, 'aria-current':vez ? 'true' : null}, ...corpo); }));
 }
 function faixaUI(){ const s = E.m.inm; return s.av.length ? el('div',{class:'inm-faixa', role:'status'}, ...s.av.map(t => el('div',{}, t)), el('button',{class:'peq', onclick:mudar(() => { s.av = []; })}, 'Ok')) : null; }
 function redVez(){   // turno passou para um jogador: só a barra da vez, os avisos e o marcador no topo do bloco mudam; o resto do painel de Inimigos fica
   const raiz = document.querySelector('#painelMestre > [data-p="inm"]'), fil = raiz && raiz.querySelector(':scope > .inm-fil'); if (!fil) return;
   const troca = (sel, novo, antes) => { const o = raiz.querySelector(':scope > ' + sel); if (o) { if (novo) trocaEl(o, novo); else o.remove(); } else if (novo) raiz.insertBefore(novo, antes()); };
+  troca('.inm-ord', ordemUI(), () => raiz.querySelector(':scope > .inm-vez') || raiz.querySelector(':scope > .inm-faixa') || fil);
   troca('.inm-vez', vezUI(), () => raiz.querySelector(':scope > .inm-faixa') || fil); troca('.inm-faixa', faixaUI(), () => fil);
 }
 function painelInimigos(){
@@ -1692,10 +1750,10 @@ function painelInimigos(){
     if ((!s.tag || a.tags.includes(s.tag)) && (!s.sem || a.sem)) contaP[a.cat] = (contaP[a.cat]||0) + 1;
     if ((!s.tag || a.tags.includes(s.tag)) && (!s.tipo || a.cat === s.tipo) && a.sem) contaS++; }));
   const abas = el('div',{class:'inm-abas', id:'inm_abas', role:'tablist', onscroll:ev => { inmSL = ev.target.scrollLeft; }},
-    el('button',{class:'inm-aba', role:'tab', 'aria-selected':s.todos ? 'true' : 'false', onclick:mudar(() => { s.todos = true; })}, el('span',{class:'inm-todos'}, '☰'), 'Todos'),
+    el('button',{class:'inm-aba', role:'tab', 'aria-selected':s.todos ? 'true' : 'false', onclick:mudar(() => { s.todos = true; })}, el('span',{class:'inm-todos'}, ico('lista')), 'Todos'),
     ...INIMIGOS.map(i => el('button',{class:'inm-aba', role:'tab', 'aria-selected':!s.todos && i.id === atual.id ? 'true' : 'false', onclick:mudar(() => { s.todos = false; s.sel = i.id; })},
       el('img',{src:i.img, alt:''}), i.nome)));
-  const chipT = Object.keys(TAGS).filter(t => contaT[t] || s.tag === t).map(t => el('button',{class:'inm-f', style:'--tc:' + TAGS[t][2], 'aria-pressed':s.tag === t ? 'true' : 'false', onclick:mudar(() => { s.tag = s.tag === t ? '' : t; })}, TAGS[t][0] + ' ' + TAGS[t][1] + ' ', el('small',{}, contaT[t] || 0)));
+  const chipT = Object.keys(TAGS).filter(t => contaT[t] || s.tag === t).map(t => el('button',{class:'inm-f', style:'--tc:' + TAGS[t][2], 'aria-pressed':s.tag === t ? 'true' : 'false', onclick:mudar(() => { s.tag = s.tag === t ? '' : t; })}, ico(TAGS[t][0]), TAGS[t][1] + ' ', el('small',{}, contaT[t] || 0)));
   const chipP = ORDEM_CAT.filter(t => contaP[t] || s.tipo === t).map(t => el('button',{class:'inm-f tp', 'aria-pressed':s.tipo === t ? 'true' : 'false', onclick:mudar(() => { s.tipo = s.tipo === t ? '' : t; })}, TIPOS_ACAO[t] + ' ', el('small',{}, contaP[t] || 0)));
   const cur = m.ini[m.turno], curI = cur && inmDeLinha(cur);
   const det = (chave, titulo, filhos, forca) => { const ab0 = abertas.has(chave) || filtrando || !!forca;
@@ -1734,9 +1792,11 @@ function painelInimigos(){
   return caixa('inm','Inimigos e ações',
     el('p',{class:'sub'}, 'Fichas do bestiário “O Cordeiro e o Lobo”. Os usos ficam só neste navegador; nenhuma ficha é alterada.'),
     regras,
-    el('div',{class:'lin2'}, el('button',{class:'inm-luta-bt', 'aria-expanded':lutaAberta ? 'true' : 'false', onclick:() => { lutaAberta = !lutaAberta; desenhar(); }}, '⚔ Iniciar luta')),
+    el('div',{class:'lin2'}, el('button',{class:'inm-luta-bt', 'aria-expanded':lutaAberta ? 'true' : 'false', onclick:() => { lutaAberta = !lutaAberta; desenhar(); }}, ico('espada'), 'Iniciar luta')),
     lutaAberta ? formLuta() : null,
     barraAlta() ? el('div',{class:'inm-dica'}, 'O player cobre boa parte da tela.', el('button',{class:'peq', onclick:() => $('btCompacto').click()}, 'Recolher player')) : null,
+    el('div',{class:'greca', 'aria-hidden':'true'}),
+    ordemUI(),
     vezUI(),
     faixaUI(),
     el('div',{class:'inm-fil'}, el('button',{class:'inm-f', 'aria-pressed':s.disp ? 'true' : 'false', onclick:mudar(() => { s.disp = !s.disp; })}, 'Disponíveis agora'),
@@ -1751,7 +1811,7 @@ function painelInimigos(){
       el('button',{onclick:ev => confirmar(ev.target, () => desf('Nova luta (usos zerados)', () => { inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; limpaRol(); }, ['inm']))}, 'Zerar usos'),
       el('button',{onclick:mudar(() => { inmZerar('turno'); novaRodadaInm(); limpaRol(); })}, 'Nova rodada')),
     ultUI(),
-    favs.length ? el('section',{class:'inm-favs'}, el('h4',{}, '⭐ Favoritas'), ...favs.map(([i, a]) => cartaAcao(i, a, true))) : null,
+    favs.length ? el('section',{class:'inm-favs'}, el('h4',{}, ico('estrela', true), 'Favoritas'), ...favs.map(([i, a]) => cartaAcao(i, a, true))) : null,
     ...(blocos.length ? blocos : [el('p',{class:'sub'}, 'Nenhuma ação com esses filtros.')]));
 }
 function painelApoioEstado(){
@@ -1917,6 +1977,7 @@ function redLinha(id){
   trocaEl(old, linhaIni(c, m.ini.indexOf(c)));
 }
 function redTopos(){
+  const o = document.querySelector('#painelMestre > [data-p="inm"] > .inm-ord'); if (o) { const n = ordemUI(); if (n) trocaEl(o, n); else o.remove(); }
   document.querySelectorAll('#painelMestre .inm-bl[data-e]').forEach(bl => { const old = bl.querySelector(':scope > .inm-hd'); if (old) trocaEl(old, hdUI(inmPorId(bl.dataset.e))); });
 }
 function desenharMestre(ids){
