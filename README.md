@@ -8,6 +8,8 @@ Mesa de som do one-shot **O Cordeiro e o Lobo**: toca as músicas de cada person
 
 - **Mestre:** palco com a arte do personagem, roteiro da noite (`]` e `[` mudam de cena), gatilhos de momentos, volta, pétalas, rodada, abates e notas. Botão **Voz** (tecla `V`) abaixa a música enquanto você fala; `R` volta à música anterior; `T` repete; `-` e `+` ajustam o volume da faixa. **Abrir tela dos jogadores** abre uma janela só com a arte (para o projetor; duplo clique = tela cheia, sem nome nem título). **Folha do Mestre** abre uma página de consulta pronta para imprimir.
 
+- **Mesa (aba Mestre):** cena especial da Akari e do Thorian, iniciativa e PV, estado do Tobias e da Rafaela, fim da noite (vitória ou derrota), oferta da anja, registro das voltas, jogadores e votação, falas, ritmo da noite, dados, intensidade da trilha, silêncio dramático, pausa da mesa, ambientes (mar, vento, chuva, fogueira, mercado) e teste de som, que troca sozinho para uma gravação reserva quando uma música falha. `Esc` também para o ambiente.
+
 As imagens ficam na pasta `img/`, que precisa estar **ao lado do `index.html`**.
 
 As escolhas ficam salvas no navegador. Para levar a outro aparelho, use "Baixar arquivo" e "Carregar arquivo" em *Ajustes e cópia das escolhas*.

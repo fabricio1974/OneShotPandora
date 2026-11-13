@@ -180,6 +180,16 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 
 #btVoz[aria-pressed="true"]{background:var(--ouro);border-color:var(--ouro);color:#1a0f08;font-weight:600}
 #btRep[aria-pressed="true"]{border-color:var(--terracota);color:var(--terracota)}
+
+.cxm>summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none}.cxm>summary::-webkit-details-marker{display:none}.cxm>summary::before{content:'▸ ';color:var(--ouro)}.cxm[open]>summary::before{content:'▾ '}.cxm[open]>summary{margin-bottom:10px}
+.ini2{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px;border:1px solid var(--linha);border-radius:8px;margin-bottom:6px}.ini2.vez{border-color:var(--ouro);box-shadow:0 0 0 1px var(--ouro)}.ini2.caiu{opacity:.5}
+.ini2 .n,.n{width:9.5em;max-width:100%}.q{width:4.6em}.c{min-width:8em;flex:1}.pvn{min-width:5.5em}
+.apests{display:grid;grid-template-columns:repeat(auto-fit,minmax(15em,1fr));gap:10px}.apest{display:flex;gap:10px}.apest img{width:64px;height:64px;object-fit:cover;border-radius:8px}.c2{display:flex;flex-direction:column;font-size:12px;gap:2px}
+.chk{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0}.chk .ok{color:var(--ouro);font-weight:600}
+.virt,.jg{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}.virt b{min-width:6.5em}.virt.tom b{color:var(--ouro)}.jg.falou .n{opacity:.55}
+.lp{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}.lp.atual b{color:var(--ouro)}.lp textarea,.larga{width:100%;box-sizing:border-box}
+.dnovo{font-size:22px;font-weight:600;margin-top:8px}.dados{margin-top:6px}.vol2{display:flex;gap:8px;align-items:center;font-size:12px}
+.grande2{font-weight:600}
 </style>
 </head>
 <body>
@@ -225,7 +235,7 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
   <button id="btBaixar" title="Tecla B">Baixar aos poucos</button>
   <button id="btSil" class="perigo" title="Tecla Esc">Silêncio</button>
   <button id="btVid" title="Mostra os vídeos, para pular um anúncio">Mostrar vídeos</button>
-  <div class="players mini" id="players"><div class="cx"><div id="p0"></div></div><div class="cx"><div id="p1"></div></div></div>
+  <div class="players mini" id="players"><div class="cx"><div id="p0"></div></div><div class="cx"><div id="p1"></div></div><div class="cx"><div id="p2"></div></div></div>
 </div></div>
 <input type="file" id="arqImg" accept="image/*" hidden>
 <input type="file" id="arqDados" accept=".json,application/json" hidden>
@@ -291,6 +301,9 @@ const PADRAO = [
   F('ozy-atmospheres','Ligeti — “Atmosphères”','Quando ele lembra das voltas (a partir da volta 4)','momento',0,['jUaPwTL5vL8','E-bemE-bCXQ','zDP3DJYFqEA','STFREC64OvA']),
   F('ozy-mountains','Hans Zimmer — “Mountains” (Interstellar)','Combate alternativo: tempo e gravidade','combate',0,['OtOd3Aa-xqg','wAf-UE0g2bk','hXFqaVlL7pA','arNkB9vxS3Q']),
  ]},
+ { id:'akari', nome:'Akari e Thorian', sub:'A espada e o dragão: ela chega para confrontar o Ozymandias.', faixas:[
+  F('aka-dragon','Dragon Rider (música épica de dragão)','Entrada: a Akari chega montada no Thorian','entrada',0,['Hxh0Lv-krHc','UXPd9vr4pf4','NdaSbiQhFBE']),
+ ]},
  { id:'momentos', nome:'Momentos da história', sub:'A anja, as crianças e a revelação.', faixas:[
   F('mom-spiegel','Arvo Pärt — “Spiegel im Spiegel”','A anja aparece e oferece as virtudes','momento',0,['81ZMz3I5CNU','FZe3mXlnfNc','07bj8oKVSeQ','RePPskWiV6g']),
   F('mom-alina','Arvo Pärt — “Für Alina”','Alternativa para a anja','momento',0,['TzIZPZN5K60','DPNaUxd-mHA','Zj0sd4i_2AE','zLiRelVWwxw']),
@@ -344,14 +357,17 @@ const ROTEIRO_PADRAO = [
  {titulo:'Os “demônios” · combate', nota:'', faixa:'dem-kyrie'},
  {titulo:'Raquel', nota:'', faixa:'raq-gorecki'},
  {titulo:'Ozymandias · entrada', nota:'', faixa:'ozy-saturno'},
+ {titulo:'Akari e Thorian chegam', nota:'A Akari chega montada no dragão Thorian e confronta o Ozymandias por ter atacado as pessoas comuns.', faixa:'aka-dragon'},
  {titulo:'Ozymandias · combate', nota:'', faixa:'ozy-marte'},
  {titulo:'Revelação (fora do jogo)', nota:'Contar a revelação em voz alta, fora da ficção.', faixa:'mom-miserere'}
 ];
-const IMG_PADRAO = {esau:'img/esau.jpg', ezequiel:'img/ezequiel.jpg', jael:'img/jael.jpg', hildegarda:'img/hildegarda.jpg', demonio:'img/diabo.jpg', momentos:'img/anja.jpg', viagem:'img/rafaela.jpg'};
-const ALT_PADRAO = {esau:'img/esau_acena.jpg'};            // segunda versão da arte (Esaú sorrindo e acenando)
+const IMG_PADRAO = {esau:'img/esau.jpg', ezequiel:'img/ezequiel.jpg', jael:'img/jael.jpg', hildegarda:'img/hildegarda.jpg', demonio:'img/diabo.jpg', momentos:'img/anja.jpg', akari:'img/akari.jpg', ozy:'img/ozymandias.jpg', viagem:'img/rafaela.jpg'};
+const ALT_PADRAO = {esau:'img/esau_acena.jpg', akari:'img/thorian.jpg'};            // segunda versão da arte (Esaú sorrindo e acenando)
 const APOIO = [
  {id:'rafaela', nome:'Rafaela', papel:'A curandeira', img:'img/rafaela.jpg', nota:'Cura o que ninguém mais cura, e as mãos brilham. Nasceu com poder celestial: a mãe, Marina, matou um demônio grávida e morreu no parto. Na volta 1 é morta pela flecha de Esaú.'},
  {id:'tobias', nome:'Tobias', papel:'O Cordeiro (a Gula)', img:'img/tobias.jpg', nota:'Não luta. Os Bellacord querem levá-lo: se os jogadores perderem, ele é levado. É o responsável pelos lanches (e pelo pão).'},
+ {id:'akari', nome:'Akari', papel:'A espada', img:'img/akari.jpg', nota:'Chega montada no Thorian e confronta o Ozymandias por ter atacado as pessoas comuns.'},
+ {id:'thorian', nome:'Thorian', papel:'O dragão da Akari', img:'img/thorian.jpg', nota:'Dragão azul-escuro, de cauda longa e olhos que brilham. Voa sobre a cena.'},
  {id:'anja', nome:'A anja', papel:'A Entidade / o Lobo', img:'img/anja.jpg', nota:'Voz dentro das mentes dos jogadores. Oferece quatro virtudes invertidas (Libertação, Paz, Fartura, Vida), cada uma escolhida uma só vez, com item, cavalo fantasma e Porta Dimensional 1/dia. Só com ela em combate a morte é permanente.'}
 ];
 const PAPEIS = {entrada:'Entrada', combate:'Combate', momento:'Momento'};
@@ -362,10 +378,15 @@ const CHAVE = 'trilha-cordeiro-v2', CHAVE_V1 = 'trilha-cordeiro-v1';
 const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel, st:f.st?1:0, videos:f.videos.slice(),
   usar:!!f.st, grav:0, link:'', inicio:0, vol:100, repetir:f.papel==='combate'});
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
-const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:''});
+const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:'',
+  ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:[{n:'Pedro',nota:'',falou:false},{n:'Victor',nota:'',falou:false},{n:'Jogador 3',nota:'',falou:false},{n:'Jogador 4',nota:'',falou:false}],
+  voto:{s:0,n:0}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
 function garantir(){ E.m = Object.assign(M0(), E.m||{});
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
   if (typeof E.rpos !== 'number') E.rpos = -1;
+  if (!E.m.akariRot) { E.m.akariRot = true; if (!E.roteiro.some(r => r.faixa === 'aka-dragon')) { const k = E.roteiro.findIndex(r => r.faixa === 'ozy-saturno');
+    if (k >= 0) { E.roteiro.splice(k+1, 0, {id:'r'+Date.now(), titulo:'Akari e Thorian chegam', nota:'A Akari chega montada no dragão Thorian e confronta o Ozymandias por ter atacado as pessoas comuns.', faixa:'aka-dragon'}); if (E.rpos > k) E.rpos++; } } }
+  if (typeof E.intens !== 'number') E.intens = 5; if (typeof E.ambVol !== 'number') E.ambVol = 40;
   if (typeof E.vozNivel !== 'number') E.vozNivel = 25; if (typeof E.fadeSaida !== 'number') E.fadeSaida = 4; }
 function estadoPadrao(){ return {v:2, mestre:80, cruzar:1.5, rem:[], grupos:PADRAO.map(novoGrupo)}; }
 function carregar(){
@@ -408,7 +429,7 @@ let P = [null,null], pronto = [false,false], ativo = 0, emP = [null,null], fades
 let tocando = null, fila = [], tri = null, triFim = '';
 const falhou = {}, estados = {};
 let voz = false; const hist = [];                            // voz: música abaixada enquanto o Mestre fala; hist: faixas anteriores, para retomar
-const alvoDe = f => Math.round(f.vol * E.mestre / 100 * (voz ? E.vozNivel/100 : 1));
+const alvoDe = f => Math.round(f.vol * E.mestre / 100 * (voz ? E.vozNivel/100 : 1) * (0.6 + 0.1*((E.intens||5)-1)));
 function aplicarVol(i){ try { P[i].unMute(); P[i].setVolume(Math.round(vol[i])); } catch(e){} }
 function fade(i, ate, ms, fim){
   clearInterval(fades[i]); fades[i] = null; if (!pronto[i]) return;
@@ -460,9 +481,9 @@ function aoErro(i, ev){
     P[i].loadVideoById({videoId:videoDe(f), startSeconds:espera[i] && espera[i].meio ? 0 : (+f.inicio||0)}); desenhar();
   } else { estados[f.id] = 'Nenhuma gravação tocou aqui. Cole outro link do YouTube.'; if (tri) triIr(1); else parar(); }
 }
-window.onYouTubeIframeAPIReady = () => { [0,1].forEach(i => { P[i] = new YT.Player('p'+i, { width:'100%', height:'100%',
+window.onYouTubeIframeAPIReady = () => { [0,1,2].forEach(i => { P[i] = new YT.Player('p'+i, { width:'100%', height:'100%',
   playerVars:{playsinline:1, rel:0, controls:1, origin:location.origin},
-  events:{ onReady:()=>{ pronto[i]=true; }, onStateChange:ev=>aoMudar(i,ev), onError:ev=>aoErro(i,ev) } }); }); };
+  events:{ onReady:()=>{ pronto[i]=true; }, onStateChange:ev=>i===2 ? aoMudarAmb(ev) : aoMudar(i,ev), onError:ev=>i===2 ? aoErroAmb(ev) : aoErro(i,ev) } }); }); };
 (function(){ const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
   s.onerror = () => aviso('Não consegui carregar o player do YouTube. Confira a internet.'); document.head.append(s); })();
 
@@ -473,6 +494,7 @@ const dizer = t => { msgBarra = {t, ate:Date.now()+2200}; };
 function alternarVoz(ligar){
   voz = ligar ?? !voz; $('btVoz').setAttribute('aria-pressed', String(voz)); $('btVoz').textContent = voz ? 'Voz ligada' : 'Voz';
   if (tocando && pronto[ativo] && !espera[ativo]) fade(ativo, alvoDe(tocando), 350);
+  ambAplicar();
 }
 function retomar(){
   while (hist.length) { const h = hist.pop();
@@ -768,6 +790,192 @@ function painelGatilhos(){
       el('button',{class:(f.usar?'':'fora')+(tocando===f?' tocando':''), onclick:()=>tocar(f, null, {fila:[f]})}, el('span',{class:'q'}, tocando===f ? '● ' : '▶ '), el('span',{}, el('div',{class:'q'}, f.momento || f.nome), el('div',{class:'t'}, f.nome))))));
 }
 
+
+// ---------- Clima: ambientes, silêncio, pausa da mesa, intensidade e teste de som ----------
+const AMB = [
+ {id:'amb-mar', nome:'Mar', videos:['NJXzcQJi_A8','9tHOkp4onyQ','4NN0dgSol-U']},
+ {id:'amb-vento', nome:'Vento', videos:['2VIHVqEj0so','uCjc89_8lWE','6NQyYXVqmpA']},
+ {id:'amb-chuva', nome:'Chuva e trovão', videos:['e9-rgOex1x8','UfYv2E5xQRY','cZIJqXdq8cI']},
+ {id:'amb-fogo', nome:'Fogueira', videos:['itLcvK2y9m4','4Cc4JOYaRyI','nFLd-1ANGNo']},
+ {id:'amb-gente', nome:'Mercado e multidão', videos:['USQ_HtP0XYM','G0LDczDKW8Q','h6CACBStJxI']}
+];
+AMB.forEach(a => a.grav = 0);
+let ambAtivo = null, testeCb = null, testeErro = null, teste = null, silTimer = null, pan = false;
+function ambAplicar(){ try { P[2].setVolume(Math.round(E.ambVol * (voz ? E.vozNivel/100 : 1))); } catch(e){} }
+function ambTocar(a){
+  if (!pronto[2]) { aviso('O player do YouTube ainda não carregou.'); return; }
+  if (teste) { dizer('Espere o teste de som terminar.'); return; }
+  if (ambAtivo === a) { ambParar(); return; }
+  ambAtivo = a; try { P[2].loadVideoById({videoId:a.videos[a.grav % a.videos.length]}); P[2].unMute(); } catch(e){} ambAplicar(); desenhar();
+}
+function ambParar(){ if (!ambAtivo) return; ambAtivo = null; try { P[2].pauseVideo(); } catch(e){} desenhar(); }
+function aoMudarAmb(ev){
+  if (testeCb) { testeCb(ev.data); return; }
+  if (!ambAtivo) return;
+  if (ev.data === 1) { try { P[2].unMute(); } catch(e){} ambAplicar(); }
+  if (ev.data === 0) { try { P[2].seekTo(0, true); P[2].playVideo(); } catch(e){} }
+}
+function aoErroAmb(ev){
+  if (testeErro) { testeErro(ev.data); return; }
+  const a = ambAtivo; if (!a) return;
+  a.grav++; if (a.grav % a.videos.length === 0) { aviso('Nenhum vídeo deste ambiente tocou. Tente outro ambiente.'); ambParar(); return; }
+  try { P[2].loadVideoById({videoId:a.videos[a.grav % a.videos.length]}); } catch(e){}
+}
+function silencio(seg){
+  if (!tocando || !pronto[ativo] || silTimer) return;
+  const i = ativo, f = tocando; fade(i, 0, 250, () => { try { P[i].pauseVideo(); } catch(e){} }); dizer('Silêncio de ' + seg + ' s');
+  silTimer = setTimeout(() => { silTimer = null; if (tocando !== f || ativo !== i) return; try { P[i].playVideo(); } catch(e){} fade(i, alvoDe(f), 3000); }, seg*1000);
+}
+function pausaMesa(){
+  if (!pan) { if (!tocando) { dizer('Nada tocando.'); return; } let t = 0; try { t = P[ativo].getCurrentTime(); } catch(e){}
+    hist.push({f:tocando, t}); pan = true; parar(1500); telaPreta = true; atualizarTela(); dizer('Pausa da mesa'); desenhar(); }
+  else { pan = false; telaPreta = false; atualizarTela(); retomar(); desenhar(); }
+}
+function tentarFaixa(f){
+  return new Promise(res => { let fim = false;
+    const acabar = r => { if (fim) return; fim = true; clearTimeout(tm); testeCb = testeErro = null; try { P[2].pauseVideo(); } catch(e){} res(r); };
+    const tm = setTimeout(() => acabar(false), 9000);
+    testeCb = d => { if (d === 1) acabar(true); }; testeErro = () => acabar(false);
+    try { P[2].mute(); P[2].loadVideoById({videoId:videoDe(f)}); } catch(e){ acabar(false); } });
+}
+async function testarSom(){
+  if (teste) { teste.cancel = true; return; }
+  if (!pronto[2]) { aviso('O player do YouTube ainda não carregou.'); return; }
+  ambParar();
+  const ids = [...new Set([...E.roteiro.map(r => r.faixa), ...todas().filter(f => f.usar).map(f => f.id)])], fs = ids.map(faixaPorId).filter(Boolean);
+  teste = {cancel:false, i:0, total:fs.length, atual:''}; E.m.teste = {};
+  for (const f of fs) { if (teste.cancel) break; teste.i++; teste.atual = f.nome; desenhar();
+    const n = idDoLink(f.link) ? 1 : f.videos.length; let ok = false;
+    for (let k = 0; k < n && !ok && !teste.cancel; k++) { ok = await tentarFaixa(f); if (!ok && !idDoLink(f.link)) f.grav = (f.grav+1) % f.videos.length; }
+    if (!teste.cancel) E.m.teste[f.id] = ok ? 'ok' : 'falha'; salvar(); }
+  try { P[2].unMute(); } catch(e){} teste = null; desenhar();
+}
+function rolar(n, modo){
+  const r = () => 1 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * n);
+  let t; if (modo) { const a = r(), b = r(); t = 'd20 ' + (modo === 'v' ? 'vantagem' : 'desvantagem') + ': ' + a + ' e ' + b + ' → ' + (modo === 'v' ? Math.max(a,b) : Math.min(a,b)); } else t = 'd' + n + ': ' + r();
+  dadosH.unshift(t); dadosH.length = Math.min(dadosH.length, 8); desenhar();
+}
+let dadosH = [];
+
+// ---------- Aba Mestre: painéis de mesa ----------
+const abertas = new Set(['ini','aud']);
+const caixa = (id, t, ...k) => el('details',{class:'painel cxm', open:abertas.has(id), ontoggle:ev => { ev.target.open ? abertas.add(id) : abertas.delete(id); }}, el('summary',{}, t), ...k);
+const mudar = fn => () => { fn(); salvar(); desenhar(); };
+const VIRTUDES = ['Libertação','Paz','Fartura','Vida'];
+function painelEspecial(){
+  const f = faixaPorId('aka-dragon'); if (!f) return null;
+  return el('div',{class:'painel'}, el('h3',{},'Cena especial · Akari e Thorian'),
+    el('div',{class:'lin2'},
+      el('button',{class:'grande2', onclick:()=>{ E.m.alt.akari = false; salvar(); tocar(f, null, {fila:[f], forcar:true}); }}, '▶ A Akari chega no dragão'),
+      el('button',{class:'peq', onclick:()=>{ E.m.alt.akari = !E.m.alt.akari; salvar(); atualizarTela(); desenhar(); }}, E.m.alt.akari ? 'Mostrar a Akari' : 'Mostrar o Thorian')),
+    el('p',{class:'sub', style:'margin:8px 0 0'},'Ela confronta o Ozymandias por ter atacado as pessoas comuns. A tela dos jogadores mostra a arte escolhida.'));
+}
+function painelIni(){
+  const m = E.m;
+  const nome = el('input',{id:'ini_n', placeholder:'Nome', class:'n', list:'ini_sug'}), q = el('input',{id:'ini_i', type:'number', placeholder:'Inic.', class:'q'}), pv = el('input',{id:'ini_p', type:'number', placeholder:'PV', class:'q'});
+  const linhas = m.ini.map((c,i) => el('div',{class:'ini2'+(m.turno===i?' vez':'')+(c.pv<=0?' caiu':'')},
+    el('input',{class:'n', value:c.n, 'aria-label':'Nome', onchange:ev => { c.n = ev.target.value; salvar(); }}),
+    el('input',{type:'number', class:'q', value:c.ini, title:'Iniciativa', onchange:ev => { c.ini = +ev.target.value || 0; salvar(); }}),
+    el('b',{class:'pvn'}, 'PV ' + c.pv + (c.max ? '/' + c.max : '')),
+    ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq', onclick:mudar(() => { c.pv = Math.max(0, c.pv + d); if (c.max) c.pv = Math.min(c.max, c.pv); })}, (d>0?'+':'−') + Math.abs(d))),
+    el('input',{class:'c', value:c.cond || '', placeholder:'condições', 'aria-label':'Condições', onchange:ev => { c.cond = ev.target.value; salvar(); }}),
+    el('button',{class:'peq perigo', 'aria-label':'Remover', onclick:mudar(() => { m.ini.splice(i,1); if (m.turno >= m.ini.length) m.turno = 0; })}, '×')));
+  return caixa('ini','Iniciativa e PV',
+    el('datalist',{id:'ini_sug'}, ...[...ABATES.map(a => a.nome), 'Tobias', 'Rafaela', 'Akari', 'Thorian'].map(n => el('option',{value:n}))),
+    linhas.length ? el('div',{class:'inis'}, ...linhas) : el('p',{class:'sub'},'Ninguém na ordem ainda. Os PV são os que você digitar: nenhuma ficha é alterada.'),
+    el('div',{class:'lin2'}, nome, q, pv, el('button',{onclick:() => { if (!nome.value.trim()) return; const v = Math.max(0, +pv.value || 0); m.ini.push({n:nome.value.trim(), ini:+q.value || 0, pv:v, max:v, cond:''}); salvar(); desenhar(); }}, 'Adicionar')),
+    el('div',{class:'lin2'},
+      el('button',{class:'peq', onclick:mudar(() => { const at = m.ini[m.turno]; m.ini.sort((a,b) => b.ini - a.ini); m.turno = Math.max(0, m.ini.indexOf(at)); })}, 'Ordenar por iniciativa'),
+      el('button',{disabled:!m.ini.length, onclick:mudar(() => { m.turno = (m.turno + 1) % m.ini.length; if (m.turno === 0) m.rodada++; })}, 'Próximo turno'),
+      el('button',{class:'peq perigo', onclick:ev => confirmar(ev.target, mudar(() => { m.ini = []; m.turno = 0; }))}, 'Limpar')));
+}
+function painelApoioEstado(){
+  const m = E.m;
+  const cart = (id, nomeT, img) => { const a = m.ap[id];
+    return el('div',{class:'apest'}, el('img',{src:img, alt:''}), el('div',{class:'c'}, el('b',{}, nomeT),
+      el('div',{class:'lin2'}, el('label',{class:'c2'},'PV', el('input',{class:'q', value:a.pv, onchange:ev => { a.pv = ev.target.value; salvar(); }})),
+        el('label',{class:'c2'},'Condição', el('input',{class:'n', value:a.cond, onchange:ev => { a.cond = ev.target.value; salvar(); }}))),
+      id === 'rafaela' ? el('label',{class:'lin'}, el('input',{type:'checkbox', checked:!!a.fora, onchange:ev => { a.fora = ev.target.checked; salvar(); desenhar(); }}), 'Rafaela teleportada para fora') : null)); };
+  return caixa('apo','Tobias e Rafaela', el('div',{class:'apests'}, cart('tobias','Tobias','img/tobias.jpg'), cart('rafaela','Rafaela','img/rafaela.jpg')),
+    el('p',{class:'sub', style:'margin:8px 0 0'}, m.ap.rafaela.fora ? 'Rafaela fora da cena: não será devorada.' : 'Se os jogadores vencerem e ela não for teleportada, a Rafaela é devorada.'));
+}
+function painelFim(){
+  const m = E.m, n = ABATES.filter(a => m.abates[a.id]).length, falta = ABATES.filter(a => !m.abates[a.id]);
+  const venceu = n === ABATES.length;
+  return caixa('fim','Fim da noite · vitória ou derrota',
+    el('div',{class:'sub'}, 'Vitória: abater ' + ABATES.map(a => a.nome).join(', ') + '.'),
+    el('div',{class:'chk'}, ...ABATES.map(a => el('span',{class:m.abates[a.id] ? 'ok' : ''}, (m.abates[a.id] ? '✓ ' : '○ ') + a.nome))),
+    venceu ? el('div',{class:'aviso2'}, 'VITÓRIA: os jogadores se tornam os Quatro Cavaleiros. ' + (m.ap.rafaela.fora ? 'A Rafaela foi teleportada e está a salvo.' : 'A Rafaela é devorada, a menos que seja teleportada.'))
+           : el('div',{class:'sub'}, 'Faltam ' + falta.length + ': ' + falta.map(a => a.nome).join(', ') + '.'),
+    el('label',{class:'lin'}, el('input',{type:'checkbox', checked:m.derrota, onchange:ev => { m.derrota = ev.target.checked; salvar(); desenhar(); }}), 'Derrota: os Bellacord levaram o Tobias'),
+    m.derrota ? el('div',{class:'aviso2'}, 'DERROTA: os Bellacord levam o Tobias.') : null);
+}
+function painelAnja(){
+  const m = E.m, nomes = m.jog.map(j => j.n);
+  return caixa('anja','Oferta da anja · virtudes invertidas',
+    el('p',{class:'sub', style:'margin:0 0 8px'},'Cada virtude é escolhida uma só vez.'),
+    ...VIRTUDES.map(v => { const x = m.virt[v] || (m.virt[v] = {j:'', nota:''});
+      return el('div',{class:'virt'+(x.j ? ' tom' : '')}, el('b',{}, v),
+        el('select',{'aria-label':'Quem escolheu ' + v, onchange:ev => { x.j = ev.target.value; salvar(); desenhar(); }}, el('option',{value:''},'(ninguém)'), ...nomes.map(n => el('option',{value:n, selected:x.j===n}, n))),
+        el('input',{class:'c', value:x.nota, placeholder:'item, efeito, cavalo…', onchange:ev => { x.nota = ev.target.value; salvar(); }})); }),
+    el('div',{class:'sub'}, VIRTUDES.filter(v => m.virt[v] && m.virt[v].j).length + ' de 4 escolhidas.'));
+}
+function painelLoops(){
+  const m = E.m;
+  return caixa('loops','Registro das voltas',
+    el('p',{class:'sub', style:'margin:0 0 8px'},'O que mudou em cada volta e o que os jogadores já sabem.'),
+    ...[1,2,3,4,5,6].map(n => el('label',{class:'lp'+(m.volta===n?' atual':'')}, el('b',{}, 'Volta ' + n),
+      el('textarea',{rows:2, onchange:ev => { m.loops[n] = ev.target.value; salvar(); }}, m.loops[n] || ''))));
+}
+function painelJog(){
+  const m = E.m;
+  return caixa('jog','Jogadores e votação',
+    ...m.jog.map(j => el('div',{class:'jg'+(j.falou?' falou':'')}, el('input',{class:'n', value:j.n, 'aria-label':'Nome do jogador', onchange:ev => { j.n = ev.target.value; salvar(); }}),
+      el('label',{class:'lin'}, el('input',{type:'checkbox', checked:j.falou, onchange:ev => { j.falou = ev.target.checked; salvar(); desenhar(); }}), 'já falou'),
+      el('input',{class:'c', value:j.nota, placeholder:'anotação', onchange:ev => { j.nota = ev.target.value; salvar(); }}))),
+    el('div',{class:'lin2'}, el('button',{class:'peq', onclick:mudar(() => { m.jog.forEach(j => j.falou = false); })}, 'Zerar “já falou”'),
+      el('span',{class:'sub'}, m.jog.filter(j => !j.falou).map(j => j.n).join(', ') ? 'Falta falar: ' + m.jog.filter(j => !j.falou).map(j => j.n).join(', ') : 'Todos já falaram.')),
+    el('div',{class:'lin2'}, el('b',{},'Votação'),
+      el('button',{onclick:mudar(() => { m.voto.s++; })}, 'Sim ' + m.voto.s), el('button',{onclick:mudar(() => { m.voto.n++; })}, 'Não ' + m.voto.n),
+      el('button',{class:'peq', onclick:mudar(() => { m.voto = {s:0,n:0}; })}, 'Zerar')));
+}
+let falaDe = 'hildegarda';
+function painelFalas(){
+  const m = E.m, op = [...ABATES.map(a => [a.id, a.nome]), ['akari','Akari'], ['tobias','Tobias'], ['rafaela','Rafaela']];
+  return caixa('falas','Falas e anotações dos personagens',
+    el('div',{class:'seg'}, ...op.map(([id,n]) => el('button',{class:'peq','aria-pressed':String(falaDe===id), onclick:() => { falaDe = id; desenhar(); }}, n))),
+    el('textarea',{rows:5, class:'larga', placeholder:'Frases prontas, motivações, o que ele sabe e esconde…', onchange:ev => { m.falas[falaDe] = ev.target.value; salvar(); }}, m.falas[falaDe] || ''));
+}
+const textoCron = () => { const m = E.m; if (!m.inicioMesa) return 'A mesa ainda não começou.';
+  const dec = (Date.now() - m.inicioMesa) / 60000, n = E.roteiro.length, prev = n ? Math.max(0, E.rpos + 1) / n * m.durTotal : 0, d = Math.round(dec - prev);
+  return 'Decorrido ' + Math.floor(dec) + ' min de ' + m.durTotal + '. ' + (E.rpos < 0 ? 'Roteiro ainda não iniciado.' : 'Cena ' + (E.rpos+1) + ' de ' + n + ': ' + (Math.abs(d) <= 3 ? 'no ritmo.' : d > 0 ? 'atrasado cerca de ' + d + ' min.' : 'adiantado cerca de ' + (-d) + ' min.')); };
+function painelRitmo(){
+  const m = E.m;
+  return caixa('rit','Ritmo da noite',
+    el('div',{class:'lin2'}, el('label',{class:'c2'},'Duração total (min)', el('input',{type:'number', class:'q', value:m.durTotal, onchange:ev => { m.durTotal = Math.max(30, +ev.target.value || 240); salvar(); desenhar(); }})),
+      el('button',{onclick:mudar(() => { m.inicioMesa = m.inicioMesa ? 0 : Date.now(); })}, m.inicioMesa ? 'Zerar relógio da mesa' : 'Começou a mesa')),
+    el('p',{class:'sub', id:'cronMesa', style:'margin:8px 0 0'}, textoCron()));
+}
+function painelDados(){
+  return caixa('dados','Dados',
+    el('div',{class:'lin2'}, ...[4,6,8,10,12,20,100].map(n => el('button',{class:'peq', onclick:() => rolar(n)}, 'd' + n)),
+      el('button',{class:'peq', onclick:() => rolar(20,'v')}, 'd20 vant.'), el('button',{class:'peq', onclick:() => rolar(20,'d')}, 'd20 desv.')),
+    el('div',{class:'dados'}, ...dadosH.map((t,i) => el('div',{class: i ? 'sub' : 'dnovo'}, t))));
+}
+function painelAudio(){
+  const m = E.m, falhas = Object.entries(m.teste || {}).filter(([,v]) => v === 'falha').map(([id]) => (faixaPorId(id) || {}).nome || id), oks = Object.values(m.teste || {}).filter(v => v === 'ok').length;
+  return caixa('aud','Clima e som',
+    el('div',{class:'lin2'}, el('b',{},'Intensidade da trilha'), el('div',{class:'seg'}, ...[1,2,3,4,5].map(n => el('button',{class:'peq','aria-pressed':String(E.intens===n), onclick:() => { E.intens = n; salvar(); if (tocando && pronto[ativo] && !espera[ativo]) fade(ativo, alvoDe(tocando), 600); desenhar(); }}, String(n))))),
+    el('div',{class:'lin2'}, el('b',{},'Silêncio dramático'), ...[3,5,10].map(n => el('button',{class:'peq', disabled:!tocando, onclick:() => silencio(n)}, n + ' s')),
+      el('button',{class:'peq', 'aria-pressed':String(pan), onclick:pausaMesa, title:'Música baixa, tela dos jogadores preta; clique de novo para voltar'}, pan ? 'Voltar da pausa' : 'Pausa da mesa')),
+    el('div',{class:'lin2'}, el('b',{},'Ambientes'), el('label',{class:'vol2'}, 'Volume', el('input',{type:'range', min:0, max:100, value:E.ambVol, oninput:ev => { E.ambVol = +ev.target.value; ambAplicar(); }, onchange:() => salvar()}))),
+    el('div',{class:'seg'}, ...AMB.map(a => el('button',{class:'peq','aria-pressed':String(ambAtivo===a), onclick:() => ambTocar(a)}, (ambAtivo===a ? '● ' : '') + a.nome)), el('button',{class:'peq', disabled:!ambAtivo, onclick:ambParar}, 'Parar ambiente')),
+    el('div',{class:'lin2'}, el('b',{},'Teste de som'), el('button',{onclick:testarSom}, teste ? 'Cancelar teste' : 'Testar músicas do roteiro'),
+      el('span',{class:'sub'}, teste ? 'Testando ' + teste.i + ' de ' + teste.total + ': ' + teste.atual : (oks || falhas.length) ? oks + ' tocam' + (falhas.length ? ', ' + falhas.length + ' sem gravação que funcione' : '') + '.' : 'Troca sozinho para uma gravação reserva quando uma falha.')),
+    falhas.length ? el('div',{class:'aviso2'}, 'Sem som: ' + falhas.join('; ') + '. Troque o link na aba Seleção.') : null);
+}
+setInterval(() => { const e = document.getElementById('cronMesa'); if (e) e.textContent = textoCron(); }, 15000);
+
 // ---------- Aba Mestre: palco, controle da noite e elenco de apoio ----------
 function palco(){
   const g = tocando && grupoDe(tocando), alt = g && ALT_PADRAO[g.id] && E.m.alt[g.id];
@@ -787,7 +995,7 @@ function elencoApoio(){
 }
 function desenharMestre(){
   const raiz = document.getElementById('painelMestre'); raiz.replaceChildren();
-  raiz.append(palco(), painelRoteiro(), painelGatilhos(), ...painelNoite(), elencoApoio());
+  raiz.append(palco(), painelRoteiro(), painelGatilhos(), painelEspecial(), ...painelNoite(), painelIni(), painelApoioEstado(), painelFim(), painelAnja(), painelLoops(), painelJog(), painelFalas(), painelRitmo(), painelDados(), painelAudio(), elencoApoio());
 }
 
 // ---------- Modo Sessão ----------
@@ -904,7 +1112,7 @@ document.addEventListener('keydown', ev => {
   if (/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) || ev.ctrlKey || ev.metaKey || ev.altKey) return;
   const k = ev.key.toLowerCase();
   if (k === ' ' && ev.target.tagName === 'BUTTON') return;
-  if (k === 'escape') parar(0);
+  if (k === 'escape') { parar(0); ambParar(); }
   else if (k === 'b') parar(E.fadeSaida*1000);
   else if (k === 'v') { if (!ev.repeat) { if (voz) { vozIni = 0; alternarVoz(false); } else { vozIni = Date.now(); alternarVoz(true); } } }
   else if (k === 'r') retomar();
