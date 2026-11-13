@@ -29,6 +29,14 @@ Painel de referência dos Bellacord (Esaú, Jael, Ezequiel, Hildegarda, Raquel, 
 - **Aplicar**: depois de um 🎲 de dano, escolha o alvo (linhas da iniciativa) e toque em "Aplicar −N" ou "Metade −N"; cura vira "Curar +N". Fica registrado em *Últimas ações*. As fichas originais não mudam.
 - **Recolher player**: o player fixo do rodapé ocupa quase metade da tela no celular; o botão o reduz, e o conteúdo ganha margem conforme a altura real dele.
 
+### Rodada 3: luta rápida, desfazer e condições
+
+- **⚔ Iniciar luta** (topo de *Inimigos e ações*): marque os inimigos, digite o PV de cada um (fica lembrado) e toque em "Rolar iniciativa e começar". Cada um rola 1d20, a ordem é refeita, a rodada volta a 1 e os usos por luta, por turno e por rodada e as recargas são zerados. Jogadores já na lista são mantidos. O antigo botão "Nova luta" virou "Zerar usos".
+- **Desfazer**: Aplicar dano/cura, ajustes de PV (−10…+5), Usar, turnos, condições e Iniciar luta mostram um aviso "Desfazer" por 6 s; guarda até 5 passos (só em memória, não entra no que fica salvo).
+- **Turnos**: ◀ e ▶ (na faixa fixa, em *Inimigos e ações* e em *Iniciativa e PV*). ▶ pula quem está com PV 0, exceto se todos estiverem; ◀ não reroda recargas. Há vibração curta e um aviso de leitor de tela ("Vez de X").
+- **Condições**: em cada linha da iniciativa, "＋ Condição" abre chips de um toque (Derrubado, Impedido, Cravado, Atordoado, Sem reações, Deslocamento 0, Marcado) e a duração (∞, 1–3 turnos). A contagem diminui quando termina o turno da criatura e a condição some ao zerar. O campo de texto antigo continua valendo e aparece como etiqueta. Depois de Usar Estaca, Laço, Arpão, Golpe de Escudo, Pedra Orbital, Inverter, Peso da Conta ou Pino na Testa, aparece "Aplicar condição a…".
+- **Acessibilidade**: abas de inimigos fixas ao rolar, cartas esgotadas com contraste mínimo de 4,5:1, "Letra grande" (lembrado), rótulos nos botões de ícone, foco visível e respeito a *prefers-reduced-motion*. No celular o player começa recolhido (a escolha anterior é respeitada).
+
 ## Cartas de Poder (para os jogadores)
 
 `cartas.html` é a página que os jogadores abrem no celular: eles rolam 1d4 (baralho: S, A, M, H) e 1d12 (carta), digitam o código (por exemplo M07) e veem a carta, com a mão guardada no próprio celular, o Eco da Fome somado e marcadores de uso por luta, por volta e recarga. Endereço depois de ativar o Pages: https://fabricio1974.github.io/OneShotPandora/cartas.html

@@ -16,11 +16,11 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
-body{background:var(--fundo);color:var(--marfim);font:15px/1.45 var(--texto);padding:0 max(16px,env(safe-area-inset-right,0px)) calc(var(--barra-h,360px) + 76px) max(16px,env(safe-area-inset-left,0px))}
+body{background:var(--fundo);color:var(--marfim);font:15px/1.45 var(--texto);padding:0 max(16px,env(safe-area-inset-right,0px)) calc(var(--barra-h,360px) + var(--pill-h,0px) + 76px) max(16px,env(safe-area-inset-left,0px))}
 header,main{max-width:1100px;margin:0 auto}
 header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:18px 14px;border-bottom:1px solid var(--linha)}
 h1{font:400 22px/1 var(--titulo);letter-spacing:.12em;margin:0;color:var(--terracota)}
-.abas{display:flex;gap:6px;margin-left:auto}
+.abas{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
 button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--linha);background:var(--painel2);border-radius:6px;padding:8px 14px}
 button:hover{border-color:var(--terracota2)}
 button.peq{padding:5px 10px;font-size:13px}
@@ -174,7 +174,7 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .rot-top .grow{flex:1}
 .gat{display:flex;flex-direction:column;gap:6px;margin-top:10px}
 .gat button{display:flex;gap:10px;text-align:left;align-items:center}
-.gat button.fora{opacity:.55}
+.gat button.fora{border-style:dashed;color:#c2b5a4}
 .gat button .q{font-weight:600}
 .gat button .t{color:var(--apagado);font-size:12px}
 
@@ -197,7 +197,7 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .inm-fil{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
 .inm-f{min-height:40px;padding:4px 11px;border-radius:999px;font-size:13px;border-color:color-mix(in srgb,var(--tc,#a8998a) 55%,transparent);color:var(--tc,var(--marfim))}
 .inm-f.tp{--tc:#d8cbb4}
-.inm-f small{opacity:.75;margin-left:2px}
+.inm-f small{margin-left:2px}
 .inm-f[aria-pressed="true"]{background:var(--tc,var(--terracota));color:#1a0f08;font-weight:600}
 .inm-lim{min-height:40px;margin-top:8px}
 .inm-rot{font-size:12px;color:var(--apagado)}.inm-rot.gasta{color:var(--erro)}.inm-rot.pronta{color:#6fcf8f}
@@ -233,7 +233,7 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .inm-vez button{min-height:40px}
 .inm-faixa{margin-top:8px;padding:8px 10px;border-radius:8px;background:#2a2410;border:1px solid var(--ouro);font-size:14px}
 .inm-faixa div{margin-bottom:4px}.inm-faixa button{min-height:40px}
-.inm-fav{margin-left:auto;min-width:40px;min-height:40px;padding:0;background:none;border:0;font-size:20px;line-height:1;opacity:.45}.inm-fav[aria-pressed="true"]{opacity:1}
+.inm-fav{margin-left:auto;min-width:40px;min-height:40px;padding:0;background:none;border:0;font-size:20px;line-height:1;color:#d8cbb4}.inm-fav[aria-pressed="true"]{color:var(--ouro)}
 .inm-pref{font-size:12px;color:var(--terracota)}
 .inm-favs{margin-top:16px;padding-top:4px;border-top:1px dashed var(--ouro)}.inm-favs h4{margin:8px 0 0;color:var(--ouro);font:400 15px/1.2 var(--titulo);letter-spacing:.08em}
 .inm-pas{margin-top:8px}.inm-pas summary{min-height:40px;display:flex;align-items:center;font-size:13px;color:var(--apagado);cursor:pointer}
@@ -247,6 +247,54 @@ html{scroll-padding-bottom:calc(var(--barra-h,360px) + 80px)}
 #faixaTurno button{min-height:44px;border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600;white-space:nowrap}
 .barra.compacta .linhaPos,.barra.compacta .vol,.barra.compacta #btVoz,.barra.compacta #btVolta,.barra.compacta #btRep,.barra.compacta #btBaixar,.barra.compacta #btVid,.barra.compacta #btAnt,.barra.compacta #btProx,.barra.compacta #btMenos,.barra.compacta #btMais{display:none}
 #btCompacto{min-height:40px}
+.inm-filtros{margin-top:8px}.inm-filtros summary{min-height:40px;display:flex;align-items:center;font-size:13px;color:#d8cbb4;cursor:pointer}
+/* Rodada 3: desfazer, iniciar luta, condições, acessibilidade */
+#painelMestre button,#painelMestre select,#painelMestre summary,header button{min-height:40px}
+#painelMestre button.peq,header button.peq{min-width:40px}
+#painelMestre input:not([type=checkbox]):not([type=range]):not([type=file]),.aviso button{min-height:40px}
+#painelMestre input[type=checkbox]{width:22px;height:22px;flex:none}#painelMestre label.lin{min-height:40px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#toast{position:fixed;left:10px;right:10px;bottom:calc(var(--barra-h,0px) + var(--pill-h,0px) + 20px);z-index:9;margin:0 auto;max-width:440px;display:flex;gap:10px;align-items:center;justify-content:space-between;padding:4px 4px 4px 14px;border-radius:10px;background:#2a2410;border:1px solid var(--ouro);box-shadow:0 2px 12px #000c;font-size:14px}
+#toast[hidden]{display:none}#toast span{min-width:0;overflow-wrap:anywhere}
+#toast button{min-height:44px;min-width:44px;flex:none;background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.inm-abas{position:sticky;top:0;z-index:5;background:var(--painel);margin-top:6px;padding-top:6px;border-bottom:1px solid var(--linha)}
+.inm-card.esgotada{opacity:1;background:#171210;border-left-color:#6b5a4d;border-style:dashed;border-left-style:solid}
+.inm-card.esgotada .inm-nome{color:var(--apagado);text-decoration:line-through;text-decoration-thickness:1px}
+.inm-card.esgotada .inm-txt{color:#b4a595}
+.ini2.caiu{opacity:1;background:#150f0d;border-style:dashed}.ini2.caiu .pvn{color:var(--erro)}
+.ini2{flex-direction:column;align-items:stretch;gap:6px}
+.ini2 button{min-height:40px;min-width:40px}.ini2 input{min-height:40px}
+.i-r{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.i-r .pvn{flex:1;min-width:6em}
+.i-r.pvb button{flex:1 1 0;padding-inline:0}
+.i-vez{color:var(--ouro);font-weight:700}
+.cb{display:inline-flex;align-items:center;font-size:12.5px;padding:2px 9px;border-radius:999px;background:#3b1f3f;border:1px solid #b48be0;color:#f1e4ff;font-weight:600}
+.cb.tx{background:#2f2a1c;border-color:var(--ouro);color:#f3e6bf;font-weight:400}
+.i-pk{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border:1px dashed var(--linha);border-radius:8px}
+.i-pk .inm-f[aria-pressed="true"]{background:#b48be0;border-color:#b48be0;color:#1a0f08}
+.seg2{display:flex;gap:4px;align-items:center}.seg2 button{min-width:44px}
+.seg2 button[aria-pressed="true"],.inm-luta-bt[aria-expanded="true"]{background:var(--ouro);border-color:var(--ouro);color:#1a0f08;font-weight:700}
+.inm-luta-bt{min-height:44px;font-weight:600;border-color:var(--terracota)}
+.luta{margin-top:8px;padding:10px;border:1px solid var(--terracota2);border-radius:10px;background:var(--painel2)}
+.luta-l{display:flex;align-items:center;gap:8px;min-height:44px;border-bottom:1px solid var(--linha)}
+.luta-l label{display:flex;align-items:center;gap:8px;flex:1;min-width:0;min-height:44px;cursor:pointer}
+.luta-l input[type=checkbox]{width:24px;height:24px;flex:none}
+.luta-l img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:none}
+.luta-l input.q{width:5.2em;min-height:44px}.luta-l input.q:disabled{opacity:1;color:#8c7f72;background:#17120f}
+.luta-l input.inv{border-color:var(--erro);box-shadow:0 0 0 1px var(--erro)}
+.oferta{background:#1f1a2a;border:1px solid #b48be0;border-radius:8px;padding:6px 8px;margin-top:6px}
+.vezbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.vezbar button{min-height:44px;min-width:44px}
+#faixaTurno{flex-wrap:wrap;border-radius:22px;padding:4px 4px 4px 6px}
+#faixaTurno .ft-l{display:flex;gap:8px;align-items:center;width:100%}#faixaTurno .ft-l .ft-t{flex:1}
+#faixaTurno .ft-c{display:flex;flex-wrap:wrap;gap:4px;padding:0 8px 6px;width:100%}
+#faixaTurno .ft-b{min-width:44px;padding-inline:8px}
+.inm-rot{color:#b4a595}.inm-rot.gasta{color:#ff8a7a}
+a:focus-visible,[tabindex]:focus-visible,details>summary:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+body.lg{font-size:18px}
+body.lg .sub,body.lg .inm-rot,body.lg .inm-av,body.lg .inm-tipo,body.lg .inm-tag,body.lg .inm-f,body.lg button.peq,body.lg .cb,body.lg #faixaTurno,body.lg #toast,body.lg label.c,body.lg label.lin,body.lg .inm-oc,body.lg .inm-ult,body.lg .inm-na{font-size:16px}
+body.lg .inm-txt{font-size:17px}body.lg .inm-nome{font-size:17px}
+body.lg button,body.lg input,body.lg select{min-height:46px}body.lg input,body.lg select,body.lg textarea{font-size:17px}body.lg .abas button{padding-inline:10px}
+body.lg .inm-bol{min-height:46px;min-width:46px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -258,6 +306,7 @@ html{scroll-padding-bottom:calc(var(--barra-h,360px) + 80px)}
     <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
     <button role="tab" id="abaMes" aria-selected="false">Mestre</button>
   </div>
+  <button id="btLetra" class="peq" aria-pressed="false" title="Aumenta as letras e os botões">Letra grande</button>
 </header>
 <main>
   <div id="avisos"></div>
@@ -296,6 +345,8 @@ html{scroll-padding-bottom:calc(var(--barra-h,360px) + 80px)}
   <div class="players mini" id="players"><div class="cx"><div id="p0"></div></div><div class="cx"><div id="p1"></div></div><div class="cx"><div id="p2"></div></div></div>
 </div></div>
 <div id="faixaTurno" hidden></div>
+<div id="toast" hidden></div>
+<div id="vezLive" class="sr" role="status" aria-live="polite"></div>
 <input type="file" id="arqImg" accept="image/*" hidden>
 <input type="file" id="arqDados" accept=".json,application/json" hidden>
 
@@ -439,8 +490,8 @@ const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel,
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:'',
   ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:[{n:'Pedro',nota:'',falou:false},{n:'Victor',nota:'',falou:false},{n:'Jogador 3',nota:'',falou:false},{n:'Jogador 4',nota:'',falou:false}],
-  voto:{s:0,n:0}, inm:{sel:'esau', todos:false, tag:'', tipo:'', uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:''}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
-function garantir(){ E.m = Object.assign(M0(), E.m||{}); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = []; if (!E.m.inm.fav || typeof E.m.inm.fav !== 'object') E.m.inm.fav = {}; if (!Array.isArray(E.m.inm.av)) E.m.inm.av = [];
+  voto:{s:0,n:0}, inm:{sel:'esau', todos:false, tag:'', tipo:'', uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:'', pvLuta:{}, lutaSel:{}}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
+function garantir(){ E.m = Object.assign(M0(), E.m||{}); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = []; if (!E.m.inm.fav || typeof E.m.inm.fav !== 'object') E.m.inm.fav = {}; if (!Array.isArray(E.m.inm.av)) E.m.inm.av = []; ['pvLuta','lutaSel'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; });
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
   if (typeof E.rpos !== 'number') E.rpos = -1;
   if (!E.m.akariRot) { E.m.akariRot = true; if (!E.roteiro.some(r => r.faixa === 'aka-dragon')) { const k = E.roteiro.findIndex(r => r.faixa === 'ozy-saturno');
@@ -776,7 +827,7 @@ function painelNoite(){
           el('button',{class:'peq', onclick:()=>{ const f = todas().find(x => x.id === 'mom-lacrimosa'); if (f) tocar(f, 600, {fila:[f]}); }}, '♪ Lacrimosa'))),
       el('div',{class:'bloco'}, el('h4',{},'Rodada de combate'), el('div',{class:'grande', id:'rodadaN'}, String(m.rodada)),
         el('div',{class:'lin2', style:'justify-content:center'},
-          el('button',{onclick:mud(()=>{ m.rodada = Math.max(1, m.rodada-1); })}, '−'), el('button',{onclick:mud(()=>{ m.rodada++; inmZerar('rodada'); })}, 'Próxima rodada'), el('button',{class:'peq', onclick:mud(()=>{ m.rodada = 1; })}, 'Zerar')),
+          el('button',{'aria-label':'Rodada anterior', onclick:mud(()=>{ m.rodada = Math.max(1, m.rodada-1); })}, '−'), el('button',{onclick:mud(()=>{ m.rodada++; inmZerar('rodada'); })}, 'Próxima rodada'), el('button',{class:'peq', onclick:mud(()=>{ m.rodada = 1; })}, 'Zerar')),
         el('div',{class:'lin2', style:'justify-content:center'}, el('span',{class:'sub'},'Combate: '), el('b',{id:'cronT'}, tempoCron()),
           el('button',{class:'peq', onclick:()=>{ if (cron.ini) { cron.acum += Date.now()-cron.ini; cron.ini = null; } else cron.ini = Date.now(); desenhar(); }}, cron.ini ? 'Pausar' : 'Iniciar'),
           el('button',{class:'peq', onclick:()=>{ cron = {ini:null, acum:0}; desenhar(); }}, 'Zerar'))),
@@ -929,24 +980,39 @@ function painelEspecial(){
       el('button',{class:'peq', onclick:()=>{ E.m.alt.akari = !E.m.alt.akari; salvar(); atualizarTela(); desenhar(); }}, E.m.alt.akari ? 'Mostrar a Akari' : 'Mostrar o Thorian')),
     el('p',{class:'sub', style:'margin:8px 0 0'},'Ela confronta o Ozymandias por ter atacado as pessoas comuns. A tela dos jogadores mostra a arte escolhida.'));
 }
+const CONDS = ['Derrubado','Impedido','Cravado','Atordoado','Sem reações','Deslocamento 0','Marcado'];
+let condAberta = null, durCond = 0;
+const txtDur = t => t > 0 ? ' · ' + t + (t > 1 ? ' turnos' : ' turno') : '';
+const badgesCond = c => [...(c.cs || []).map(x => el('span',{class:'cb'}, x.k + txtDur(x.t))), ...(c.cond && c.cond.trim() ? [el('span',{class:'cb tx'}, c.cond.trim())] : [])];
+function poeCond(c, k, t){ if (!Array.isArray(c.cs)) c.cs = []; const x = c.cs.find(y => y.k === k); if (x) x.t = t; else c.cs.push({k, t}); }
+function tiraCond(c, k){ c.cs = (c.cs || []).filter(y => y.k !== k); }
 function painelIni(){
   const m = E.m;
-  const nome = el('input',{id:'ini_n', placeholder:'Nome', class:'n', list:'ini_sug'}), q = el('input',{id:'ini_i', type:'number', placeholder:'Inic.', class:'q'}), pv = el('input',{id:'ini_p', type:'number', placeholder:'PV', class:'q'});
-  const linhas = m.ini.map((c,i) => el('div',{class:'ini2'+(m.turno===i?' vez':'')+(c.pv<=0?' caiu':'')},
-    el('input',{class:'n', value:c.n, 'aria-label':'Nome', onchange:ev => { c.n = ev.target.value; salvar(); }}),
-    el('input',{type:'number', class:'q', value:c.ini, title:'Iniciativa', onchange:ev => { c.ini = +ev.target.value || 0; salvar(); }}),
-    el('b',{class:'pvn'}, 'PV ' + c.pv + (c.max ? '/' + c.max : '')),
-    ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq', onclick:mudar(() => { c.pv = Math.max(0, c.pv + d); if (c.max) c.pv = Math.min(c.max, c.pv); })}, (d>0?'+':'−') + Math.abs(d))),
-    el('input',{class:'c', value:c.cond || '', placeholder:'condições', 'aria-label':'Condições', onchange:ev => { c.cond = ev.target.value; salvar(); }}),
-    el('button',{class:'peq perigo', 'aria-label':'Remover', onclick:mudar(() => { m.ini.splice(i,1); if (m.turno >= m.ini.length) m.turno = 0; })}, '×')));
+  const nome = el('input',{id:'ini_n', placeholder:'Nome', class:'n', list:'ini_sug', 'aria-label':'Nome'}), q = el('input',{id:'ini_i', type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa'}), pv = el('input',{id:'ini_p', type:'number', inputmode:'numeric', placeholder:'PV', class:'q', 'aria-label':'PV'});
+  const linhas = m.ini.map((c,i) => {
+    const vez = m.turno === i, aberta = condAberta === c.n;
+    const pk = aberta ? el('div',{class:'i-pk'},
+      el('div',{class:'seg2', role:'group', 'aria-label':'Duração em turnos'}, el('span',{class:'inm-rot'}, 'Turnos'), ...[[0,'∞','Sem contagem'],[1,'1','1 turno'],[2,'2','2 turnos'],[3,'3','3 turnos']].map(([d,t,l]) => el('button',{class:'peq', 'aria-label':l, 'aria-pressed':durCond === d ? 'true' : 'false', onclick:() => { durCond = d; desenhar(); }}, t))),
+      ...CONDS.map(k => { const x = (c.cs || []).find(y => y.k === k), on = !!x && x.t === durCond;
+        return el('button',{class:'inm-f', 'aria-pressed':x ? 'true' : 'false', 'aria-label':(on ? 'Tirar ' : x ? 'Mudar duração de ' : 'Pôr ') + k + ' em ' + c.n, onclick:() => desf(k + ' em ' + c.n, () => { if (on) tiraCond(c, k); else poeCond(c, k, durCond); })}, k + (x ? txtDur(x.t) : '')); }),
+      el('input',{class:'c', value:c.cond || '', placeholder:'outra condição (texto)', 'aria-label':'Condição em texto de ' + c.n, onchange:ev => { c.cond = ev.target.value; salvar(); desenhar(); }})) : null;
+    return el('div',{class:'ini2'+(vez ? ' vez' : '')+(c.pv<=0 ? ' caiu' : '')},
+      el('div',{class:'i-r'}, vez ? el('span',{class:'i-vez', 'aria-label':'É a vez dele'}, '▶') : null,
+        el('input',{class:'n', value:c.n, 'aria-label':'Nome', onchange:ev => { c.n = ev.target.value; if (condAberta) condAberta = null; salvar(); desenhar(); }}),
+        el('input',{type:'number', inputmode:'numeric', class:'q', value:c.ini, title:'Iniciativa', 'aria-label':'Iniciativa de ' + c.n, onchange:ev => { c.ini = +ev.target.value || 0; salvar(); }}),
+        el('b',{class:'pvn'}, 'PV ' + c.pv + (c.max ? '/' + c.max : '') + (c.pv <= 0 ? ' · caído' : '')),
+        el('button',{class:'peq perigo', 'aria-label':'Remover ' + c.n + ' da iniciativa', onclick:() => desf('Remover ' + c.n, () => { m.ini.splice(i,1); if (m.turno > i || m.turno >= m.ini.length) m.turno = Math.max(0, Math.min(m.turno - (m.turno > i ? 1 : 0), m.ini.length - 1)); })}, '×')),
+      el('div',{class:'i-r pvb'}, ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq', 'aria-label':(d>0?'Mais ':'Menos ') + Math.abs(d) + ' PV de ' + c.n, onclick:() => desf((d>0?'+':'−') + Math.abs(d) + ' PV em ' + c.n, () => ajustaPV(c, d))}, (d>0?'+':'−') + Math.abs(d)))),
+      el('div',{class:'i-r'}, ...badgesCond(c), el('button',{class:'peq', 'aria-expanded':aberta ? 'true' : 'false', 'aria-label':'Condições de ' + c.n, onclick:() => { condAberta = aberta ? null : c.n; desenhar(); }}, aberta ? 'Fechar condições' : '＋ Condição')),
+      pk); });
   return caixa('ini','Iniciativa e PV',
     el('datalist',{id:'ini_sug'}, ...[...ABATES.map(a => a.nome), 'Tobias', 'Rafaela', 'Akari', 'Thorian'].map(n => el('option',{value:n}))),
-    linhas.length ? el('div',{class:'inis'}, ...linhas) : el('p',{class:'sub'},'Ninguém na ordem ainda. Os PV são os que você digitar: nenhuma ficha é alterada.'),
-    el('div',{class:'lin2'}, nome, q, pv, el('button',{onclick:() => { if (!nome.value.trim()) return; const v = Math.max(0, +pv.value || 0); m.ini.push({n:nome.value.trim(), ini:+q.value || 0, pv:v, max:v, cond:''}); salvar(); desenhar(); }}, 'Adicionar')),
+    linhas.length ? el('div',{class:'inis'}, ...linhas) : el('p',{class:'sub'},'Ninguém na ordem ainda. Os PV são os que você digitar: nenhuma ficha é alterada. Para pôr os inimigos de uma vez, use “Iniciar luta” em Inimigos e ações.'),
+    el('div',{class:'lin2'}, nome, q, pv, el('button',{onclick:() => { if (!nome.value.trim()) return; const v = Math.max(0, +pv.value || 0); desf('Adicionar ' + nome.value.trim(), () => m.ini.push({n:nome.value.trim(), ini:+q.value || 0, pv:v, max:v, cond:''})); }}, 'Adicionar')),
     el('div',{class:'lin2'},
       el('button',{class:'peq', onclick:mudar(() => { const at = m.ini[m.turno]; m.ini.sort((a,b) => b.ini - a.ini); m.turno = Math.max(0, m.ini.indexOf(at)); })}, 'Ordenar por iniciativa'),
-      el('button',{disabled:!m.ini.length, onclick:proxTurno}, 'Próximo turno'),
-      el('button',{class:'peq perigo', onclick:ev => confirmar(ev.target, mudar(() => { m.ini = []; m.turno = 0; }))}, 'Limpar')));
+      el('div',{class:'vezbar'}, el('button',{disabled:!m.ini.length, 'aria-label':'Turno anterior', onclick:antTurno}, '◀'), el('button',{disabled:!m.ini.length, onclick:proxTurno}, 'Próximo turno ▶')),
+      el('button',{class:'peq perigo', onclick:ev => confirmar(ev.target, () => desf('Limpar iniciativa', () => { m.ini = []; m.turno = 0; condAberta = null; }))}, 'Limpar')));
 }
 // ---------- Inimigos e ações (referência do Mestre; não altera nenhuma ficha) ----------
 const TAGS = {dano:['⚔','Dano','#e0685a'], area:['◎','Dano em área','#ee9a5c'], cura:['✚','Cura','#6fcf8f'], movimento:['➜','Movimentação','#6fb6e8'],
@@ -1033,19 +1099,49 @@ function inicioTurno(){   // o turno caiu numa linha de inimigo: mostra, zera 1/
   i.acoes.forEach(a => { const k = i.id + ':' + a.id, u = inmUso(a); if (u && u.por === 'turno') delete s.uso[k];
     const r = s.rec[k]; if (a.uso === 'rec' && r && !r.ok) { const d = rdN(6); s.rec[k] = {r:d, ok:d >= 5}; s.av.push(i.nome + ': ' + a.nome + (d >= 5 ? ' recarregou (' + d + ')' : ' não recarregou (' + d + ')')); } });
 }
-function proxTurno(){
-  const m = E.m; if (!m.ini.length) return; const r0 = m.rodada;
-  m.turno = (m.turno + 1) % m.ini.length; if (m.turno === 0) m.rodada++;
-  if (m.rodada !== r0) inmZerar('rodada');
-  inicioTurno(); if (m.rodada !== r0) m.inm.av.unshift('Rodada ' + m.rodada + ': usos 1/rodada zerados.');
-  salvar(); desenhar();
+// ---------- Desfazer (um nível por ação, pilha de 5; só em memória, não entra no estado salvo) ----------
+let pilhaDes = [], toastT = 0, ofer = null;
+const snapM = () => { const m = E.m, n = m.inm; return JSON.stringify({ini:m.ini, turno:m.turno, rodada:m.rodada, inm:{uso:n.uso, rec:n.rec, ult:n.ult, av:n.av, sel:n.sel, todos:n.todos}}); };
+function anuncia(t){ const l = document.getElementById('vezLive'); if (l) { l.textContent = ''; setTimeout(() => { l.textContent = t; }, 30); } }
+function toast(msg, acao){
+  const t = document.getElementById('toast'); if (!t) return; clearTimeout(toastT);
+  t.replaceChildren(el('span',{}, msg), ...(acao ? [el('button',{onclick:acao[1], 'aria-label':acao[0] + (acao[2] || '')}, acao[0])] : [])); t.hidden = false;
+  toastT = setTimeout(() => { t.hidden = true; }, 6000);
+}
+function toastDes(rot){ toast(rot, ['Desfazer', desfazer]); }
+function desf(rot, fn){
+  pilhaDes.push({rot, s:snapM()}); if (pilhaDes.length > 5) pilhaDes.shift();
+  fn(); salvar(); desenhar(); toastDes(rot); anuncia(rot);
+}
+function desfazer(){
+  const x = pilhaDes.pop(); if (!x) { toast('Nada para desfazer.'); return; }
+  const o = JSON.parse(x.s), m = E.m; m.ini = o.ini; m.turno = o.turno; m.rodada = o.rodada; Object.assign(m.inm, o.inm);
+  Object.keys(rolAp).forEach(k => delete rolAp[k]); ofer = null; salvar(); desenhar();
+  const msg = 'Desfeito: ' + x.rot; if (pilhaDes.length) toast(msg, ['Desfazer mais', desfazer, ' (' + pilhaDes[pilhaDes.length-1].rot + ')']); else toast(msg); anuncia(msg);
+}
+// ---------- Turnos ----------
+const vibra = () => { try { if (navigator.vibrate) navigator.vibrate(40); } catch(e){} };
+function focoTurno(){ const m = E.m, c = m.ini[m.turno], i = c && inmDeLinha(c); if (i) { m.inm.todos = false; m.inm.sel = i.id; } }
+function passo(dir){
+  const m = E.m, n = m.ini.length; if (!n) return; const r0 = m.rodada, v = m.turno, s = m.inm, zero = m.ini.every(c => c.pv <= 0); let fim = [];
+  if (dir > 0 && m.ini[v] && m.ini[v].cs) { const c = m.ini[v]; c.cs = c.cs.filter(x => { if (x.t > 1) { x.t--; return true; } if (x.t === 1) { fim.push(c.n + ': ' + x.k + ' terminou'); return false; } return true; }); }
+  let j = v, k = 1, idx = v;
+  for (; k <= n; k++) { idx = v + dir * k; j = ((idx % n) + n) % n; if (zero || m.ini[j].pv > 0) break; }
+  m.rodada = Math.max(1, m.rodada + Math.floor(idx / n)); m.turno = j;
+  if (m.rodada !== r0 && dir > 0) inmZerar('rodada');
+  if (dir > 0) { inicioTurno(); if (m.rodada !== r0) s.av.unshift('Rodada ' + m.rodada + ': usos 1/rodada zerados.'); s.av.push(...fim); } else { s.av = []; focoTurno(); }
+  const c = m.ini[m.turno]; vibra(); anuncia('Vez de ' + c.n + '. Rodada ' + m.rodada + '.');
 }
 function atualizaFaixa(){
   const f = document.getElementById('faixaTurno'), m = E.m; if (!f) return;
-  const on = m && m.ini && m.ini.length && (modo === 'mes' || modo === 'ses'); f.hidden = !on; if (!on) return;
-  const c = m.ini[m.turno] || m.ini[0];
-  f.replaceChildren(el('span',{class:'ft-t'}, 'Vez de ', el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, 'Próximo ▶'));
+  const on = m && m.ini && m.ini.length && (modo === 'mes' || modo === 'ses'); f.hidden = !on; if (!on) { document.documentElement.style.setProperty('--pill-h', '0px'); return; }
+  const c = m.ini[m.turno] || m.ini[0], bd0 = badgesCond(c), bd = bd0.length > 3 ? [...bd0.slice(0,3), el('span',{class:'cb tx'}, '+' + (bd0.length - 3))] : bd0;
+  f.replaceChildren(el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, '◀'), el('span',{class:'ft-t'}, 'Vez de ', el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, 'Próximo ▶')),
+    ...(bd.length ? [el('div',{class:'ft-c'}, ...bd)] : []));
+  document.documentElement.style.setProperty('--pill-h', f.offsetHeight + 'px');
 }
+const proxTurno = () => desf('Próximo turno', () => passo(1));
+const antTurno = () => desf('Turno anterior', () => passo(-1));
 function aplicar(i, a, k, metade){
   const m = E.m, s = m.inm, c = m.ini.find(x => x.n === s.alvo) || m.ini[0]; if (!c) return;
   const dano = a.tags.includes('dano') || a.tags.includes('area'), t = rolTot[k], v0 = c.pv; let n = t, msg;
@@ -1062,23 +1158,34 @@ function aplicarUI(i, a, k){
   s.alvo = alvo;
   const sel = el('select',{'aria-label':'Alvo', onchange:ev => { s.alvo = ev.target.value; salvar(); }}, ...m.ini.map(c => el('option',{value:c.n, selected:c.n === alvo}, c.n + ' (PV ' + c.pv + ')')));
   return el('div',{class:'inm-ap'}, sel,
-    el('button',{class:'inm-aplic', onclick:() => aplicar(i, a, k, false)}, dano ? 'Aplicar −' + t : 'Curar +' + t),
-    dano ? el('button',{class:'inm-meta', onclick:() => aplicar(i, a, k, true)}, 'Metade −' + Math.floor(t / 2)) : null,
+    el('button',{class:'inm-aplic', onclick:() => desf('Aplicar −' + t + ' em ' + alvo, () => aplicar(i, a, k, false))}, dano ? 'Aplicar −' + t : 'Curar +' + t),
+    dano ? el('button',{class:'inm-meta', onclick:() => desf('Aplicar metade em ' + alvo, () => aplicar(i, a, k, true))}, 'Metade −' + Math.floor(t / 2)) : null,
     rolAp[k] ? el('span',{class:'inm-rot pronta', role:'status'}, rolAp[k]) : null);
 }
 function ctlIni(i){
   const m = E.m, c = m.ini.find(x => inmDeLinha(x) === i);
   if (c) return el('div',{class:'inm-ini'}, el('span',{class:'inm-na'}, 'Na iniciativa ✓'), el('b',{class:'pvn'}, 'PV ' + c.pv + (c.max ? '/' + c.max : '')),
-    el('div',{class:'inm-pv'}, ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq', 'aria-label':(d > 0 ? 'Mais ' : 'Menos ') + Math.abs(d) + ' PV de ' + i.nome, onclick:mudar(() => ajustaPV(c, d))}, (d > 0 ? '+' : '−') + Math.abs(d)))));
+    el('div',{class:'inm-pv'}, ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq', 'aria-label':(d > 0 ? 'Mais ' : 'Menos ') + Math.abs(d) + ' PV de ' + i.nome, onclick:() => desf((d > 0 ? '+' : '−') + Math.abs(d) + ' PV em ' + c.n, () => ajustaPV(c, d))}, (d > 0 ? '+' : '−') + Math.abs(d)))));
   const r = rasc[i.id] || (rasc[i.id] = {});
   const pv = el('input',{type:'number', inputmode:'numeric', min:'1', placeholder:'PV', class:'q', 'aria-label':'PV de ' + i.nome, value:r.pv ?? '', oninput:ev => { r.pv = ev.target.value; ev.target.classList.remove('inv'); }});
   const ini = el('input',{type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa de ' + i.nome, value:r.ini ?? '', oninput:ev => { r.ini = ev.target.value; }});
   return el('div',{class:'inm-ini'}, pv, ini,
     el('button',{class:'peq', 'aria-label':'Rolar d20 de iniciativa', onclick:() => { r.ini = String(rdN(20)); ini.value = r.ini; }}, '🎲'),
     el('button',{class:'inm-poe', onclick:() => { const v = Math.floor(+r.pv); if (!(v > 0)) { pv.classList.add('inv'); pv.focus(); return; }
-      m.ini.push({n:i.nome, ini:+r.ini || 0, pv:v, max:v, cond:''}); delete rasc[i.id]; salvar(); desenhar(); }}, 'Pôr na iniciativa'));
+      desf(i.nome + ' na iniciativa', () => { m.ini.push({n:i.nome, ini:+r.ini || 0, pv:v, max:v, cond:''}); delete rasc[i.id]; }); }}, 'Pôr na iniciativa'));
 }
 const barraAlta = () => { const b = document.getElementById('barra'); return !!b && !b.classList.contains('compacta') && b.offsetHeight > innerHeight * 0.3; };
+const ACAO_COND = {'esau:laco':[['Impedido','Sem reações'],1], 'esau:arpao-de-corrente':[['Impedido'],1], 'jael:estaca':[['Cravado'],1], 'jael:pino-na-testa':[['Atordoado'],1],
+  'raquel:golpe-de-escudo':[['Derrubado'],0], 'ozy:pedra-orbital':[['Derrubado'],0], 'ozy:inverter':[['Derrubado'],0], 'ozy:peso-da-conta':[['Deslocamento 0'],1]};
+function ofertaUI(i, a, k){
+  const m = E.m, s = m.inm, [cs, dur] = ACAO_COND[k];
+  if (!m.ini.length) return el('div',{class:'inm-ap oferta'}, el('span',{class:'inm-rot'}, 'Ponha alguém na iniciativa para aplicar a condição (' + cs.join(' + ') + ').'), el('button',{class:'peq', 'aria-label':'Dispensar', onclick:() => { ofer = null; desenhar(); }}, '×'));
+  const pad = m.ini.find(c => inmDeLinha(c) !== i) || m.ini[0], alvo = m.ini.some(c => c.n === s.alvo) ? s.alvo : pad.n; s.alvo = alvo;
+  const sel = el('select',{'aria-label':'Alvo da condição', onchange:ev => { s.alvo = ev.target.value; salvar(); desenhar(); }}, ...m.ini.map(c => el('option',{value:c.n, selected:c.n === alvo}, c.n)));
+  return el('div',{class:'inm-ap oferta'}, el('span',{class:'inm-rot'}, 'Aplicar condição a…'), sel,
+    el('button',{class:'inm-aplic', onclick:() => { const c = m.ini.find(x => x.n === alvo); if (!c) return; desf(cs.join(' + ') + ' em ' + alvo, () => { cs.forEach(x => poeCond(c, x, dur)); ofer = null; }); }}, cs.join(' + ') + txtDur(dur)),
+    el('button',{class:'peq', 'aria-label':'Dispensar a oferta de condição', onclick:() => { ofer = null; desenhar(); }}, '×'));
+}
 function cartaAcao(i, a, pref){
   const m = E.m, s = m.inm, k = i.id + ':' + a.id, u = inmUso(a), usado = s.uso[k] || 0, rec = s.rec[k], gasta = a.uso === 'rec' && rec && !rec.ok;
   const esgotada = (u && usado >= u.n) || gasta;
@@ -1096,13 +1203,50 @@ function cartaAcao(i, a, pref){
   else if (a.uso === 'vontade') uso.append(el('span',{class:'inm-rot'}, 'À vontade'));
   const dados = [...new Set(a.txt.match(/\d+d\d+(?:\+\d+)?/g) || [])].slice(0,3);
   const lin = el('div',{class:'inm-lin'},
-    el('button',{class:'inm-usar', onclick:mudar(() => {
+    el('button',{class:'inm-usar', 'aria-label':'Usar ' + a.nome, onclick:() => desf('Usar ' + a.nome, () => {
       if (u && usado < u.n) s.uso[k] = usado + 1;
       if (a.uso === 'rec') s.rec[k] = {r:rec ? rec.r : 0, ok:false};
+      ofer = ACAO_COND[k] ? {k} : null;
       s.ult.unshift({t:i.nome + ': ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); })}, 'Usar'),
     ...dados.map(d => el('button',{class:'inm-dado', onclick:() => { const r = rolarExpr(d); rolInm[k] = r.txt; rolTot[k] = r.t; delete rolAp[k]; desenhar(); }}, '🎲 ' + d)));
   return el('div',{class:'inm-card'+(esgotada ? ' esgotada' : '')+(a.tipo[0] === 'passiva' && a.tipo.length === 1 ? ' pass' : '')}, cab, etq, el('p',{class:'inm-txt'}, a.txt), uso, lin,
-    rolInm[k] ? el('div',{class:'inm-res', role:'status'}, rolInm[k]) : null, rolInm[k] ? aplicarUI(i, a, k) : null);
+    rolInm[k] ? el('div',{class:'inm-res', role:'status'}, rolInm[k]) : null, rolInm[k] ? aplicarUI(i, a, k) : null, ofer && ofer.k === k ? ofertaUI(i, a, k) : null);
+}
+let lutaAberta = false;
+const LUTA_PADRAO = ['esau','jael','ezequiel','hildegarda','raquel','ozy'];
+function iniciarLuta(escolhidos){
+  const m = E.m, s = m.inm;
+  desf('Luta iniciada', () => {
+    const ids = escolhidos.map(x => x.i.id);
+    m.ini = m.ini.filter(c => { const i = inmDeLinha(c); return !(i && ids.includes(i.id)); });
+    escolhidos.forEach(x => m.ini.push({n:x.i.nome, ini:rdN(20), pv:x.pv, max:x.pv, cond:'', cs:[]}));
+    m.ini.sort((p, q) => q.ini - p.ini); m.turno = 0; m.rodada = 1;
+    inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; s.alvo = ''; ofer = null; condAberta = null; lutaAberta = false;
+    inicioTurno(); focoTurno();
+    const sem = m.ini.filter(c => !inmDeLinha(c) && !c.ini).map(c => c.n);
+    if (sem.length) s.av.push('Defina a iniciativa de ' + sem.join(', ') + ' e toque em “Ordenar por iniciativa”.');
+    const c = m.ini[0]; vibra(); anuncia('Luta iniciada. Vez de ' + c.n + '.');
+  });
+}
+function formLuta(){
+  const m = E.m, s = m.inm, linhas = [];
+  INIMIGOS.forEach(i => {
+    const marcado = i.id in s.lutaSel ? !!s.lutaSel[i.id] : LUTA_PADRAO.includes(i.id);
+    const pv = el('input',{type:'number', inputmode:'numeric', min:'1', class:'q', placeholder:'PV', 'aria-label':'PV de ' + i.nome, value:s.pvLuta[i.id] || '', disabled:!marcado,
+      oninput:ev => { s.pvLuta[i.id] = ev.target.value; ev.target.classList.remove('inv'); salvar(); }});
+    const ck = el('input',{type:'checkbox', checked:marcado, onchange:ev => { s.lutaSel[i.id] = ev.target.checked; pv.disabled = !ev.target.checked; salvar(); }});
+    linhas.push({i, ck, pv, el:el('div',{class:'luta-l'}, el('label',{}, ck, el('img',{src:i.img, alt:''}), el('span',{}, i.nome)), pv)});
+  });
+  const go = () => {
+    const esc = linhas.filter(l => l.ck.checked); if (!esc.length) { toast('Marque pelo menos um inimigo.'); return; }
+    const mau = esc.find(l => !(Math.floor(+l.pv.value) > 0));
+    if (mau) { esc.forEach(l => { if (!(Math.floor(+l.pv.value) > 0)) l.pv.classList.add('inv'); }); mau.pv.focus(); toast('Digite o PV de cada inimigo marcado.'); return; }
+    iniciarLuta(esc.map(l => ({i:l.i, pv:Math.floor(+l.pv.value)})));
+  };
+  return el('div',{class:'luta', role:'group', 'aria-label':'Iniciar luta'},
+    el('p',{class:'sub', style:'margin:0 0 6px'}, 'Marque quem entra, digite o PV de cada um (fica lembrado). Cada um rola 1d20 de iniciativa, a ordem é refeita e os usos por luta e as recargas voltam ao início. Quem já está na lista (jogadores) é mantido.'),
+    ...linhas.map(l => l.el),
+    el('div',{class:'lin2'}, el('button',{class:'inm-aplic', onclick:go}, '🎲 Rolar iniciativa e começar'), el('button',{onclick:() => { lutaAberta = false; desenhar(); }}, 'Cancelar')));
 }
 function painelInimigos(){
   const m = E.m, s = m.inm, atual = inmPorId(s.sel), lista = s.todos ? INIMIGOS : [atual];
@@ -1137,17 +1281,21 @@ function painelInimigos(){
   const favs = []; INIMIGOS.forEach(i => i.acoes.forEach(a => { if (s.fav[i.id + ':' + a.id] && casa(a)) favs.push([i, a]); }));
   return caixa('inm','Inimigos e ações',
     el('p',{class:'sub'}, 'Referência das cartas dos Bellacord. Os usos ficam só neste navegador; nenhuma ficha é alterada.'),
+    el('div',{class:'lin2'}, el('button',{class:'inm-luta-bt', 'aria-expanded':lutaAberta ? 'true' : 'false', onclick:() => { lutaAberta = !lutaAberta; desenhar(); }}, '⚔ Iniciar luta')),
+    lutaAberta ? formLuta() : null,
     barraAlta() ? el('div',{class:'inm-dica'}, 'O player cobre boa parte da tela.', el('button',{class:'peq', onclick:() => $('btCompacto').click()}, 'Recolher player')) : null,
-    cur ? el('div',{class:'inm-vez'}, el('b',{}, 'Vez de ' + cur.n), el('span',{class:'inm-rot'}, 'Rodada ' + m.rodada),
+    cur ? el('div',{class:'inm-vez'}, el('button',{'aria-label':'Turno anterior', onclick:antTurno}, '◀'), el('b',{}, 'Vez de ' + cur.n), el('span',{class:'inm-rot'}, 'Rodada ' + m.rodada), el('button',{'aria-label':'Próximo turno', onclick:proxTurno}, '▶'), ...badgesCond(cur),
       curI && (s.todos || s.sel !== curI.id) ? el('button',{class:'peq', onclick:mudar(() => { s.todos = false; s.sel = curI.id; })}, 'Ver ' + curI.nome) : null) : null,
     s.av.length ? el('div',{class:'inm-faixa', role:'status'}, ...s.av.map(t => el('div',{}, t)), el('button',{class:'peq', onclick:mudar(() => { s.av = []; })}, 'Ok')) : null,
     el('div',{class:'inm-fil'}, el('button',{class:'inm-f', 'aria-pressed':s.disp ? 'true' : 'false', onclick:mudar(() => { s.disp = !s.disp; })}, 'Disponíveis agora')),
     abas,
-    el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Tipo'), ...chipP),
-    el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Efeito'), ...chipT),
-    (s.tag || s.tipo) ? el('button',{class:'peq inm-lim', onclick:mudar(() => { s.tag = ''; s.tipo = ''; })}, 'Limpar filtros') : null,
+    el('details',{class:'inm-filtros', open:abertas.has('inm-fil') || !!(s.tag || s.tipo), ontoggle:ev => { ev.target.open ? abertas.add('inm-fil') : abertas.delete('inm-fil'); }},
+      el('summary',{}, 'Filtros por tipo e efeito' + ((s.tag || s.tipo) ? ' (ativos)' : '')),
+      el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Tipo'), ...chipP),
+      el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Efeito'), ...chipT),
+      (s.tag || s.tipo) ? el('button',{class:'peq inm-lim', onclick:mudar(() => { s.tag = ''; s.tipo = ''; })}, 'Limpar filtros') : null),
     el('div',{class:'lin2'},
-      el('button',{onclick:ev => confirmar(ev.target, mudar(() => { inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; }))}, 'Nova luta'),
+      el('button',{onclick:ev => confirmar(ev.target, () => desf('Nova luta (usos zerados)', () => { inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; ofer = null; }))}, 'Zerar usos'),
       el('button',{onclick:mudar(() => inmZerar('volta'))}, 'Pétala arrancada'),
       el('button',{onclick:mudar(() => { inmZerar('turno'); inmZerar('rodada'); })}, 'Nova rodada')),
     s.ult.length ? el('div',{class:'inm-ult'}, el('b',{}, 'Últimas ações'), ...s.ult.map(x => el('div',{}, 'Rod. ' + x.r + ' · ' + x.t))) : null,
@@ -1279,7 +1427,8 @@ function desenharSessao(){
     raiz.append(grade);
   }
 }
-function desenhar(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
+function desenhar(){ const y0 = window.scrollY; desenhar0(); if (Math.abs(window.scrollY - y0) > 2) window.scrollTo(0, y0); }
+function desenhar0(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
   document.getElementById('elenco').hidden = modo==='tri' || modo==='mes'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
@@ -1398,10 +1547,15 @@ document.addEventListener('keydown', ev => {
 (function(){ const b = document.getElementById('barra'), bt = document.getElementById('btCompacto'); const K = 'trilha-barra-compacta';
   const alt = () => document.documentElement.style.setProperty('--barra-h', b.offsetHeight + 'px');
   const aplica = c => { b.classList.toggle('compacta', c); bt.setAttribute('aria-pressed', String(c)); bt.textContent = c ? 'Expandir player' : 'Recolher player'; alt(); };
-  let c0 = false; try { c0 = localStorage.getItem(K) === '1'; } catch(e){}
+  let c0 = innerWidth < 520; try { const v = localStorage.getItem(K); if (v !== null) c0 = v === '1'; } catch(e){}   // celular: começa recolhido, a menos que a pessoa tenha escolhido
   aplica(c0);
   bt.onclick = () => { const c = !b.classList.contains('compacta'); aplica(c); try { localStorage.setItem(K, c ? '1' : '0'); } catch(e){} if (modo === 'mes') desenhar(); };
   if (window.ResizeObserver) new ResizeObserver(alt).observe(b); addEventListener('resize', alt); alt(); })();
+(function(){ const bt = document.getElementById('btLetra'), K = 'trilha-letra-grande';
+  const aplica = g => { document.body.classList.toggle('lg', g); bt.setAttribute('aria-pressed', String(g)); bt.textContent = g ? 'Letra normal' : 'Letra grande'; };
+  let g0 = false; try { g0 = localStorage.getItem(K) === '1'; } catch(e){}
+  aplica(g0);
+  bt.onclick = () => { const g = !document.body.classList.contains('lg'); aplica(g); try { localStorage.setItem(K, g ? '1' : '0'); } catch(e){} }; })();
 desenhar();
 </script>
 </body>
