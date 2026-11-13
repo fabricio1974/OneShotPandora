@@ -6,7 +6,8 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0a08">
 <title>Cartas de Poder</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Inter:wght@400;600&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Inter:wght@400;600&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Inter:wght@400;600&display=swap"></noscript>
 <style>
 :root{--fundo:#0d0a08;--painel:#17110d;--linha:#3a2a1f;--terra:#c8622d;--terra2:#e08a52;--texto:#efe2d0;--apagado:#a8947f;--creme:#f1e7d3;--tinta:#2a1a10;color-scheme:dark}
 *{box-sizing:border-box}
@@ -118,6 +119,14 @@ select.peq{min-height:34px;padding:4px 8px;font-size:14px}
 .rol{overflow-x:auto}
 .copia{display:flex;gap:8px}.copia input{flex:1;min-width:0}
 a{color:var(--terra2)}
+
+/* Rodada 5: toque imediato, sem zoom por duplo toque, flip sem engasgo */
+html{-webkit-tap-highlight-color:transparent}
+button,summary,input,select,label,a,.cf,.chip{touch-action:manipulation}
+button:active,.chip:active{filter:brightness(1.3);transform:scale(.97)}
+button:disabled:active{filter:none;transform:none}
+.virar .in{will-change:transform}
+.tagq{color:#f0a070}.tagq.rec{color:#a9d0ee}
 </style>
 </head>
 <body>
@@ -158,7 +167,7 @@ const ENEMIGOS = [
  {n:'O Demônio', sub:'o que saiu da porta', img:'img/diabo.jpg', o:'Demônio'}
 ];
 const $ = id => document.getElementById(id);
-const el = (t, a = {}, ...k) => { const e = document.createElement(t); for (const [n, v] of Object.entries(a)) { if (n === 'class') e.className = v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else if (v === true) e.setAttribute(n, ''); else if (v !== false && v != null) e.setAttribute(n, v); } for (const x of k.flat(9)) if (x != null && x !== false) e.append(x.nodeType ? x : document.createTextNode(x)); return e; };
+const el = (t, a = {}, ...k) => { const e = document.createElement(t); if (t === 'img') e.decoding = 'async'; for (const [n, v] of Object.entries(a)) { if (n === 'class') e.className = v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else if (v === true) e.setAttribute(n, ''); else if (v !== false && v != null) e.setAttribute(n, v); } for (const x of k.flat(9)) if (x != null && x !== false) e.append(x.nodeType ? x : document.createTextNode(x)); return e; };
 const MESTRE = location.hash === '#mestre';
 const CHAVE = 'cartas-cordeiro-v2', CHAVE1 = 'cartas-cordeiro-v1';
 const novaMao = n => ({id:'m' + Date.now().toString(36) + Math.random().toString(36).slice(2,5), nome:n, cartas:[]});
@@ -168,7 +177,8 @@ try { const j = JSON.parse(localStorage.getItem(CHAVE) || 'null'); if (j && Arra
   else { const v1 = JSON.parse(localStorage.getItem(CHAVE1) || 'null'); if (v1 && Array.isArray(v1.mao)) S.maos[0].cartas = v1.mao.map(m => ({c:m.c, g:m.g || 0})); } } catch (e) {}
 if (!S.maos.some(m => m.id === S.ativa)) S.ativa = S.maos[0].id;
 if (!Array.isArray(S.entregues)) S.entregues = []; if (typeof S.nome !== 'string') S.nome = '';
-const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(S)); } catch (e) {} };
+let avisouSalvar = false;
+const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(S)); } catch (e) { if (!avisouSalvar) { avisouSalvar = true; setTimeout(() => { const m = document.querySelector('main'); if (m) m.prepend(el('div', {class:'aviso', role:'alert'}, 'Não consegui guardar neste navegador (modo privado ou espaço cheio). Suas cartas valem só até fechar esta página.')); }, 0); } } };
 let tt = 0;
 function dizer(t){ const e = $('toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 2600); }
 const porCod = c => CARTAS.find(x => x.c === c);
@@ -322,7 +332,7 @@ function ordena(m){
 function desMao(){
   const r = $('sMao'); r.replaceChildren();
   const m = maoAtiva();
-  r.append(el('div', {class:'hands'}, ...S.maos.map(h => el('button', {class:'chip' + (h.id === S.ativa ? ' at' : ''), onclick:() => { S.ativa = h.id; salvar(); desMao(); }}, h.nome, el('span', {class:'sub', style:h.id === S.ativa ? 'color:#3a2010' : ''}, h.cartas.length))),
+  r.append(el('div', {class:'hands'}, ...S.maos.map(h => el('button', {class:'chip' + (h.id === S.ativa ? ' at' : ''), onclick:() => { S.ativa = h.id; salvar(); desMao(); }}, h.nome, el('span', {class:'sub', style:h.id === S.ativa ? 'color:#1a0c04' : ''}, h.cartas.length))),
     el('button', {class:'chip', onclick:() => { const n = prompt ? null : null; const e = $('novaMao'); e.hidden = !e.hidden; if (!e.hidden) e.querySelector('input').focus(); }}, '+ Nova mão')));
   r.append(el('form', {id:'novaMao', hidden:true, class:'barra', onsubmit:ev => { ev.preventDefault(); const v = ev.target.querySelector('input').value.trim(); if (!v) return; const h = novaMao(v); S.maos.push(h); S.ativa = h.id; salvar(); desMao(); }},
     el('input', {type:'text', placeholder:'Nome da mão (ex.: Victor, Reserva do grupo)', maxlength:24, style:'flex:1'}), el('button', {type:'submit', class:'on peq'}, 'Criar')));
@@ -449,6 +459,11 @@ const ABAS = [['pux','🎴','Puxar','sPux'], ['mao','🖐','Mãos','sMao'], ['to
 function mudaAba(a){ S.aba = a; salvar(); for (const [k, , , id] of ABAS) $(id).hidden = k !== a; desenhaNav(); if (a === 'pux') desPux(); if (a === 'mao') desMao(); if (a === 'tod') desTod(); if (a === 'ini') desIni(); if (a === 'reg') desReg(); window.scrollTo(0, 0); }
 function desenhaNav(){ $('nav').replaceChildren(...ABAS.map(([k, ic, t]) => el('button', {'aria-pressed':String(S.aba === k), onclick:() => mudaAba(k)}, el('span', {class:'i'}, ic), t, k === 'mao' && maoAtiva().cartas.length ? el('span', {class:'b'}, String(maoAtiva().cartas.length)) : null))); }
 function redesenhaTudo(){ desenhaNav(); if (S.aba === 'pux') desPux(); if (S.aba === 'mao') desMao(); if (S.aba === 'tod') desTod(); }
+addEventListener('storage', ev => {   // duas abas abertas: adota o que a outra gravou (cada toque já grava na hora), em vez de sobrescrever com estado velho
+  if (MESTRE || ev.key !== CHAVE || !ev.newValue) return;
+  try { const j = JSON.parse(ev.newValue); if (!j || !Array.isArray(j.maos) || !j.maos.length) return;
+    if (!$('mo').hidden) { $('mo').hidden = true; document.body.style.overflow = ''; }
+    S = Object.assign(S, j); if (!S.maos.some(m => m.id === S.ativa)) S.ativa = S.maos[0].id; redesenhaTudo(); } catch (e) {} });
 if (MESTRE) desMestre(); else { importaDoLink(); mudaAba(S.aba in {pux:1, mao:1, tod:1, ini:1, reg:1} ? S.aba : 'pux'); }
 </script>
 <script>if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw-cartas.js').catch(()=>{});</script>

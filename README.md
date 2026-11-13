@@ -57,6 +57,14 @@ Os dados do app foram gerados a partir do `.md` do bestiário; para conferir dep
 - **Ao recarregar**, o app volta à aba, aos painéis abertos e à posição de rolagem.
 - **Cartas**: mão recebida com nome repetido entra como "Nome 2" (ou você escolhe Substituir); mão sua e recebida têm etiquetas; Guardar e Zoom ficam fixos acima da barra, Guardar mantém você em Puxar com o contador e o foco no código. Cartas de Abate (AB1–AB7) só aparecem para quem as recebeu: o Mestre copia o link de entrega em `cartas.html#mestre`.
 
+### Rodada 5: fluidez e bordas
+
+- **Mais rápido** (CPU 4× mais lenta): Próximo turno 21 → 9 ms quando a vez passa a um jogador e 21 → 15 ms quando passa a um inimigo; cartas fora da tela não entram no layout (`content-visibility`); imagens dos painéis são preguiçosas; a folha de fontes não bloqueia mais a primeira pintura (com rede lenta a página aparecia só após 3,1 s, agora em 0,08 s); o fade de áudio segue o relógio e não repete volume igual.
+- **Toque**: sem atraso nem zoom por duplo toque (`touch-action: manipulation`), realce imediato ao tocar, campos com 16 px no celular (o iOS não dá zoom ao focar), o campo focado rola para a vista quando o teclado abre. O campo **−N/+N** usa teclado de texto (tem o sinal de menos).
+- **Desfazer**: botão ↶ na pílula do turno por 15 s; o aviso com Desfazer fica 6 s e não some ao rolar. Dano e turno gravam na hora; o resto continua agrupado (300 ms).
+- **Bordas**: estados salvos antigos ou corrompidos abrem sem erro; `localStorage` bloqueado ou cheio avisa e o app segue; **duas abas**: a que ficou velha pára de gravar e pergunta se recarrega ou grava por cima (em `cartas.html` a aba adota o que a outra gravou). Cartas: service worker v4 pega a página pela rede primeiro (atualização já no 1º recarregamento) e abre offline pelo cache.
+- **Testes**: `rodar_todos.sh` na pasta de trabalho roda a suíte (t1–t27) e imprime o resumo.
+
 ## Cartas de Poder (para os jogadores)
 
 `cartas.html` é a página que os jogadores abrem no celular: eles rolam 1d4 (baralho: S, A, M, H) e 1d12 (carta), digitam o código (por exemplo M07) e veem a carta, com a mão guardada no próprio celular, o Eco da Fome somado e marcadores de uso por luta, por volta e recarga. Endereço depois de ativar o Pages: https://fabricio1974.github.io/OneShotPandora/cartas.html
