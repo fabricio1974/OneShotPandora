@@ -17,6 +17,10 @@ As escolhas ficam salvas no navegador. Para levar a outro aparelho, use "Baixar 
 Para usar sem internet de hospedagem, rode `abrir_trilha.bat` (precisa de Python) em vez de abrir o `index.html` direto.
 
 
+## Inimigos e ações (aba Mestre)
+
+Painel de referência dos Bellacord (Esaú, Jael, Ezequiel, Hildegarda, Raquel, Ozymandias e o Anjo) com as ações das cartas v4: tipo de ação, tags (dano, área, cura, movimentação, controle, defesa, buff, debuff, informação, invocação), texto e uso. Escolha o inimigo ou "Todos", filtre por tipo e efeito, marque os usos (N/luta, N/volta, 1/turno, 1/rodada) tocando nas bolinhas, role a Recarga 5–6, use "Usar" para registrar em "Últimas ações" e toque em 🎲 para rolar os dados do texto. "Nova luta" (duplo toque), "Pétala arrancada" e "Nova rodada" zeram os usos. Tudo fica salvo no navegador e nenhuma ficha é alterada.
+
 ## Cartas de Poder (para os jogadores)
 
 `cartas.html` é a página que os jogadores abrem no celular: eles rolam 1d4 (baralho: S, A, M, H) e 1d12 (carta), digitam o código (por exemplo M07) e veem a carta, com a mão guardada no próprio celular, o Eco da Fome somado e marcadores de uso por luta, por volta e recarga. Endereço depois de ativar o Pages: https://fabricio1974.github.io/OneShotPandora/cartas.html

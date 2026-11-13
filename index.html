@@ -190,6 +190,38 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .lp{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}.lp.atual b{color:var(--ouro)}.lp textarea,.larga{width:100%;box-sizing:border-box}
 .dnovo{font-size:22px;font-weight:600;margin-top:8px}.dados{margin-top:6px}.vol2{display:flex;gap:8px;align-items:center;font-size:12px}
 .grande2{font-weight:600}
+.inm-abas{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:thin;margin-top:10px}
+.inm-aba{display:flex;align-items:center;gap:8px;flex:none;min-height:44px;padding:4px 14px 4px 5px;border-radius:999px;white-space:nowrap}
+.inm-aba img,.inm-todos{width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--linha);display:grid;place-items:center;flex:none}
+.inm-aba[aria-selected="true"]{background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.inm-fil{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.inm-f{min-height:40px;padding:4px 11px;border-radius:999px;font-size:13px;border-color:color-mix(in srgb,var(--tc,#a8998a) 55%,transparent);color:var(--tc,var(--marfim))}
+.inm-f.tp{--tc:#d8cbb4}
+.inm-f small{opacity:.75;margin-left:2px}
+.inm-f[aria-pressed="true"]{background:var(--tc,var(--terracota));color:#1a0f08;font-weight:600}
+.inm-lim{min-height:40px;margin-top:8px}
+.inm-rot{font-size:12px;color:var(--apagado)}.inm-rot.gasta{color:var(--erro)}.inm-rot.pronta{color:#6fcf8f}
+.inm-ult{margin-top:12px;padding:8px 10px;border:1px dashed var(--linha);border-radius:8px;font-size:13px}.inm-ult b{display:block;color:var(--ouro);margin-bottom:2px}
+.inm-bl{margin-top:16px}
+.inm-topo{display:flex;gap:10px;align-items:center;margin-bottom:8px}.inm-topo img{width:48px;height:48px;border-radius:8px;object-fit:cover;flex:none}
+.inm-topo h4{margin:0;font:400 17px/1.2 var(--titulo);letter-spacing:.08em;color:var(--terracota)}
+.inm-avs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.inm-av{font-size:12px;color:var(--apagado);border:1px solid var(--linha);border-radius:6px;padding:2px 7px}.inm-av.agora{color:#1a0f08;background:var(--ouro);border-color:var(--ouro);font-weight:600}
+.inm-card{margin-top:8px;padding:10px 12px;border:1px solid var(--linha);border-left:3px solid var(--terracota2);border-radius:8px;background:var(--painel2)}
+.inm-card.pass{border-left-color:var(--linha);opacity:.92}.inm-card.esgotada{opacity:.55}
+.inm-cab{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.inm-nome{font-size:15px}
+.inm-tipo{font-size:11px;padding:1px 8px;border-radius:999px;background:#3a2f27;color:var(--marfim);border:1px solid #5a4a3d}
+.inm-tipo.t-padrao{background:var(--terracota2)}.inm-tipo.t-bonus{background:#6b5a22}.inm-tipo.t-reacao{background:#2d4a6b}.inm-tipo.t-livre{background:#3d5a3a}
+.inm-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.inm-tag{font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid color-mix(in srgb,var(--tc) 60%,transparent);background:color-mix(in srgb,var(--tc) 16%,transparent);color:var(--tc)}
+.inm-txt{margin:8px 0 0;font-size:14px}
+.inm-uso{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:4px}
+.inm-bol{min-width:44px;min-height:44px;padding:0;display:grid;place-items:center;background:none;border:0}
+.inm-bol i{width:22px;height:22px;border-radius:50%;border:2px solid var(--terracota);display:block}.inm-bol.on i{background:var(--terracota);opacity:.5;border-color:var(--apagado)}
+.inm-lin{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.inm-lin button,.inm-rec{min-height:40px}
+.inm-usar{background:var(--terracota2);border-color:var(--terracota)}
+.inm-res{margin-top:6px;padding:6px 10px;border-radius:6px;background:#0e0b09;border:1px solid var(--ouro);color:var(--ouro);font-variant-numeric:tabular-nums;font-size:14px;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -380,8 +412,8 @@ const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel,
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:'',
   ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:[{n:'Pedro',nota:'',falou:false},{n:'Victor',nota:'',falou:false},{n:'Jogador 3',nota:'',falou:false},{n:'Jogador 4',nota:'',falou:false}],
-  voto:{s:0,n:0}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
-function garantir(){ E.m = Object.assign(M0(), E.m||{});
+  voto:{s:0,n:0}, inm:{sel:'esau', todos:false, tag:'', tipo:'', uso:{}, rec:{}, ult:[]}, loops:{}, falas:{}, teste:{}, durTotal:240, inicioMesa:0, derrota:false});
+function garantir(){ E.m = Object.assign(M0(), E.m||{}); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = [];
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
   if (typeof E.rpos !== 'number') E.rpos = -1;
   if (!E.m.akariRot) { E.m.akariRot = true; if (!E.roteiro.some(r => r.faixa === 'aka-dragon')) { const k = E.roteiro.findIndex(r => r.faixa === 'ozy-saturno');
@@ -889,6 +921,138 @@ function painelIni(){
       el('button',{disabled:!m.ini.length, onclick:mudar(() => { m.turno = (m.turno + 1) % m.ini.length; if (m.turno === 0) m.rodada++; })}, 'Próximo turno'),
       el('button',{class:'peq perigo', onclick:ev => confirmar(ev.target, mudar(() => { m.ini = []; m.turno = 0; }))}, 'Limpar')));
 }
+// ---------- Inimigos e ações (referência do Mestre; não altera nenhuma ficha) ----------
+const TAGS = {dano:['⚔','Dano','#e0685a'], area:['◎','Dano em área','#ee9a5c'], cura:['✚','Cura','#6fcf8f'], movimento:['➜','Movimentação','#6fb6e8'],
+  controle:['⛓','Controle','#b48be0'], defesa:['🛡','Defesa','#d0b25a'], buff:['▲','Buff','#e6d36a'], debuff:['▼','Debuff','#e08ab4'],
+  info:['👁','Informação','#8fd0c8'], invocacao:['✧','Invocação','#e0a8ff']};
+const TIPOS_ACAO = {passiva:'Passiva', livre:'Ação livre', bonus:'Ação bônus', padrao:'Ação padrão', reacao:'Reação'};
+const slugInm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+const A = (nome, tipo, uso, tags, txt) => ({id:slugInm(nome), nome, tipo:tipo.split('+'), uso, tags:tags.split(' '), txt});
+const INIMIGOS = [
+ {id:'esau', nome:'Esaú', img:'img/esau.jpg', avisos:['Caçador: arco e cães','Mata a Rafaela com flecha de longe'], percebe:'Não percebe as voltas', acoes:[
+  A('Pele de Lobo','passiva','','defesa','Resistência a dano perfurante e cortante; +2 CA contra ataques à distância.'),
+  A('Arpão de Corrente','bonus','2/luta','dano controle','Ataque à distância 18 m, 4d10+4 (26) perfurante; se acertar, impedido até o fim do próximo turno dele, sem salvaguarda.'),
+  A('Marca do Caçador','bonus','','dano debuff','Marca uma criatura; acertos nela +4d6 (14) e ignoram resistência e cobertura.'),
+  A('Flecha de Ferro','passiva','','dano','Ataques à distância +3d6 (10), todo o dano vira perfurante, crítico com 18–20.'),
+  A('Chuva de Ferro','bonus','rec','dano','Três flechas, cada 2d10 (11) perfurante.'),
+  A('Direito de Primogenitura','passiva','','buff','Não pode ser surpreendido; na 1ª rodada faz dois turnos completos.'),
+  A('Laço','bonus','3/luta','controle debuff','Salvaguarda de For; falha: impedido, sem reações, ataques contra ele com vantagem até o fim do próximo turno dele.'),
+  A('Correntes do Caçador','bonus','2/luta','area controle dano','Correntes em 2 pontos de 3 m a até 18 m, salvaguarda de Des: 2d8 (9), impedido, sem teletransporte.')]},
+ {id:'jael', nome:'Jael', img:'img/jael.jpg', avisos:['Martelo de guerra e estaca','Força bruta'], acoes:[
+  A('Segundo Fôlego do Tambor','livre','2/luta','cura','Gatilho: abaixo de metade dos PV. Recupera 6d10+10 (43) PV.'),
+  A('Estaca','livre','1/turno','dano controle','Ao acertar: +3d8 (13) perfurante; alvo cravado até o início do próximo turno dele: deslocamento 0, sem reações, sem teletransporte, sem salvaguarda.'),
+  A('Martelo Ressoante','passiva','','dano','Golpes corpo a corpo +3d8 (13) e todo o dano vira trovejante.'),
+  A('Muralha','passiva','','defesa','+20 PV máximos; não pode ser derrubado, empurrado nem puxado; dano contundente pela metade.'),
+  A('Pino na Testa','padrao','rec','dano controle','Ataque corpo a corpo ou à distância 6d10+8 (41) perfurante; se o alvo terminar com metade dos PV ou menos, atordoado até o fim do próximo turno dele, sem salvaguarda.'),
+  A('Rufar','bonus','1/luta','buff','Por 2 rodadas os golpes de Jael e aliados +2d6 (7) e imunes a medo.')]},
+ {id:'ezequiel', nome:'Ezequiel', img:'img/ezequiel.jpg', avisos:['Vidente; rodas de fogo'], percebe:'Percebe as voltas a partir da volta 2', desde:2, acoes:[
+  A('Presságio','passiva','','info','No início da luta rola 3d20 e guarda; troca qualquer rolagem (dele ou de um inimigo visível) por um deles; cada dado vale uma vez.'),
+  A('Contramágica Vista','reacao','2/luta','controle defesa','Uma magia ou ação de recarga a até 18 m falha.'),
+  A('Já Vi Esse Golpe','reacao','3/luta','defesa','+5 CA contra um ataque.'),
+  A('Golpe Visto','livre','3/luta','dano','Antes de rolar um ataque: o ataque acerta e é crítico.'),
+  A('Rodas de Fogo','padrao','rec','area dano','Linha de 18 m, salvaguarda de Con: 6d10 (33) fogo e radiante, metade se passar.'),
+  A('Profecia','bonus','2/luta','controle info','Diz o que um inimigo fará no próximo turno; se fizer, a ação falha.'),
+  A('Quebra-Coroa','reacao','2/luta','debuff','Uma Resistência Lendária do alvo é gasta e não funciona; ele perde uma ação lendária na próxima rodada.'),
+  A('O Fim que Eu Vi','padrao','1/luta','dano','Alvo a até 36 m, salvaguarda de Sab: 6d10+20 (53) psíquico, metade se passar; se ficar com 50 PV ou menos, cai a 0.')]},
+ {id:'hildegarda', nome:'Hildegarda', img:'img/hildegarda.jpg', avisos:['Clériga da vida; canta','Chama os anjos na 3ª rodada'], rodadaAnjo:3, acoes:[
+  A('Milagre Menor','reacao','1/luta','cura defesa','Gatilho: cai a 0 PV. Fica com 1 PV e recupera 50 PV.'),
+  A('Spiritus','passiva','','cura','No início do turno dela, se tiver 1 PV ou mais, recupera 15 PV.'),
+  A('Maça Sagrada','passiva','1/turno','dano','Um acerto corpo a corpo +4d8 (18) radiante.'),
+  A('Raio Sagrado','bonus','1/rodada','dano','Ataque mágico 36 m, 6d8 (27) radiante.'),
+  A('Palavra Curativa Máxima','bonus','1/rodada','cura','Aliado a até 18 m recupera 40 PV.'),
+  A('Ave Generosa','padrao','rec','area dano cura','Inimigos a até 9 m, salvaguarda de Con: 6d8 (27) radiante, metade se passar; ela recupera metade do dano causado.'),
+  A('O vos angeli','padrao','1/volta','invocacao dano','Chama UM anjo aliado até o fim da luta: CA 18, 60 PV, voo 18 m, 2 ataques +9 de 2d8+5 (14) radiante; age logo depois dela. Os jogadores o veem como demônio, mas ele luta do lado deles.')]},
+ {id:'raquel', nome:'Raquel', img:'img/cartas/vin_raquel.jpg', avisos:['Escudeira; jurou proteger o Ozymandias','Só luta junto com ele'], acoes:[
+  A('Escudo de Torre','passiva','','defesa','+3 CA; Reação: vira o alvo de um ataque contra um aliado a até 1,5 m.'),
+  A('Lança de Falange','passiva','','dano','+1,5 m de alcance e +3d6 (10) nos golpes corpo a corpo.'),
+  A('Golpe de Escudo','bonus','1/rodada','controle movimento dano','Criatura a até 1,5 m é empurrada 3 m e cai derrubada, sem salvaguarda; o próximo golpe corpo a corpo na rodada +3d6 (10) com vantagem.'),
+  A('Interpor','passiva+reacao','','defesa movimento','+2 CA para ela e um aliado; Reação: troca de lugar com aliado a até 9 m e vira o alvo; sofre metade do dano.')]},
+ {id:'ozy', nome:'Ozymandias', img:'img/ozymandias.jpg', avisos:['O líder; muda a gravidade','Impede reviver a Rafaela'], percebe:'Percebe as voltas a partir da volta 4', desde:4, acoes:[
+  A('Campo de Massa','passiva','','defesa','Ataques à distância contra ele têm desvantagem.'),
+  A('Corpo de Planeta','passiva','','defesa','+50 PV máximos.'),
+  A('Mão de Órbita','passiva','','dano movimento','Golpes corpo a corpo +3d8 (13), todo o dano vira energia e puxam o alvo 3 m.'),
+  A('Pedra Orbital','padrao','vontade','dano controle','Ataque à distância 36 m, 6d10+3 (36) contundente; alvo cai derrubado.'),
+  A('Inverter','bonus','rec','area dano movimento controle','Gravidade vira numa esfera de 6 m a até 36 m: 6d6 (21) contundente e derrubado, sem salvaguarda.'),
+  A('Peso da Conta','padrao','rec','area dano controle','Esfera de 6 m a até 36 m, salvaguarda de For: 6d12 (39) energia e deslocamento 0; metade se passar.'),
+  A('Isso Também é Meu','passiva','','cura debuff','Enquanto vivo, toda cura e regeneração dos inimigos cai pela metade e ele recupera o mesmo tanto.'),
+  A('Confisco','bonus','1/luta','debuff','Salvaguarda de Car; falha: o alvo perde uma ação lendária até o fim da luta.'),
+  A('Troca de Lugar','reacao','3/luta','defesa movimento','Um ataque que acertaria um aliado a até 18 m erra: ele o troca de lugar.')]},
+ {id:'anjo', nome:'Anjo', img:'img/diabo.jpg', avisos:['Segredo do Mestre: desce na 3ª rodada; conta como demônio; é o Tobias devorando a Rafaela','Os ataques do anjo chamado por Hildegarda estão em "O vos angeli"'], acoes:[
+  A('Espada do Demônio','passiva','1/turno','dano','Um acerto causa +6d8 (27) radiante; visão verdadeira a 9 m.')]}
+];
+const inmPorId = id => INIMIGOS.find(i => i.id === id) || INIMIGOS[0];
+const inmUso = a => { const x = /^(\d+)\/(luta|volta|turno|rodada)$/.exec(a.uso); return x ? {n:+x[1], por:x[2]} : null; };
+const rolInm = {}; let inmSL = 0;
+function rolarExpr(ex){
+  const x = /^(\d+)d(\d+)(?:\+(\d+))?$/.exec(ex), n = +x[1], f = +x[2], b = +(x[3]||0), rs = [];
+  for (let k = 0; k < n; k++) rs.push(1 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * f));
+  const t = rs.reduce((p,q) => p + q, 0) + b;
+  return {t, txt: ex + ' = ' + t + '  [' + rs.join(' + ') + ']' + (b ? ' + ' + b : '')};
+}
+function inmZerar(porQue){   // zera os usos de um tipo de contagem (luta, volta, turno, rodada); 'luta' também zera recargas
+  const s = E.m.inm;
+  INIMIGOS.forEach(i => i.acoes.forEach(a => { const k = i.id + ':' + a.id, u = inmUso(a);
+    if (u && (porQue === 'luta' || u.por === porQue)) delete s.uso[k];
+    if (porQue === 'luta' && a.uso === 'rec') delete s.rec[k]; }));
+}
+function cartaAcao(i, a){
+  const m = E.m, s = m.inm, k = i.id + ':' + a.id, u = inmUso(a), usado = s.uso[k] || 0, rec = s.rec[k], gasta = a.uso === 'rec' && rec && !rec.ok;
+  const esgotada = (u && usado >= u.n) || gasta;
+  const cab = el('div',{class:'inm-cab'}, el('b',{class:'inm-nome'}, a.nome),
+    ...a.tipo.map(t => el('span',{class:'inm-tipo t-'+t}, TIPOS_ACAO[t])));
+  const etq = el('div',{class:'inm-tags'}, ...a.tags.map(t => el('span',{class:'inm-tag', style:'--tc:'+TAGS[t][2]}, TAGS[t][0] + ' ' + TAGS[t][1])));
+  const uso = el('div',{class:'inm-uso'});
+  if (u) { uso.append(...Array.from({length:u.n}, (_, d) => el('button',{class:'inm-bol'+(d < usado ? ' on' : ''), 'aria-label':'Uso '+(d+1)+' de '+u.n+(d < usado ? ', gasto' : ', disponível'), 'aria-pressed':d < usado ? 'true' : 'false',
+      onclick:mudar(() => { s.uso[k] = d < usado ? d : d + 1; })}, el('i'))),
+    el('span',{class:'inm-rot'}, u.n + '/' + (u.por === 'luta' ? 'luta' : u.por === 'volta' ? 'volta' : u.por) + ' · restam ' + (u.n - usado))); }
+  else if (a.uso === 'rec') uso.append(el('button',{class:'inm-rec', onclick:mudar(() => { const r = 1 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296 * 6); s.rec[k] = {r, ok:r >= 5}; })}, '🎲 Recarga 5–6'),
+    el('span',{class:'inm-rot '+(gasta ? 'gasta' : 'pronta')}, gasta ? 'Gasta · d6 = ' + rec.r : rec ? 'Recarregou · d6 = ' + rec.r : 'Pronta'));
+  else if (a.uso === 'vontade') uso.append(el('span',{class:'inm-rot'}, 'À vontade'));
+  const dados = [...new Set(a.txt.match(/\d+d\d+(?:\+\d+)?/g) || [])].slice(0,3);
+  const lin = el('div',{class:'inm-lin'},
+    el('button',{class:'inm-usar', onclick:mudar(() => {
+      if (u && usado < u.n) s.uso[k] = usado + 1;
+      if (a.uso === 'rec') s.rec[k] = {r:rec ? rec.r : 0, ok:false};
+      s.ult.unshift({t:i.nome + ': ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); })}, 'Usar'),
+    ...dados.map(d => el('button',{class:'inm-dado', onclick:() => { rolInm[k] = rolarExpr(d).txt; desenhar(); }}, '🎲 ' + d)));
+  return el('div',{class:'inm-card'+(esgotada ? ' esgotada' : '')+(a.tipo[0] === 'passiva' && a.tipo.length === 1 ? ' pass' : '')}, cab, etq, el('p',{class:'inm-txt'}, a.txt), uso, lin,
+    rolInm[k] ? el('div',{class:'inm-res', role:'status'}, rolInm[k]) : null);
+}
+function painelInimigos(){
+  const m = E.m, s = m.inm, atual = inmPorId(s.sel), lista = s.todos ? INIMIGOS : [atual];
+  const casa = a => (!s.tag || a.tags.includes(s.tag)) && (!s.tipo || a.tipo.includes(s.tipo));
+  const contaT = {}, contaP = {};
+  lista.forEach(i => i.acoes.forEach(a => { a.tags.forEach(t => { if (!s.tipo || a.tipo.includes(s.tipo)) contaT[t] = (contaT[t]||0) + 1; }); a.tipo.forEach(t => { if (!s.tag || a.tags.includes(s.tag)) contaP[t] = (contaP[t]||0) + 1; }); }));
+  const abas = el('div',{class:'inm-abas', id:'inm_abas', role:'tablist', onscroll:ev => { inmSL = ev.target.scrollLeft; }},
+    el('button',{class:'inm-aba', role:'tab', 'aria-selected':s.todos ? 'true' : 'false', onclick:mudar(() => { s.todos = true; })}, el('span',{class:'inm-todos'}, '☰'), 'Todos'),
+    ...INIMIGOS.map(i => el('button',{class:'inm-aba', role:'tab', 'aria-selected':!s.todos && i.id === atual.id ? 'true' : 'false', onclick:mudar(() => { s.todos = false; s.sel = i.id; })},
+      el('img',{src:i.img, alt:''}), i.nome)));
+  const chipT = Object.keys(TAGS).filter(t => contaT[t] || s.tag === t).map(t => el('button',{class:'inm-f', style:'--tc:'+TAGS[t][2], 'aria-pressed':s.tag === t ? 'true' : 'false', onclick:mudar(() => { s.tag = s.tag === t ? '' : t; })}, TAGS[t][0] + ' ' + TAGS[t][1] + ' ', el('small',{}, contaT[t] || 0)));
+  const chipP = Object.keys(TIPOS_ACAO).filter(t => contaP[t] || s.tipo === t).map(t => el('button',{class:'inm-f tp', 'aria-pressed':s.tipo === t ? 'true' : 'false', onclick:mudar(() => { s.tipo = s.tipo === t ? '' : t; })}, TIPOS_ACAO[t] + ' ', el('small',{}, contaP[t] || 0)));
+  const bloco = i => {
+    const ac = i.acoes.filter(casa); if (!ac.length) return null;
+    const av = [];
+    if (i.percebe) av.push(el('span',{class:'inm-av'+(i.desde && m.volta >= i.desde ? ' agora' : '')}, '⟳ ' + i.percebe + (i.desde && m.volta >= i.desde ? ' (agora: volta ' + m.volta + ')' : '')));
+    i.avisos.forEach(t => av.push(el('span',{class:'inm-av'+(i.rodadaAnjo && /anjos/.test(t) && m.rodada >= i.rodadaAnjo ? ' agora' : '')}, t)));
+    return el('section',{class:'inm-bl'},
+      el('div',{class:'inm-topo'}, el('img',{src:i.img, alt:''}), el('div',{}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, ...av))),
+      ...ac.map(a => cartaAcao(i, a)));
+  };
+  const blocos = lista.map(bloco).filter(Boolean);
+  setTimeout(() => { const a = document.getElementById('inm_abas'); if (a) a.scrollLeft = inmSL; }, 0);
+  return caixa('inm','Inimigos e ações',
+    el('p',{class:'sub'}, 'Referência das cartas dos Bellacord. Os usos ficam só neste navegador; nenhuma ficha é alterada.'),
+    abas,
+    el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Tipo'), ...chipP),
+    el('div',{class:'inm-fil'}, el('span',{class:'inm-rot'}, 'Efeito'), ...chipT),
+    (s.tag || s.tipo) ? el('button',{class:'peq inm-lim', onclick:mudar(() => { s.tag = ''; s.tipo = ''; })}, 'Limpar filtros') : null,
+    el('div',{class:'lin2'},
+      el('button',{onclick:ev => confirmar(ev.target, mudar(() => { inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; }))}, 'Nova luta'),
+      el('button',{onclick:mudar(() => inmZerar('volta'))}, 'Pétala arrancada'),
+      el('button',{onclick:mudar(() => { inmZerar('turno'); inmZerar('rodada'); })}, 'Nova rodada')),
+    s.ult.length ? el('div',{class:'inm-ult'}, el('b',{}, 'Últimas ações'), ...s.ult.map(x => el('div',{}, 'Rod. ' + x.r + ' · ' + x.t))) : null,
+    ...(blocos.length ? blocos : [el('p',{class:'sub'}, 'Nenhuma ação com esses filtros.')]));
+}
 function painelApoioEstado(){
   const m = E.m;
   const cart = (id, nomeT, img) => { const a = m.ap[id];
@@ -995,7 +1159,7 @@ function elencoApoio(){
 }
 function desenharMestre(){
   const raiz = document.getElementById('painelMestre'); raiz.replaceChildren();
-  raiz.append(palco(), painelRoteiro(), painelGatilhos(), painelEspecial(), ...painelNoite(), painelIni(), painelApoioEstado(), painelFim(), painelAnja(), painelLoops(), painelJog(), painelFalas(), painelRitmo(), painelDados(), painelAudio(), elencoApoio());
+  raiz.append(palco(), painelRoteiro(), painelGatilhos(), painelEspecial(), ...painelNoite(), painelIni(), painelInimigos(), painelApoioEstado(), painelFim(), painelAnja(), painelLoops(), painelJog(), painelFalas(), painelRitmo(), painelDados(), painelAudio(), elencoApoio());
 }
 
 // ---------- Modo Sessão ----------
