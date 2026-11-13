@@ -177,6 +177,9 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .gat button.fora{opacity:.55}
 .gat button .q{font-weight:600}
 .gat button .t{color:var(--apagado);font-size:12px}
+
+#btVoz[aria-pressed="true"]{background:var(--ouro);border-color:var(--ouro);color:#1a0f08;font-weight:600}
+#btRep[aria-pressed="true"]{border-color:var(--terracota);color:var(--terracota)}
 </style>
 </head>
 <body>
@@ -216,6 +219,9 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
   </div>
   <div class="linhaPos"><span id="tAgora">0:00</span><input type="range" id="pos" min="0" max="1000" value="0" aria-label="Posição na música"><span id="tTotal">0:00</span></div>
   <label class="vol">Volume geral <input type="range" id="mestre" min="0" max="100" value="80"></label>
+  <button id="btVoz" aria-pressed="false" title="Tecla V: abaixa a música enquanto você fala (segure ou toque)">Voz</button>
+  <button id="btVolta" class="peq" title="Tecla R: volta à música anterior, de onde parou">Voltar à anterior</button>
+  <button id="btRep" class="peq" title="Tecla T">Repetir</button>
   <button id="btBaixar" title="Tecla B">Baixar aos poucos</button>
   <button id="btSil" class="perigo" title="Tecla Esc">Silêncio</button>
   <button id="btVid" title="Mostra os vídeos, para pular um anúncio">Mostrar vídeos</button>
@@ -359,7 +365,8 @@ const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.i
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:''});
 function garantir(){ E.m = Object.assign(M0(), E.m||{});
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
-  if (typeof E.rpos !== 'number') E.rpos = -1; }
+  if (typeof E.rpos !== 'number') E.rpos = -1;
+  if (typeof E.vozNivel !== 'number') E.vozNivel = 25; if (typeof E.fadeSaida !== 'number') E.fadeSaida = 4; }
 function estadoPadrao(){ return {v:2, mestre:80, cruzar:1.5, rem:[], grupos:PADRAO.map(novoGrupo)}; }
 function carregar(){
   let s = null; try { s = JSON.parse(localStorage.getItem(CHAVE) || 'null'); } catch(e){}
@@ -400,7 +407,8 @@ const rosto = (g, cls='rosto') => g && g.img ? el('img',{class:cls, src:g.img, a
 let P = [null,null], pronto = [false,false], ativo = 0, emP = [null,null], fades = [null,null], vol = [0,0], espera = [null,null];
 let tocando = null, fila = [], tri = null, triFim = '';
 const falhou = {}, estados = {};
-const alvoDe = f => Math.round(f.vol * E.mestre / 100);
+let voz = false; const hist = [];                            // voz: música abaixada enquanto o Mestre fala; hist: faixas anteriores, para retomar
+const alvoDe = f => Math.round(f.vol * E.mestre / 100 * (voz ? E.vozNivel/100 : 1));
 function aplicarVol(i){ try { P[i].unMute(); P[i].setVolume(Math.round(vol[i])); } catch(e){} }
 function fade(i, ate, ms, fim){
   clearInterval(fades[i]); fades[i] = null; if (!pronto[i]) return;
@@ -413,13 +421,14 @@ function tocar(f, ms, op={}){
   if (!videoDe(f)) { estados[f.id] = 'Esta música não tem vídeo. Cole um link do YouTube.'; desenhar(); return; }
   if (tocando === f && !op.forcar) { parar(1200); return; }
   ms = ms ?? E.cruzar*1000;
+  if (tocando && tocando !== f && !tri && !op.retomar) { let t = 0; try { t = P[ativo].getCurrentTime(); } catch(e){} hist.push({f:tocando, t}); if (hist.length > 12) hist.shift(); }
   if (op.fila) fila = op.fila;
   const novo = 1-ativo, velho = ativo;
   if (emP[velho]) { emP[velho] = null; espera[velho] = null; fade(velho, 0, ms, () => { try { P[velho].pauseVideo(); } catch(e){} }); }
   emP[novo] = f; tocando = f; ativo = novo; delete estados[f.id]; falhou[f.id] = 0;
   clearInterval(fades[novo]); fades[novo] = null; vol[novo] = 0;
   espera[novo] = {ms, meio:!!op.meio};                       // o volume sobe quando o vídeo começa de fato a tocar
-  P[novo].loadVideoById({videoId:videoDe(f), startSeconds:op.meio ? 0 : (+f.inicio||0)});
+  P[novo].loadVideoById({videoId:videoDe(f), startSeconds:op.meio ? 0 : (op.inicio ?? (+f.inicio||0))});
   if (tri) tri.ms = 0;
   marcar();
 }
@@ -456,6 +465,24 @@ window.onYouTubeIframeAPIReady = () => { [0,1].forEach(i => { P[i] = new YT.Play
   events:{ onReady:()=>{ pronto[i]=true; }, onStateChange:ev=>aoMudar(i,ev), onError:ev=>aoErro(i,ev) } }); }); };
 (function(){ const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
   s.onerror = () => aviso('Não consegui carregar o player do YouTube. Confira a internet.'); document.head.append(s); })();
+
+
+// ---------- Ferramentas de áudio para narrar: voz, retomar, repetir, ajuste de volume ----------
+let msgBarra = {t:'', ate:0};
+const dizer = t => { msgBarra = {t, ate:Date.now()+2200}; };
+function alternarVoz(ligar){
+  voz = ligar ?? !voz; $('btVoz').setAttribute('aria-pressed', String(voz)); $('btVoz').textContent = voz ? 'Voz ligada' : 'Voz';
+  if (tocando && pronto[ativo] && !espera[ativo]) fade(ativo, alvoDe(tocando), 350);
+}
+function retomar(){
+  while (hist.length) { const h = hist.pop();
+    if (h.f !== tocando && todas().includes(h.f)) { tocar(h.f, null, {forcar:true, inicio:h.t, retomar:true}); dizer('Voltou para ' + h.f.nome); return; } }
+  dizer('Não há música anterior para retomar.');
+}
+function alternarRepetir(){ if (!tocando) return; tocando.repetir = !tocando.repetir; salvar(); dizer(tocando.repetir ? 'Repetir ligado' : 'Repetir desligado'); desenhar(); }
+function ajustarFaixa(d){ if (!tocando) return; tocando.vol = Math.max(5, Math.min(100, (+tocando.vol||100) + d)); salvar();
+  if (!espera[ativo]) { clearInterval(fades[ativo]); fades[ativo] = null; vol[ativo] = alvoDe(tocando); aplicarVol(ativo); }
+  dizer('Volume desta música: ' + tocando.vol + '%'); }
 
 // ---------- Transporte: pausar, avançar e trocar de faixa ----------
 const estadoP = () => { try { return P[ativo].getPlayerState(); } catch(e){ return -1; } };
@@ -614,7 +641,9 @@ function desenharSelecao(){
   const ta = el('textarea',{id:'dados', spellcheck:'false', placeholder:'Cole aqui o texto copiado de outro aparelho'});
   const aplicar = txt => { try { const s = JSON.parse(txt); if (!Array.isArray(s.grupos)) throw 0; parar(); E = s; garantir(); E.rem = E.rem||[]; E.cruzar = E.cruzar ?? 1.5; atual = (E.grupos[0]||{}).id || null; salvar(); document.getElementById('mestre').value = E.mestre; desenhar(); } catch(e){ aviso('Esse conteúdo não é uma trilha válida.'); } };
   raiz.append(el('details',{class:'cx'}, el('summary',{},'Ajustes e cópia das escolhas'),
-    el('div',{class:'lin2'}, el('label',{class:'c'},'Transição entre músicas (s)', el('input',{type:'number', id:'cruzar', min:0, max:10, step:.5, value:E.cruzar, onchange:ev=>{ E.cruzar = Math.max(0, +ev.target.value||0); salvar(); }}))),
+    el('div',{class:'lin2'}, el('label',{class:'c'},'Transição entre músicas (s)', el('input',{type:'number', id:'cruzar', min:0, max:10, step:.5, value:E.cruzar, onchange:ev=>{ E.cruzar = Math.max(0, +ev.target.value||0); salvar(); }})),
+      el('label',{class:'c'},'Música durante a voz (%)', el('input',{type:'number', id:'vozNivel', min:0, max:100, step:5, value:E.vozNivel, onchange:ev=>{ E.vozNivel = Math.max(0, Math.min(100, +ev.target.value||0)); salvar(); }})),
+      el('label',{class:'c'},'Tempo de “Baixar aos poucos” (s)', el('input',{type:'number', id:'fadeSaida', min:1, max:20, step:1, value:E.fadeSaida, onchange:ev=>{ E.fadeSaida = Math.max(1, Math.min(20, +ev.target.value||4)); salvar(); }}))),
     el('p',{class:'sub', style:'margin-top:14px'},'As escolhas e imagens ficam salvas só neste navegador. Para usar em outro aparelho, baixe o arquivo aqui e carregue lá.'),
     el('div',{class:'lin2'},
       el('button',{onclick:()=>{ const a = el('a',{href:URL.createObjectURL(new Blob([JSON.stringify(E)],{type:'application/json'})), download:'trilha-do-cordeiro.json'}); document.body.append(a); a.click(); a.remove(); }},'Baixar arquivo'),
@@ -768,7 +797,7 @@ function desenharSessao(){
     raiz.append(el('div',{class:'banner'}, g.img ? rosto(g,'retrato') : null, el('h2',{}, g.nome)));
     const grade = el('div',{class:'grade'});
     for (const f of esc) { atalhos.push(f); const n = atalhos.length;
-      grade.append(el('button',{class:'cena'+(tocando===f?' tocando':''), onclick:()=>tocar(f,null,{fila:atalhos})},
+      grade.append(el('button',{class:'cena'+(tocando===f?' tocando':''), onclick:ev=>tocar(f, ev.shiftKey ? 0 : null, {fila:atalhos}), title:'Shift + clique: entra sem transição'},
         g.img ? el('img',{class:'mini', src:g.img, alt:''}) : null, el('span',{class:'papel'}, PAPEIS[f.papel]), el('span',{class:'t'}, f.nome), el('span',{class:'m'}, f.momento), el('span',{class:'tecla'}, n<=9 ? 'Tecla '+n : ''))); }
     raiz.append(grade);
   }
@@ -789,13 +818,14 @@ let arrastando = false;
 setInterval(() => {
   const st = tocando && pronto[ativo] ? estadoP() : -1;
   $('btPausa').textContent = st === 2 ? 'Continuar' : 'Pausar';
+  $('btVolta').disabled = !hist.length; $('btRep').disabled = !tocando; $('btRep').setAttribute('aria-pressed', String(!!(tocando && tocando.repetir)));
   for (const b of ['btPausa','btMenos','btMais']) $(b).disabled = !tocando;
   $('btAnt').disabled = !(tri ? tri.pos > 0 : tocando && fila.indexOf(tocando) > 0);
   $('btProx').disabled = !(tri ? true : tocando && fila.indexOf(tocando) >= 0 && fila.indexOf(tocando) < fila.length-1);
   if (!tocando || !pronto[ativo]) { $('agoraTempo').innerHTML = '&nbsp;'; $('tAgora').textContent = $('tTotal').textContent = '0:00'; if (!arrastando) $('pos').value = 0; return; }
   let t = 0, d = 0; try { t = P[ativo].getCurrentTime(); d = P[ativo].getDuration(); } catch(e){}
   $('tAgora').textContent = fmt(t); $('tTotal').textContent = fmt(d); if (!arrastando && d) $('pos').value = Math.round(1000*t/d);
-  $('agoraTempo').textContent = st === 2 ? 'Em pausa' : st === 3 || espera[ativo] ? 'Carregando…' : tocando.repetir && !tri ? 'Repetindo' : ' ';
+  $('agoraTempo').textContent = msgBarra.ate > Date.now() ? msgBarra.t : st === 2 ? 'Em pausa' : st === 3 || espera[ativo] ? 'Carregando…' : (tocando.repetir && !tri ? 'Repetindo' : '\u00a0') + (voz ? ' · voz ligada' : '');
   // se o YouTube abrir mudo ou com outro volume, corrige
   if (st === 1 && !fades[ativo] && !espera[ativo]) { try { if (P[ativo].isMuted() || Math.abs(P[ativo].getVolume() - alvoDe(tocando)) > 2) { vol[ativo] = alvoDe(tocando); aplicarVol(ativo); } } catch(e){} }
   if (tri) { if (st === 1) tri.ms += 500;
@@ -813,7 +843,10 @@ $('btMenos').onclick = () => saltar(-10);
 $('btMais').onclick = () => saltar(10);
 $('btAnt').onclick = () => vizinha(-1);
 $('btProx').onclick = () => vizinha(1);
-$('btBaixar').onclick = () => parar(4000);
+$('btBaixar').onclick = () => parar(E.fadeSaida*1000);
+$('btVoz').onclick = () => alternarVoz();
+$('btVolta').onclick = retomar;
+$('btRep').onclick = alternarRepetir;
 $('btSil').onclick = () => parar(0);
 $('btVid').onclick = ev => { const p = $('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
 let trava = null;
@@ -825,12 +858,19 @@ $('abaSel').onclick = () => aba('sel');
 $('abaTri').onclick = () => aba('tri');
 $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
+let vozIni = 0;
+document.addEventListener('keyup', ev => { if (ev.key.toLowerCase() === 'v' && !/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) && vozIni && Date.now()-vozIni > 600) alternarVoz(false); vozIni = 0; });
 document.addEventListener('keydown', ev => {
   if (/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) || ev.ctrlKey || ev.metaKey || ev.altKey) return;
   const k = ev.key.toLowerCase();
   if (k === ' ' && ev.target.tagName === 'BUTTON') return;
   if (k === 'escape') parar(0);
-  else if (k === 'b') parar(4000);
+  else if (k === 'b') parar(E.fadeSaida*1000);
+  else if (k === 'v') { if (!ev.repeat) { if (voz) { vozIni = 0; alternarVoz(false); } else { vozIni = Date.now(); alternarVoz(true); } } }
+  else if (k === 'r') retomar();
+  else if (k === 't') alternarRepetir();
+  else if (k === '-') ajustarFaixa(-5);
+  else if (k === '=' || k === '+') ajustarFaixa(5);
   else if (k === ' ') { ev.preventDefault(); pausar(); }
   else if (k === 'arrowright') saltar(10);
   else if (k === 'arrowleft') saltar(-10);
