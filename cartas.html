@@ -75,6 +75,9 @@ select.peq{min-height:34px;padding:4px 8px;font-size:14px}
 .virar.v .in{transform:rotateY(180deg)}
 @media (prefers-reduced-motion:reduce){.virar .in{transition:none}}
 .acoes{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.acoes.fixa{position:sticky;bottom:calc(68px + env(safe-area-inset-bottom,0px));z-index:15;background:#120d0af2;padding:8px;border:1px solid var(--linha);border-radius:12px;box-shadow:0 -6px 14px #000a}
+.guard{margin:10px 0 0;font-size:15px}.guard button{margin-left:6px}
+.tagq{font-size:11px;font-weight:700;letter-spacing:.06em;padding:1px 7px;border-radius:999px;border:1px solid var(--terra);color:var(--terra);margin-left:6px;vertical-align:middle}.tagq.rec{border-color:#7fb3d9;color:#9cc7ea}
 .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .item{display:flex;flex-direction:column;gap:6px}
 .item .cf{cursor:pointer;box-shadow:0 2px 10px #000a}
@@ -159,11 +162,12 @@ const el = (t, a = {}, ...k) => { const e = document.createElement(t); for (cons
 const MESTRE = location.hash === '#mestre';
 const CHAVE = 'cartas-cordeiro-v2', CHAVE1 = 'cartas-cordeiro-v1';
 const novaMao = n => ({id:'m' + Date.now().toString(36) + Math.random().toString(36).slice(2,5), nome:n, cartas:[]});
-let S = {maos:[novaMao('Minha mão')], ativa:'', outros:[], hist:[], vistas:[], ordem:'manual', vista:'grade', filtro:'todos', aba:'pux'};
+let S = {maos:[novaMao('Minha mão')], ativa:'', outros:[], hist:[], vistas:[], entregues:[], nome:'', ordem:'manual', vista:'grade', filtro:'todos', aba:'pux'};
 S.ativa = S.maos[0].id;
 try { const j = JSON.parse(localStorage.getItem(CHAVE) || 'null'); if (j && Array.isArray(j.maos) && j.maos.length) S = Object.assign(S, j);
   else { const v1 = JSON.parse(localStorage.getItem(CHAVE1) || 'null'); if (v1 && Array.isArray(v1.mao)) S.maos[0].cartas = v1.mao.map(m => ({c:m.c, g:m.g || 0})); } } catch (e) {}
 if (!S.maos.some(m => m.id === S.ativa)) S.ativa = S.maos[0].id;
+if (!Array.isArray(S.entregues)) S.entregues = []; if (typeof S.nome !== 'string') S.nome = '';
 const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(S)); } catch (e) {} };
 let tt = 0;
 function dizer(t){ const e = $('toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 2600); }
@@ -184,6 +188,7 @@ function normaliza(s){
 }
 const todasAsMaos = () => [...S.maos.map(m => ({...m, meu:true})), ...S.outros.flatMap(o => o.maos.map(m => ({id:o.dono + '/' + m.nome, nome:m.nome + (o.maos.length > 1 || m.nome !== o.dono ? '' : ''), dono:o.dono, cartas:m.cartas.map(c => ({c, g:0})), meu:false})))];
 const quemTem = code => { const r = []; for (const m of todasAsMaos()) if (m.cartas.some(x => x.c === code)) r.push(m.meu ? m.nome : (m.dono + (m.nome !== m.dono ? ' · ' + m.nome : ''))); return r; };
+const podeVer = k => !k.startsWith('AB') || MESTRE || S.entregues.includes(k) || todasAsMaos().some(m => m.cartas.some(x => x.c === k));   // Abate só para quem recebeu (mão, link do Mestre)
 const vista = code => MESTRE || S.vistas.includes(code) || todasAsMaos().some(m => m.cartas.some(x => x.c === code));
 const ORIG_VIN = {'Esaú':'esau','Jael':'jael','Hildegarda':'hildegarda','Raquel':'raquel','Ezequiel':'ezequiel','Ozymandias':'ozymandias','Chronos':'chronos'};
 const vinDe = c => c.c === 'AB7' ? 'vin_demonio' : 'vin_' + (ORIG_VIN[c.o.replace(/^d[eo] /, '')] || 'criados');
@@ -277,7 +282,7 @@ function ver(ev){
   ev.preventDefault(); erroPux = ''; resultado = null;
   const k = normaliza($('cod').value);
   if (!k) erroPux = 'Código não reconhecido. Use letra e número, como S07 ou H12.';
-  else { const c = porCod(k); if (!c) erroPux = 'Essa carta não existe. Os números vão de 01 a 12 (AB1 a AB7 no Abate).';
+  else { const c = porCod(k); if (!c || !podeVer(k)) erroPux = 'Essa carta não existe. Confira o baralho (S, A, M ou H) e o número, de 01 a 12.';
     else { resultado = c; if (!S.vistas.includes(k)) S.vistas.push(k); S.hist = [k, ...S.hist.filter(x => x !== k)].slice(0, 12); salvar(); } }
   desPux();
 }
@@ -286,16 +291,18 @@ function desPux(){
   r.append(el('form', {class:'busca', id:'form', autocomplete:'off', onsubmit:ver}, el('input', {id:'cod', inputmode:'text', autocapitalize:'characters', maxlength:5, placeholder:'S07', 'aria-label':'Código da carta', enterkeyhint:'go', value:resultado ? '' : ''}), el('button', {type:'submit', class:'on'}, 'Ver')),
     el('p', {class:'dica'}, 'Role 1d4 para o baralho e 1d12 para a carta. 1 é ', el('b', {}, 'S'), ' (Sobrevivência), 2 é ', el('b', {}, 'A'), ' (Armas), 3 é ', el('b', {}, 'M'), ' (Magia), 4 é ', el('b', {}, 'H'), ' (Habilidades dos inimigos). Um 3 e um 7 dão ', el('b', {}, 'M07'), '. As cartas de Abate o Mestre entrega.'),
     el('div', {class:'barra'}, el('button', {class:'peq', onclick:() => { const d = 'SAMH'[Math.floor(Math.random() * 4)], n = 1 + Math.floor(Math.random() * 12); $('cod').value = d + n; ver(new Event('submit')); }}, '🎲 Rolar por mim'), el('span', {class:'sub'}, 'se estiver sem dados à mão')),
-    el('p', {class:'erro', role:'alert'}, erroPux));
+    el('p', {class:'erro', role:'alert'}, erroPux),
+    (() => { const m = maoAtiva(), n = m.cartas.length; return n ? el('p', {class:'guard', role:'status'}, el('b', {}, n + (n === 1 ? ' guardada' : ' guardadas')), ' em ' + m.nome + '. ', el('button', {class:'peq', onclick:() => mudaAba('mao')}, 'Ver mãos')) : el('span'); })());
   if (resultado) {
     const c = resultado, onde = quemTem(c.c);
     const v = el('div', {class:'virar carta-grande'}, el('div', {class:'in'}, cartaCostas(c.c), (() => { const f = cartaFace(c); f.classList.add('frente'); return f; })()));
     r.append(v);
     setTimeout(() => v.classList.add('v'), 60);
+    requestAnimationFrame(() => { const rc = v.getBoundingClientRect(); if (rc.top < 0 || rc.top > innerHeight * .5) v.scrollIntoView({block:'start', behavior:'auto'}); });
     if (onde.length) r.append(el('div', {class:'aviso'}, 'Esta carta já está em: ' + onde.join(', ') + '. Se for repetida no grupo, role de novo.'));
     const alvo = el('select', {id:'alvoMao', 'aria-label':'Guardar em'}, ...S.maos.map(m => el('option', {value:m.id, selected:m.id === S.ativa}, m.nome)));
-    r.append(el('div', {class:'acoes'}, el('span', {class:'sub'}, 'Guardar em'), alvo,
-      el('button', {class:'on', onclick:() => { const m = S.maos.find(x => x.id === alvo.value); if (m.cartas.some(x => x.c === c.c)) { dizer('Essa mão já tem esta carta.'); return; } m.cartas.push({c:c.c, g:0}); S.ativa = m.id; salvar(); resultado = null; dizer(c.n + ' guardada em ' + m.nome); redesenhaTudo(); mudaAba('mao'); }}, 'Guardar'),
+    r.append(el('div', {class:'acoes fixa'}, el('span', {class:'sub'}, 'Guardar em'), alvo,
+      el('button', {class:'on', onclick:() => { const m = S.maos.find(x => x.id === alvo.value); if (m.cartas.some(x => x.c === c.c)) { dizer('Essa mão já tem esta carta.'); return; } m.cartas.push({c:c.c, g:0}); S.ativa = m.id; salvar(); resultado = null; erroPux = ''; dizer(c.n + ' guardada em ' + m.nome + ' (' + m.cartas.length + ')'); redesenhaTudo(); const k = $('cod'); if (k) k.focus({preventScroll:true}); }}, 'Guardar'),
       el('button', {onclick:() => abrir([{carta:c}], 0)}, 'Zoom e regra'),
       el('button', {class:'peq', onclick:() => { resultado = null; desPux(); $('cod').focus(); }}, 'Fechar')));
   }
@@ -345,30 +352,48 @@ function desMao(){
 function mover(m, x, d){ const i = m.cartas.indexOf(x), j = i + d; if (j < 0 || j >= m.cartas.length) return; m.cartas.splice(i, 1); m.cartas.splice(j, 0, x); salvar(); desMao(); }
 function desMesa(){
   const raiz = el('div', {class:'mesa'}); const linhas = [];
-  for (const h of S.maos) linhas.push({quem:h.nome, sub:'neste celular', cartas:h.cartas.map(x => x.c)});
-  for (const o of S.outros) for (const h of o.maos) linhas.push({quem:o.dono + (h.nome !== o.dono ? ' · ' + h.nome : ''), sub:'recebida em ' + new Date(o.em).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), cartas:h.cartas, outro:o});
+  for (const h of S.maos) linhas.push({quem:h.nome, sub:'sua, neste celular', tag:'SUA', cartas:h.cartas.map(x => x.c)});
+  for (const o of S.outros) for (const h of o.maos) linhas.push({quem:o.dono + (o.maos.length > 1 && h.nome !== o.dono ? ' · ' + h.nome : ''), sub:'recebida às ' + new Date(o.em).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), tag:'RECEBIDA', cartas:h.cartas, outro:o});
   const total = new Set(linhas.flatMap(l => l.cartas)).size;
   raiz.append(el('p', {class:'sub'}, total + ' carta' + (total === 1 ? '' : 's') + ' diferente' + (total === 1 ? '' : 's') + ' em jogo. Para ver a mão de outro jogador, ele toca em “Compartilhar minhas mãos” e manda o link.'));
   for (const l of linhas) { const itens = l.cartas.map(code => ({carta:porCod(code)})).filter(i => i.carta);
-    raiz.append(el('div', {class:'quem'}, el('b', {style:'font-size:17px'}, l.quem), el('span', {class:'sub'}, l.cartas.length + ' · ' + l.sub),
+    raiz.append(el('div', {class:'quem'}, el('b', {style:'font-size:17px'}, l.quem, el('span', {class:'tagq' + (l.outro ? ' rec' : '')}, l.tag)), el('span', {class:'sub'}, l.cartas.length + ' · ' + l.sub),
       l.outro ? el('button', {class:'peq perigo', onclick:ev => confirma(ev.target, () => { S.outros = S.outros.filter(o => o !== l.outro); salvar(); redesenhaTudo(); }, 'Tirar'), 'aria-label':'Remover mão recebida'}, 'Tirar') : null),
       itens.length ? el('div', {class:'fila'}, ...itens.map((it, k) => el('div', {class:'cf-w', style:'flex:0 0 120px'}, (() => { const f = cartaFace(it.carta); f.style.flex = '0 0 120px'; f.addEventListener('click', () => abrir(itens, k)); return f; })()))) : el('p', {class:'sub'}, 'Sem cartas.')); }
   return raiz;
 }
-function linkDasMaos(){ const dado = S.maos.map(m => [m.nome, m.cartas.map(x => x.c).join(',')]); return location.origin + location.pathname + '#m=' + encodeURIComponent(JSON.stringify(dado)); }
+function linkDasMaos(){ const dado = S.maos.map(m => [m.nome === 'Minha mão' && S.nome.trim() ? S.nome.trim().slice(0, 24) : m.nome, m.cartas.map(x => x.c).join(',')]); return location.origin + location.pathname + '#m=' + encodeURIComponent(JSON.stringify(dado)); }
 function desCompartilhar(){
   const url = linkDasMaos(), caixa = el('input', {type:'text', readonly:true, value:url, 'aria-label':'Link das suas mãos', onfocus:ev => ev.target.select()});
-  return el('div', {class:'painel'}, el('b', {}, 'Compartilhar minhas mãos'), el('p', {class:'sub', style:'margin:4px 0 8px'}, 'Gere o link, mande no grupo e quem abrir vê as suas cartas na aba Mãos, sempre como cópia: ela não muda sozinha, então gere de novo quando mudar sua mão.'),
+  return el('div', {class:'painel'}, el('b', {}, 'Compartilhar minhas mãos'),
+    el('label', {class:'sub', style:'display:block;margin:6px 0'}, 'Seu nome (é como os outros vão ver a sua mão) ', el('input', {type:'text', maxlength:24, value:S.nome, placeholder:'ex.: Victor', 'aria-label':'Seu nome', style:'min-width:9em', onchange:ev => { S.nome = ev.target.value.trim(); salvar(); desMao(); }})),
+    el('p', {class:'sub', style:'margin:4px 0 8px'}, 'Gere o link, mande no grupo e quem abrir vê as suas cartas na aba Mãos, sempre como cópia: ela não muda sozinha, então gere de novo quando mudar sua mão.'),
     el('div', {class:'copia'}, caixa, el('button', {class:'peq on', onclick:async () => { try { if (navigator.share) { await navigator.share({title:'Minhas cartas', url}); return; } await navigator.clipboard.writeText(url); dizer('Link copiado'); } catch (e) { caixa.focus(); caixa.select(); dizer('Selecione e copie o link.'); } }}, navigator.share ? 'Enviar' : 'Copiar')));
 }
+const nomesUsados = () => [...S.maos.map(h => h.nome), ...S.outros.map(o => o.dono)].map(n => n.trim().toLowerCase());
+function nomeLivre(base){ let n = 2, c = base; const u = nomesUsados(); while (u.includes(c.toLowerCase())) c = base + ' ' + (n++); return c; }
 function importaDoLink(){
+  const ab = /^#ab=([\w,]+)$/i.exec(location.hash);
+  if (ab) { const ks = ab[1].split(',').map(normaliza).filter(k => k && k.startsWith('AB') && porCod(k)); history.replaceState(null, '', location.pathname);
+    if (ks.length) { ks.forEach(k => { if (!S.entregues.includes(k)) S.entregues.push(k); if (!S.vistas.includes(k)) S.vistas.push(k); }); resultado = porCod(ks[0]); S.aba = 'pux'; S.hist = [ks[0], ...S.hist.filter(x => x !== ks[0])].slice(0, 12); salvar(); setTimeout(() => dizer('Carta de Abate recebida: ' + ks.join(', ')), 300); }
+    return; }
   const m = /^#m=(.+)$/.exec(location.hash); if (!m) return;
   try { const dado = JSON.parse(decodeURIComponent(m[1])); if (!Array.isArray(dado)) throw 0;
     const maos = dado.map(([n, cs]) => ({nome:String(n).slice(0, 24), cartas:String(cs).split(',').filter(c => porCod(c))})).filter(h => h.nome);
     if (!maos.length) throw 0; history.replaceState(null, '', location.pathname);
-    const dono = maos[0].nome, sug = el('input', {type:'text', value:dono, maxlength:24, 'aria-label':'Nome do dono'});
-    const b = el('div', {class:'aviso'}, el('b', {}, 'Mão recebida'), el('p', {style:'margin:4px 0'}, maos.map(h => h.nome + ' (' + h.cartas.length + ')').join(', ') + '. De quem é?'), el('div', {class:'copia'}, sug, el('button', {class:'on', onclick:() => { const d = sug.value.trim() || dono; S.outros = S.outros.filter(o => o.dono !== d); S.outros.push({dono:d, maos, em:Date.now()}); salvar(); b.remove(); redesenhaTudo(); mudaAba('mao'); dizer('Mão de ' + d + ' adicionada'); }}, 'Adicionar'), el('button', {onclick:() => b.remove()}, 'Ignorar')));
-    $('sPux').before(b);
+    const meu = S.maos.some(h => h.nome.trim().toLowerCase() === maos[0].nome.trim().toLowerCase()), dono = meu ? '' : maos[0].nome;
+    const sug = el('input', {type:'text', value:dono, maxlength:24, placeholder:'Nome de quem mandou', 'aria-label':'Nome do dono'}), nota = el('p', {class:'sub', style:'margin:4px 0', role:'status'});
+    const atualiza = () => { const d = sug.value.trim(), ex = S.outros.find(o => o.dono.toLowerCase() === d.toLowerCase()), meuN = S.maos.some(h => h.nome.trim().toLowerCase() === d.toLowerCase());
+      nota.textContent = !d ? 'Escreva o nome de quem mandou (não use o nome de uma das suas mãos).' : ex ? 'Já existe uma mão recebida de ' + d + '. Ela não será apagada: esta entra como “' + nomeLivre(d) + '”, a menos que você toque em Substituir.' : meuN ? 'Esse é o nome de uma mão sua. Esta entra como “' + nomeLivre(d) + '”.' : '';
+      sub.hidden = !ex; };
+    const add = trocar => { const d0 = sug.value.trim(); if (!d0) { sug.focus(); atualiza(); return; }
+      const ex = S.outros.find(o => o.dono.toLowerCase() === d0.toLowerCase()); let d = d0;
+      if (ex && trocar) S.outros = S.outros.filter(o => o !== ex); else d = nomeLivre(d0);
+      S.outros.push({dono:d, maos, em:Date.now()}); salvar(); b.remove(); redesenhaTudo(); mudaAba('mao'); dizer('Mão de ' + d + (d !== d0 ? ' guardada como “' + d + '”' : ' adicionada')); };
+    const sub = el('button', {class:'peq perigo', hidden:true, onclick:() => add(true)}, 'Substituir a que já tenho');
+    sug.addEventListener('input', atualiza);
+    const b = el('div', {class:'aviso'}, el('b', {}, 'Mão recebida'), el('p', {style:'margin:4px 0'}, maos.map(h => h.nome + ' (' + h.cartas.length + ')').join(', ') + '. De quem é?'), el('div', {class:'copia'}, sug, el('button', {class:'on', onclick:() => add(false)}, 'Adicionar'), el('button', {onclick:() => b.remove()}, 'Ignorar')), nota, sub);
+    $('sPux').before(b); atualiza();
   } catch (e) { history.replaceState(null, '', location.pathname); dizer('Link de mão inválido.'); }
 }
 /* ---- aba Todas ---- */
@@ -415,6 +440,8 @@ function desMestre(){
   const r = $('sMes'); r.replaceChildren(); r.hidden = false; $('nav').hidden = true; for (const id of ['sPux','sMao','sTod','sIni','sReg']) $(id).hidden = true;
   r.append(el('h2', {}, 'Mestre: todas as cartas'), el('p', {class:'sub'}, 'Esta página mostra as frases completas e todas as cartas. Não mostre aos jogadores. Para sair, tire #mestre do endereço.'),
     el('h3', {}, 'Frases completas'), el('div', {class:'rol'}, el('table', {class:'tab'}, el('tr', {}, ...['Grupo','Cartas (ordem de leitura)','Frase','Fonte'].map(h => el('th', {}, h))), ...FRASES.map(f => el('tr', {}, ...f.map(x => el('td', {}, x)))))),
+    el('h3', {}, 'Entregar cartas de Abate'), el('p', {class:'sub'}, 'Quem digita AB1 a AB7 sem ter recebido não vê nada. Toque para copiar o link de entrega e mande só para quem recebe.'),
+    el('div', {class:'chips'}, ...CARTAS.filter(c => c.c.startsWith('AB')).map(c => el('button', {class:'chip', onclick:async () => { const u = location.origin + location.pathname + '#ab=' + c.c; try { await navigator.clipboard.writeText(u); dizer('Link de ' + c.c + ' copiado'); } catch (e) { prompt('Copie o link', u); } }}, c.c + ' · ' + c.n))),
     el('h3', {}, 'Cartas'), el('div', {class:'grade'}, ...CARTAS.map((c, k) => el('div', {class:'item'}, el('div', {onclick:() => abrir(CARTAS.map(x => ({carta:x})), k), style:'cursor:pointer'}, cartaFace(c))))));
 }
 /* ---- navegação ---- */
