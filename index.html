@@ -139,6 +139,27 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .apoio .ap .p{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--terracota);margin:2px 0 6px}
 .apoio .ap .d{font-size:13px;color:var(--apagado);line-height:1.4}
 .cena .mini{width:100%;height:84px;object-fit:cover;object-position:top;border-radius:5px;margin:-4px 0 4px;opacity:.9}
+
+.noite{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.noite .bloco{padding:12px;border:1px solid var(--linha);border-radius:10px;background:var(--painel2)}
+.noite .bloco h4{font:400 12px/1 var(--titulo);letter-spacing:.14em;color:var(--terracota);margin:0 0 10px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{min-width:42px;padding:10px 0;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:#1a0f08}
+.grande{font:400 54px/1 var(--titulo);color:var(--marfim);text-align:center;font-variant-numeric:tabular-nums}
+.lirio{display:block;margin:0 auto;width:120px;height:120px}
+.aviso2{margin:10px 0 0;padding:8px 10px;border-radius:6px;background:#3a2410;border:1px solid var(--ouro);color:#ffe9b8;font-size:13px}
+.abates{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.ab{display:flex;gap:10px;padding:10px;border:1px solid var(--linha);border-radius:10px;background:var(--painel2)}
+.ab img,.ab .ini{width:56px;height:78px;object-fit:cover;object-position:top;border-radius:6px;flex:none;background:var(--fundo);display:grid;place-items:center;font:400 26px/1 var(--titulo);color:var(--terracota2)}
+.ab .c{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.ab .nm{font-weight:600}
+.ab .bts{display:flex;flex-wrap:wrap;gap:5px}
+.ab.morto{opacity:.55}
+.ab.morto img{filter:grayscale(1)}
+.ab .ok{color:#7fc98c;font-size:12px}
+.fim{margin-top:12px;padding:14px;border:1px solid #3f7a4a;border-radius:8px;background:#162a1b}
+textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 </style>
 </head>
 <body>
@@ -286,7 +307,7 @@ const IMG_PADRAO = {esau:'img/esau.jpg', ezequiel:'img/ezequiel.jpg', jael:'img/
 const ALT_PADRAO = {esau:'img/esau_acena.jpg'};            // segunda versão da arte (Esaú sorrindo e acenando)
 const APOIO = [
  {id:'rafaela', nome:'Rafaela', papel:'A curandeira', img:'img/rafaela.jpg', nota:'Cura o que ninguém mais cura, e as mãos brilham. Nasceu com poder celestial: a mãe, Marina, matou um demônio grávida e morreu no parto. Na volta 1 é morta pela flecha de Esaú.'},
- {id:'tobias', nome:'Tobias', papel:'O Cordeiro (a Gula)', img:'img/tobias.jpg', nota:'Não luta. Os Bellacord querem levá-lo: se os jogadores perderem, ele é levado. Anda sempre com pão no bolso.'},
+ {id:'tobias', nome:'Tobias', papel:'O Cordeiro (a Gula)', img:'img/tobias.jpg', nota:'Não luta. Os Bellacord querem levá-lo: se os jogadores perderem, ele é levado. É o responsável pelos lanches (e pelo pão).'},
  {id:'anja', nome:'A anja', papel:'A Entidade / o Lobo', img:'img/anja.jpg', nota:'Voz dentro das mentes dos jogadores. Oferece quatro virtudes invertidas (Libertação, Paz, Fartura, Vida), cada uma escolhida uma só vez, com item, cavalo fantasma e Porta Dimensional 1/dia. Só com ela em combate a morte é permanente.'}
 ];
 const PAPEIS = {entrada:'Entrada', combate:'Combate', momento:'Momento'};
@@ -565,7 +586,74 @@ function desenharSelecao(){
 }
 
 
-// ---------- Aba Mestre: palco, elenco de apoio e (nas próximas partes) controle da noite ----------
+
+// ---------- Controle da noite: volta, pétalas, rodada, abates e notas ----------
+const ABATES = [
+ {id:'hildegarda', nome:'Hildegarda', g:'hildegarda'}, {id:'jael', nome:'Jael', g:'jael'}, {id:'esau', nome:'Esaú', g:'esau'},
+ {id:'ezequiel', nome:'Ezequiel', g:'ezequiel'}, {id:'raquel', nome:'Raquel', g:'raquel'}, {id:'ozy', nome:'Ozymandias', g:'ozy'}, {id:'anjo', nome:'O Anjo', g:'demonio', img:'img/diabo.jpg'}
+];
+const faixaDe = (gid, papel) => { const g = E.grupos.find(x => x.id === gid); return g && g.faixas.find(f => f.usar && f.papel === papel); };
+let cron = {ini:null, acum:0};
+const tempoCron = () => { const t = cron.acum + (cron.ini ? Date.now()-cron.ini : 0); return Math.floor(t/60000)+':'+String(Math.floor(t/1000)%60).padStart(2,'0'); };
+function lirioSvg(n){
+  const ns = 'http://www.w3.org/2000/svg'; const sv = document.createElementNS(ns,'svg'); sv.setAttribute('viewBox','0 0 120 120'); sv.setAttribute('class','lirio'); sv.setAttribute('role','img'); sv.setAttribute('aria-label', n+' pétalas restantes');
+  for (let i = 0; i < n; i++) { const e = document.createElementNS(ns,'ellipse'); e.setAttribute('cx',60); e.setAttribute('cy',30); e.setAttribute('rx',11); e.setAttribute('ry',26);
+    e.setAttribute('fill','#efe6d2'); e.setAttribute('stroke','#c9a24a'); e.setAttribute('stroke-width','1.2'); e.setAttribute('transform','rotate('+(i*60)+' 60 60)'); sv.append(e); }
+  const c = document.createElementNS(ns,'circle'); c.setAttribute('cx',60); c.setAttribute('cy',60); c.setAttribute('r',7); c.setAttribute('fill','#c9a24a'); sv.append(c); return sv;
+}
+function abater(a){
+  if (!E.m.anja) { avisoNoite = 'A anja não está em combate: a morte de ' + a.nome + ' não é permanente.'; desenhar(); return; }
+  avisoNoite = ''; E.m.abates[a.id] = E.m.volta; salvar();
+  const g = E.grupos.find(x => x.id === a.g); if (tocando && g && g.faixas.includes(tocando)) parar(3000);
+  desenhar();
+}
+let avisoNoite = '';
+function painelNoite(){
+  const m = E.m, mud = fn => () => { fn(); avisoNoite = ''; salvar(); desenhar(); };
+  const nAb = ABATES.filter(a => E.m.abates[a.id]).length;
+  const avisos = [];
+  if (m.rodada === 3 && !m.abates.hildegarda) avisos.push('Rodada 3: Hildegarda invoca os “demônios” (anjos de verdade).');
+  const lir = el('div',{}, lirioSvg(m.petalas));
+  const noite = el('div',{class:'painel'}, el('h3',{},'A noite'),
+    el('div',{class:'noite'},
+      el('div',{class:'bloco'}, el('h4',{},'Volta'),
+        el('div',{class:'seg'}, ...[1,2,3,4,5,6].map(n => el('button',{'aria-pressed':String(m.volta===n), onclick:mud(()=>{ m.volta = n; m.rodada = 1; cron = {ini:null, acum:0}; })}, String(n)))),
+        el('p',{class:'sub', style:'margin:10px 0 0'},'Trocar de volta zera a rodada e o cronômetro.')),
+      el('div',{class:'bloco'}, el('h4',{},'Pétalas do lírio'), lir,
+        el('div',{class:'lin2', style:'justify-content:center'},
+          el('button',{class:'peq', disabled:m.petalas<=0, onclick:mud(()=>{ m.petalas = Math.max(0, m.petalas-1); })}, 'Arrancar pétala'),
+          el('button',{class:'peq', onclick:mud(()=>{ m.petalas = 6; })}, 'Repor'),
+          el('button',{class:'peq', onclick:()=>{ const f = todas().find(x => x.id === 'mom-lacrimosa'); if (f) tocar(f, 600, {fila:[f]}); }}, '♪ Lacrimosa'))),
+      el('div',{class:'bloco'}, el('h4',{},'Rodada de combate'), el('div',{class:'grande', id:'rodadaN'}, String(m.rodada)),
+        el('div',{class:'lin2', style:'justify-content:center'},
+          el('button',{onclick:mud(()=>{ m.rodada = Math.max(1, m.rodada-1); })}, '−'), el('button',{onclick:mud(()=>{ m.rodada++; })}, 'Próxima rodada'), el('button',{class:'peq', onclick:mud(()=>{ m.rodada = 1; })}, 'Zerar')),
+        el('div',{class:'lin2', style:'justify-content:center'}, el('span',{class:'sub'},'Combate: '), el('b',{id:'cronT'}, tempoCron()),
+          el('button',{class:'peq', onclick:()=>{ if (cron.ini) { cron.acum += Date.now()-cron.ini; cron.ini = null; } else cron.ini = Date.now(); desenhar(); }}, cron.ini ? 'Pausar' : 'Iniciar'),
+          el('button',{class:'peq', onclick:()=>{ cron = {ini:null, acum:0}; desenhar(); }}, 'Zerar'))),
+    ),
+    ...avisos.map(t => el('div',{class:'aviso2'}, t)));
+  const ab = el('div',{class:'painel'}, el('h3',{}, 'Abates · ' + nAb + ' de ' + ABATES.length),
+    el('label',{class:'lin'}, el('input',{type:'checkbox', checked:m.anja, onchange:ev=>{ m.anja = ev.target.checked; avisoNoite = ''; salvar(); desenhar(); }}), 'A anja está em combate (só assim a morte é permanente)'),
+    avisoNoite ? el('div',{class:'aviso2'}, avisoNoite) : null,
+    el('div',{class:'abates', style:'margin-top:10px'}, ...ABATES.map(a => { const g = E.grupos.find(x => x.id === a.g), img = a.img || (g && g.img), morto = !!m.abates[a.id];
+      const fe = faixaDe(a.g,'entrada'), fc = faixaDe(a.g,'combate');
+      return el('div',{class:'ab'+(morto?' morto':'')}, img ? el('img',{src:img, alt:''}) : el('div',{class:'ini'}, a.nome[0]),
+        el('div',{class:'c'}, el('div',{class:'nm'}, a.nome),
+          morto ? el('div',{class:'ok'}, 'Abatido na volta ' + m.abates[a.id]) : null,
+          el('div',{class:'bts'},
+            morto ? el('button',{class:'peq', onclick:mud(()=>{ delete m.abates[a.id]; })}, 'Desfazer') : el('button',{class:'peq perigo', onclick:()=>abater(a)}, 'Abater'),
+            fe && !morto ? el('button',{class:'peq', onclick:()=>tocar(fe, null, {fila:[fe]})}, '♪ Entrada') : null,
+            fc && !morto ? el('button',{class:'peq', onclick:()=>tocar(fc, null, {fila:[fc]})}, '♪ Combate') : null))); })),
+    nAb === ABATES.length ? el('div',{class:'fim'}, el('b',{},'Todos abatidos.'), el('p',{class:'sub', style:'margin:6px 0 10px'},'Os jogadores se tornam os Quatro Cavaleiros. Rafaela é devorada, a menos que tenha sido teletransportada antes de morrer. Contar a revelação fora do jogo.'),
+      el('button',{onclick:()=>{ const f = todas().find(x => x.id === 'mom-miserere'); if (f) tocar(f, 1500, {fila:[f]}); }}, '♪ Música da revelação')) : null);
+  const notas = el('div',{class:'painel'}, el('h3',{},'Notas rápidas'),
+    el('textarea',{class:'notas', placeholder:'Anotações da mesa (ficam salvas neste navegador)', 'aria-label':'Notas', oninput:ev=>{ m.notas = ev.target.value; salvar(); }}, m.notas));
+  notas.querySelector('textarea').value = m.notas;
+  return [noite, ab, notas];
+}
+setInterval(() => { const c = document.getElementById('cronT'); if (c) c.textContent = tempoCron(); }, 1000);
+
+// ---------- Aba Mestre: palco, controle da noite e elenco de apoio ----------
 function palco(){
   const g = tocando && grupoDe(tocando), alt = g && ALT_PADRAO[g.id] && E.m.alt[g.id];
   const src = alt ? ALT_PADRAO[g.id] : (g && g.img);
@@ -580,7 +668,7 @@ function elencoApoio(){
 }
 function desenharMestre(){
   const raiz = document.getElementById('painelMestre'); raiz.replaceChildren();
-  raiz.append(palco(), elencoApoio());
+  raiz.append(palco(), ...painelNoite(), elencoApoio());
 }
 
 // ---------- Modo Sessão ----------
