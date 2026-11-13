@@ -15,3 +15,10 @@ As imagens ficam na pasta `img/`, que precisa estar **ao lado do `index.html`**.
 As escolhas ficam salvas no navegador. Para levar a outro aparelho, use "Baixar arquivo" e "Carregar arquivo" em *Ajustes e cópia das escolhas*.
 
 Para usar sem internet de hospedagem, rode `abrir_trilha.bat` (precisa de Python) em vez de abrir o `index.html` direto.
+
+
+## Cartas de Poder (para os jogadores)
+
+`cartas.html` é a página que os jogadores abrem no celular: eles rolam 1d4 (baralho: S, A, M, H) e 1d12 (carta), digitam o código (por exemplo M07) e veem a carta, com a mão guardada no próprio celular, o Eco da Fome somado e marcadores de uso por luta, por volta e recarga. Endereço depois de ativar o Pages: https://fabricio1974.github.io/OneShotPandora/cartas.html
+
+`cartas.html#mestre` mostra todas as cartas e as frases completas. Não passe esse endereço aos jogadores.
