@@ -1,0 +1,1 @@
+Artes das ações dos outros inimigos: <inimigo>_<acao>.jpg (ex.: jael_martelo-de-guerra.jpg). Se não existir, usa o retrato do inimigo.
