@@ -76,3 +76,6 @@ A aba Mestre usa o desenho "Arco": terracota sobre preto (a paleta dos vasos gre
 ## Página experimental do Esaú (`esau.html`)
 Página de rolagem estilo "tela de personagem de jogo gacha" (GSAP + ScrollTrigger): uma cena por habilidade, parallax em camadas, dados clicáveis com os números da ficha. É um link à parte — não altera a Mesa do Mestre.
 As artes entram em `img/esau/` com os nomes `esau_01_hero.png` … `esau_30_textura_papel.png`; o que ainda não existir aparece com a arte oficial como provisória.
+
+## Combate condensado (`combate.html`, experimental)
+Cópia da Mesa do Mestre com a seção "Inimigos e ações" redesenhada para notebook: coluna fixa à esquerda (vez, iniciativa com PV, filtros) e ações em grade de 2–3 colunas à direita, com miniatura da arte da ação, números do ataque em destaque, botão "Dano total" e "Regra" recolhida. O `index.html` não foi alterado. Artes por ação: `img/esau/` (Esaú) e `img/acoes/<inimigo>_<acao>.jpg` (demais); sem arte, o cartão fica sem miniatura.

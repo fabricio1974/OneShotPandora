@@ -558,6 +558,44 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   .cc-th{width:56px;height:72px}
 }
 @media (min-width:1700px){.inm-bl,.inm-bl > details.inm-sec[open]{grid-template-columns:repeat(auto-fill,minmax(420px,1fr))}}
+
+/* ---- rodada 2 da revisão ---- */
+@media (min-width:1000px){
+  .inm-bl,.inm-bl > details.inm-sec[open]{align-items:start}
+  .inm-card.cc .cc-regra{margin-top:0}
+  .dk-rail .inm-vez{order:-3}.dk-rail > .lin2:first-child{order:-2}
+  #toast{left:auto;right:16px;transform:none;bottom:calc(var(--barra-h,0px) + 12px)}
+  .inm-total{background:#5a2a14;border-color:var(--terracota);color:#ffe1c4;font-weight:700}
+  /* cabeçalho: ficha e faixas (Não Hoje / Fase) na mesma linha */
+  .inm-hd{grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 12px}
+  .inm-hd > .inm-topo{grid-column:1/-1}
+  .inm-hd > .inm-ficha{grid-column:1;margin:0}
+  .inm-hd > .inm-ficha[open]{grid-column:1/-1}
+  .inm-hd > .inm-strip{grid-column:2;margin:0}
+  .inm-ficha summary{min-height:36px;padding:0 12px;border:1px solid var(--linha);border-radius:8px;color:#e6d7bd;font-weight:500;white-space:nowrap;width:max-content}
+  .inm-nh{padding:4px 10px}.inm-nh .inm-rot{display:none}.inm-nh.passou .inm-rot{display:inline}
+  .inm-cab .inm-pref{font-size:12px}
+}
+
+/* ---- seções recolhíveis: a grade vai no ::details-content (Chrome/Edge atuais) ---- */
+@media (min-width:1000px){
+  .inm-bl > details.inm-sec[open]{display:block}
+  .inm-bl > details.inm-sec::details-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:10px;align-items:start;margin-top:8px}
+  .inm-bl > details.inm-sec > summary{margin-bottom:0}
+}
+@media (min-width:1700px){.inm-bl > details.inm-sec::details-content{grid-template-columns:repeat(auto-fill,minmax(420px,1fr))}}
+
+/* ---- rodada 3 da revisão ---- */
+@media (min-width:1000px){
+  .dk-rail{max-height:calc(100svh - var(--barra-h,74px) - 52px);padding-bottom:12px;overscroll-behavior:contain}
+  .dk-rail .inm-faixa{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+  .dk-rail .inm-faixa div{margin:0;flex:1 1 100%}.dk-rail .inm-faixa button{min-height:32px;margin-left:auto}
+  .inm-res{font-size:15px;line-height:1.35}
+  .inm-res.multi{font-size:14px}
+  .dk-rail .inm-vez .inm-rot,.dk-rail .inm-vez button{white-space:nowrap}
+  .inm-av{white-space:nowrap}.inm-av.agora{white-space:normal;flex:1 1 100%}
+}
+@media (max-width:1180px) and (min-width:1000px){.dk{grid-template-columns:250px minmax(0,1fr);gap:16px}.inm-topo{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"arco id" "ctl ctl"}.inm-topo .inm-ini{justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -1360,7 +1398,7 @@ const INIMIGOS = [
   {"id":"facao","nome":"Facão","cat":"acao","tags":["dano"],"txt":"*Ataque Corpo a Corpo com Arma:* +13, alcance 1,5 m, um alvo. *Acerto:* **2d6 + 7 (14)** cortante mais **2d10 (11)** necrótico.","atk":{"k":"cc","b":13},"dano":[{"e":"2d6+7","m":14,"t":"cortante","k":"d"},{"e":"2d10","m":11,"t":"necrótico","k":"d"}]},
   {"id":"arpao-de-corrente","nome":"Arpão de Corrente","cat":"acao","sem":1,"tags":["dano","controle","movimento"],"txt":"*Ataque à Distância com Arma:* +13, alcance 30 m, um alvo. *Acerto:* **3d10 + 7 (23)** perfurante, e o alvo é **puxado 9 m** na direção de Esaú e fica **impedido**, sem salvaguarda. Para escapar: ação e teste de For ou Des (Atletismo ou Acrobacia) CD 21, ou destruir a corrente (CA 18, 30 PV, imune a psíquico e veneno).","atk":{"k":"dist","b":13},"teste":[["For ou Des (Atletismo ou Acrobacia)",21]],"dano":[{"e":"3d10+7","m":23,"t":"perfurante","k":"d"}]},
   {"id":"cao-de-corrente","nome":"Cão de Corrente","cat":"bonus","tags":["dano","controle"],"txt":"Um dos dois cães de caça de Esaú, feitos de corrente e sombra (não podem ser alvo), morde uma criatura a até 18 m dele. +13 para acertar. *Acerto:* **2d10 + 7 (18)** perfurante, e o alvo cai **derrubado**.","atk":{"k":"esp","b":13},"dano":[{"e":"2d10+7","m":18,"t":"perfurante","k":"d"}]},
-  {"id":"marca-do-cacador","nome":"Marca do Caçador","cat":"bonus","tags":["debuff","buff"],"txt":"Esaú marca uma criatura que consiga ver. Até marcar outra, os ataques dele contra ela causam **+2d8 (9)** e ignoram meia cobertura e três quartos de cobertura. A criatura marcada não se beneficia de invisibilidade contra ele.","dano":[{"e":"2d8","m":9,"t":"e","k":"d"}]},
+  {"id":"marca-do-cacador","nome":"Marca do Caçador","cat":"bonus","tags":["debuff","buff"],"txt":"Esaú marca uma criatura que consiga ver. Até marcar outra, os ataques dele contra ela causam **+2d8 (9)** e ignoram meia cobertura e três quartos de cobertura. A criatura marcada não se beneficia de invisibilidade contra ele.","dano":[{"e":"2d8","m":9,"t":"extra","k":"d"}]},
   {"id":"chuva-de-ferro","nome":"Chuva de Ferro","cat":"recarga","par":"Recarga 5–6","tags":["area","dano"],"txt":"Esaú dispara para o alto. Cilindro de 9 m de raio e 18 m de altura num ponto a até 90 m. Salvaguarda de Des CD 21. *Falha:* **10d10 (55)** perfurante. *Sucesso:* metade.","rec":5,"cd":[["Des",21]],"dano":[{"e":"10d10","m":55,"t":"perfurante","k":"d"}]},
   {"id":"prato-de-lentilhas","nome":"Prato de Lentilhas","cat":"recarga","par":"Recarga 6","tags":["debuff","controle"],"txt":"Uma criatura a até 18 m faz salvaguarda de Sab CD 21. *Falha:* Esaú **toma uma carta de poder** dela (o jogador escolhe qual). Até o fim do próximo turno de Esaú, o jogador não pode usá-la e **Esaú pode usá-la uma vez**.","rec":6,"cd":[["Sab",21]]},
   {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se Esaú falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
@@ -1732,7 +1770,7 @@ function cartaAcao(i, a, pref){
       onclick:mudar(() => { s.uso[kk] = d < us ? d : d + 1; }, escCard(k))}, el('i'))));
   if (u) { bols(k, u.n, usado, a.nome); uso.append(el('span',{class:'inm-rot'}, u.n + '/' + u.por + ' · restam ' + (u.n - usado))); }
   else if (a.rec) uso.append(el('button',{class:'inm-rec', onclick:mudar(() => { const r = rdN(6); s.rec[k] = {r, ok:r >= a.rec}; }, escCard(k))}, ico('dado'), 'Recarga ' + (a.rec === 6 ? '6' : '5–6')),
-    el('span',{class:'inm-rot ' + (gasta ? 'gasta' : 'pronta')}, gasta ? 'Gasta · d6 = ' + rec.r : rec ? 'Recarregou · d6 = ' + rec.r : 'Pronta'));
+    el('span',{class:'inm-rot ' + (gasta ? 'gasta' : 'pronta')}, gasta ? (rec.r ? 'Gasta · d6 = ' + rec.r : 'Gasta') : rec ? 'Recarregou · d6 = ' + rec.r : 'Pronta'));
   if (a.subs) a.subs.forEach(b => { const kk = k + ':' + b.id, us = s.uso[kk] || 0;
     uso.append(el('div',{class:'inm-sub'}, el('span',{class:'inm-rot'}, b.nome + (b.n ? ' · ' + b.n + '/dia' : ' · à vontade')), ...(b.n ? Array.from({length:b.n}, (_, d) => el('button',{class:'inm-bol' + (d < us ? ' on' : ''), 'aria-label':b.nome + ': uso ' + (d + 1) + ' de ' + b.n + (d < us ? ', gasto' : ', disponível'), 'aria-pressed':d < us ? 'true' : 'false', onclick:mudar(() => { s.uso[kk] = d < us ? d : d + 1; }, escCard(k))}, el('i'))) : []))); });
   if (a.cat === 'lend') uso.append(el('span',{class:'inm-rot'}, 'Custo ' + a.custo + ' · restam ' + (lendMax(i) - lendGasto(i)) + ' de ' + lendMax(i) + (ef.via && a.ref ? ' · usa ' + ef.via.nome : '')));
@@ -1760,6 +1798,9 @@ function cartaAcao(i, a, pref){
   (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk', onclick:() => { rolInm[k] = rolarMulti(i, mu); delete rolTot[k]; delete rolAp[k]; delete rolTip[k]; desenhar(['c:' + k]); }}, ico('dado'), mu.lab)));
   (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = rolarX(d.e); rolInm[k] = r.txt + ' ' + d.t; rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; delete rolCrit[k]; if (d.k === 'd') { const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; } desenhar(['c:' + k]); }},
     ico('dado'), (d.k === 'c' ? 'Curar ' : '') + fmtE(d.e) + ' ' + d.t)));
+  const comps = (ef.dano || []).filter(d => d.k === 'd');
+  if (comps.length > 1) lin.append(el('button',{class:'inm-dado inm-total', 'aria-label':'Rolar o dano completo de ' + a.nome + ' de uma vez', onclick:() => { let tot = 0; const ps = comps.map(d => { const r = rolarX(d.e); tot += r.t; return r.txt + ' ' + d.t; });
+    rolInm[k] = 'DANO TOTAL = ' + tot + '\n' + ps.join('\n'); rolTot[k] = tot; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; desenhar(['c:' + k]); }}, ico('dado'), 'Dano total'));
   if (rolCrit[k] && (ef.dano || []).some(d => d.k === 'd')) lin.append(el('button',{class:'inm-dado inm-crit', 'aria-label':'Dano crítico: rola os dados de dano dobrados', onclick:() => { let tot = 0; const ps = ef.dano.filter(d => d.k === 'd').map(d => { const r = rolarX(dobraE(d.e)); tot += r.t; return r.txt + ' ' + d.t; });
     rolInm[k] = 'CRÍTICO (dados dobrados) = ' + tot + '\n' + ps.join('\n'); rolTot[k] = tot; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; desenhar(['c:' + k]); }}, '🎲 Dano crítico (dados dobrados)'));
   // --- versão condensada (experimental): miniatura + linha de números + regra recolhida ---
@@ -1770,8 +1811,8 @@ function cartaAcao(i, a, pref){
     ...(ef.dano || []).map(d => el('span',{class:'cc-n ' + (d.k === 'c' ? 'cura' : 'dano'), title:d.t}, (d.k === 'c' ? '+' : '') + fmtE(d.e))),
     ...chips,
     ...a.tags.map(t => el('span',{class:'cc-tg', title:TAGS[t][1], style:'color:' + TAGS[t][2]}, ico(TAGS[t][0]))));
-  const th = el('img',{class:'cc-th', alt:'', loading:'lazy', src:arteAcao(i, a)});
-  th.addEventListener('error', () => { th.remove(); }, {once:true});
+  const srcArte = arteAcao(i, a), th = SEM_ARTE.has(srcArte) ? null : el('img',{class:'cc-th', alt:'', loading:'lazy', src:srcArte});
+  if (th) th.addEventListener('error', () => { SEM_ARTE.add(srcArte); th.remove(); }, {once:true});
   const regra = el('details',{class:'cc-regra'}, el('summary',{}, 'Regra'), el('p',{class:'inm-txt'}, ...mdLite(a.txt)));
   return el('div',{class:'inm-card cc t-' + a.cat + (esgotada ? ' esgotada' : '') + (a.cat === 'passiva' ? ' pass' : ''), 'data-k':k, 'data-pref':pref ? '1' : '0'},
     el('div',{class:'cc-top'}, th, el('div',{class:'cc-main'}, cab, resumo)),
@@ -1780,6 +1821,7 @@ function cartaAcao(i, a, pref){
     rolInm[k] ? el('div',{class:'inm-res multi', role:'status'}, rolInm[k]) : null, rolInm[k] ? aplicarUI(i, a, k) : null, ofer && ofer.k === k ? ofertaUI(i, a, k) : null,
     regra);
 }
+const SEM_ARTE = new Set();
 const ARTES_ESAU = {'flecha-de-ferro':'esau_03_flecha_de_ferro','facao':'esau_04_facao','arpao-de-corrente':'esau_05_arpao_de_corrente','cao-de-corrente':'esau_06_cao_de_corrente','marca-do-cacador':'esau_07_marca_do_cacador','chuva-de-ferro':'esau_08_chuva_de_ferro','prato-de-lentilhas':'esau_09_prato_de_lentilhas','laco':'esau_11_laco','rolar-para-tras':'esau_12_rolar_para_tras','l-sumir-no-capim':'esau_13_sumir_no_capim','l-corrente-do-chao':'esau_14_corrente_do_chao','l-matilha':'esau_15_matilha','a-grilhao':'esau_16_grilhao','a-o-cerco':'esau_17_o_cerco','a-ponte-de-ferro':'esau_18_ponte_de_ferro','direito-de-primogenitura':'esau_19_direito_de_primogenitura','instinto-do-cacador':'esau_20_instinto_do_cacador','a-correntes-brotam':'esau_10_campo_de_correntes','ataques-multiplos':'esau_01_hero'};
 function arteAcao(i, a){   // arte própria da ação: img/esau/<arquivo>.png (se ainda não existir, o onerror cai no retrato do inimigo)
   const f = i.id === 'esau' && ARTES_ESAU[a.id]; return f ? 'img/esau/' + f + '.png' : 'img/acoes/' + i.id + '_' + a.id + '.jpg';
@@ -1942,7 +1984,7 @@ function painelInimigos(){
       if (s.disp) ac = ac.filter(a => { if (inmEsgotada(i, a)) { ocultas++; return false; } return true; });
       grupos[c] = ac; });
     const tot = ORDEM_CAT.reduce((n, c) => n + grupos[c].length, 0); if (!tot && !ocultas && s.todos) return null;
-    const cards = c => grupos[c].map(a => cartaAcao(i, a));
+    const cards = c => grupos[c].map(a => cartaAcao(i, a, !!s.todos));
     const tit = c => grupos[c].length ? el('h5',{class:'cc-cat'}, TIPOS_ACAO[c] + (c === 'recarga' ? ' (rolar d6 no turno dele)' : '') + ' · ' + grupos[c].length) : null;
     const x = ambEst(i), lg = lendMax(i) - lendGasto(i);
     return el('section',{class:'inm-bl', 'data-e':i.id},
