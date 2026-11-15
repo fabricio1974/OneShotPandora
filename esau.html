@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0b0b">
+<title>Esaú, o Caçador — experimental</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0b0b; --fg:#efe8e2; --mut:#a59a94; --line:#ffffff1f;
+  --red:#c1121f; --red2:#e5383b; --bone:#e9dfd2; --card:#120f0fd9;
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:auto}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 var(--sans);-webkit-text-size-adjust:100%;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit}
+
+/* ---------- barra superior / progresso ---------- */
+.topo{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:max(10px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px));
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone);pointer-events:none;
+  background:linear-gradient(#0d0b0bcc,#0d0b0b00)}
+.topo a,.topo button{pointer-events:auto}
+.topo a{text-decoration:none;opacity:.85;padding:6px 2px}
+.topo .cont{font-variant-numeric:tabular-nums;opacity:.85}
+.prog{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--red);z-index:60}
+
+.trilho{position:fixed;right:max(14px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);z-index:50;display:none;flex-direction:column;gap:9px}
+.trilho a{display:block;width:9px;height:9px;border-radius:50%;background:#ffffff40;transition:.25s;position:relative}
+.trilho a.on{background:var(--red2);transform:scale(1.5)}
+.trilho a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  opacity:0;pointer-events:none;transition:.2s;background:#000a;padding:3px 8px;border-radius:3px}
+.trilho a:hover span,.trilho a:focus-visible span{opacity:1}
+@media (min-width:900px){.trilho{display:flex}}
+
+/* ---------- cenas ---------- */
+.cena{position:relative;height:175svh}
+.palco{position:sticky;top:0;height:100svh;overflow:hidden;background:#0a0808;isolation:isolate}
+.fundo{position:absolute;inset:-8%;width:116%;height:116%;object-fit:cover;filter:blur(30px) brightness(.38) saturate(.8);z-index:0}
+.arte{position:absolute;left:50%;top:0;height:100%;width:min(100%,56.25svh);transform:translateX(-50%);overflow:hidden;z-index:1;background:#141010}
+.arte>img.base{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 12%;will-change:transform}
+.arte.prov>img.base{object-position:var(--px,50%) var(--py,30%);transform-origin:var(--px,50%) var(--py,30%)}
+.arte::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,#0a0808 0%,#0a0808e6 22%,#0a080000 58%),linear-gradient(to bottom,#0a080099,#0a080000 18%)}
+.fx{position:absolute;left:0;top:-14%;width:100%;height:128%;object-fit:cover;pointer-events:none;opacity:0;transition:opacity .6s;will-change:transform}
+.fx.ok{opacity:.9;mix-blend-mode:screen}
+.fx.mul.ok{mix-blend-mode:multiply;opacity:1}
+.tag-prov{position:absolute;top:56px;left:12px;z-index:3;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#fff9;border:1px solid #ffffff30;border-radius:2px;padding:2px 7px;background:#0007}
+
+.card{position:absolute;z-index:4;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));
+  bottom:max(18px,env(safe-area-inset-bottom,0px));max-height:62svh;overflow:auto;overscroll-behavior:contain;
+  padding:16px 16px 14px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--red);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.cat{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--red2);font-weight:600}
+.card h2{margin:2px 0 8px;font:700 clamp(30px,8.5vw,44px)/1.02 var(--serif);color:var(--bone);text-wrap:balance}
+.card p{margin:0 0 10px;font-size:14.5px;color:#e4dad3;max-width:62ch}
+.card p b{color:#fff;font-weight:600}
+.card .len{font-size:13px;color:var(--mut);border-top:1px dashed var(--line);padding-top:8px;margin-top:6px}
+.card .len b{color:var(--bone)}
+.badge{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--red);color:#ffd9d6;padding:2px 8px;border-radius:2px;margin:0 6px 6px 0;background:#c1121f26}
+.rolls{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 6px}
+.rolls button{appearance:none;cursor:pointer;background:#1c1616;border:1px solid #ffffff2e;padding:8px 12px;min-height:40px;font-size:13px;font-weight:500;letter-spacing:.02em;border-radius:3px;transition:.15s}
+.rolls button:hover,.rolls button:focus-visible{border-color:var(--red2);background:#2a1414;outline:none}
+.rolls button:active{transform:scale(.97)}
+.rolls button.cr{border-color:#c1121f88}
+.rolls label{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);min-height:40px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 10px}
+.stats div{border:1px solid var(--line);padding:5px 6px;text-align:center;font-size:11px;color:var(--mut);letter-spacing:.06em;text-transform:uppercase}
+.stats b{display:block;font:700 20px/1.1 var(--serif);color:var(--bone);letter-spacing:0;text-transform:none}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13px;margin:0 0 10px}
+.kv dt{color:var(--mut)} .kv dd{margin:0;color:#e4dad3}
+
+@media (min-width:900px){
+  .palco{display:grid;grid-template-columns:1fr min(56.25svh,100%) 1fr;align-items:end}
+  .arte{position:relative;left:auto;top:auto;transform:none;grid-column:2;grid-row:1;width:100%}
+  .card{position:relative;left:auto;right:auto;bottom:auto;grid-row:1;max-height:78svh;margin:0 clamp(24px,4vw,64px) 9svh;max-width:470px;align-self:end;width:auto}
+  .cena.esq .card{grid-column:1;justify-self:end}
+  .cena.dir .card{grid-column:3;justify-self:start}
+  .card h2{font-size:clamp(38px,4.2vw,58px)}
+}
+
+/* hero */
+.hero .card{border-left:0;background:linear-gradient(to top,#0a0808f2,#0a080000);border:0;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:center;padding-bottom:6svh;max-height:none;overflow:visible}
+.hero .card h1{margin:0 0 6px;font:700 clamp(46px,14vw,92px)/.95 var(--serif);color:var(--bone);text-shadow:0 2px 30px #000;text-wrap:balance}
+.hero .card .sub{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red2);font-weight:600;margin-bottom:10px}
+.hero .card p{margin:0 auto 14px;color:#d8cdc6}
+.desce{display:inline-block;margin-top:6px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--mut);animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(7px)}}
+@media (min-width:900px){
+  .hero{--lado:1}
+  .hero .palco{grid-template-columns:1fr min(56.25svh,100%) 1fr}
+  .hero .card{grid-column:2;grid-row:1;margin:0;max-width:none;justify-self:stretch;position:relative;z-index:4;background:linear-gradient(to top,#0a0808f2,#0a080000)}
+  .hero .arte{grid-row:1}
+}
+
+.final{min-height:70svh;display:grid;place-items:center;padding:12svh 20px 14svh;text-align:center;background:radial-gradient(ellipse at 50% 100%,#3a0a0e 0%,#0d0b0b 62%)}
+.final h2{font:700 clamp(32px,8vw,60px)/1 var(--serif);margin:0 0 10px;color:var(--bone)}
+.final p{color:var(--mut);max-width:48ch;margin:0 auto 18px}
+.final a{display:inline-block;border:1px solid var(--red);padding:10px 18px;text-decoration:none;color:#ffd9d6;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+
+/* resultado dos dados */
+.dado{position:fixed;z-index:80;left:50%;transform:translate(-50%,16px);bottom:max(14px,env(safe-area-inset-bottom,0px));
+  width:min(92vw,420px);background:#0b0909f2;border:1px solid var(--red);padding:10px 14px;opacity:0;pointer-events:none;transition:.25s;font-size:14px}
+.dado.on{opacity:1;transform:translate(-50%,0)}
+.dado .l{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.dado .t{font:700 30px/1.1 var(--serif);color:#fff}
+.dado .t.crit{color:#ffd166}.dado .t.fail{color:var(--red2)}
+.dado .d{font-size:12px;color:var(--mut)}
+
+/* modo calmo (sem animação / sem GSAP) */
+.calmo .cena{height:100svh}
+.calmo .fx{transition:none}
+@media (prefers-reduced-motion:reduce){.desce{animation:none}.fx{transition:none}}
+.noscript{padding:80px 20px;text-align:center}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="topo"><a href="index.html">← Mesa do Mestre</a><span class="cont" id="cont"></span></div>
+<nav class="trilho" id="trilho" aria-label="Cenas"></nav>
+<main id="cenas"></main>
+<section class="final">
+  <div>
+    <h2>"Eu aceitei o seu pão."</h2>
+    <p>Página experimental do inimigo. As artes entram em <code>img/esau/</code> sem precisar mexer em código — o que ainda não chegou aparece com a arte oficial como provisória.</p>
+    <a href="index.html">Voltar à Mesa do Mestre</a>
+  </div>
+</section>
+<div class="dado" id="dado" role="status" aria-live="polite"></div>
+<noscript><div class="noscript">Esta página precisa de JavaScript.</div></noscript>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script defer>
+/* =====================================================================
+   Esaú, o Caçador — página de rolagem (experimental)
+   Imagens: img/esau/<arquivo>.png  ·  fallback: arte oficial (img/esau.jpg)
+   Números e regras copiados da ficha do Esaú (não alterar aqui).
+   ===================================================================== */
+const DIR = 'img/esau/';
+const OFICIAL = 'img/esau.jpg', ACENA = 'img/esau_acena.jpg';
+
+/* camadas de efeito (pretas → screen; branca → multiply). Só aparecem se o arquivo existir. */
+const FXF = {
+  petalas:'esau_21_petalas.png', respingos:'esau_22_respingos.png', correntes:'esau_23_correntes.png',
+  fumaca:'esau_24_fumaca.png', brasas:'esau_25_brasas.png', rastros:'esau_26_rastros_de_flecha.png',
+  rachaduras:'esau_27_rachaduras.png', neblina:'esau_28_neblina.png', capim:'esau_29_capim_frente.png'
+};
+
+/* crop = [x%, y%, zoom] só para a arte provisória (cada cena mira uma parte diferente da arte oficial) */
+const CENAS = [
+ { id:'hero', arq:'esau_01_hero.png', fallback:ACENA, cat:'O Cordeiro e o Lobo', nome:'Esaú, o Caçador', hero:true, fx:['petalas','respingos','correntes','capim'], crop:[50,20,1] },
+ { id:'retrato', arq:'esau_02_retrato.png', cat:'Ficha', nome:'Esaú, o Caçador', lado:'dir', fx:['neblina','petalas'], crop:[50,8,1.7], ficha:true },
+ { id:'flecha', arq:'esau_03_flecha_de_ferro.png', cat:'Ação', nome:'Flecha de Ferro', lado:'esq', fx:['rastros','petalas'], crop:[45,52,1.8],
+   txt:'<b>À distância, +13, 45/180 m.</b> 2d8 + 7 perfurante mais 2d10 necrótico. Contra criatura <b>impedida</b>, crítico com 19 ou 20.',
+   len:'<b>Lendária (1):</b> Disparo — um ataque de Flecha de Ferro.',
+   roll:[{t:'atk',b:13,crit:20,chk:'Alvo impedido (crítico 19–20)',crit2:19},{t:'dmg',e:'2d8+7+2d10',cr:1}] },
+ { id:'facao', arq:'esau_04_facao.png', cat:'Ação', nome:'Facão', lado:'dir', fx:['respingos','fumaca'], crop:[60,62,1.9],
+   txt:'<b>Corpo a corpo, +13, 1,5 m.</b> 2d6 + 7 cortante mais 2d10 necrótico.',
+   roll:[{t:'atk',b:13,crit:20},{t:'dmg',e:'2d6+7+2d10',cr:1}] },
+ { id:'arpao', arq:'esau_05_arpao_de_corrente.png', cat:'Ação', nome:'Arpão de Corrente', lado:'esq', fx:['correntes','fumaca'], crop:[35,66,1.9],
+   txt:'<b>À distância, +13, 30 m.</b> 3d10 + 7 perfurante. O alvo é <b>puxado 9 m</b> e fica <b>impedido</b>, sem salvaguarda. Escapar: ação e teste de For ou Des (Atletismo ou Acrobacia) CD 21, ou destruir a corrente (CA 18, 30 PV, imune a psíquico e veneno). Pode trocar um dos três Ataques Múltiplos.',
+   len:'<b>Lendária (2):</b> Arpão — um ataque de Arpão de Corrente.',
+   badges:['Escapar: For/Des CD 21'], roll:[{t:'atk',b:13,crit:20},{t:'dmg',e:'3d10+7',cr:1}] },
+ { id:'cao', arq:'esau_06_cao_de_corrente.png', cat:'Ação bônus', nome:'Cão de Corrente', lado:'dir', fx:['correntes','neblina'], crop:[72,84,1.8],
+   txt:'Um dos dois cães de caça de Esaú, feitos de corrente e sombra (<b>não podem ser alvo</b>), morde uma criatura a até 18 m dele. +13. 2d10 + 7 perfurante, e o alvo cai <b>derrubado</b>.',
+   roll:[{t:'atk',b:13,crit:20},{t:'dmg',e:'2d10+7',cr:1}] },
+ { id:'marca', arq:'esau_07_marca_do_cacador.png', cat:'Ação bônus', nome:'Marca do Caçador', lado:'esq', fx:['brasas','respingos'], crop:[50,16,2.2],
+   txt:'Esaú marca uma criatura que consiga ver. Até marcar outra, os ataques dele contra ela causam <b>+2d8</b> e ignoram meia cobertura e três quartos de cobertura. A criatura marcada não se beneficia de invisibilidade contra ele.',
+   roll:[{t:'dmg',e:'2d8',l:'Dano extra +2d8'}] },
+ { id:'chuva', arq:'esau_08_chuva_de_ferro.png', cat:'Recarga 5–6', nome:'Chuva de Ferro', lado:'dir', fx:['rastros','rachaduras'], crop:[40,36,1.7],
+   txt:'Esaú dispara para o alto. Cilindro de 9 m de raio e 18 m de altura num ponto a até 90 m. <b>Falha:</b> 10d10 perfurante. <b>Sucesso:</b> metade.',
+   badges:['Salvaguarda Des CD 21'], roll:[{t:'rech',min:5,l:'Recarga (d6)'},{t:'dmg',e:'10d10',l:'Dano (falha)',half:true}] },
+ { id:'prato', arq:'esau_09_prato_de_lentilhas.png', cat:'Recarga 6', nome:'Prato de Lentilhas', lado:'esq', fx:['petalas','fumaca'], crop:[58,48,1.6],
+   txt:'Uma criatura a até 18 m faz salvaguarda de Sab. <b>Falha:</b> Esaú <b>toma uma carta de poder</b> dela (o jogador escolhe qual). Até o fim do próximo turno de Esaú, o jogador não pode usá-la e <b>Esaú pode usá-la uma vez</b>.',
+   badges:['Salvaguarda Sab CD 21'], roll:[{t:'rech',min:6,l:'Recarga (d6)'}] },
+ { id:'campo', arq:'esau_10_campo_de_correntes.png', cat:'Ambiente · Contagem 20', nome:'O Campo de Correntes', lado:'dir', fx:['neblina','correntes','capim'], crop:[50,90,1.5],
+   txt:'O chão inteiro está cheio de correntes enterradas. Na contagem 20, escolha uma. <b>Correntes Brotam:</b> 1d4 + 1 correntes saem do chão em pontos à escolha do Mestre. Quem estiver a até 3 m de um ponto: <b>falha</b> = 2d8 contundente e fica impedido.',
+   len:'<b>Música:</b> canto difônico tuvano (Huun-Huur-Tu). <b>Falas:</b> “Eu aceitei o seu pão. Isso não muda o que eu vim fazer.” · “Corre. A corrente gosta de quem corre.”',
+   badges:['Salvaguarda Des CD 19'], roll:[{t:'pick',l:'Sortear ação de ambiente (d4)',o:['Correntes Brotam','Grilhão','O Cerco','Ponte de Ferro']},{t:'dmg',e:'1d4+1',l:'Quantas correntes'},{t:'dmg',e:'2d8',l:'Dano (falha)'}] },
+ { id:'laco', arq:'esau_11_laco.png', cat:'Reação', nome:'Laço', lado:'esq', fx:['correntes','respingos'], crop:[50,70,1.6],
+   txt:'<b>Gatilho:</b> uma criatura a até 18 m de Esaú se teletransporta, voa para longe dele ou sai do chão. Salvaguarda de For. <b>Falha:</b> uma corrente a prende antes que termine o movimento; ela fica <b>impedida</b> no ponto de partida e o teletransporte falha.',
+   len:'<b>Corrente Viva (passiva):</b> quem estiver impedido por corrente de Esaú não pode se teletransportar. <i>Porta Dimensional</i> falha e o uso não é gasto.',
+   badges:['Salvaguarda For CD 21'], roll:[] },
+ { id:'rolar', arq:'esau_12_rolar_para_tras.png', cat:'Reação', nome:'Rolar para Trás', lado:'dir', fx:['fumaca','petalas'], crop:[40,40,1.4],
+   txt:'<b>Gatilho:</b> um ataque que Esaú consegue ver o acerta. O dano daquele ataque é <b>reduzido à metade</b>.', roll:[] },
+ { id:'sumir', arq:'esau_13_sumir_no_capim.png', cat:'Lendária · custa 1', nome:'Sumir no Capim', lado:'esq', fx:['neblina','capim'], crop:[50,26,1.3],
+   txt:'Esaú se move até metade do deslocamento <b>sem provocar ataques de oportunidade</b> e faz a ação Esconder.',
+   len:'Esaú tem 3 ações lendárias, uma por vez, no fim do turno de outra criatura; recupera todas no início do próprio turno.', roll:[] },
+ { id:'correntechao', arq:'esau_14_corrente_do_chao.png', cat:'Lendária · custa 1', nome:'Corrente do Chão', lado:'dir', fx:['correntes','rachaduras'], crop:[50,92,1.7],
+   txt:'Uma corrente brota debaixo de uma criatura a até 30 m que esteja no chão ou voando a até 6 m de altura. <b>Falha:</b> 2d10 contundente e fica <b>impedida</b>.',
+   badges:['Salvaguarda Des CD 21'], roll:[{t:'dmg',e:'2d10',l:'Dano (falha)'}] },
+ { id:'matilha', arq:'esau_15_matilha.png', cat:'Lendária · custa 2', nome:'Matilha', lado:'esq', fx:['correntes','neblina'], crop:[78,88,1.8],
+   txt:'Os dois cães atacam com Cão de Corrente, em alvos diferentes ou no mesmo.',
+   roll:[{t:'atk',b:13,crit:20,l:'Cão A +13'},{t:'atk',b:13,crit:20,l:'Cão B +13'},{t:'dmg',e:'2d10+7',l:'Dano de uma mordida',cr:1}] },
+ { id:'grilhao', arq:'esau_16_grilhao.png', cat:'Ambiente · Contagem 20', nome:'Grilhão', lado:'dir', fx:['correntes','respingos'], crop:[35,78,1.7],
+   txt:'Toda criatura impedida por corrente sofre <b>4d6 contundente</b> quando as correntes apertam.', roll:[{t:'dmg',e:'4d6'}] },
+ { id:'cerco', arq:'esau_17_o_cerco.png', cat:'Ambiente · Contagem 20', nome:'O Cerco', lado:'esq', fx:['correntes','rachaduras','neblina'], crop:[50,60,1.3],
+   txt:'As correntes formam um anel de 18 m de raio em volta da arena até a próxima contagem 20. Quem atravessar o anel, andando ou voando a até 9 m de altura, faz salvaguarda de For. <b>Falha:</b> para no anel e sofre 3d10 contundente.',
+   badges:['Salvaguarda For CD 19'], roll:[{t:'dmg',e:'3d10',l:'Dano (falha)'}] },
+ { id:'ponte', arq:'esau_18_ponte_de_ferro.png', cat:'Ambiente · Contagem 20', nome:'Ponte de Ferro', lado:'dir', fx:['correntes','fumaca','capim'], crop:[60,62,1.4],
+   txt:'Correntes se erguem e formam uma <b>parede de 9 m de comprimento e 3 m de altura</b> (cobertura de três quartos). Esaú pode ficar em cima dela.', roll:[] },
+ { id:'primo', arq:'esau_19_direito_de_primogenitura.png', cat:'Passiva', nome:'Direito de Primogenitura', lado:'esq', fx:['petalas','brasas'], crop:[50,10,1.4],
+   txt:'Esaú <b>não pode ser surpreendido</b> e, na primeira rodada, <b>age antes de todos</b>, seja qual for a iniciativa.', roll:[] },
+ { id:'instinto', arq:'esau_20_instinto_do_cacador.png', cat:'Passiva', nome:'Instinto do Caçador', lado:'dir', fx:['neblina','petalas'], crop:[55,24,1.6],
+   txt:'Quando Esaú é alvo de um efeito que permite salvaguarda de Des para sofrer metade do dano, ele <b>não sofre dano se passar</b> e sofre metade se falhar.', roll:[] }
+];
+
+/* ---------- utilidades ---------- */
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v; else if (k === 'html') n.innerHTML = v;
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) if (c != null && c !== false) n.append(c.nodeType ? c : document.createTextNode(c));
+  return n;
+};
+const d = n => 1 + Math.floor(Math.random() * n);
+const pad = n => String(n).padStart(2, '0');
+
+/* ---------- dados ---------- */
+function rolaExpr(expr, crit) {
+  let total = 0; const partes = [];
+  for (const tk of expr.split('+')) {
+    const m = tk.match(/^(\d+)d(\d+)$/);
+    if (m) {
+      const q = +m[1] * (crit ? 2 : 1), r = Array.from({ length: q }, () => d(+m[2]));
+      total += r.reduce((a, b) => a + b, 0); partes.push(`${q}d${m[2]} [${r.join(',')}]`);
+    } else { total += +tk; partes.push(String(+tk)); }
+  }
+  return { total, txt: partes.join(' + ') };
+}
+let dadoT;
+function mostra(label, texto, sub, cls = '') {
+  const b = document.getElementById('dado');
+  b.replaceChildren(el('span', { class: 'l' }, label), el('span', { class: 't ' + cls }, texto), el('span', { class: 'd' }, sub || ''));
+  b.classList.add('on'); clearTimeout(dadoT); dadoT = setTimeout(() => b.classList.remove('on'), 7000);
+}
+function botao(c, nome, card) {
+  const rotulo = c.l;
+  if (c.t === 'atk') {
+    const chk = c.chk ? el('input', { type: 'checkbox' }) : null;
+    const btn = el('button', { type: 'button', onclick() {
+      const r = d(20), tot = r + c.b, lim = chk && chk.checked ? c.crit2 : c.crit;
+      const crit = r >= lim, falha = r === 1;
+      mostra(`${nome} · ${rotulo || 'ataque'}`, crit ? `CRÍTICO! ${tot}` : falha ? `1 natural` : String(tot), `d20 [${r}] + ${c.b}`, crit ? 'crit' : falha ? 'fail' : '');
+      card.dataset.crit = crit ? '1' : '';
+    } }, rotulo || `Ataque +${c.b}`);
+    return chk ? [btn, el('label', {}, chk, c.chk)] : [btn];
+  }
+  if (c.t === 'dmg') {
+    const mk = (crit) => el('button', { type: 'button', class: crit ? 'cr' : '', onclick() {
+      const r = rolaExpr(c.e, crit);
+      mostra(`${nome} · ${rotulo || 'dano'}${crit ? ' (crítico)' : ''}`, String(r.total), r.txt + (c.half ? ` · metade: ${Math.floor(r.total / 2)}` : ''));
+    } }, crit ? 'Crítico' : (rotulo || `Dano ${c.e}`));
+    return c.cr ? [mk(false), mk(true)] : [mk(false)];
+  }
+  if (c.t === 'rech') return [el('button', { type: 'button', onclick() {
+    const r = d(6), ok = r >= c.min;
+    mostra(`${nome} · recarga`, ok ? `Recarregou (${r})` : `Não recarregou (${r})`, `d6 [${r}] · precisa de ${c.min === 6 ? '6' : '5–6'}`, ok ? 'crit' : 'fail');
+  } }, rotulo)];
+  if (c.t === 'pick') return [el('button', { type: 'button', onclick() {
+    const r = d(4); mostra(`${nome} · ${rotulo}`, c.o[r - 1], `d4 [${r}]`);
+  } }, rotulo)];
+  return [];
+}
+
+/* ---------- montagem ---------- */
+const raiz = document.getElementById('cenas'), trilho = document.getElementById('trilho');
+const fichaHTML = () => `
+  <div class="stats">
+    <div><b>19</b>CA</div><div><b>420</b>PV</div><div><b>ND 20</b>25.000 XP</div>
+    <div><b>18</b>FOR +4</div><div><b>24</b>DES +7</div><div><b>20</b>CON +5</div>
+    <div><b>12</b>INT +1</div><div><b>20</b>SAB +5</div><div><b>10</b>CAR +0</div>
+  </div>
+  <dl class="kv">
+    <dt>Humano (Bellacord)</dt><dd>Médio, leal e mau · couro de lobo reforçado</dd>
+    <dt>Deslocamento</dt><dd>15 m, escalada 9 m</dd>
+    <dt>Salvaguardas</dt><dd>Des +13, Con +11, Sab +11</dd>
+    <dt>Perícias</dt><dd>Furtividade +13, Percepção +17, Sobrevivência +17</dd>
+    <dt>Sentidos</dt><dd>visão no escuro 36 m, Percepção passiva 27</dd>
+  </dl>
+  <p><b>Ataques Múltiplos.</b> Três ataques: qualquer combinação de Flecha de Ferro e Facão; pode trocar um deles por Arpão de Corrente.</p>
+  <p class="len" style="margin-top:0"><b>Resistência Lendária (3/dia):</b> se falhar numa salvaguarda, pode escolher passar.</p>`;
+
+function monta() {
+  CENAS.forEach((c, i) => {
+    const n = i + 1;
+    const arte = el('div', { class: 'arte' });
+    const fundo = el('img', { class: 'fundo', alt: '', 'aria-hidden': 'true' });
+    const base = el('img', { class: 'base', alt: c.nome + ' — arte', decoding: 'async', loading: i < 2 ? 'eager' : 'lazy' });
+    const fallback = () => {
+      arte.classList.add('prov'); const [x, y, z] = c.crop || [50, 30, 1];
+      arte.style.setProperty('--px', x + '%'); arte.style.setProperty('--py', y + '%');
+      base.style.scale = z; // zoom provisório só no recorte
+      base.src = fundo.src = c.fallback || OFICIAL;
+      if (!arte.querySelector('.tag-prov')) arte.append(el('span', { class: 'tag-prov' }, 'arte provisória'));
+    };
+    base.addEventListener('error', fallback, { once: true });
+    base.addEventListener('load', () => { fundo.src = base.src; sinc(); });
+    base.src = DIR + c.arq;
+    arte.append(base);
+    (c.fx || []).forEach(k => {
+      const im = el('img', { class: 'fx' + (k === 'capim' ? ' mul' : ''), alt: '', 'aria-hidden': 'true', loading: 'lazy', decoding: 'async', 'data-k': k });
+      im.addEventListener('load', () => { im.classList.add('ok'); sinc(); });
+      im.src = DIR + FXF[k]; arte.append(im);
+    });
+
+    let card;
+    if (c.hero) {
+      card = el('div', { class: 'card' },
+        el('div', { class: 'sub' }, 'O Cordeiro e o Lobo · ND 20'),
+        el('h1', {}, c.nome),
+        el('p', {}, 'Humano Médio (Bellacord), leal e mau. Caçador do Campo de Correntes.'),
+        el('span', { class: 'desce' }, 'role para baixo'));
+    } else {
+      card = el('div', { class: 'card' }, el('div', { class: 'cat' }, `${c.cat} · ${pad(n - 1)}`), el('h2', {}, c.nome));
+      if (c.ficha) card.insertAdjacentHTML('beforeend', fichaHTML());
+      if (c.txt) card.append(el('p', { html: c.txt }));
+      if (c.badges) c.badges.forEach(b => card.append(el('span', { class: 'badge' }, b)));
+      if (c.roll && c.roll.length) card.append(el('div', { class: 'rolls' }, c.roll.flatMap(r => botao(r, c.nome, card))));
+      if (c.len) card.append(el('div', { class: 'len', html: c.len }));
+    }
+    const cena = el('section', { class: 'cena ' + (c.hero ? 'hero ' : '') + (c.lado || ''), id: c.id, 'aria-label': c.nome }, el('div', { class: 'palco' }, fundo, arte, card));
+    raiz.append(cena);
+    trilho.append(el('a', { href: '#' + c.id, 'aria-label': c.nome }, el('span', {}, c.nome)));
+  });
+}
+monta();
+
+/* ---------- animação (GSAP + ScrollTrigger) ---------- */
+let tSinc;
+function sinc() { clearTimeout(tSinc); tSinc = setTimeout(() => window.ScrollTrigger && ScrollTrigger.refresh(), 250); }
+
+function anima() {
+  const root = document.documentElement;
+  if (!window.gsap || !window.ScrollTrigger) { root.classList.add('calmo'); return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  const cont = document.getElementById('cont'), pontos = [...trilho.children];
+  const total = CENAS.length;
+  const mm = gsap.matchMedia();
+  mm.add({
+    ok: '(prefers-reduced-motion: no-preference)',
+    reduz: '(prefers-reduced-motion: reduce)',
+    cel: '(max-width: 899px)'
+  }, ctx => {
+    const { ok, reduz, cel } = ctx.conditions;
+    if (reduz || !ok) { root.classList.add('calmo'); return () => root.classList.remove('calmo'); }
+    const k = cel ? 0.5 : 1;
+
+    gsap.to('#prog', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.2 } });
+
+    // ScrollTriggers criados de cima para baixo (ordem da página)
+    document.querySelectorAll('.cena').forEach((cena, i) => {
+      const base = cena.querySelector('img.base'), card = cena.querySelector('.card'), fxs = [...cena.querySelectorAll('img.fx')];
+      const tl = gsap.timeline({ defaults: { ease: 'none' },
+        scrollTrigger: { trigger: cena, start: 'top top', end: 'bottom bottom', scrub: 0.6,
+          onToggle: s => { if (s.isActive) { cont.textContent = `${pad(i + 1)} / ${pad(total)}`; pontos.forEach((p, j) => p.classList.toggle('on', j === i)); } } } });
+      tl.fromTo(base, { yPercent: -2 * k, scale: i === 0 ? 1.12 : 1.1 }, { yPercent: 2 * k, scale: 1, duration: 1 }, 0);
+      fxs.forEach((f, j) => {
+        const sp = (j + 1) * 7 * k * (f.dataset.k === 'capim' ? -1.6 : 1) * (j % 2 ? -1 : 1);
+        tl.fromTo(f, { yPercent: -sp }, { yPercent: sp, duration: 1 }, 0);
+      });
+      if (i === 0) tl.fromTo(card, { y: 0 }, { y: -60 * k, autoAlpha: 0, duration: 0.45 }, 0.55);
+      else tl.fromTo(card, { autoAlpha: 0, y: 46 }, { autoAlpha: 1, y: 0, duration: 0.16, ease: 'power2.out' }, 0.03);
+    });
+    sinc();
+    return () => { cont.textContent = ''; };
+  });
+  window.addEventListener('load', sinc);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sinc);
+}
+if (document.readyState === 'complete') anima(); else window.addEventListener('load', anima);
+</script>
+</body>
+</html>

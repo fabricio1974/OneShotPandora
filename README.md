@@ -72,3 +72,7 @@ Os dados do app foram gerados a partir do `.md` do bestiário; para conferir dep
 ## Visual (design Arco)
 
 A aba Mestre usa o desenho "Arco": terracota sobre preto (a paleta dos vasos gregos das artes), Inter Tight nos títulos, retrato do inimigo dentro de um arco de vaso, fileira de medalhões com a ordem da iniciativa e a barra de PV de cada um (toque num inimigo para abrir as ações dele), greca como divisória e ícones de traço no lugar dos emojis. As cores e fontes ficam em `:root` no início de `index.html`; os ícones, no objeto `ICO`.
+
+## Página experimental do Esaú (`esau.html`)
+Página de rolagem estilo "tela de personagem de jogo gacha" (GSAP + ScrollTrigger): uma cena por habilidade, parallax em camadas, dados clicáveis com os números da ficha. É um link à parte — não altera a Mesa do Mestre.
+As artes entram em `img/esau/` com os nomes `esau_01_hero.png` … `esau_30_textura_papel.png`; o que ainda não existir aparece com a arte oficial como provisória.
