@@ -567,12 +567,24 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .inm-res{animation:flashRes .5s ease-out}@keyframes flashRes{from{background:#5a4a1a}to{background:none}}
 @media (prefers-reduced-motion:reduce){.inm-res{animation:none}}
 
+/* ---- rodada 2 (5x) ---- */
+.inm-aba kbd{font:inherit;font-size:10.5px;opacity:.5;margin-left:2px;border:1px solid var(--linha);border-radius:4px;padding:0 4px}
+.inm-res{font-size:13px;color:#d9c9a6;line-height:1.45}
+.inm-res.multi::first-line{font-size:20px;font-weight:700;color:#ffd98a}
+.cc .inm-rot,.cc .inm-tipo,.cc .inm-cd,.cc .inm-sem,.cc-regra summary{font-size:13px}
+@media (min-width:1000px){
+  .cc .inm-atk{background:none;border-color:var(--terracota);color:#f3c9a0}
+  .cc .inm-atk:hover{background:var(--terracota);color:#1a0f08}
+  .dk-main.todos .inm-topo.mini{display:none}
+  .dk-rail{padding-bottom:20px}
+  .inm-abas{-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
+}
 /* ---- rodada 2 da revisão ---- */
 @media (min-width:1000px){
   .inm-bl,.inm-bl > details.inm-sec[open]{align-items:start}
   .inm-card.cc .cc-regra{margin-top:0}
   .dk-rail .inm-vez{order:-3}.dk-rail > .lin2:first-child{order:-2}
-  #toast{left:auto;right:16px;transform:none;bottom:auto;top:16px}
+  #toast{left:auto;right:16px;transform:none;top:auto;bottom:calc(var(--barra-h,74px) + 16px)}
   .inm-total{background:#5a2a14;border-color:var(--terracota);color:#ffe1c4;font-weight:700}
   /* cabeçalho: ficha e faixas (Não Hoje / Fase) na mesma linha */
   .inm-hd{grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 12px}
@@ -601,7 +613,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   .inm-res{font-size:15px;line-height:1.35}
   .inm-res.multi{font-size:14px}
   .dk-rail .inm-vez .inm-rot,.dk-rail .inm-vez button{white-space:nowrap}
-  .inm-av{white-space:nowrap}.inm-av.agora{white-space:normal;flex:1 1 100%}
+  .inm-av{white-space:nowrap}.inm-av.agora{white-space:normal;flex:0 1 auto}
 }
 @media (max-width:1180px) and (min-width:1000px){.dk{grid-template-columns:250px minmax(0,1fr);gap:16px}.inm-topo{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"arco id" "ctl ctl"}.inm-topo .inm-ini{justify-content:flex-start}}
 
@@ -1370,7 +1382,7 @@ function linhaIni(c, i){
       el('button',{class:'peq', 'aria-expanded':aberta ? 'true' : 'false', 'aria-label':'Condições de ' + c.n, onclick:() => { condAberta = aberta ? null : c.id; desenhar(['l:' + c.id]); if (!aberta) { const k = document.querySelector('.ini2[data-c="' + c.id + '"] .i-pk'); if (k) k.scrollIntoView({block:'nearest'}); } }, title:'Condições (Derrubado, Impedido, Atordoado…)'}, aberta ? '▴' : '＋'),
       el('button',{class:'peq perigo', 'aria-label':'Remover ' + c.n + ' da iniciativa', onclick:() => desf('Remover ' + c.n, () => { const k = m.ini.indexOf(c); m.ini.splice(k,1); if (m.turno > k || m.turno >= m.ini.length) m.turno = Math.max(0, Math.min(m.turno - (m.turno > k ? 1 : 0), m.ini.length - 1)); }, ['ini','inm'])}, '×')),
     el('div',{class:'i-r l2'}, quick(-10), quick(-5), quick(-1),
-      el('input',{class:'q dv', type:'text', inputmode:'text', enterkeyhint:'done', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', placeholder:'−N / +N', 'data-keep':'dv:' + c.id, 'aria-label':'PV de ' + c.n + ': digite 30 ou -30 para tirar, +15 para curar, e Enter',
+      el('input',{class:'q dv', type:'text', inputmode:'text', enterkeyhint:'done', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', placeholder:'dano · +cura', title:'30 ou -30 tira PV; +15 cura', 'data-keep':'dv:' + c.id, 'aria-label':'PV de ' + c.n + ': digite 30 ou -30 para tirar, +15 para curar, e Enter',
         onkeydown:ev => { if (ev.key === 'Enter') { ev.preventDefault(); aplicaCampo(c, ev.target); } }, oninput:ev => ev.target.classList.remove('inv')}),
       quick(1), quick(5)),
     bd.length ? el('div',{class:'i-r l3'}, ...bd) : null, pk);
@@ -1740,7 +1752,7 @@ function ctlIni(i){
   const m = E.m, c = m.ini.find(x => inmDeLinha(x) === i);
   if (c) return el('div',{class:'inm-ini'}, el('span',{class:'inm-na'}, 'Na iniciativa ✓'), el('b',{class:'pvn'}, 'PV ' + c.pv + (c.max ? '/' + c.max : '')),
     el('div',{class:'inm-pv'}, ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq ' + (d > 0 ? 'pos' : 'neg'), 'aria-label':(d > 0 ? 'Mais ' : 'Menos ') + Math.abs(d) + ' PV de ' + i.nome, onclick:() => desf((d > 0 ? '+' : '−') + Math.abs(d) + ' PV em ' + c.n, () => ajustaPV(c, d), ['l:' + c.id])}, (d > 0 ? '+' : '−') + Math.abs(d))),
-      el('input',{class:'q dv', type:'text', inputmode:'text', enterkeyhint:'done', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', placeholder:'−N / +N', 'data-keep':'dvb:' + c.id, 'aria-label':'PV de ' + i.nome + ': digite 30 ou -30 para tirar, +15 para curar, e Enter', onkeydown:ev => { if (ev.key === 'Enter') { ev.preventDefault(); aplicaCampo(c, ev.target); } }, oninput:ev => ev.target.classList.remove('inv')})));
+      el('input',{class:'q dv', type:'text', inputmode:'text', enterkeyhint:'done', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', placeholder:'dano · +cura', title:'30 ou -30 tira PV; +15 cura', 'data-keep':'dvb:' + c.id, 'aria-label':'PV de ' + i.nome + ': digite 30 ou -30 para tirar, +15 para curar, e Enter', onkeydown:ev => { if (ev.key === 'Enter') { ev.preventDefault(); aplicaCampo(c, ev.target); } }, oninput:ev => ev.target.classList.remove('inv')})));
   const r = rasc[i.id] || (rasc[i.id] = {});
   const pv = el('input',{type:'number', inputmode:'numeric', min:'1', placeholder:'PV', class:'q', 'aria-label':'PV de ' + i.nome + ' (ficha: ' + i.pv + ')', value:r.pv ?? i.pv, oninput:ev => { r.pv = ev.target.value; ev.target.classList.remove('inv'); }});
   const ini = el('input',{type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa de ' + i.nome, value:r.ini ?? '', oninput:ev => { r.ini = ev.target.value; }});
@@ -1783,7 +1795,7 @@ function cartaAcao(i, a, pref){
   const cab = el('div',{class:'inm-cab'}, pref ? el('span',{class:'inm-pref'}, i.nome + ' ·') : null, el('b',{class:'inm-nome'}, a.nome),
     a.sem ? el('span',{class:'inm-sem'}, '◆ sem salvaguarda') : null,
     el('span',{class:'inm-tipo t-' + a.cat}, TIPOS_ACAO[a.cat] + (a.rec ? ' ' + (a.rec === 6 ? '6' : '5–6') : '') + (a.custo ? ' · custa ' + a.custo : '') + (mostraPar ? ' · ' + a.par : '')),
-    el('button',{class:'inm-fav', 'aria-pressed':fav ? 'true' : 'false', 'aria-label':(fav ? 'Tirar das favoritas: ' : 'Favoritar: ') + a.nome, onclick:mudar(() => { if (fav) delete s.fav[k]; else s.fav[k] = 1; }, ['inm'])}, ico('estrela', fav)));
+    el('button',{class:'inm-fav', 'aria-pressed':fav ? 'true' : 'false', 'aria-label':(fav ? 'Tirar das favoritas: ' : 'Favoritar: ') + a.nome, onclick:mudar(() => { if (fav) delete s.fav[k]; else s.fav[k] = 1; setTimeout(() => { const c = document.querySelector('.dk-main .inm-card[data-k="' + k + '"]'); c && c.scrollIntoView({block:'center'}); }, 30); }, ['inm'])}, ico('estrela', fav)));
   const etq = el('div',{class:'inm-tags'}, ...a.tags.map(t => el('span',{class:'inm-tag', style:'--tc:' + TAGS[t][2]}, ico(TAGS[t][0]), TAGS[t][1])));
   const chips = [...(ef.cd || []).map(c => el('span',{class:'inm-cd'}, c[0] + ' CD ' + c[1])), ...(ef.teste || []).map(c => el('span',{class:'inm-cd te'}, 'Teste ' + c[0] + ' CD ' + c[1]))];
   const uso = el('div',{class:'inm-uso'});
@@ -1807,10 +1819,10 @@ function cartaAcao(i, a, pref){
     const ok = a.custo <= lendMax(i) - lendGasto(i);
     lin.append(el('button',{class:'inm-usar', 'aria-disabled':ok ? 'false' : 'true', 'aria-label':'Usar ' + a.nome + ' (custa ' + a.custo + ')', onclick:() => { if (!ok) { toast('Sem ações lendárias suficientes (custa ' + a.custo + ').'); return; }
       desf('Lendária: ' + a.nome, () => { s.lend[i.id] = lendGasto(i) + a.custo; ofer = ACAO_COND[k] ? {k} : null; s.ult.unshift({t:i.nome + ' (lendária): ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); }, ['inm']); }}, 'Usar (−' + a.custo + ')'));
-  } else if (u || a.rec || a.cat === 'reacao' || ACAO_COND[k]) {
+  } else if (u || a.rec || ACAO_COND[k]) {
     lin.append(el('button',{class:'inm-usar', disabled:gasta, 'aria-label':'Usar ' + a.nome, onclick:() => desf('Usar ' + a.nome, () => {
       if (u && usado < u.n) s.uso[k] = usado + 1;
-      if (a.rec) s.rec[k] = {r:rec ? rec.r : 0, ok:false};
+      if (a.rec) s.rec[k] = {r:0, ok:false};
       ofer = ACAO_COND[k] ? {k} : null;
       s.ult.unshift({t:i.nome + ': ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); }, escCard(k))}, 'Usar'));
   }
@@ -1829,7 +1841,7 @@ function cartaAcao(i, a, pref){
   const resumo = el('div',{class:'cc-res'},
     alc ? el('span',{class:'cc-n', title:'Alcance'}, alc) : null,
     ...chips,
-    ...a.tags.map(t => el('span',{class:'cc-tg', title:TAGS[t][1], style:'color:' + TAGS[t][2]}, ico(TAGS[t][0]))));
+    ...a.tags.map(t => el('span',{class:'cc-tg', title:TAGS[t][1], 'aria-label':TAGS[t][1], style:'color:' + TAGS[t][2]}, ico(TAGS[t][0]))));
   const srcArte = arteAcao(i, a), im = SEM_ARTE.has(srcArte) ? null : el('img',{class:'cc-art', alt:'', loading:'lazy', src:srcArte});
   if (im) im.addEventListener('error', () => { SEM_ARTE.add(srcArte); im.remove(); }, {once:true});
   const th = el('div',{class:'cc-th', 'aria-hidden':'true'}, gi(giDe(i, a)), im);
@@ -1943,7 +1955,7 @@ const ultUI = () => { const s = E.m.inm; return s.ult.length ? el('div',{class:'
 function topoUI(i){
   const m = E.m, cur = m.ini[m.turno], curI = cur && inmDeLinha(cur);
   const av = AVISOS(i).map(x => el('span',{class:'inm-av' + (x.agora ? ' agora' : '')}, x.t));
-  return el('div',{class:'inm-topo' + (curI === i ? ' vez' : '') + (m.inm.todos ? ' mini' : '')}, el('div',{class:'arco'}, el('img',{src:i.img, alt:''})), el('div',{class:'inm-id'}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, curI === i ? el('span',{class:'inm-av agora'}, 'Vez de ' + i.nome) : null, el('span',{class:'inm-av'}, 'CA ' + caDe(i) + ' · PV ' + i.pv), ...av)), ctlIni(i));
+  return el('div',{class:'inm-topo' + (curI === i ? ' vez' : '') + (m.inm.todos ? ' mini' : '')}, el('div',{class:'arco'}, el('img',{src:i.img, alt:''})), el('div',{class:'inm-id'}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, el('span',{class:'inm-av'}, 'CA ' + caDe(i) + ' · PV ' + i.pv), ...av)), ctlIni(i));
 }
 function stripUI(i){
   const m = E.m, s = m.inm, strip = [];
@@ -1988,9 +2000,9 @@ function painelInimigos(){
     if ((!s.tag || a.tags.includes(s.tag)) && (!s.sem || a.sem)) contaP[a.cat] = (contaP[a.cat]||0) + 1;
     if ((!s.tag || a.tags.includes(s.tag)) && (!s.tipo || a.cat === s.tipo) && a.sem) contaS++; }));
   const abas = el('div',{class:'inm-abas', id:'inm_abas', role:'tablist', onscroll:ev => { inmSL = ev.target.scrollLeft; }},
-    el('button',{class:'inm-aba', role:'tab', 'aria-selected':s.todos ? 'true' : 'false', onclick:mudar(() => { s.todos = true; })}, el('span',{class:'inm-todos'}, ico('lista')), 'Todos'),
+    el('button',{class:'inm-aba', role:'tab', 'aria-selected':s.todos ? 'true' : 'false', onclick:mudar(() => { s.todos = true; })}, el('span',{class:'inm-todos'}, ico('lista')), 'Todos', el('kbd',{}, '0')),
     ...INIMIGOS.map(i => el('button',{class:'inm-aba', role:'tab', 'aria-selected':!s.todos && i.id === atual.id ? 'true' : 'false', onclick:mudar(() => { s.todos = false; s.sel = i.id; })},
-      el('img',{src:i.img, alt:''}), i.nome)));
+      el('img',{src:i.img, alt:''}), i.nome, el('kbd',{}, String(INIMIGOS.indexOf(i) + 1)))));
   const chipT = Object.keys(TAGS).filter(t => contaT[t] || s.tag === t).map(t => el('button',{class:'inm-f', style:'--tc:' + TAGS[t][2], 'aria-pressed':s.tag === t ? 'true' : 'false', onclick:mudar(() => { s.tag = s.tag === t ? '' : t; })}, ico(TAGS[t][0]), TAGS[t][1] + ' ', el('small',{}, contaT[t] || 0)));
   const chipP = ORDEM_CAT.filter(t => contaP[t] || s.tipo === t).map(t => el('button',{class:'inm-f tp', 'aria-pressed':s.tipo === t ? 'true' : 'false', onclick:mudar(() => { s.tipo = s.tipo === t ? '' : t; })}, TIPOS_ACAO[t] + ' ', el('small',{}, contaP[t] || 0)));
   const cur = m.ini[m.turno], curI = cur && inmDeLinha(cur);
@@ -2359,6 +2371,7 @@ document.addEventListener('keydown', ev => {
   const k = ev.key.toLowerCase();
   if (k === ' ' && ev.target.tagName === 'BUTTON') return;
   if (k === 'escape') { parar(0); ambParar(); }
+  else if (k === '0' && modo === 'mes' && document.querySelector('.dk')) { E.m.inm.todos = true; desenhar(['inm']); }
   else if (/^[1-9]$/.test(k) && modo === 'mes' && INIMIGOS[+k - 1] && document.querySelector('.dk')) { E.m.inm.todos = false; E.m.inm.sel = INIMIGOS[+k - 1].id; desenhar(['inm']); }
   else if (k === 'b') parar(E.fadeSaida*1000);
   else if (k === 'v') { if (!ev.repeat) { if (voz) { vozIni = 0; alternarVoz(false); } else { vozIni = Date.now(); alternarVoz(true); } } }
