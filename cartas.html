@@ -92,7 +92,6 @@ select.peq{min-height:34px;padding:4px 8px;font-size:14px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#2a1a10;border:1px solid var(--terra);border-radius:999px;padding:8px 16px;z-index:60;max-width:90vw;text-align:center;font-size:14px}
 .dica{color:var(--apagado);font-size:14px;margin:8px 0 0}
 
-body{padding-block:14px calc(24px + env(safe-area-inset-bottom,0px))}
 .topo{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .cont{color:var(--apagado);font-size:15px}.cont b{color:var(--terra2);font-size:20px}
 .abas{display:flex;gap:6px;margin:6px 0 10px}
@@ -106,8 +105,25 @@ body{padding-block:14px calc(24px + env(safe-area-inset-bottom,0px))}
 .slot .cf{box-shadow:0 2px 10px #000a;pointer-events:none}
 .slot:hover .cf{box-shadow:0 0 0 2px var(--terra),0 2px 10px #000a}
 .slot.fechada .cf{filter:brightness(.92)}
-.dono{position:absolute;left:6px;right:6px;bottom:6px;text-align:center;font:700 12px/1 Inter,sans-serif;letter-spacing:.04em;padding:6px 4px;border-radius:999px;color:#1a0c04;background:hsl(var(--h,25) 70% 62%);box-shadow:0 1px 6px #000c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dono.sem{background:#2a1a10;color:var(--terra2);border:1px dashed var(--terra)}
+.bola{position:absolute;right:7px;bottom:7px;width:26px;height:26px;border-radius:50%;background:hsl(var(--h) 75% 58%);border:3px solid #0d0a08;box-shadow:0 0 0 2px hsl(var(--h) 75% 58%),0 2px 6px #000c}
+.bola.sem{background:#0d0a08;box-shadow:0 0 0 2px var(--terra);border:2px dashed var(--terra2)}
+.leg{position:fixed;right:max(10px,env(safe-area-inset-right,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.leg .bal{background:#1d140e;border:1px solid var(--terra);border-radius:14px;padding:8px 10px;box-shadow:0 6px 18px #000d;display:grid;grid-template-columns:1fr 1fr;gap:5px 12px}
+.leg .bal div{display:flex;align-items:center;gap:6px;font-size:13px;line-height:1.1}
+.leg .bal i{width:13px;height:13px;border-radius:50%;flex:none;background:hsl(var(--h) 75% 58%)}
+.leg .bal .sd{grid-column:1/-1}.leg .bal .sd i{background:#0d0a08;border:2px dashed var(--terra2)}
+.leg>button{border-radius:999px;min-height:40px;padding:4px 12px;font-size:14px;background:#1d140e;border-color:var(--terra);font-weight:600;box-shadow:0 4px 14px #000c}
+.leg[hidden]{display:none}
+.eu{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
+.ferr{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
+.ferr input[type=range]{flex:1;min-width:120px;accent-color:var(--terra)}
+.bolinha{display:inline-block;width:12px;height:12px;border-radius:50%;background:hsl(var(--h) 75% 58%);margin-right:6px;vertical-align:-1px}
+.mo .corpo.ver{align-items:flex-start}.mo .zoomc{width:calc(min(88vw,420px) * var(--z,1));max-width:none;flex:none;margin-inline:auto}.mo .nav2{padding:8px max(10px,env(safe-area-inset-left,0px));background:#120d0a;border-bottom:1px solid var(--linha)}
+.mo .zoomc .cf{box-shadow:0 2px 14px #000c}
+.mo .nav2{display:flex;gap:8px;align-items:center;justify-content:center}
+.mo .nav2 input[type=range]{flex:1;max-width:220px;min-width:0;accent-color:var(--terra)}
+body{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+.toast{bottom:auto!important;top:calc(12px + env(safe-area-inset-top,0px))}
 .mo .corpo{display:flex;flex-direction:column;align-items:center;gap:14px}
 .mo .virar{width:min(86vw,400px,calc((100dvh - 230px) * 720 / 964));cursor:pointer}
 .mo .dica{text-align:center;margin:0}
@@ -132,6 +148,7 @@ button:active,.chip:active{filter:brightness(1.3);transform:scale(.97)}
 <div class="abas" id="abas"></div>
 <section id="sMesa"></section>
 <section id="sMaos" hidden></section>
+<div class="leg" id="leg"></div>
 <div class="reiniciar"><button class="peq perigo" id="zera" type="button">Desvirar tudo e recomeçar</button></div>
 </main>
 <div class="mo" id="mo" hidden role="dialog" aria-modal="true" aria-label="Carta"></div>
@@ -176,7 +193,7 @@ function cartaCostas(code){
 }
 
 const CHAVE = 'cartas-mesa-v1';
-let S = {v:{}, o:{}, aba:'mesa', deck:'todas', mao:JOGADORES[0]};
+let S = {v:{}, o:{}, aba:'mesa', deck:'todas', eu:'', tam:2};
 try { const j = JSON.parse(localStorage.getItem(CHAVE) || 'null'); if (j && j.v && j.o) S = Object.assign(S, j); } catch (e) {}
 let avisou = false;
 const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(S)); } catch (e) { if (!avisou) { avisou = true; dizer('Não consegui guardar neste navegador: as escolhas valem só até fechar a página.'); } } };
@@ -187,64 +204,90 @@ const donoDe = code => S.o[code] || '';
 const contaDono = n => LISTA.filter(c => S.v[c.c] && S.o[c.c] === n).length;
 const semDono = () => LISTA.filter(c => S.v[c.c] && !S.o[c.c]);
 
-function slot(c){
+const corDe = n => 'hsl(' + matiz(n) + ' 75% 58%)';
+let legAberta = true;
+function legenda(){
+  const L = $('leg'); L.hidden = S.aba !== 'mesa';
+  const bt = el('button', {type:'button', 'aria-expanded':String(legAberta), onclick:() => { legAberta = !legAberta; legenda(); }}, legAberta ? 'Fechar legenda' : 'Legenda');
+  const bal = legAberta ? el('div', {class:'bal', role:'list', 'aria-label':'Cor de cada jogador'}, ...JOGADORES.map(n => { const i = el('i'); i.style.setProperty('--h', matiz(n)); const d = el('div', {role:'listitem'}, i, n); return d; }), el('div', {class:'sd', role:'listitem'}, el('i'), 'Virada, sem dono')) : null;
+  L.replaceChildren(...(bal ? [bal, bt] : [bt]));
+}
+function slot(c, aoToque){
   const aberta = !!S.v[c.c], d = donoDe(c.c);
-  const b = el('button', {class:'slot' + (aberta ? '' : ' fechada'), type:'button', 'aria-label':aberta ? c.n + (d ? ', de ' + d : ', sem dono') : 'Carta ' + c.c + ', virada para baixo', onclick:() => abrir(c.c)},
+  const b = el('button', {class:'slot' + (aberta ? '' : ' fechada'), type:'button', 'aria-label':aberta ? c.n + (d ? ', de ' + d : ', sem dono') : 'Carta ' + c.c + ', virada para baixo', onclick:aoToque || (() => abrir(c.c))},
     aberta ? cartaFace(c) : cartaCostas(c.c));
-  if (aberta) { const t = el('div', {class:'dono' + (d ? '' : ' sem')}, d || 'sem dono'); if (d) t.style.setProperty('--h', matiz(d)); b.append(t); }
+  if (aberta && !aoToque) { const t = el('div', {class:'bola' + (d ? '' : ' sem'), 'aria-hidden':'true'}); if (d) t.style.setProperty('--h', matiz(d)); b.append(t); }
   return b;
 }
 function desMesa(){
-  const r = reveladas().length;
   const chips = [['todas','Todas', LISTA.length], ...ORDEM_DECK.map(k => [k, NOMES_DECK[k], LISTA.filter(c => deck(c) === k).length])];
   const lista = LISTA.filter(c => S.deck === 'todas' || deck(c) === S.deck);
   $('sMesa').replaceChildren(
     el('div', {class:'chips', role:'group', 'aria-label':'Baralho'}, ...chips.map(([k, t, n]) => el('button', {class:'chip', 'aria-pressed':String(S.deck === k), onclick:() => { S.deck = k; salvar(); desMesa(); }}, t, el('small', {}, n)))),
-    el('div', {class:'grade'}, ...lista.map(slot)),
-    el('p', {class:'dica'}, 'Toque numa carta para virar. Depois escolha quem fica com ela.'));
+    el('div', {class:'grade'}, ...lista.map(c => slot(c))),
+    el('p', {class:'dica'}, 'Toque numa carta para virar e escolher o dono. A bolinha mostra de quem é.'));
 }
+const minhas = () => LISTA.filter(c => S.v[c.c] && S.o[c.c] === S.eu);
 function desMaos(){
-  const sd = semDono(), mostra = S.mao === '·' ? sd : LISTA.filter(c => S.v[c.c] && S.o[c.c] === S.mao);
+  const eu = S.eu, mostra = eu ? minhas() : [];
+  const sz = Math.min(3, Math.max(1, S.tam || 2)), larg = [100, 150, 220][sz - 1];
+  const corpo = !eu ? el('div', {class:'vazio'}, 'Escolha acima quem é você.')
+    : !mostra.length ? el('div', {class:'vazio'}, 'Você ainda não tem cartas. Na aba Mesa, vire uma carta e escolha o seu nome.')
+    : el('div', {class:'grade', style:'grid-template-columns:repeat(auto-fill,minmax(' + larg + 'px,1fr))'}, ...mostra.map((c, i) => slot(c, () => ver(i))));
   $('sMaos').replaceChildren(
-    el('div', {class:'chips', role:'group', 'aria-label':'Jogador'}, ...JOGADORES.map(n => el('button', {class:'chip', 'aria-pressed':String(S.mao === n), onclick:() => { S.mao = n; salvar(); desMaos(); }}, n, el('small', {}, contaDono(n)))),
-      sd.length ? el('button', {class:'chip', 'aria-pressed':String(S.mao === '·'), onclick:() => { S.mao = '·'; salvar(); desMaos(); }}, 'Sem dono', el('small', {}, sd.length)) : null),
-    el('div', {class:'maoh'}, el('h2', {}, S.mao === '·' ? 'Sem dono' : S.mao), el('span', {class:'cont'}, mostra.length + (mostra.length === 1 ? ' carta' : ' cartas'))),
-    mostra.length ? el('div', {class:'grade'}, ...mostra.map(slot)) : el('div', {class:'vazio'}, 'Nenhuma carta aqui ainda.'));
+    el('div', {class:'eu', role:'group', 'aria-label':'Quem é você'}, ...JOGADORES.map(n => { const b = el('button', {class:'chip', 'aria-pressed':String(eu === n), onclick:() => { S.eu = n; salvar(); desMaos(); }}); const i = el('span', {class:'bolinha'}); i.style.setProperty('--h', matiz(n)); b.append(i, n, el('small', {}, contaDono(n))); return b; })),
+    eu ? el('div', {class:'ferr'}, el('span', {class:'cont'}, 'Tamanho'), el('input', {type:'range', min:1, max:3, step:1, value:sz, 'aria-label':'Tamanho das cartas', oninput:e => { S.tam = +e.target.value; salvar(); desMaos(); }}), el('span', {class:'cont'}, mostra.length + (mostra.length === 1 ? ' carta' : ' cartas'))) : null,
+    corpo,
+    mostra.length ? el('p', {class:'dica'}, 'Toque numa carta para ampliar, dar zoom e passar de uma para outra.') : null);
 }
-const ABAS = [['mesa','Mesa','sMesa'], ['maos','Mãos','sMaos']];
+const ABAS = [['mesa','Mesa','sMesa'], ['maos','Minha mão','sMaos']];
 function pinta(){
-  const r = reveladas().length;
-  $('cont').replaceChildren(el('b', {}, r), ' de ' + LISTA.length + ' viradas');
-  $('abas').replaceChildren(...ABAS.map(([k, t]) => el('button', {'aria-pressed':String(S.aba === k), onclick:() => { S.aba = k; salvar(); pinta(); }}, t)));
+  $('cont').replaceChildren(el('b', {}, reveladas().length), ' de ' + LISTA.length + ' viradas');
+  $('abas').replaceChildren(...ABAS.map(([k, t]) => el('button', {'aria-pressed':String(S.aba === k), onclick:() => { S.aba = k; salvar(); pinta(); window.scrollTo(0, 0); }}, t)));
   for (const [k, , id] of ABAS) $(id).hidden = S.aba !== k;
+  legenda();
   if (S.aba === 'mesa') desMesa(); else desMaos();
 }
 
-/* ---- janela da carta ---- */
-let atual = '', cb = null;
-function abrir(code){ atual = code; $('mo').hidden = false; document.body.style.overflow = 'hidden'; pintaMo(true); $('mo').querySelector('.virar') && $('mo').querySelector('.virar').focus(); }
+/* ---- janela: virar e escolher o dono (Mesa) ---- */
+let atual = '';
+function abre(){ $('mo').hidden = false; document.body.style.overflow = 'hidden'; }
+function abrir(code){ atual = code; modo = 'mesa'; abre(); pintaMo(); const v = $('mo').querySelector('.virar'); v && v.focus(); }
 function fecha(){ $('mo').hidden = true; document.body.style.overflow = ''; pinta(); }
-function vira(){
-  if (S.v[atual]) return;
-  S.v[atual] = 1; salvar(); pintaMo(false);
-}
-function pintaMo(inicial){
+let modo = 'mesa';
+function vira(){ if (S.v[atual]) return; S.v[atual] = 1; salvar(); pintaMo(); }
+function pintaMo(){
   const c = porCod(atual), aberta = !!S.v[atual], d = donoDe(atual);
   const frente = cartaFace(c); frente.classList.add('frente');
   const v = el('div', {class:'virar' + (aberta ? ' v' : ''), tabindex:'0', role:'button', 'aria-label':aberta ? c.n : 'Virar a carta ' + atual, onclick:vira, onkeydown:e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vira(); } }},
     el('div', {class:'in'}, cartaCostas(atual), frente));
   const corpo = el('div', {class:'corpo'}, v,
-    aberta ? el('p', {class:'dica'}, d ? 'Com ' + d + '. Toque noutro nome para trocar.' : 'Quem fica com ela?') : el('p', {class:'dica'}, 'Toque na carta para virar.'),
+    el('p', {class:'dica'}, !aberta ? 'Toque na carta para virar.' : d ? 'Com ' + d + '. Toque noutro nome para trocar.' : 'Quem fica com ela?'),
     aberta ? el('div', {class:'donos', role:'group', 'aria-label':'Dono da carta'}, ...JOGADORES.map(n => { const b = el('button', {type:'button', 'aria-pressed':String(d === n), onclick:() => dono(n)}, n); b.style.setProperty('--h', matiz(n)); return b; })) : null,
     aberta ? el('div', {class:'sec'}, d ? el('button', {class:'peq', onclick:() => dono('')}, 'Tirar o dono') : null, el('button', {class:'peq perigo', onclick:desvira}, 'Desvirar e devolver ao monte')) : null);
   $('mo').replaceChildren(el('div', {class:'topo2'}, el('div', {class:'esp'}, aberta ? c.n : 'Carta ' + atual), el('button', {class:'peq', onclick:fecha}, 'Fechar')), corpo);
 }
-function dono(n){ if (n) S.o[atual] = n; else delete S.o[atual]; salvar(); if (n) { dizer(porCod(atual).n + ' ficou com ' + n); fecha(); } else pintaMo(false); }
+function dono(n){ if (n) S.o[atual] = n; else delete S.o[atual]; salvar(); if (n) { dizer(porCod(atual).n + ' ficou com ' + n); fecha(); } else pintaMo(); }
 function desvira(){ delete S.v[atual]; delete S.o[atual]; salvar(); fecha(); dizer('Carta devolvida ao monte'); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('mo').hidden) fecha(); });
+
+/* ---- janela: ver a própria mão com zoom (Minha mão) ---- */
+let vi = 0, zm = 1;
+function ver(i){ vi = i; zm = 1; modo = 'ver'; abre(); pintaVer(); }
+function pintaVer(){
+  const l = minhas(); if (!l.length) { fecha(); return; }
+  vi = (vi + l.length) % l.length; const c = l[vi];
+  const z = el('div', {class:'zoomc'}, cartaFace(c)); z.style.setProperty('--z', zm);
+  const passo = d => () => { vi += d; zm = 1; pintaVer(); };
+  const muda = d => () => { zm = Math.min(2.6, Math.max(.6, +(zm + d).toFixed(2))); pintaVer(); };
+  $('mo').replaceChildren(
+    el('div', {class:'topo2'}, el('div', {class:'esp'}, c.n), el('span', {class:'cont'}, (vi + 1) + ' / ' + l.length), el('button', {class:'peq', onclick:fecha}, 'Fechar')),
+    el('div', {class:'nav2'}, el('button', {class:'peq', 'aria-label':'Carta anterior', onclick:passo(-1)}, '‹'), el('button', {class:'peq', 'aria-label':'Diminuir', onclick:muda(-.3)}, '−'), el('input', {type:'range', min:.6, max:2.6, step:.1, value:zm, 'aria-label':'Zoom', oninput:e => { zm = +e.target.value; z.style.setProperty('--z', zm); }}), el('button', {class:'peq', 'aria-label':'Aumentar', onclick:muda(.3)}, '+'), el('button', {class:'peq', 'aria-label':'Próxima carta', onclick:passo(1)}, '›')),
+    el('div', {class:'corpo ver'}, z));
+}
+document.addEventListener('keydown', e => { if ($('mo').hidden) return; if (e.key === 'Escape') fecha(); else if (modo === 'ver' && e.key === 'ArrowRight') { vi++; zm = 1; pintaVer(); } else if (modo === 'ver' && e.key === 'ArrowLeft') { vi--; zm = 1; pintaVer(); } });
 
 $('zera').addEventListener('click', function(){ if (this.dataset.sim) { S.v = {}; S.o = {}; salvar(); delete this.dataset.sim; this.textContent = 'Desvirar tudo e recomeçar'; pinta(); dizer('Tudo de volta ao monte'); return; } this.dataset.sim = 1; this.textContent = 'Toque de novo para confirmar'; setTimeout(() => { delete this.dataset.sim; this.textContent = 'Desvirar tudo e recomeçar'; }, 3500); });
-addEventListener('storage', ev => { if (ev.key !== CHAVE || !ev.newValue) return; try { const j = JSON.parse(ev.newValue); if (j && j.v && j.o) { S.v = j.v; S.o = j.o; if ($('mo').hidden) pinta(); else pintaMo(false); } } catch (e) {} });
+addEventListener('storage', ev => { if (ev.key !== CHAVE || !ev.newValue) return; try { const j = JSON.parse(ev.newValue); if (j && j.v && j.o) { S.v = j.v; S.o = j.o; if ($('mo').hidden) pinta(); } } catch (e) {} });
 pinta();
 
 </script>
