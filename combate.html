@@ -570,15 +570,34 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 /* ---- rodada 2 (5x) ---- */
 .inm-aba kbd{font:inherit;font-size:10.5px;opacity:.5;margin-left:2px;border:1px solid var(--linha);border-radius:4px;padding:0 4px}
 .inm-res{font-size:13px;color:#d9c9a6;line-height:1.45}
-.inm-res.multi::first-line{font-size:20px;font-weight:700;color:#ffd98a}
+.inm-res.multi .rl1{display:block;font-size:15px;color:#ffd98a;margin-bottom:4px}
 .cc .inm-rot,.cc .inm-tipo,.cc .inm-cd,.cc .inm-sem,.cc-regra summary{font-size:13px}
 @media (min-width:1000px){
   .cc .inm-atk{background:none;border-color:var(--terracota);color:#f3c9a0}
   .cc .inm-atk:hover{background:var(--terracota);color:#1a0f08}
-  .dk-main.todos .inm-topo.mini{display:none}
+  .dk-main.todos .inm-bl{margin-top:28px;padding-top:12px;border-top:2px solid var(--terracota2)}
+  .dk-main.todos .inm-topo.mini .arco{width:48px;height:60px;border-radius:24px 24px 4px 4px}
+  .dk-main.todos .inm-topo.mini h4{font-size:20px}
   .dk-rail{padding-bottom:20px}
   .inm-abas{-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
 }
+/* ---- rodada 3 (5x) ---- */
+.inm-aba[aria-selected="true"]{background:color-mix(in srgb,var(--terracota) 22%,transparent);box-shadow:inset 0 -3px 0 var(--terracota);font-weight:700}
+.inm-aba:not([aria-selected="true"]):hover{filter:none;background:#241b15;border-color:#6b5a4d}
+.inm-aba.vez::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--ouro);margin-left:2px}
+.inm-aplic.feito{background:none;border-style:dashed;color:#6fcf8f;border-color:#6fcf8f}
+.inm-rot.pronta{font-size:14px;font-weight:600}
+@media (hover:hover){.cc button:not(.inm-atk):not(.inm-fav):hover{background:#2c2119;border-color:var(--terracota);color:#fff}
+.inm-fav:hover{color:var(--ouro);transform:scale(1.12)}
+.inm-f:hover{background:color-mix(in srgb,var(--tc,var(--terracota)) 18%,transparent)}}
+@media (min-width:1000px){
+  .dk-rail{-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent);padding-bottom:32px}
+  .cc-tg{display:inline-flex;gap:4px;align-items:center;font-size:12px}
+  .cc-tg::after{content:attr(title);color:currentColor}
+  body #toast{right:auto;left:16px;max-width:268px}
+  input.q.dv{min-width:130px}
+}
+@media (min-width:1000px) and (max-width:1180px){.inm-bl,.inm-bl > details.inm-sec[open]{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}}
 /* ---- rodada 2 da revisão ---- */
 @media (min-width:1000px){
   .inm-bl,.inm-bl > details.inm-sec[open]{align-items:start}
@@ -1742,7 +1761,7 @@ function aplicarUI(i, a, k){
   const {sel, alvo} = seletorAlvo('Alvo', null, pad);
   const area = dano && js.length > 1 && (a.tags.includes('area') || (efe(i, a).cd || []).length);
   return el('div',{class:'inm-ap'}, sel,
-    el('button',{class:'inm-aplic', onclick:() => desf('Aplicar −' + t + ' em ' + alvo.n, () => aplicar(i, a, k, false), ['inm','ini'])}, dano ? 'Aplicar −' + t : 'Curar +' + t),
+    el('button',{class:'inm-aplic' + (rolAp[k] ? ' feito' : ''), onclick:() => desf('Aplicar −' + t + ' em ' + alvo.n, () => aplicar(i, a, k, false), ['inm','ini'])}, rolAp[k] ? 'Aplicado ✓ · de novo' : dano ? 'Aplicar −' + t : 'Curar +' + t),
     dano ? el('button',{class:'inm-meta', onclick:() => desf('Aplicar metade em ' + alvo.n, () => aplicar(i, a, k, true), ['inm','ini'])}, 'Metade −' + Math.floor(t / 2)) : null,
     area ? el('button',{class:'inm-aplic inm-todos2', onclick:() => desf('Aplicar −' + t + ' a todos os jogadores', () => aplicar(i, a, k, false, true), ['inm','ini'])}, 'Aplicar a todos os jogadores') : null,
     area ? el('button',{class:'inm-meta inm-todos2', onclick:() => desf('Metade a todos os jogadores', () => aplicar(i, a, k, true, true), ['inm','ini'])}, 'Metade a todos') : null,
@@ -1850,7 +1869,7 @@ function cartaAcao(i, a, pref){
     el('div',{class:'cc-top'}, th, el('div',{class:'cc-main'}, cab, resumo)),
     uso.children.length ? uso : null, lin.children.length ? lin : null,
     rolAt[k] ? el('div',{class:'inm-res', role:'status'}, rolAt[k]) : null,
-    rolInm[k] ? el('div',{class:'inm-res multi', role:'status'}, rolInm[k]) : null, rolInm[k] ? aplicarUI(i, a, k) : null, ofer && ofer.k === k ? ofertaUI(i, a, k) : null,
+    rolInm[k] ? el('div',{class:'inm-res multi', role:'status'}, el('b',{class:'rl1'}, rolInm[k].split('\n')[0]), '\n' + rolInm[k].split('\n').slice(1).join('\n')) : null, rolInm[k] ? aplicarUI(i, a, k) : null, ofer && ofer.k === k ? ofertaUI(i, a, k) : null,
     regra);
 }
 const SEM_ARTE = new Set();
@@ -1999,9 +2018,10 @@ function painelInimigos(){
   lista.forEach(i => i.acoes.forEach(a => { if ((!s.tipo || a.cat === s.tipo) && (!s.sem || a.sem)) a.tags.forEach(t => { contaT[t] = (contaT[t]||0) + 1; });
     if ((!s.tag || a.tags.includes(s.tag)) && (!s.sem || a.sem)) contaP[a.cat] = (contaP[a.cat]||0) + 1;
     if ((!s.tag || a.tags.includes(s.tag)) && (!s.tipo || a.cat === s.tipo) && a.sem) contaS++; }));
+  const curI0 = (m.ini[m.turno] && inmDeLinha(m.ini[m.turno])) || null;
   const abas = el('div',{class:'inm-abas', id:'inm_abas', role:'tablist', onscroll:ev => { inmSL = ev.target.scrollLeft; }},
     el('button',{class:'inm-aba', role:'tab', 'aria-selected':s.todos ? 'true' : 'false', onclick:mudar(() => { s.todos = true; })}, el('span',{class:'inm-todos'}, ico('lista')), 'Todos', el('kbd',{}, '0')),
-    ...INIMIGOS.map(i => el('button',{class:'inm-aba', role:'tab', 'aria-selected':!s.todos && i.id === atual.id ? 'true' : 'false', onclick:mudar(() => { s.todos = false; s.sel = i.id; })},
+    ...INIMIGOS.map(i => el('button',{class:'inm-aba' + (curI0 && curI0.id === i.id ? ' vez' : ''), role:'tab', 'aria-selected':!s.todos && i.id === atual.id ? 'true' : 'false', onclick:mudar(() => { s.todos = false; s.sel = i.id; })},
       el('img',{src:i.img, alt:''}), i.nome, el('kbd',{}, String(INIMIGOS.indexOf(i) + 1)))));
   const chipT = Object.keys(TAGS).filter(t => contaT[t] || s.tag === t).map(t => el('button',{class:'inm-f', style:'--tc:' + TAGS[t][2], 'aria-pressed':s.tag === t ? 'true' : 'false', onclick:mudar(() => { s.tag = s.tag === t ? '' : t; })}, ico(TAGS[t][0]), TAGS[t][1] + ' ', el('small',{}, contaT[t] || 0)));
   const chipP = ORDEM_CAT.filter(t => contaP[t] || s.tipo === t).map(t => el('button',{class:'inm-f tp', 'aria-pressed':s.tipo === t ? 'true' : 'false', onclick:mudar(() => { s.tipo = s.tipo === t ? '' : t; })}, TIPOS_ACAO[t] + ' ', el('small',{}, contaP[t] || 0)));
