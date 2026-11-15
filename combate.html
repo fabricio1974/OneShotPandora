@@ -609,6 +609,8 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   .dk-rail .inm-faixa{display:flex;align-items:flex-start;gap:6px}
   .dk-main.todos .inm-tipo:not(:has(*)){display:none}
 }
+/* ---- rodada 5 (5x) ---- */
+@media (min-width:1000px) and (max-width:1500px){body #toast{left:auto;right:16px}}
 /* ---- rodada 2 da revisão ---- */
 @media (min-width:1000px){
   .inm-bl,.inm-bl > details.inm-sec[open]{align-items:start}
@@ -2073,7 +2075,7 @@ function painelInimigos(){
   const rail = el('div',{class:'dk-rail'},
     el('div',{class:'lin2'}, el('button',{class:'inm-luta-bt', 'aria-expanded':lutaAberta ? 'true' : 'false', onclick:() => { lutaAberta = !lutaAberta; desenhar(); }}, ico('espada'), 'Iniciar luta'),
       el('button',{onclick:ev => confirmar(ev.target, () => desf('Nova luta (usos zerados)', () => { inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; limpaRol(); }, ['inm']))}, 'Zerar usos'),
-      el('button',{onclick:mudar(() => { inmZerar('turno'); novaRodadaInm(); limpaRol(); })}, 'Nova rodada')),
+      el('button',{onclick:mudar(() => { inmZerar('turno'); novaRodadaInm(); limpaRol(); })}, 'Zerar rodada')),
     lutaAberta ? formLuta() : null,
     barraAlta() ? el('div',{class:'inm-dica'}, 'O player cobre boa parte da tela.', el('button',{class:'peq', onclick:() => $('btCompacto').click()}, 'Recolher player')) : null,
     ordemUI(),
@@ -2397,12 +2399,13 @@ $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
 let vozIni = 0;
 document.addEventListener('keyup', ev => { if (ev.key.toLowerCase() === 'v' && !/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) && vozIni && Date.now()-vozIni > 600) alternarVoz(false); vozIni = 0; });
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('.dk button:not(.inm-prox)'); if (b && e.detail > 0) setTimeout(() => { if (document.activeElement === b) b.blur(); }, 0); });
 document.addEventListener('keydown', ev => {
   if (/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) || ev.ctrlKey || ev.metaKey || ev.altKey) return;
   const k = ev.key.toLowerCase();
   if (k === ' ' && ev.target.tagName === 'BUTTON') return;
   if (k === 'escape') { parar(0); ambParar(); }
-  else if (k === 'enter' && modo === 'mes' && document.querySelector('.dk') && ev.target.tagName !== 'BUTTON' && E.m.ini.length) proxTurno();
+  else if (k === 'enter' && modo === 'mes' && document.querySelector('.dk') && ev.target === document.body && E.m.ini.length) proxTurno();
   else if (k === '0' && modo === 'mes' && document.querySelector('.dk')) { E.m.inm.todos = true; desenhar(['inm']); }
   else if (/^[1-9]$/.test(k) && modo === 'mes' && INIMIGOS[+k - 1] && document.querySelector('.dk')) { E.m.inm.todos = false; E.m.inm.sel = INIMIGOS[+k - 1].id; desenhar(['inm']); }
   else if (k === 'b') parar(E.fadeSaida*1000);
