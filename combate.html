@@ -579,7 +579,6 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   .dk-main.todos .inm-topo.mini .arco{width:48px;height:60px;border-radius:24px 24px 4px 4px}
   .dk-main.todos .inm-topo.mini h4{font-size:20px}
   .dk-rail{padding-bottom:20px}
-  .inm-abas{-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
 }
 /* ---- rodada 3 (5x) ---- */
 .inm-aba[aria-selected="true"]{background:color-mix(in srgb,var(--terracota) 22%,transparent);box-shadow:inset 0 -3px 0 var(--terracota);font-weight:700}
@@ -598,6 +597,18 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   input.q.dv{min-width:130px}
 }
 @media (min-width:1000px) and (max-width:1180px){.inm-bl,.inm-bl > details.inm-sec[open]{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}}
+/* ---- rodada 4 (5x) ---- */
+.inm-aba kbd{display:none}
+@media (min-width:1600px){.inm-aba kbd{display:inline}}
+.inm-filtros > summary,.inm-regras > summary,details.inm-sec > summary{list-style:none;cursor:pointer}
+.inm-filtros > summary::-webkit-details-marker,.inm-regras > summary::-webkit-details-marker,details.inm-sec > summary::-webkit-details-marker{display:none}
+.inm-filtros > summary::before,.inm-regras > summary::before,details.inm-sec > summary::before{content:"▸";margin-right:6px;color:var(--ouro)}
+.inm-filtros[open] > summary::before,.inm-regras[open] > summary::before,details.inm-sec[open] > summary::before{content:"▾"}
+@media (min-width:1000px){
+  .dk-rail{padding-bottom:76px}
+  .dk-rail .inm-faixa{display:flex;align-items:flex-start;gap:6px}
+  .dk-main.todos .inm-tipo:not(:has(*)){display:none}
+}
 /* ---- rodada 2 da revisão ---- */
 @media (min-width:1000px){
   .inm-bl,.inm-bl > details.inm-sec[open]{align-items:start}
@@ -1804,7 +1815,7 @@ function rolarMulti(i, mu){   // sequência de ataques da ficha: d20 + bônus e 
     (ef.dano || []).filter(d => d.k === 'd').forEach(d => { const ex = crit ? dobraE(d.e) : d.e, r = rolarX(ex); total += r.t; p.push(fmtE(ex) + ' ' + d.t + ' = ' + r.t + (crit ? ' (crítico: dados dobrados)' : '')); });
     if (ef.cd) p.push(ef.cd.map(c => c[0] + ' CD ' + c[1]).join(', '));
     return (n + 1) + ') ' + b.nome + ': ' + p.join(' · '); });
-  return linhas.join('\n') + '\nSe todos acertarem/falharem a salvaguarda: ' + total + ' de dano no total.';
+  return 'TOTAL se todos acertarem: ' + total + ' de dano\n' + linhas.join('\n');
 }
 const escCard = k => () => E.m.inm.disp ? ['inm'] : ['c:' + k];
 function cartaAcao(i, a, pref){
@@ -1847,7 +1858,7 @@ function cartaAcao(i, a, pref){
   }
   if (i.id === 'ozy' && a.id === 'resistencia-lendaria') lin.append(el('button',{class:'peq', 'aria-label':'Um jogador usou Resistência Lendária: o Ozymandias recupera uma (Avareza)', onclick:() => desf('Avareza: recupera 1 Resistência', () => { s.uso[k] = Math.max(0, usado - 1); }, ['c:' + k])}, 'Avareza: recuperar 1'));
   if (ef.atk) lin.append(el('button',{class:'inm-atk', 'aria-label':'Rolar ataque de ' + a.nome + ' com bônus +' + ef.atk.b, onclick:() => { const r = rolarAtk(ef.atk.b, ef.atk.crit); rolAt[k] = r.txt; if (r.n === 20) rolCrit[k] = 1; else delete rolCrit[k]; desenhar(['c:' + k]); }}, 'Ataque +' + ef.atk.b));
-  (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk', onclick:() => { rolInm[k] = rolarMulti(i, mu); delete rolTot[k]; delete rolAp[k]; delete rolTip[k]; desenhar(['c:' + k]); }}, ico('dado'), mu.lab)));
+  (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk', onclick:() => { rolInm[k] = rolarMulti(i, mu); rolTot[k] = +rolInm[k].match(/: (\d+) de dano/)[1]; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; desenhar(['c:' + k]); }}, ico('dado'), mu.lab)));
   (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = rolarX(d.e); rolInm[k] = r.txt + ' ' + d.t; rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; delete rolCrit[k]; if (d.k === 'd') { const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; } desenhar(['c:' + k]); }},
     ico('dado'), (d.k === 'c' ? 'Curar ' : '') + fmtE(d.e) + ' ' + d.t)));
   const comps = (ef.dano || []).filter(d => d.k === 'd');
@@ -2049,7 +2060,7 @@ function painelInimigos(){
       !tot && !ocultas ? el('p',{class:'sub'}, 'Nenhuma ação com esses filtros.') : null);
   };
   const blocos = lista.map(bloco).filter(Boolean);
-  setTimeout(() => { const a = document.getElementById('inm_abas'); if (a) a.scrollLeft = inmSL; }, 0);
+  setTimeout(() => { const a = document.getElementById('inm_abas'); if (!a) return; a.scrollLeft = inmSL; const x = a.querySelector('[aria-selected=true]'); if (x) { if (x.offsetLeft + x.offsetWidth > a.scrollLeft + a.clientWidth - 40) a.scrollLeft = x.offsetLeft + x.offsetWidth - a.clientWidth + 60; else if (x.offsetLeft < a.scrollLeft) a.scrollLeft = x.offsetLeft - 8; } }, 0);
   const favs = []; INIMIGOS.forEach(i => i.acoes.forEach(a => { if (s.fav[i.id + ':' + a.id] && casa(a)) favs.push([i, a]); }));
   const regras = el('details',{class:'inm-regras', open:abertas.has('inm-reg'), ontoggle:ev => { ev.target.open ? abertas.add('inm-reg') : abertas.delete('inm-reg'); }},
     el('summary',{}, 'Regras da luta'),
@@ -2391,6 +2402,7 @@ document.addEventListener('keydown', ev => {
   const k = ev.key.toLowerCase();
   if (k === ' ' && ev.target.tagName === 'BUTTON') return;
   if (k === 'escape') { parar(0); ambParar(); }
+  else if (k === 'enter' && modo === 'mes' && document.querySelector('.dk') && ev.target.tagName !== 'BUTTON' && E.m.ini.length) proxTurno();
   else if (k === '0' && modo === 'mes' && document.querySelector('.dk')) { E.m.inm.todos = true; desenhar(['inm']); }
   else if (/^[1-9]$/.test(k) && modo === 'mes' && INIMIGOS[+k - 1] && document.querySelector('.dk')) { E.m.inm.todos = false; E.m.inm.sel = INIMIGOS[+k - 1].id; desenhar(['inm']); }
   else if (k === 'b') parar(E.fadeSaida*1000);
