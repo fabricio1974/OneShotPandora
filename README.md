@@ -82,3 +82,6 @@ Cópia da Mesa do Mestre com a seção "Inimigos e ações" redesenhada para not
 
 ### Créditos dos ícones (combate.html)
 Miniaturas das ações: [game-icons.net](https://game-icons.net) (CC BY 3.0, vários autores, via Iconify). Ícones de interface: [Lucide](https://lucide.dev) (ISC).
+
+### Sons dos cliques (combate.html)
+Efeitos sintetizados no navegador (Web Audio, sem arquivos): dado, ataque, dano, cura, próximo turno (gongo), favoritar, desfazer e crítico. Botão "Sons" na coluna lateral liga/desliga (fica salvo no navegador).

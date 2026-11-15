@@ -611,6 +611,8 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 }
 /* ---- rodada 5 (5x) ---- */
 @media (min-width:1000px) and (max-width:1500px){body #toast{left:auto;right:16px}}
+/* ---- sons ---- */
+.sfx-bt{display:inline-flex;align-items:center;gap:6px;align-self:flex-start}.sfx-bt[aria-pressed=false]{opacity:.6}
 /* ---- rodada 2 da revisão ---- */
 @media (min-width:1000px){
   .inm-bl,.inm-bl > details.inm-sec[open]{align-items:start}
@@ -2076,6 +2078,7 @@ function painelInimigos(){
     el('div',{class:'lin2'}, el('button',{class:'inm-luta-bt', 'aria-expanded':lutaAberta ? 'true' : 'false', onclick:() => { lutaAberta = !lutaAberta; desenhar(); }}, ico('espada'), 'Iniciar luta'),
       el('button',{onclick:ev => confirmar(ev.target, () => desf('Nova luta (usos zerados)', () => { inmZerar('luta'); inmZerar('turno'); inmZerar('rodada'); s.ult = []; limpaRol(); }, ['inm']))}, 'Zerar usos'),
       el('button',{onclick:mudar(() => { inmZerar('turno'); novaRodadaInm(); limpaRol(); })}, 'Zerar rodada')),
+    el('button',{class:'peq sfx-bt', 'aria-pressed':sfx.on ? 'true' : 'false', title:'Efeitos sonoros dos cliques (só neste navegador)', onclick:() => { sfx.on = !sfx.on; try { localStorage.setItem('sfx', sfx.on ? '1' : '0'); } catch (e) {} if (sfx.on) sfx.play('tick'); desenhar(['inm']); }}, ico('nota'), sfx.on ? 'Sons: ligados' : 'Sons: desligados'),
     lutaAberta ? formLuta() : null,
     barraAlta() ? el('div',{class:'inm-dica'}, 'O player cobre boa parte da tela.', el('button',{class:'peq', onclick:() => $('btCompacto').click()}, 'Recolher player')) : null,
     ordemUI(),
@@ -2399,6 +2402,44 @@ $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
 let vozIni = 0;
 document.addEventListener('keyup', ev => { if (ev.key.toLowerCase() === 'v' && !/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) && vozIni && Date.now()-vozIni > 600) alternarVoz(false); vozIni = 0; });
+/* ---- efeitos sonoros dos cliques (sintetizados com Web Audio: sem arquivos, sem licença) ---- */
+const sfx = (() => {
+  let ctx = null, on = false; try { on = localStorage.getItem('sfx') !== '0'; } catch (e) {}
+  const C = () => { if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } } if (ctx.state === 'suspended') ctx.resume(); return ctx; };
+  const tom = (c, t, f, d, tipo = 'sine', v = 0.15, f2 = null) => { const o = c.createOscillator(), g = c.createGain(); o.type = tipo; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + d); o.connect(g).connect(c.destination); o.start(t); o.stop(t + d + 0.02); };
+  const ruido = (c, t, d, v = 0.2, fq = 1200, q = 1, tipo = 'bandpass') => { const n = Math.floor(c.sampleRate * d), b = c.createBuffer(1, n, c.sampleRate), x = b.getChannelData(0); for (let i = 0; i < n; i++) x[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = tipo; f.frequency.value = fq; f.Q.value = q; g.gain.value = v; s.connect(f).connect(g).connect(c.destination); s.start(t); };
+  const S = {
+    tick: (c, t) => tom(c, t, 900, 0.05, 'square', 0.05),
+    dado: (c, t) => { [0, .07, .13, .2, .3].forEach((d, i) => { ruido(c, t + d, 0.05, 0.22, 2200 + i * 300, 3, 'highpass'); tom(c, t + d, 300 + i * 40, 0.04, 'triangle', 0.05); }); },
+    ataque: (c, t) => { ruido(c, t, 0.18, 0.25, 1800, 0.8); tom(c, t, 700, 0.16, 'sawtooth', 0.04, 220); },
+    dano: (c, t) => { tom(c, t, 150, 0.2, 'sine', 0.35, 45); ruido(c, t, 0.12, 0.25, 600, 0.7); },
+    metade: (c, t) => { tom(c, t, 190, 0.14, 'sine', 0.22, 70); ruido(c, t, 0.07, 0.15, 800, 0.7); },
+    cura: (c, t) => { [523, 659, 784].forEach((f, i) => tom(c, t + i * 0.08, f, 0.28, 'sine', 0.11)); },
+    turno: (c, t) => { tom(c, t, 196, 1.1, 'sine', 0.22); tom(c, t, 392, 0.8, 'sine', 0.08); ruido(c, t, 0.04, 0.2, 3000, 1, 'highpass'); },
+    fav: (c, t) => { tom(c, t, 1318, 0.35, 'sine', 0.09); tom(c, t + 0.07, 1760, 0.4, 'sine', 0.07); },
+    desfaz: (c, t) => { tom(c, t, 600, 0.22, 'triangle', 0.12, 200); },
+    crit: (c, t) => { S.dano(c, t); [392, 523, 659, 784].forEach((f, i) => tom(c, t + 0.12 + i * 0.07, f, 0.35, 'triangle', 0.09)); }
+  };
+  const play = n => { if (!on) return; const c = C(); if (c && S[n]) S[n](c, c.currentTime + 0.01); };
+  return { play, get on() { return on; }, set on(v) { on = v; } };
+})();
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('button, summary'); if (!b || b.classList.contains('sfx-bt')) return;
+  const cl = b.classList, tx = (b.textContent || '').trim();
+  if (b.closest('#toast')) sfx.play('desfaz');
+  else if (cl.contains('inm-prox')) sfx.play('turno');
+  else if (cl.contains('inm-atk')) sfx.play(/crítico/i.test(tx) ? 'crit' : 'ataque');
+  else if (cl.contains('inm-crit')) sfx.play('crit');
+  else if (cl.contains('inm-dado') || cl.contains('inm-rec')) sfx.play('dado');
+  else if (cl.contains('inm-aplic')) sfx.play(/Curar/.test(tx) ? 'cura' : 'dano');
+  else if (cl.contains('inm-meta')) sfx.play('metade');
+  else if (cl.contains('pos') && cl.contains('peq')) sfx.play('cura');
+  else if (cl.contains('neg') && cl.contains('peq')) sfx.play('dano');
+  else if (cl.contains('inm-fav')) sfx.play('fav');
+  else if (b.closest('.dk') && (cl.contains('inm-usar') || cl.contains('inm-aba') || cl.contains('inm-f') || b.tagName === 'SUMMARY')) sfx.play('tick');
+}, true);
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('.dk button:not(.inm-prox)'); if (b && e.detail > 0) setTimeout(() => { if (document.activeElement === b) b.blur(); }, 0); });
 document.addEventListener('keydown', ev => {
   if (/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) || ev.ctrlKey || ev.metaKey || ev.altKey) return;
