@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0d0a08">
 <title>Cartas de Poder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Inter:wght@400;600&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Inter:wght@400;600&display=swap"></noscript>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
 :root{--fundo:#0d0a08;--painel:#17110d;--linha:#3a2a1f;--terra:#c8622d;--terra2:#e08a52;--texto:#efe2d0;--apagado:#a8947f;--creme:#f1e7d3;--tinta:#2a1a10;color-scheme:dark}
 *{box-sizing:border-box}
@@ -30,23 +30,6 @@ button.perigo{color:#ee9a86}
 select,input[type=text]{background:var(--painel);border:1px solid var(--linha);border-radius:10px;padding:8px 10px;min-height:40px}
 select.peq{min-height:34px;padding:4px 8px;font-size:14px}
 :focus-visible{outline:2px solid var(--terra2);outline-offset:2px}
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:4px;background:#120d0a;border-top:1px solid var(--linha);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
-.nav button{flex:1;min-width:0;padding:6px 2px;font-size:13px;border-radius:8px;display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.1}
-.nav .i{font-size:20px;line-height:1}
-.nav .b{position:absolute;margin-left:22px;margin-top:-4px;background:var(--terra);color:#1a0c04;border-radius:999px;font-size:11px;font-weight:700;padding:0 6px}
-.busca{display:flex;gap:8px}
-.busca input{flex:1;min-width:0;font:600 26px Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;text-align:center;border:2px solid var(--linha);border-radius:12px;padding:8px}
-.busca input:focus{outline:none;border-color:var(--terra)}
-.dica{color:var(--apagado);font-size:14px;margin:8px 0 0}
-.erro{color:#ee9a86;margin:8px 0 0;min-height:1.3em}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
-.chip{border:1px solid var(--linha);border-radius:999px;padding:3px 10px;background:var(--painel);font-size:14px;min-height:32px;color:var(--texto)}
-.sub{color:var(--apagado);font-size:14px}
-.barra{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
-.painel{border:1px solid var(--linha);border-radius:12px;padding:12px 14px;background:var(--painel);margin:10px 0}
-.painel b{color:var(--terra2)}
-.vazio{color:var(--apagado);text-align:center;padding:28px 0}
-.aviso{background:#2a1a10;border:1px solid var(--terra);border-radius:12px;padding:12px;margin:10px 0}
 /* ---- a carta ---- */
 .cf{position:relative;aspect-ratio:720/964;container-type:inline-size;background:#000;border-radius:3.2cqw;overflow:hidden;color:var(--tinta);user-select:none;-webkit-user-select:none}
 .cf>*{position:absolute}
@@ -101,105 +84,70 @@ select.peq{min-height:34px;padding:4px 8px;font-size:14px}
 .ini{border:1px solid var(--linha);border-radius:12px;overflow:hidden;background:var(--painel);cursor:pointer;text-align:left;padding:0}
 .ini img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
 .ini .n{padding:8px 10px}.ini .n b{display:block;font:700 19px 'Cormorant Garamond',Georgia,serif;color:var(--terra2)}
-/* ---- janela de zoom e regra ---- */
 .mo{position:fixed;inset:0;z-index:50;background:#0d0a08;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
 .mo[hidden]{display:none}
-.mo .topo{display:flex;gap:6px;align-items:center;padding:8px max(10px,env(safe-area-inset-left,0px));background:#120d0a;border-bottom:1px solid var(--linha);flex-wrap:wrap}
-.mo .topo .esp{flex:1}
-.mo .topo input[type=range]{width:110px;accent-color:var(--terra)}
-.mo .corpo{flex:1;overflow:auto;padding:12px max(12px,env(safe-area-inset-left,0px)) 30px;-webkit-overflow-scrolling:touch}
-.mo .zoom{width:calc(min(88vw,460px) * var(--z,1));margin:0 auto}
-.mo .reg{max-width:34rem;margin:14px auto 0}
-.mo .reg p{margin:6px 0}
-.mo .reg .grande{font-size:18px}
-.mo .reg .frase{font:italic 700 22px 'Cormorant Garamond',Georgia,serif;text-align:center;color:var(--terra2);margin:14px 0 4px}
-.mo .reg ul{margin:6px 0;padding-left:20px}
-.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#2a1a10;border:1px solid var(--terra);border-radius:999px;padding:8px 16px;z-index:60;max-width:90vw;text-align:center;font-size:14px}
-.tab{width:100%;border-collapse:collapse;font-size:14px}.tab td,.tab th{border:1px solid var(--linha);padding:6px;vertical-align:top;text-align:left}
-.rol{overflow-x:auto}
-.copia{display:flex;gap:8px}.copia input{flex:1;min-width:0}
-a{color:var(--terra2)}
+.mo .topo2{display:flex;gap:6px;align-items:center;padding:8px max(10px,env(safe-area-inset-left,0px));background:#120d0a;border-bottom:1px solid var(--linha)}
+.mo .topo2 .esp{flex:1;font:700 20px 'Cormorant Garamond',Georgia,serif;color:var(--terra2)}
+.mo .corpo{flex:1;overflow:auto;padding:14px max(12px,env(safe-area-inset-left,0px)) 28px;-webkit-overflow-scrolling:touch}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#2a1a10;border:1px solid var(--terra);border-radius:999px;padding:8px 16px;z-index:60;max-width:90vw;text-align:center;font-size:14px}
+.dica{color:var(--apagado);font-size:14px;margin:8px 0 0}
 
-/* Rodada 5: toque imediato, sem zoom por duplo toque, flip sem engasgo */
+body{padding-block:14px calc(24px + env(safe-area-inset-bottom,0px))}
+.topo{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cont{color:var(--apagado);font-size:15px}.cont b{color:var(--terra2);font-size:20px}
+.abas{display:flex;gap:6px;margin:6px 0 10px}
+.abas button{flex:1;font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
+.chip{border:1px solid var(--linha);border-radius:999px;padding:3px 12px;background:var(--painel);font-size:14px;min-height:36px}
+.chip[aria-pressed="true"]{background:var(--terra);border-color:var(--terra);color:#1a0c04;font-weight:600}
+.chip small{opacity:.75;margin-left:4px}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+.slot{position:relative;padding:0;border:0;background:none;min-height:0;border-radius:3.2cqw;display:block;text-align:left}
+.slot .cf{box-shadow:0 2px 10px #000a;pointer-events:none}
+.slot:hover .cf{box-shadow:0 0 0 2px var(--terra),0 2px 10px #000a}
+.slot.fechada .cf{filter:brightness(.92)}
+.dono{position:absolute;left:6px;right:6px;bottom:6px;text-align:center;font:700 12px/1 Inter,sans-serif;letter-spacing:.04em;padding:6px 4px;border-radius:999px;color:#1a0c04;background:hsl(var(--h,25) 70% 62%);box-shadow:0 1px 6px #000c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dono.sem{background:#2a1a10;color:var(--terra2);border:1px dashed var(--terra)}
+.mo .corpo{display:flex;flex-direction:column;align-items:center;gap:14px}
+.mo .virar{width:min(86vw,400px,calc((100dvh - 230px) * 720 / 964));cursor:pointer}
+.mo .dica{text-align:center;margin:0}
+.donos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(92vw,440px)}
+.donos button{min-height:50px;font-weight:600;border-width:2px;border-color:hsl(var(--h) 55% 45%)}
+.donos button[aria-pressed="true"]{background:hsl(var(--h) 70% 62%);border-color:hsl(var(--h) 70% 62%);color:#1a0c04}
+.sec{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.maoh{display:flex;align-items:baseline;gap:10px;margin:6px 0 10px}
+.maoh h2{margin:0}
+.vazio{color:var(--apagado);text-align:center;padding:28px 0}
+.reiniciar{margin-top:26px;text-align:center}
+
 html{-webkit-tap-highlight-color:transparent}
-button,summary,input,select,label,a,.cf,.chip{touch-action:manipulation}
+button,input,a,.cf,.chip{touch-action:manipulation}
 button:active,.chip:active{filter:brightness(1.3);transform:scale(.97)}
-button:disabled:active{filter:none;transform:none}
-.virar .in{will-change:transform}
-.tagq{color:#f0a070}.tagq.rec{color:#a9d0ee}
 </style>
 </head>
 <body>
 <main>
-<h1>Cartas de Poder</h1>
+<div class="topo"><h1 style="text-align:left">Cartas de Poder</h1><div class="cont" id="cont"></div></div>
 <div class="meandro" aria-hidden="true"></div>
-<section id="sPux"></section>
-<section id="sMao" hidden></section>
-<section id="sTod" hidden></section>
-<section id="sIni" hidden></section>
-<section id="sReg" hidden></section>
-<section id="sMes" hidden></section>
+<div class="abas" id="abas"></div>
+<section id="sMesa"></section>
+<section id="sMaos" hidden></section>
+<div class="reiniciar"><button class="peq perigo" id="zera" type="button">Desvirar tudo e recomeçar</button></div>
 </main>
-<nav class="nav" id="nav" aria-label="Seções"></nav>
 <div class="mo" id="mo" hidden role="dialog" aria-modal="true" aria-label="Carta"></div>
 <div id="toast" class="toast" hidden role="status"></div>
-
 <script>
 const CARTAS = [{"c": "S01", "n": "Pele de Lobo", "o": "Esaú", "u": "Passiva", "t": false, "e": "Resistência a dano perfurante e cortante. +2 na CA contra ataques à distância.", "f": "Lobo é o homem"}, {"c": "S02", "n": "Segundo Fôlego do Tambor", "o": "Jael", "u": "Ação livre · 2/luta · gatilho: você fica abaixo de metade dos PV", "t": false, "e": "Recupera 6d10 + 10 (43) PV.", "f": "a outros, livres."}, {"c": "S03", "n": "Milagre Menor", "o": "Hildegarda", "u": "Reação · 1/luta · gatilho: você cai a 0 PV", "t": false, "e": "Fica com 1 PV e recupera 50 PV.", "f": "Não vos esqueçais"}, {"c": "S04", "n": "Escudo de Torre", "o": "Raquel", "u": "Passiva e Reação", "t": false, "e": "+3 na CA. [Reação] Vira o alvo de um ataque contra um aliado a até 1,5 m.", "f": "A vida só pode ser compreendida"}, {"c": "S05", "n": "Já Vi Esse Golpe", "o": "Ezequiel", "u": "Reação · 3/luta", "t": false, "e": "+5 na CA contra um ataque.", "f": "Quem combate monstros"}, {"c": "S06", "n": "Campo de Massa", "o": "Ozymandias", "u": "Passiva", "t": false, "e": "Ataques à distância contra você têm desvantagem.", "f": "Meu nome é Ozymandias,"}, {"c": "S07", "n": "Spiritus", "o": "Hildegarda", "u": "Passiva", "t": false, "e": "No início do seu turno, se tiver pelo menos 1 PV, recupera 15 PV.", "f": "da hospitalidade,"}, {"c": "S08", "n": "Um Segundo a Mais", "o": "Chronos", "u": "Reação · 2/luta", "t": false, "e": "Um ataque que acertaria você erra.", "f": "O que foi, será; o que se fez, se fará:"}, {"c": "S09", "n": "Muralha", "o": "Jael", "u": "Passiva", "t": false, "e": "+20 PV máximos. Não pode ser derrubado, empurrado nem puxado. O dano contundente que você sofre cai pela metade.", "f": "e rei de todas;"}, {"c": "S10", "n": "Couraça Branca", "o": "Mical, a Tecelã", "u": "Ação bônus · 1/volta", "t": true, "e": "Por 1 minuto, todo dano que você sofre é reduzido em 10. Tinta: apaga uma condição sua.", "f": "Suponhamos que a mente seja"}, {"c": "S11", "n": "Pão Dividido", "o": "Boaz, o Padeiro", "u": "Ação padrão · 1/luta", "t": false, "e": "Você e os aliados a até 9 m ganham 30 PV temporários.", "f": "um papel em branco,"}, {"c": "S12", "n": "Corpo de Planeta", "o": "Ozymandias", "u": "Passiva", "t": false, "e": "+50 PV máximos.", "f": "rei dos reis:"}, {"c": "A01", "n": "Arpão de Corrente", "o": "Esaú", "u": "Ação bônus · 2/luta", "t": false, "e": "Ataque à distância de 18 m: 4d10 + 4 (26) perfurante. Se acertar, o alvo fica impedido até o fim do seu próximo turno, sem salvaguarda.", "f": "para o homem,"}, {"c": "A02", "n": "Estaca", "o": "Jael", "u": "Ação livre · 1/turno · ao acertar", "t": false, "e": "+3d8 (13) perfurante, e o alvo fica cravado até o início do seu próximo turno: deslocamento 0, sem reações, sem teletransporte. Sem salvaguarda.", "f": "a outros, homens;"}, {"c": "A03", "n": "Martelo Ressoante", "o": "Jael", "u": "Passiva", "t": false, "e": "Seus golpes corpo a corpo causam +3d8 (13), e todo o dano deles vira trovejante.", "f": "a uns fez deuses,"}, {"c": "A04", "n": "Marca do Caçador", "o": "Esaú", "u": "Ação bônus", "t": false, "e": "Marque uma criatura. Seus acertos nela causam +4d6 (14) e ignoram resistências e cobertura.", "f": "quem"}, {"c": "A05", "n": "Flecha de Ferro", "o": "Esaú", "u": "Passiva", "t": false, "e": "Seus ataques à distância causam +3d6 (10), todo o dano deles vira perfurante, e o crítico acontece com 18, 19 ou 20.", "f": "e não homem,"}, {"c": "A06", "n": "Lança de Falange", "o": "Raquel", "u": "Passiva", "t": false, "e": "+1,5 m de alcance e +3d6 (10) nos golpes corpo a corpo.", "f": "olhando para trás,"}, {"c": "A07", "n": "Golpe de Escudo", "o": "Raquel", "u": "Ação bônus · 1/rodada", "t": false, "e": "Uma criatura a até 1,5 m é empurrada 3 m e cai derrubada, sem salvaguarda. Seu próximo golpe corpo a corpo nesta rodada causa +3d6 (10) e tem vantagem.", "f": "mas só pode ser vivida"}, {"c": "A08", "n": "Mão de Órbita", "o": "Ozymandias", "u": "Passiva", "t": false, "e": "Seus golpes corpo a corpo causam +3d8 (13), todo o dano deles vira energia, e eles puxam o alvo 3 m.", "f": "contemplai minhas obras,"}, {"c": "A09", "n": "Pedra Orbital", "o": "Ozymandias", "u": "Ação padrão · à vontade", "t": false, "e": "Ataque à distância de 36 m: 6d10 + 3 (36) contundente. O alvo cai derrubado.", "f": "ó poderosos,"}, {"c": "A10", "n": "Golpe Visto", "o": "Ezequiel", "u": "Ação livre · 3/luta · antes de rolar um ataque", "t": false, "e": "O ataque acerta e é crítico.", "f": "deve cuidar"}, {"c": "A11", "n": "Ataque Faminto", "o": "Abner, o Açougueiro", "u": "Passiva", "t": true, "e": "Um ataque a mais na ação de Ataque. Tinta: quem você mata é apagado, e você recupera 15 PV.", "f": "vazio de todos os caracteres,"}, {"c": "A12", "n": "Maça Sagrada", "o": "Hildegarda", "u": "Passiva · 1/turno", "t": false, "e": "Um acerto corpo a corpo causa +4d8 (18) radiante.", "f": "pois por ela"}, {"c": "M01", "n": "Presságio", "o": "Ezequiel", "u": "Passiva", "t": false, "e": "No início de cada luta, role 3d20 e guarde. Troque qualquer rolagem sua ou de um inimigo visível por um desses dados. Cada dado vale uma vez.", "f": "para não se tornar"}, {"c": "M02", "n": "Contramágica Vista", "o": "Ezequiel", "u": "Reação · 2/luta", "t": false, "e": "Uma magia ou ação de recarga de um inimigo a até 18 m falha.", "f": "também um monstro."}, {"c": "M03", "n": "Raio Sagrado", "o": "Hildegarda", "u": "Ação bônus · 1/rodada", "t": false, "e": "Ataque mágico de 36 m: 6d8 (27) radiante.", "f": "alguns,"}, {"c": "M04", "n": "Palavra Curativa Máxima", "o": "Hildegarda", "u": "Ação bônus · 1/rodada", "t": false, "e": "Um aliado a até 18 m recupera 40 PV.", "f": "sem o saberem,"}, {"c": "M05", "n": "Inverter", "o": "Ozymandias", "u": "Ação bônus · Recarga 5–6", "t": false, "e": "A gravidade vira numa esfera de 6 m a até 36 m: 6d6 (21) contundente e derrubado, sem salvaguarda.", "f": "e desesperai!"}, {"c": "M06", "n": "Peso da Conta", "o": "Ozymandias", "u": "Ação padrão · Recarga 5–6", "t": false, "e": "Esfera de 6 m a até 36 m, salvaguarda de For: 6d12 (39) de energia e deslocamento 0. Metade se passar.", "f": "Nada mais resta."}, {"c": "M07", "n": "Rodas de Fogo", "o": "Ezequiel", "u": "Ação padrão · Recarga 5–6", "t": false, "e": "Linha de 18 m, salvaguarda de Con: 6d10 (33) de fogo e radiante. Metade se passar.", "f": "E quando olhas"}, {"c": "M08", "n": "Ave Generosa", "o": "Hildegarda", "u": "Ação padrão · Recarga 5–6", "t": false, "e": "Inimigos a até 9 m, salvaguarda de Con: 6d8 (27) radiante, metade se passar. Você recupera metade do dano causado.", "f": "hospedaram"}, {"c": "M09", "n": "Parar o Tempo", "o": "Chronos", "u": "Ação bônus · 1/volta", "t": false, "e": "Você faz um turno extra completo depois deste. Nele, nenhum inimigo cai abaixo de 1 PV.", "f": "nada há de novo debaixo do sol."}, {"c": "M10", "n": "Profecia", "o": "Ezequiel", "u": "Ação bônus · 2/luta", "t": false, "e": "Diga o que um inimigo vai fazer no próximo turno. Se ele fizer, a ação falha.", "f": "longamente para um abismo,"}, {"c": "M11", "n": "Silêncio Branco", "o": "Rispa, a Calada", "u": "Ação padrão · 1/volta", "t": true, "e": "Esfera de 6 m: até o fim do seu próximo turno, ninguém lança magias nem usa recargas. Tinta: também sem ações lendárias.", "f": "sem nenhuma ideia."}, {"c": "M12", "n": "Chuva de Ferro", "o": "Esaú", "u": "Ação bônus · Recarga 5–6", "t": false, "e": "Três flechas (ataque do cavaleiro), cada uma com 2d10 (11) perfurante.", "f": "quando"}, {"c": "H01", "n": "Direito de Primogenitura", "o": "Esaú", "u": "Passiva", "t": false, "e": "Você não pode ser surpreendido, e o grupo age antes dos inimigos na 1ª rodada. Na 1ª rodada de cada luta, você faz dois turnos completos.", "f": "não sabe"}, {"c": "H02", "n": "Laço", "o": "Esaú", "u": "Ação bônus · 3/luta", "t": false, "e": "O alvo faz salvaguarda de For. Falha: fica impedido, sem reações, e todos os ataques do grupo contra ele têm vantagem até o fim do seu próximo turno.", "f": "é o outro."}, {"c": "H03", "n": "Pino na Testa", "o": "Jael", "u": "Ação padrão · Recarga 5–6", "t": false, "e": "Ataque corpo a corpo ou à distância: 6d10 + 8 (41) perfurante. Se o alvo terminar com metade dos PV ou menos, fica atordoado até o fim do seu próximo turno, sem salvaguarda (sem ações lendárias nesse tempo).", "f": "a uns fez escravos,"}, {"c": "H04", "n": "Rufar", "o": "Jael", "u": "Ação bônus · 1/luta", "t": false, "e": "Por 2 rodadas, todos os golpes do grupo causam +2d6 (7), e o grupo fica imune a medo.", "f": "A guerra é pai de todas as coisas"}, {"c": "H05", "n": "Quebra-Coroa", "o": "Ezequiel", "u": "Reação · 2/luta", "t": false, "e": "Uma Resistência Lendária do inimigo é gasta e não funciona, e ele perde uma ação lendária na próxima rodada.", "f": "o abismo"}, {"c": "H06", "n": "O Fim que Eu Vi", "o": "Ezequiel", "u": "Ação padrão · 1/luta", "t": false, "e": "Um inimigo a até 36 m faz salvaguarda de Sab: 6d10 + 20 (53) psíquico, metade se passar. Se ele ficar com 50 PV ou menos, cai a 0 PV.", "f": "também olha para ti."}, {"c": "H07", "n": "Interpor", "o": "Raquel", "u": "Passiva e Reação", "t": false, "e": "+2 na CA para você e para um aliado à sua escolha. [Reação] Troca de lugar com um aliado a até 9 m e vira o alvo do ataque; você sofre metade do dano.", "f": "olhando para a frente."}, {"c": "H08", "n": "Isso Também é Meu", "o": "Ozymandias", "u": "Passiva", "t": false, "e": "Enquanto você estiver vivo na luta, toda cura e regeneração dos inimigos cai pela metade, e você recupera o mesmo tanto que eles curarem.", "f": "Ao redor da ruína"}, {"c": "H09", "n": "Confisco", "o": "Ozymandias", "u": "Ação bônus · 1/luta", "t": false, "e": "O inimigo faz salvaguarda de Car. Falha: ele perde uma ação lendária até o fim da luta.", "f": "daquele destroço colossal,"}, {"c": "H10", "n": "Troca de Lugar", "o": "Ozymandias", "u": "Reação · 3/luta", "t": false, "e": "Um ataque que acertaria um aliado a até 18 m erra: você o troca de lugar.", "f": "as areias solitárias se estendem ao longe."}, {"c": "H11", "n": "O vos angeli", "o": "Hildegarda", "u": "Ação padrão · 1/volta", "t": false, "e": "Chama uma criatura aliada até o fim da luta: CA 18, 60 PV, voo 18 m, 2 ataques +9 de 2d8 + 5 (14) radiante. Ela age logo depois de você.", "f": "anjos."}, {"c": "H12", "n": "Pintar de Branco", "o": "Orpa, a Pintora", "u": "Ação padrão · 1/luta", "t": true, "e": "Apaga uma Ação de Ambiente da arena e uma ação lendária do inimigo até o fim da luta.", "f": "Como ela vem a ser preenchida?"}, {"c": "AB1", "n": "Correntes do Caçador", "o": "de Esaú", "u": "Ação bônus · 2/luta", "t": false, "e": "Correntes em 2 pontos de 3 m a até 18 m, salvaguarda de Des: 2d8 (9), fica impedido, sem teletransporte, e o grupo ataca com vantagem.", "f": "Olhei, e eis um cavalo branco; o que o montava tinha um arco… e saiu vencendo, e para vencer."}, {"c": "AB2", "n": "Martelo de Jael", "o": "de Jael", "u": "Passiva", "t": false, "e": "Seus golpes corpo a corpo causam +3d8 (13) trovejante e cravam o alvo uma vez por turno, sem salvaguarda.", "f": "E saiu outro cavalo, vermelho; e ao que o montava foi dado tirar a paz da terra, e uma grande espada."}, {"c": "AB3", "n": "Olhos de Ezequiel", "o": "de Ezequiel", "u": "Passiva", "t": false, "e": "Não pode ser surpreendido. 3d20 de Presságio por luta. Quebra-Coroa 1/luta.", "f": "E foi-lhes dado poder sobre a quarta parte da terra…"}, {"c": "AB4", "n": "Sino de Hildegarda", "o": "de Hildegarda", "u": "Ação padrão · 1/volta", "t": false, "e": "Revive quem morreu há até 1 minuto, com 50 PV. Não funciona na Rafaela.", "f": "…e o Inferno o seguia."}, {"c": "AB5", "n": "Escudo de Raquel", "o": "de Raquel", "u": "Passiva", "t": false, "e": "+2 na CA. Interpor 1/rodada sem gastar a reação.", "f": "E eis um cavalo amarelo, e o que o montava chamava-se Morte…"}, {"c": "AB6", "n": "Órbita de Ozymandias", "o": "de Ozymandias", "u": "Passiva", "t": false, "e": "Voo de 18 m. [Ação bônus · 1/rodada] Inverter. [Ação padrão · 1/volta] Peso da Conta com 6d12 + 20 (59).", "f": "E eis um cavalo preto; o que o montava tinha uma balança na mão… uma medida de trigo por um denário."}, {"c": "AB7", "n": "Espada do Demônio", "o": "do Demônio", "u": "Passiva · 1/turno", "t": false, "e": "Um acerto seu causa +6d8 (27) radiante. Visão verdadeira a 9 m.", "f": "…para matar com a espada, com a fome, com a peste e com as feras da terra."}];
-const FRASES = [
- ['Esaú','S01, A01, A05, M12, H01, A04, H02','Lobo é o homem para o homem, e não homem, quando não sabe quem é o outro.','Plauto, Asinaria'],
- ['Jael','H04, S09, A03, A02, H03, S02','A guerra é pai de todas as coisas e rei de todas; a uns fez deuses, a outros, homens; a uns fez escravos, a outros, livres.','Heráclito, fragmento 53'],
- ['Hildegarda','S03, S07, A12, M03, M04, M08, H11','Não vos esqueçais da hospitalidade, pois por ela alguns, sem o saberem, hospedaram anjos.','Hebreus 13:2'],
- ['Raquel','S04, A06, A07, H07','A vida só pode ser compreendida olhando para trás, mas só pode ser vivida olhando para a frente.','Kierkegaard, Diários'],
- ['Ezequiel','S05, A10, M01, M02, M07, M10, H05, H06','Quem combate monstros deve cuidar para não se tornar também um monstro. E quando olhas longamente para um abismo, o abismo também olha para ti.','Nietzsche, Além do Bem e do Mal'],
- ['Ozymandias','S06, S12, A08, A09, M05, M06, H08, H09, H10','Meu nome é Ozymandias, rei dos reis: contemplai minhas obras, ó poderosos, e desesperai! Nada mais resta. Ao redor da ruína daquele destroço colossal, as areias solitárias se estendem ao longe.','Shelley, Ozymandias'],
- ['Chronos','S08, M09','O que foi, será; o que se fez, se fará: nada há de novo debaixo do sol.','Eclesiastes 1:9'],
- ['Tinta + Boaz','S10, S11, A11, M11, H12','Suponhamos que a mente seja um papel em branco, vazio de todos os caracteres, sem nenhuma ideia. Como ela vem a ser preenchida?','Locke, Ensaio sobre o Entendimento Humano'],
- ['Abate (VI)','AB1, AB2, AB6, AB5, AB4, AB3, AB7','Olhei, e eis um cavalo branco; o que o montava tinha um arco… e saiu vencendo, e para vencer. E saiu outro cavalo, vermelho; e ao que o montava foi dado tirar a paz da terra, e uma grande espada. E eis um cavalo preto; o que o montava tinha uma balança na mão… uma medida de trigo por um denário. E eis um cavalo amarelo, e o que o montava chamava-se Morte… e o Inferno o seguia. E foi-lhes dado poder sobre a quarta parte da terra, para matar com a espada, com a fome, com a peste e com as feras da terra.','Apocalipse 6']
-];
-const ENEMIGOS = [
- {n:'Esaú', sub:'o Caçador', img:'img/esau.jpg', o:'Esaú'},
- {n:'Jael', sub:'o martelo', img:'img/jael.jpg', o:'Jael'},
- {n:'Ezequiel', sub:'o vidente', img:'img/ezequiel.jpg', o:'Ezequiel'},
- {n:'Hildegarda', sub:'a Cura', img:'img/hildegarda.jpg', o:'Hildegarda'},
- {n:'Raquel', sub:'', img:'img/cartas/vin_raquel.jpg', o:'Raquel', paisagem:true},
- {n:'Ozymandias', sub:'o mundo', img:'img/ozymandias.jpg', o:'Ozymandias'},
- {n:'O Demônio', sub:'o que saiu da porta', img:'img/diabo.jpg', o:'Demônio'}
-];
+
 const $ = id => document.getElementById(id);
 const el = (t, a = {}, ...k) => { const e = document.createElement(t); if (t === 'img') e.decoding = 'async'; for (const [n, v] of Object.entries(a)) { if (n === 'class') e.className = v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else if (v === true) e.setAttribute(n, ''); else if (v !== false && v != null) e.setAttribute(n, v); } for (const x of k.flat(9)) if (x != null && x !== false) e.append(x.nodeType ? x : document.createTextNode(x)); return e; };
-const MESTRE = location.hash === '#mestre';
-const CHAVE = 'cartas-cordeiro-v2', CHAVE1 = 'cartas-cordeiro-v1';
-const novaMao = n => ({id:'m' + Date.now().toString(36) + Math.random().toString(36).slice(2,5), nome:n, cartas:[]});
-let S = {maos:[novaMao('Minha mão')], ativa:'', outros:[], hist:[], vistas:[], entregues:[], nome:'', ordem:'manual', vista:'grade', filtro:'todos', aba:'pux'};
-S.ativa = S.maos[0].id;
-try { const j = JSON.parse(localStorage.getItem(CHAVE) || 'null'); if (j && Array.isArray(j.maos) && j.maos.length) S = Object.assign(S, j);
-  else { const v1 = JSON.parse(localStorage.getItem(CHAVE1) || 'null'); if (v1 && Array.isArray(v1.mao)) S.maos[0].cartas = v1.mao.map(m => ({c:m.c, g:m.g || 0})); } } catch (e) {}
-if (!S.maos.some(m => m.id === S.ativa)) S.ativa = S.maos[0].id;
-if (!Array.isArray(S.entregues)) S.entregues = []; if (typeof S.nome !== 'string') S.nome = '';
-let avisouSalvar = false;
-const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(S)); } catch (e) { if (!avisouSalvar) { avisouSalvar = true; setTimeout(() => { const m = document.querySelector('main'); if (m) m.prepend(el('div', {class:'aviso', role:'alert'}, 'Não consegui guardar neste navegador (modo privado ou espaço cheio). Suas cartas valem só até fechar esta página.')); }, 0); } } };
-let tt = 0;
-function dizer(t){ const e = $('toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 2600); }
-const porCod = c => CARTAS.find(x => x.c === c);
-const maoAtiva = () => S.maos.find(m => m.id === S.ativa) || S.maos[0];
-const deck = c => c.c.startsWith('AB') ? 'AB' : c.c[0];
+const JOGADORES = ['Pedro','Wesley','Victor','Xande','Bruno','Higor'];
+const matiz = n => [18, 200, 48, 285, 150, 340][JOGADORES.indexOf(n)] ?? 25;
 const NOMES_DECK = {S:'Sobrevivência', A:'Armas', M:'Magia', H:'Habilidades dos inimigos', AB:'Abate'};
 const ORDEM_DECK = ['S','A','M','H','AB'];
-function usos(c){
-  const q = (/(\d)\/luta/.exec(c.u) || [])[1], v = /1\/volta/.test(c.u), r = /Recarga 5–6/.test(c.u);
-  if (q) return {tipo:'luta', q:+q, rot:'por luta'}; if (v) return {tipo:'volta', q:1, rot:'por volta'}; if (r) return {tipo:'rec', q:1, rot:'recarga 5–6'}; return null;
-}
-function normaliza(s){
-  s = s.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  let m = /^AB0?([1-7])$/.exec(s); if (m) return 'AB' + m[1];
-  m = /^([SAMH])0?(\d{1,2})$/.exec(s); if (m) return m[1] + String(+m[2]).padStart(2, '0');
-  return null;
-}
-const todasAsMaos = () => [...S.maos.map(m => ({...m, meu:true})), ...S.outros.flatMap(o => o.maos.map(m => ({id:o.dono + '/' + m.nome, nome:m.nome + (o.maos.length > 1 || m.nome !== o.dono ? '' : ''), dono:o.dono, cartas:m.cartas.map(c => ({c, g:0})), meu:false})))];
-const quemTem = code => { const r = []; for (const m of todasAsMaos()) if (m.cartas.some(x => x.c === code)) r.push(m.meu ? m.nome : (m.dono + (m.nome !== m.dono ? ' · ' + m.nome : ''))); return r; };
-const podeVer = k => !k.startsWith('AB') || MESTRE || S.entregues.includes(k) || todasAsMaos().some(m => m.cartas.some(x => x.c === k));   // Abate só para quem recebeu (mão, link do Mestre)
-const vista = code => MESTRE || S.vistas.includes(code) || todasAsMaos().some(m => m.cartas.some(x => x.c === code));
+const deck = c => c.c.startsWith('AB') ? 'AB' : c.c[0];
+const porCod = c => CARTAS.find(x => x.c === c);
+const LISTA = [...CARTAS].sort((a, b) => ORDEM_DECK.indexOf(deck(a)) - ORDEM_DECK.indexOf(deck(b)) || a.c.localeCompare(b.c, 'pt', {numeric:true}));
 const ORIG_VIN = {'Esaú':'esau','Jael':'jael','Hildegarda':'hildegarda','Raquel':'raquel','Ezequiel':'ezequiel','Ozymandias':'ozymandias','Chronos':'chronos'};
 const vinDe = c => c.c === 'AB7' ? 'vin_demonio' : 'vin_' + (ORIG_VIN[c.o.replace(/^d[eo] /, '')] || 'criados');
 const origemJogador = c => c.c === 'AB7' ? 'do Demônio' : c.o;
@@ -209,7 +157,7 @@ function fit(cf){
   const w = cf.clientWidth; if (!w) return;
   const pn = cf.querySelector('.pn'), tt = cf.querySelector('.tt');
   if (pn) { let k = .046; do { pn.style.fontSize = (w * k) + 'px'; k -= .002; } while (pn.scrollHeight > pn.clientHeight + 1 && k > .022); }
-  if (tt) { let k = .056; do { tt.style.fontSize = (w * k) + 'px'; k -= .002; } while (tt.scrollWidth > tt.clientWidth + 1 && k > .03); }
+  if (tt) { let k = .056; do { tt.style.fontSize = (w * k) + 'px'; k -= .002; } while (tt.scrollWidth > tt.clientWidth + 1 && k > .018); }
 }
 function cartaFace(c){
   const ab = c.c.startsWith('AB'), d = deck(c);
@@ -226,245 +174,79 @@ function cartaFace(c){
 function cartaCostas(code){
   return el('div', {class:'cf costas', 'data-c':code}, el('img', {class:'fr', src:'img/cartas/verso.jpg', alt:'', draggable:'false'}), el('div', {class:'cd'}, code || '?'));
 }
-/* ---- usos ---- */
-function pontosDe(m, x, c, redesenha){
-  const u = usos(c); if (!u) return el('div', {class:'est'}, 'Sem marcador de uso');
-  const dots = Array.from({length:u.q}, (_, i) => el('button', {class:'ponto' + (i < x.g ? ' gasto' : ''), 'aria-label':'Marcar uso de ' + c.n, onclick:ev => { ev.stopPropagation(); x.g = i < x.g ? i : i + 1; salvar(); redesenha(); }}));
-  return el('div', {class:'pontos'}, ...dots, el('span', {class:'est'}, u.tipo === 'rec' ? (x.g ? 'gasta (role 1d6, volta com 5 ou 6)' : 'pronta') : (u.q - x.g) + '/' + u.q + ' ' + u.rot));
+
+const CHAVE = 'cartas-mesa-v1';
+let S = {v:{}, o:{}, aba:'mesa', deck:'todas', mao:JOGADORES[0]};
+try { const j = JSON.parse(localStorage.getItem(CHAVE) || 'null'); if (j && j.v && j.o) S = Object.assign(S, j); } catch (e) {}
+let avisou = false;
+const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(S)); } catch (e) { if (!avisou) { avisou = true; dizer('Não consegui guardar neste navegador: as escolhas valem só até fechar a página.'); } } };
+let tt = 0;
+function dizer(t){ const e = $('toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 2600); }
+const reveladas = () => LISTA.filter(c => S.v[c.c]);
+const donoDe = code => S.o[code] || '';
+const contaDono = n => LISTA.filter(c => S.v[c.c] && S.o[c.c] === n).length;
+const semDono = () => LISTA.filter(c => S.v[c.c] && !S.o[c.c]);
+
+function slot(c){
+  const aberta = !!S.v[c.c], d = donoDe(c.c);
+  const b = el('button', {class:'slot' + (aberta ? '' : ' fechada'), type:'button', 'aria-label':aberta ? c.n + (d ? ', de ' + d : ', sem dono') : 'Carta ' + c.c + ', virada para baixo', onclick:() => abrir(c.c)},
+    aberta ? cartaFace(c) : cartaCostas(c.c));
+  if (aberta) { const t = el('div', {class:'dono' + (d ? '' : ' sem')}, d || 'sem dono'); if (d) t.style.setProperty('--h', matiz(d)); b.append(t); }
+  return b;
 }
-/* ---- zoom e regra ---- */
-const TERMOS = [
- [/Passiva/, 'Passiva: vale o tempo todo, sem gastar ação.'],
- [/Ação livre/, 'Ação livre: não gasta ação nem reação.'],
- [/Ação bônus/, 'Ação bônus: usa a sua ação bônus do turno.'],
- [/Ação padrão/, 'Ação padrão: usa a sua ação do turno.'],
- [/Reação/, 'Reação: usa a sua reação, em resposta ao gatilho.'],
- [/gatilho/, 'Gatilho: só pode ser usada quando a condição escrita acontece.'],
- [/(\d)\/luta/, null], [/1\/volta/, 'Por volta: recarrega quando uma pétala é arrancada.'],
- [/Recarga 5–6/, 'Recarga 5–6: depois de usar, role 1d6 no início dos seus turnos; ela volta com 5 ou 6.'],
- [/à vontade/, 'À vontade: pode usar quantas vezes quiser.'],
- [/1\/turno/, 'Uma vez por turno.'], [/1\/rodada/, 'Uma vez por rodada.']
-];
-function regraDe(c){
-  const li = [];
-  for (const [re, t] of TERMOS) { const m = re.exec(c.u); if (!m) continue;
-    if (t) li.push(t); else li.push('Por luta: ' + m[1] + ' vez' + (m[1] > 1 ? 'es' : '') + ' por luta; recarrega no começo de cada luta.'); }
-  if (c.t) li.push('TINTA: tem um efeito extra de tinta. Quando o grupo usar 3 cartas de Tinta na mesma volta, o mundo perde mais uma coisa.');
-  if (!c.c.startsWith('AB')) li.push('Eco da Fome: esta carta, como qualquer outra na sua mão, dá +6 PV máximos e +4 de dano fixo por turno.');
-  li.push('CD do cavaleiro 15 (ou a sua, se maior). Ataque do cavaleiro +7 (ou o seu, se maior). Nenhum efeito rola mais de 6 dados.');
-  return [el('h3', {style:'margin-top:0'}, c.n), el('p', {class:'sub'}, NOMES_DECK[deck(c)] + ' · ' + origemJogador(c) + ' · ' + c.u),
-    el('p', {class:'grande'}, c.e), el('div', {class:'frase'}, '“' + c.f + '”'), el('p', {class:'sub', style:'text-align:center'}, 'Pedaço de uma frase. A ordem não está dita.'),
-    el('h3', {}, 'Como funciona'), el('ul', {}, ...li.map(t => el('li', {}, t)))];
-}
-let mo = {lista:[], i:0, z:1, cb:null};
-function abrir(lista, i, cb){ mo = {lista, i, z:1, cb}; $('mo').hidden = false; document.body.style.overflow = 'hidden'; pinta(); }
-function fechar(){ $('mo').hidden = true; document.body.style.overflow = ''; mo.cb && mo.cb(); }
-function pinta(){
-  const raiz = $('mo'), item = mo.lista[mo.i], c = item.carta, dono = item.mao;
-  const zoom = el('div', {class:'zoom', style:'--z:' + mo.z, ondblclick:() => { mo.z = mo.z > 1.2 ? 1 : 2; pinta(); }}, cartaFace(c));
-  const nav = (d) => { mo.i = (mo.i + d + mo.lista.length) % mo.lista.length; mo.z = 1; pinta(); };
-  raiz.replaceChildren(
-    el('div', {class:'topo'},
-      el('button', {class:'peq', onclick:fechar, 'aria-label':'Fechar'}, '✕ Fechar'),
-      mo.lista.length > 1 ? [el('button', {class:'peq', onclick:() => nav(-1), 'aria-label':'Carta anterior'}, '◀'), el('span', {class:'sub'}, (mo.i + 1) + '/' + mo.lista.length), el('button', {class:'peq', onclick:() => nav(1), 'aria-label':'Próxima carta'}, '▶')] : null,
-      el('span', {class:'esp'}),
-      el('button', {class:'peq', onclick:() => { mo.z = Math.max(1, +(mo.z - .25).toFixed(2)); pinta(); }, 'aria-label':'Diminuir zoom'}, '−'),
-      el('input', {type:'range', min:1, max:3, step:.05, value:mo.z, 'aria-label':'Zoom', oninput:ev => { mo.z = +ev.target.value; zoom.style.setProperty('--z', mo.z); [...zoom.querySelectorAll('.cf')].forEach(fit); }}),
-      el('button', {class:'peq', onclick:() => { mo.z = Math.min(3, +(mo.z + .25).toFixed(2)); pinta(); }, 'aria-label':'Aumentar zoom'}, '+')),
-    el('div', {class:'corpo'}, zoom, el('div', {class:'reg'},
-      dono && dono.meu && item.x ? [el('div', {class:'painel'}, el('b', {}, 'Na sua mão: ' + dono.nome), pontosDe(dono, item.x, c, pinta)),
-        el('div', {class:'acoes'}, outrasMaos(dono, item.x, c), el('button', {class:'peq perigo', onclick:ev => confirma(ev.target, () => { dono.cartas = dono.cartas.filter(y => y !== item.x); salvar(); fechar(); redesenhaTudo(); }, 'Devolver carta')}, 'Devolver carta'))] : null,
-      regraDe(c))));
-  requestAnimationFrame(() => [...raiz.querySelectorAll('.cf')].forEach(fit));
-}
-function confirma(bt, acao, rot){ if (bt.dataset.sim) { acao(); return; } bt.dataset.sim = 1; bt.textContent = 'Toque de novo para confirmar'; setTimeout(() => { delete bt.dataset.sim; bt.textContent = rot; }, 3000); }
-function outrasMaos(dono, x, c){
-  const outras = S.maos.filter(m => m !== dono); if (!outras.length) return null;
-  return el('select', {class:'peq', 'aria-label':'Passar para outra mão', onchange:ev => { const alvo = S.maos.find(m => m.id === ev.target.value); if (!alvo) return;
-    if (alvo.cartas.some(y => y.c === c.c)) { dizer('Essa mão já tem esta carta.'); ev.target.value = ''; return; }
-    dono.cartas = dono.cartas.filter(y => y !== x); alvo.cartas.push({c:c.c, g:x.g}); salvar(); dizer('Passada para ' + alvo.nome); if (!$('mo').hidden) fechar(); redesenhaTudo(); } },
-    el('option', {value:''}, 'Passar para…'), ...outras.map(m => el('option', {value:m.id}, m.nome)));
-}
-document.addEventListener('keydown', ev => { if ($('mo').hidden) return; if (ev.key === 'Escape') fechar(); else if (ev.key === 'ArrowRight' && mo.lista.length > 1) { mo.i = (mo.i + 1) % mo.lista.length; mo.z = 1; pinta(); } else if (ev.key === 'ArrowLeft' && mo.lista.length > 1) { mo.i = (mo.i - 1 + mo.lista.length) % mo.lista.length; mo.z = 1; pinta(); } });
-/* ---- aba Puxar ---- */
-let resultado = null, erroPux = '';
-function ver(ev){
-  ev.preventDefault(); erroPux = ''; resultado = null;
-  const k = normaliza($('cod').value);
-  if (!k) erroPux = 'Código não reconhecido. Use letra e número, como S07 ou H12.';
-  else { const c = porCod(k); if (!c || !podeVer(k)) erroPux = 'Essa carta não existe. Confira o baralho (S, A, M ou H) e o número, de 01 a 12.';
-    else { resultado = c; if (!S.vistas.includes(k)) S.vistas.push(k); S.hist = [k, ...S.hist.filter(x => x !== k)].slice(0, 12); salvar(); } }
-  desPux();
-}
-function desPux(){
-  const r = $('sPux'); r.replaceChildren();
-  r.append(el('form', {class:'busca', id:'form', autocomplete:'off', onsubmit:ver}, el('input', {id:'cod', inputmode:'text', autocapitalize:'characters', maxlength:5, placeholder:'S07', 'aria-label':'Código da carta', enterkeyhint:'go', value:resultado ? '' : ''}), el('button', {type:'submit', class:'on'}, 'Ver')),
-    el('p', {class:'dica'}, 'Role 1d4 para o baralho e 1d12 para a carta. 1 é ', el('b', {}, 'S'), ' (Sobrevivência), 2 é ', el('b', {}, 'A'), ' (Armas), 3 é ', el('b', {}, 'M'), ' (Magia), 4 é ', el('b', {}, 'H'), ' (Habilidades dos inimigos). Um 3 e um 7 dão ', el('b', {}, 'M07'), '. As cartas de Abate o Mestre entrega.'),
-    el('div', {class:'barra'}, el('button', {class:'peq', onclick:() => { const d = 'SAMH'[Math.floor(Math.random() * 4)], n = 1 + Math.floor(Math.random() * 12); $('cod').value = d + n; ver(new Event('submit')); }}, '🎲 Rolar por mim'), el('span', {class:'sub'}, 'se estiver sem dados à mão')),
-    el('p', {class:'erro', role:'alert'}, erroPux),
-    (() => { const m = maoAtiva(), n = m.cartas.length; return n ? el('p', {class:'guard', role:'status'}, el('b', {}, n + (n === 1 ? ' guardada' : ' guardadas')), ' em ' + m.nome + '. ', el('button', {class:'peq', onclick:() => mudaAba('mao')}, 'Ver mãos')) : el('span'); })());
-  if (resultado) {
-    const c = resultado, onde = quemTem(c.c);
-    const v = el('div', {class:'virar carta-grande'}, el('div', {class:'in'}, cartaCostas(c.c), (() => { const f = cartaFace(c); f.classList.add('frente'); return f; })()));
-    r.append(v);
-    setTimeout(() => v.classList.add('v'), 60);
-    requestAnimationFrame(() => { const rc = v.getBoundingClientRect(); if (rc.top < 0 || rc.top > innerHeight * .5) v.scrollIntoView({block:'start', behavior:'auto'}); });
-    if (onde.length) r.append(el('div', {class:'aviso'}, 'Esta carta já está em: ' + onde.join(', ') + '. Se for repetida no grupo, role de novo.'));
-    const alvo = el('select', {id:'alvoMao', 'aria-label':'Guardar em'}, ...S.maos.map(m => el('option', {value:m.id, selected:m.id === S.ativa}, m.nome)));
-    r.append(el('div', {class:'acoes fixa'}, el('span', {class:'sub'}, 'Guardar em'), alvo,
-      el('button', {class:'on', onclick:() => { const m = S.maos.find(x => x.id === alvo.value); if (m.cartas.some(x => x.c === c.c)) { dizer('Essa mão já tem esta carta.'); return; } m.cartas.push({c:c.c, g:0}); S.ativa = m.id; salvar(); resultado = null; erroPux = ''; dizer(c.n + ' guardada em ' + m.nome + ' (' + m.cartas.length + ')'); redesenhaTudo(); const k = $('cod'); if (k) k.focus({preventScroll:true}); }}, 'Guardar'),
-      el('button', {onclick:() => abrir([{carta:c}], 0)}, 'Zoom e regra'),
-      el('button', {class:'peq', onclick:() => { resultado = null; desPux(); $('cod').focus(); }}, 'Fechar')));
-  }
-  if (S.hist.length) r.append(el('div', {class:'chips'}, el('span', {class:'sub'}, 'Vistas agora há pouco:'), ...S.hist.map(k => el('button', {class:'chip', onclick:() => { resultado = porCod(k); erroPux = ''; desPux(); }}, k))));
-  const prog = ORDEM_DECK.slice(0, 4).map(d => d + ' ' + CARTAS.filter(c => deck(c) === d && vista(c.c)).length + '/12').join(' · ');
-  r.append(el('p', {class:'sub', style:'margin-top:14px'}, 'Descobertas: ' + prog));
-}
-/* ---- aba Mãos ---- */
-const rotaUso = (m, x) => { const c = porCod(x.c), u = usos(c); return !u ? 2 : (u.tipo === 'rec' ? (x.g ? 1 : 0) : (x.g >= u.q ? 1 : 0)); };
-function ordena(m){
-  let l = m.cartas.map((x, i) => ({x, c:porCod(x.c), i}));
-  if (S.filtro !== 'todos') l = l.filter(e => deck(e.c) === S.filtro);
-  const cmp = {baralho:(a, b) => ORDEM_DECK.indexOf(deck(a.c)) - ORDEM_DECK.indexOf(deck(b.c)) || a.c.c.localeCompare(b.c.c), codigo:(a, b) => a.c.c.localeCompare(b.c.c), nome:(a, b) => a.c.n.localeCompare(b.c.n, 'pt'),
-    origem:(a, b) => a.c.o.localeCompare(b.c.o, 'pt') || a.c.n.localeCompare(b.c.n, 'pt'), uso:(a, b) => rotaUso(m, a.x) - rotaUso(m, b.x) || a.i - b.i}[S.ordem];
-  if (cmp) l.sort(cmp); return l;
-}
-function desMao(){
-  const r = $('sMao'); r.replaceChildren();
-  const m = maoAtiva();
-  r.append(el('div', {class:'hands'}, ...S.maos.map(h => el('button', {class:'chip' + (h.id === S.ativa ? ' at' : ''), onclick:() => { S.ativa = h.id; salvar(); desMao(); }}, h.nome, el('span', {class:'sub', style:h.id === S.ativa ? 'color:#1a0c04' : ''}, h.cartas.length))),
-    el('button', {class:'chip', onclick:() => { const n = prompt ? null : null; const e = $('novaMao'); e.hidden = !e.hidden; if (!e.hidden) e.querySelector('input').focus(); }}, '+ Nova mão')));
-  r.append(el('form', {id:'novaMao', hidden:true, class:'barra', onsubmit:ev => { ev.preventDefault(); const v = ev.target.querySelector('input').value.trim(); if (!v) return; const h = novaMao(v); S.maos.push(h); S.ativa = h.id; salvar(); desMao(); }},
-    el('input', {type:'text', placeholder:'Nome da mão (ex.: Victor, Reserva do grupo)', maxlength:24, style:'flex:1'}), el('button', {type:'submit', class:'on peq'}, 'Criar')));
-  const n = m.cartas.filter(x => !x.c.startsWith('AB')).length;
-  r.append(el('div', {class:'painel'}, el('b', {}, 'Eco da Fome: '), n + ' carta' + (n === 1 ? '' : 's') + ' = ', el('b', {}, '+' + 6*n + ' PV máximos'), ' e ', el('b', {}, '+' + 4*n + ' de dano fixo'), ' uma vez por turno.'));
-  r.append(el('div', {class:'barra'},
-    el('select', {class:'peq', 'aria-label':'Organizar', onchange:ev => { S.ordem = ev.target.value; salvar(); desMao(); }}, ...[['manual','Ordem manual'],['baralho','Por baralho'],['codigo','Por código'],['nome','Por nome'],['origem','Por personagem'],['uso','Usáveis primeiro']].map(([v, t]) => el('option', {value:v, selected:S.ordem === v}, t))),
-    el('select', {class:'peq', 'aria-label':'Filtrar baralho', onchange:ev => { S.filtro = ev.target.value; salvar(); desMao(); }}, ...[['todos','Todos os baralhos'],['S','Sobrevivência'],['A','Armas'],['M','Magia'],['H','Habilidades'],['AB','Abate']].map(([v, t]) => el('option', {value:v, selected:S.filtro === v}, t))),
-    el('button', {class:'peq', 'aria-pressed':String(S.vista === 'grade'), onclick:() => { S.vista = S.vista === 'grade' ? 'lista' : 'grade'; salvar(); desMao(); }}, S.vista === 'grade' ? 'Ver em lista' : 'Ver como cartas')));
-  r.append(el('div', {class:'barra'},
-    el('button', {class:'peq', onclick:() => { m.cartas.forEach(x => { const u = usos(porCod(x.c)); if (u && u.tipo === 'luta') x.g = 0; }); salvar(); desMao(); dizer('Usos por luta recarregados'); }}, 'Nova luta'),
-    el('button', {class:'peq', onclick:() => { m.cartas.forEach(x => { const u = usos(porCod(x.c)); if (u && u.tipo === 'volta') x.g = 0; }); salvar(); desMao(); dizer('Usos por volta recarregados'); }}, 'Pétala arrancada'),
-    el('span', {class:'esp', style:'flex:1'}),
-    el('button', {class:'peq', onclick:() => { const e = $('renomear'); e.hidden = !e.hidden; if (!e.hidden) { e.querySelector('input').value = m.nome; e.querySelector('input').focus(); } }}, 'Renomear'),
-    S.maos.length > 1 ? el('button', {class:'peq perigo', onclick:ev => confirma(ev.target, () => { const dest = S.maos.find(h => h !== m); dest.cartas.push(...m.cartas.filter(x => !dest.cartas.some(y => y.c === x.c))); S.maos = S.maos.filter(h => h !== m); S.ativa = dest.id; salvar(); redesenhaTudo(); dizer('Mão removida; as cartas foram para ' + dest.nome); }, 'Remover mão')}, 'Remover mão') : null));
-  r.append(el('form', {id:'renomear', hidden:true, class:'barra', onsubmit:ev => { ev.preventDefault(); const v = ev.target.querySelector('input').value.trim(); if (v) { m.nome = v; salvar(); desMao(); } }}, el('input', {type:'text', maxlength:24, style:'flex:1'}), el('button', {type:'submit', class:'on peq'}, 'Salvar')));
-  const lista = ordena(m), itens = lista.map(e => ({carta:e.c, mao:{...m, meu:true, nome:m.nome, cartas:m.cartas, get id(){ return m.id; }}, x:e.x}));
-  itens.forEach(it => { it.mao = m; it.mao.meu = true; });
-  if (!m.cartas.length) r.append(el('p', {class:'vazio'}, 'Esta mão está vazia. Puxe cartas na aba Puxar.'));
-  else if (S.vista === 'grade') r.append(el('div', {class:'grade'}, ...itens.map((it, k) => el('div', {class:'item'},
-    el('div', {onclick:() => abrir(itens, k, desMao)}, cartaFace(it.carta)), pontosDe(m, it.x, it.carta, desMao),
-    el('div', {class:'ctl'}, S.ordem === 'manual' && S.filtro === 'todos' ? [el('button', {class:'peq', 'aria-label':'Mover para a esquerda', disabled:m.cartas.indexOf(it.x) === 0, onclick:() => mover(m, it.x, -1)}, '◀'), el('button', {class:'peq', 'aria-label':'Mover para a direita', disabled:m.cartas.indexOf(it.x) === m.cartas.length - 1, onclick:() => mover(m, it.x, 1)}, '▶')] : null, outrasMaos(m, it.x, it.carta))))));
-  else r.append(el('div', {class:'lista'}, ...itens.map((it, k) => el('div', {class:'li'}, el('span', {class:'cd'}, it.carta.c), el('div', {class:'nm', onclick:() => abrir(itens, k, desMao), style:'cursor:pointer'}, it.carta.n, el('div', {class:'sub'}, origemJogador(it.carta) + ' · ' + it.carta.u.split(' · ')[0])), pontosDe(m, it.x, it.carta, desMao)))));
-  r.append(el('h3', {}, 'Mesa: as cartas de todos'), desMesa());
-  r.append(desCompartilhar());
-}
-function mover(m, x, d){ const i = m.cartas.indexOf(x), j = i + d; if (j < 0 || j >= m.cartas.length) return; m.cartas.splice(i, 1); m.cartas.splice(j, 0, x); salvar(); desMao(); }
 function desMesa(){
-  const raiz = el('div', {class:'mesa'}); const linhas = [];
-  for (const h of S.maos) linhas.push({quem:h.nome, sub:'sua, neste celular', tag:'SUA', cartas:h.cartas.map(x => x.c)});
-  for (const o of S.outros) for (const h of o.maos) linhas.push({quem:o.dono + (o.maos.length > 1 && h.nome !== o.dono ? ' · ' + h.nome : ''), sub:'recebida às ' + new Date(o.em).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), tag:'RECEBIDA', cartas:h.cartas, outro:o});
-  const total = new Set(linhas.flatMap(l => l.cartas)).size;
-  raiz.append(el('p', {class:'sub'}, total + ' carta' + (total === 1 ? '' : 's') + ' diferente' + (total === 1 ? '' : 's') + ' em jogo. Para ver a mão de outro jogador, ele toca em “Compartilhar minhas mãos” e manda o link.'));
-  for (const l of linhas) { const itens = l.cartas.map(code => ({carta:porCod(code)})).filter(i => i.carta);
-    raiz.append(el('div', {class:'quem'}, el('b', {style:'font-size:17px'}, l.quem, el('span', {class:'tagq' + (l.outro ? ' rec' : '')}, l.tag)), el('span', {class:'sub'}, l.cartas.length + ' · ' + l.sub),
-      l.outro ? el('button', {class:'peq perigo', onclick:ev => confirma(ev.target, () => { S.outros = S.outros.filter(o => o !== l.outro); salvar(); redesenhaTudo(); }, 'Tirar'), 'aria-label':'Remover mão recebida'}, 'Tirar') : null),
-      itens.length ? el('div', {class:'fila'}, ...itens.map((it, k) => el('div', {class:'cf-w', style:'flex:0 0 120px'}, (() => { const f = cartaFace(it.carta); f.style.flex = '0 0 120px'; f.addEventListener('click', () => abrir(itens, k)); return f; })()))) : el('p', {class:'sub'}, 'Sem cartas.')); }
-  return raiz;
+  const r = reveladas().length;
+  const chips = [['todas','Todas', LISTA.length], ...ORDEM_DECK.map(k => [k, NOMES_DECK[k], LISTA.filter(c => deck(c) === k).length])];
+  const lista = LISTA.filter(c => S.deck === 'todas' || deck(c) === S.deck);
+  $('sMesa').replaceChildren(
+    el('div', {class:'chips', role:'group', 'aria-label':'Baralho'}, ...chips.map(([k, t, n]) => el('button', {class:'chip', 'aria-pressed':String(S.deck === k), onclick:() => { S.deck = k; salvar(); desMesa(); }}, t, el('small', {}, n)))),
+    el('div', {class:'grade'}, ...lista.map(slot)),
+    el('p', {class:'dica'}, 'Toque numa carta para virar. Depois escolha quem fica com ela.'));
 }
-function linkDasMaos(){ const dado = S.maos.map(m => [m.nome === 'Minha mão' && S.nome.trim() ? S.nome.trim().slice(0, 24) : m.nome, m.cartas.map(x => x.c).join(',')]); return location.origin + location.pathname + '#m=' + encodeURIComponent(JSON.stringify(dado)); }
-function desCompartilhar(){
-  const url = linkDasMaos(), caixa = el('input', {type:'text', readonly:true, value:url, 'aria-label':'Link das suas mãos', onfocus:ev => ev.target.select()});
-  return el('div', {class:'painel'}, el('b', {}, 'Compartilhar minhas mãos'),
-    el('label', {class:'sub', style:'display:block;margin:6px 0'}, 'Seu nome (é como os outros vão ver a sua mão) ', el('input', {type:'text', maxlength:24, value:S.nome, placeholder:'ex.: Victor', 'aria-label':'Seu nome', style:'min-width:9em', onchange:ev => { S.nome = ev.target.value.trim(); salvar(); desMao(); }})),
-    el('p', {class:'sub', style:'margin:4px 0 8px'}, 'Gere o link, mande no grupo e quem abrir vê as suas cartas na aba Mãos, sempre como cópia: ela não muda sozinha, então gere de novo quando mudar sua mão.'),
-    el('div', {class:'copia'}, caixa, el('button', {class:'peq on', onclick:async () => { try { if (navigator.share) { await navigator.share({title:'Minhas cartas', url}); return; } await navigator.clipboard.writeText(url); dizer('Link copiado'); } catch (e) { caixa.focus(); caixa.select(); dizer('Selecione e copie o link.'); } }}, navigator.share ? 'Enviar' : 'Copiar')));
+function desMaos(){
+  const sd = semDono(), mostra = S.mao === '·' ? sd : LISTA.filter(c => S.v[c.c] && S.o[c.c] === S.mao);
+  $('sMaos').replaceChildren(
+    el('div', {class:'chips', role:'group', 'aria-label':'Jogador'}, ...JOGADORES.map(n => el('button', {class:'chip', 'aria-pressed':String(S.mao === n), onclick:() => { S.mao = n; salvar(); desMaos(); }}, n, el('small', {}, contaDono(n)))),
+      sd.length ? el('button', {class:'chip', 'aria-pressed':String(S.mao === '·'), onclick:() => { S.mao = '·'; salvar(); desMaos(); }}, 'Sem dono', el('small', {}, sd.length)) : null),
+    el('div', {class:'maoh'}, el('h2', {}, S.mao === '·' ? 'Sem dono' : S.mao), el('span', {class:'cont'}, mostra.length + (mostra.length === 1 ? ' carta' : ' cartas'))),
+    mostra.length ? el('div', {class:'grade'}, ...mostra.map(slot)) : el('div', {class:'vazio'}, 'Nenhuma carta aqui ainda.'));
 }
-const nomesUsados = () => [...S.maos.map(h => h.nome), ...S.outros.map(o => o.dono)].map(n => n.trim().toLowerCase());
-function nomeLivre(base){ let n = 2, c = base; const u = nomesUsados(); while (u.includes(c.toLowerCase())) c = base + ' ' + (n++); return c; }
-function importaDoLink(){
-  const ab = /^#ab=([\w,]+)$/i.exec(location.hash);
-  if (ab) { const ks = ab[1].split(',').map(normaliza).filter(k => k && k.startsWith('AB') && porCod(k)); history.replaceState(null, '', location.pathname);
-    if (ks.length) { ks.forEach(k => { if (!S.entregues.includes(k)) S.entregues.push(k); if (!S.vistas.includes(k)) S.vistas.push(k); }); resultado = porCod(ks[0]); S.aba = 'pux'; S.hist = [ks[0], ...S.hist.filter(x => x !== ks[0])].slice(0, 12); salvar(); setTimeout(() => dizer('Carta de Abate recebida: ' + ks.join(', ')), 300); }
-    return; }
-  const m = /^#m=(.+)$/.exec(location.hash); if (!m) return;
-  try { const dado = JSON.parse(decodeURIComponent(m[1])); if (!Array.isArray(dado)) throw 0;
-    const maos = dado.map(([n, cs]) => ({nome:String(n).slice(0, 24), cartas:String(cs).split(',').filter(c => porCod(c))})).filter(h => h.nome);
-    if (!maos.length) throw 0; history.replaceState(null, '', location.pathname);
-    const meu = S.maos.some(h => h.nome.trim().toLowerCase() === maos[0].nome.trim().toLowerCase()), dono = meu ? '' : maos[0].nome;
-    const sug = el('input', {type:'text', value:dono, maxlength:24, placeholder:'Nome de quem mandou', 'aria-label':'Nome do dono'}), nota = el('p', {class:'sub', style:'margin:4px 0', role:'status'});
-    const atualiza = () => { const d = sug.value.trim(), ex = S.outros.find(o => o.dono.toLowerCase() === d.toLowerCase()), meuN = S.maos.some(h => h.nome.trim().toLowerCase() === d.toLowerCase());
-      nota.textContent = !d ? 'Escreva o nome de quem mandou (não use o nome de uma das suas mãos).' : ex ? 'Já existe uma mão recebida de ' + d + '. Ela não será apagada: esta entra como “' + nomeLivre(d) + '”, a menos que você toque em Substituir.' : meuN ? 'Esse é o nome de uma mão sua. Esta entra como “' + nomeLivre(d) + '”.' : '';
-      sub.hidden = !ex; };
-    const add = trocar => { const d0 = sug.value.trim(); if (!d0) { sug.focus(); atualiza(); return; }
-      const ex = S.outros.find(o => o.dono.toLowerCase() === d0.toLowerCase()); let d = d0;
-      if (ex && trocar) S.outros = S.outros.filter(o => o !== ex); else d = nomeLivre(d0);
-      S.outros.push({dono:d, maos, em:Date.now()}); salvar(); b.remove(); redesenhaTudo(); mudaAba('mao'); dizer('Mão de ' + d + (d !== d0 ? ' guardada como “' + d + '”' : ' adicionada')); };
-    const sub = el('button', {class:'peq perigo', hidden:true, onclick:() => add(true)}, 'Substituir a que já tenho');
-    sug.addEventListener('input', atualiza);
-    const b = el('div', {class:'aviso'}, el('b', {}, 'Mão recebida'), el('p', {style:'margin:4px 0'}, maos.map(h => h.nome + ' (' + h.cartas.length + ')').join(', ') + '. De quem é?'), el('div', {class:'copia'}, sug, el('button', {class:'on', onclick:() => add(false)}, 'Adicionar'), el('button', {onclick:() => b.remove()}, 'Ignorar')), nota, sub);
-    $('sPux').before(b); atualiza();
-  } catch (e) { history.replaceState(null, '', location.pathname); dizer('Link de mão inválido.'); }
+const ABAS = [['mesa','Mesa','sMesa'], ['maos','Mãos','sMaos']];
+function pinta(){
+  const r = reveladas().length;
+  $('cont').replaceChildren(el('b', {}, r), ' de ' + LISTA.length + ' viradas');
+  $('abas').replaceChildren(...ABAS.map(([k, t]) => el('button', {'aria-pressed':String(S.aba === k), onclick:() => { S.aba = k; salvar(); pinta(); }}, t)));
+  for (const [k, , id] of ABAS) $(id).hidden = S.aba !== k;
+  if (S.aba === 'mesa') desMesa(); else desMaos();
 }
-/* ---- aba Todas ---- */
-let tFiltro = 'todos', tBusca = '';
-function desTod(){
-  const r = $('sTod'); r.replaceChildren();
-  const vs = CARTAS.filter(c => vista(c.c) && !c.c.startsWith('AB')).length, tot = CARTAS.filter(c => !c.c.startsWith('AB')).length;
-  r.append(el('p', {class:'sub'}, vs + ' de ' + tot + ' cartas descobertas. As ainda não vistas ficam viradas para baixo. Cartas de Abate só aparecem quando alguém as recebe.'));
-  r.append(el('div', {class:'barra'}, ...[['todos','Todas'],['S','Sobrev.'],['A','Armas'],['M','Magia'],['H','Hab.'],['AB','Abate']].map(([v, t]) => el('button', {class:'peq', 'aria-pressed':String(tFiltro === v), onclick:() => { tFiltro = v; desTod(); }}, t)),
-    el('input', {type:'text', placeholder:'Buscar nome ou personagem', value:tBusca, 'aria-label':'Buscar', style:'flex:1;min-width:9em', oninput:ev => { tBusca = ev.target.value; clearTimeout(desTod.t); desTod.t = setTimeout(() => { const pos = tBusca; desTod(); const i = $('sTod').querySelector('input[type=text]'); i.focus(); i.setSelectionRange(pos.length, pos.length); }, 250); }})));
-  const q = tBusca.trim().toLowerCase();
-  const lista = CARTAS.filter(c => (tFiltro === 'todos' ? !c.c.startsWith('AB') || vista(c.c) : deck(c) === tFiltro) && (!q || !vista(c.c) ? !q : (c.n + ' ' + c.o + ' ' + c.u).toLowerCase().includes(q)));
-  const visiveis = lista.filter(c => vista(c.c)).map(c => ({carta:c}));
-  r.append(el('div', {class:'grade'}, ...lista.map(c => { const v = vista(c.c), com = quemTem(c.c);
-    return el('div', {class:'item'}, el('div', {onclick:() => { if (v) abrir(visiveis, visiveis.findIndex(i => i.carta === c)); else dizer('Ainda não descoberta: ' + c.c); }, style:'cursor:pointer'}, v ? cartaFace(c) : cartaCostas(c.c)), com.length ? el('div', {class:'est'}, 'Com: ' + com.join(', ')) : el('div', {class:'est'}, v ? 'Ninguém com ela' : ' ')); })));
-  if (!lista.length) r.append(el('p', {class:'vazio'}, 'Nada encontrado.'));
+
+/* ---- janela da carta ---- */
+let atual = '', cb = null;
+function abrir(code){ atual = code; $('mo').hidden = false; document.body.style.overflow = 'hidden'; pintaMo(true); $('mo').querySelector('.virar') && $('mo').querySelector('.virar').focus(); }
+function fecha(){ $('mo').hidden = true; document.body.style.overflow = ''; pinta(); }
+function vira(){
+  if (S.v[atual]) return;
+  S.v[atual] = 1; salvar(); pintaMo(false);
 }
-/* ---- aba Inimigos ---- */
-function desIni(){
-  const r = $('sIni'); r.replaceChildren();
-  r.append(el('div', {class:'inimigos'}, ...ENEMIGOS.map(e => el('button', {class:'ini', onclick:() => abrirInimigo(e)}, el('img', {src:e.img, alt:e.n, loading:'lazy', style:e.paisagem ? 'object-fit:cover;object-position:60% 50%' : ''}), el('div', {class:'n'}, el('b', {}, e.n), e.sub ? el('span', {class:'sub'}, e.sub) : null)))));
+function pintaMo(inicial){
+  const c = porCod(atual), aberta = !!S.v[atual], d = donoDe(atual);
+  const frente = cartaFace(c); frente.classList.add('frente');
+  const v = el('div', {class:'virar' + (aberta ? ' v' : ''), tabindex:'0', role:'button', 'aria-label':aberta ? c.n : 'Virar a carta ' + atual, onclick:vira, onkeydown:e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vira(); } }},
+    el('div', {class:'in'}, cartaCostas(atual), frente));
+  const corpo = el('div', {class:'corpo'}, v,
+    aberta ? el('p', {class:'dica'}, d ? 'Com ' + d + '. Toque noutro nome para trocar.' : 'Quem fica com ela?') : el('p', {class:'dica'}, 'Toque na carta para virar.'),
+    aberta ? el('div', {class:'donos', role:'group', 'aria-label':'Dono da carta'}, ...JOGADORES.map(n => { const b = el('button', {type:'button', 'aria-pressed':String(d === n), onclick:() => dono(n)}, n); b.style.setProperty('--h', matiz(n)); return b; })) : null,
+    aberta ? el('div', {class:'sec'}, d ? el('button', {class:'peq', onclick:() => dono('')}, 'Tirar o dono') : null, el('button', {class:'peq perigo', onclick:desvira}, 'Desvirar e devolver ao monte')) : null);
+  $('mo').replaceChildren(el('div', {class:'topo2'}, el('div', {class:'esp'}, aberta ? c.n : 'Carta ' + atual), el('button', {class:'peq', onclick:fecha}, 'Fechar')), corpo);
 }
-function abrirInimigo(e){
-  const cs = CARTAS.filter(c => c.o.replace(/^d[eo] /, '') === e.o), vs = cs.filter(c => vista(c.c));
-  $('mo').hidden = false; document.body.style.overflow = 'hidden'; mo = {lista:[], i:0, z:1, cb:null};
-  $('mo').replaceChildren(el('div', {class:'topo'}, el('button', {class:'peq', onclick:fechar}, '✕ Fechar'), el('span', {class:'esp'})),
-    el('div', {class:'corpo'}, el('div', {class:'zoom', style:'--z:1'}, el('img', {src:e.img, alt:e.n, style:'width:100%;display:block;border-radius:12px;border:2px solid var(--terra)'})),
-      el('div', {class:'reg'}, el('h3', {style:'margin-top:0'}, e.n + (e.sub ? ', ' + e.sub : '')), cs.length ? [el('p', {}, cs.length + ' carta' + (cs.length > 1 ? 's' : '') + ' vêm deste inimigo' + (e.o === 'Demônio' ? '.' : ', somando as de Abate.') + ' Descobertas: ' + vs.length + '.'), vs.length ? el('div', {class:'chips'}, ...vs.map(c => el('button', {class:'chip', onclick:() => abrir(vs.map(v => ({carta:v})), vs.indexOf(c))}, c.c + ' · ' + c.n))) : null] : null)));
-}
-/* ---- aba Regras ---- */
-function desReg(){
-  const r = $('sReg'); r.replaceChildren(); r.className = '';
-  const p = (...k) => el('p', {}, ...k);
-  r.append(el('div', {class:'painel'}, h('Sorteio'), p('A partir da volta 2, o grupo puxa 8 cartas por volta (2 por jogador) e distribui como quiser. Se rolar uma carta que o grupo já tem, role de novo. As cartas ficam com o jogador nas voltas seguintes.'),
-    h('Usos'), el('ul', {}, el('li', {}, el('b', {}, 'Por luta:'), ' recarrega no começo de cada luta.'), el('li', {}, el('b', {}, 'Por volta:'), ' recarrega quando uma pétala é arrancada.'), el('li', {}, el('b', {}, 'Recarga 5–6:'), ' depois de usar, role 1d6 no início dos seus turnos; a carta volta com 5 ou 6.')),
-    p('CD do cavaleiro: 15, ou a do personagem se for maior. Ataque do cavaleiro: +7, ou o do personagem se for maior. Nenhum efeito rola mais de 6 dados.'),
-    h('Eco da Fome'), p('Cada carta que você tem dá ', el('b', {}, '+6 PV máximos'), ' e ', el('b', {}, '+4 de dano fixo, uma vez por turno'), ', no primeiro acerto ou dano do turno. Não dobra em crítico e não vale em reações. Cartas de Abate não contam.'),
-    h('Tinta'), p('Cartas marcadas com TINTA têm um efeito extra. Quando o grupo usar 3 cartas de Tinta na mesma volta, o mundo perde mais uma coisa.'),
-    h('Frases'), p('Cada carta traz um pedaço de uma frase. Cartas do mesmo personagem formam juntas uma frase, mas a ordem não está dita: vocês juntam como acharem certo.')));
-  function h(t){ return el('h3', {style:'margin-top:12px'}, t); }
-}
-/* ---- Mestre ---- */
-function desMestre(){
-  const r = $('sMes'); r.replaceChildren(); r.hidden = false; $('nav').hidden = true; for (const id of ['sPux','sMao','sTod','sIni','sReg']) $(id).hidden = true;
-  r.append(el('h2', {}, 'Mestre: todas as cartas'), el('p', {class:'sub'}, 'Esta página mostra as frases completas e todas as cartas. Não mostre aos jogadores. Para sair, tire #mestre do endereço.'),
-    el('h3', {}, 'Frases completas'), el('div', {class:'rol'}, el('table', {class:'tab'}, el('tr', {}, ...['Grupo','Cartas (ordem de leitura)','Frase','Fonte'].map(h => el('th', {}, h))), ...FRASES.map(f => el('tr', {}, ...f.map(x => el('td', {}, x)))))),
-    el('h3', {}, 'Entregar cartas de Abate'), el('p', {class:'sub'}, 'Quem digita AB1 a AB7 sem ter recebido não vê nada. Toque para copiar o link de entrega e mande só para quem recebe.'),
-    el('div', {class:'chips'}, ...CARTAS.filter(c => c.c.startsWith('AB')).map(c => el('button', {class:'chip', onclick:async () => { const u = location.origin + location.pathname + '#ab=' + c.c; try { await navigator.clipboard.writeText(u); dizer('Link de ' + c.c + ' copiado'); } catch (e) { prompt('Copie o link', u); } }}, c.c + ' · ' + c.n))),
-    el('h3', {}, 'Cartas'), el('div', {class:'grade'}, ...CARTAS.map((c, k) => el('div', {class:'item'}, el('div', {onclick:() => abrir(CARTAS.map(x => ({carta:x})), k), style:'cursor:pointer'}, cartaFace(c))))));
-}
-/* ---- navegação ---- */
-const ABAS = [['pux','🎴','Puxar','sPux'], ['mao','🖐','Mãos','sMao'], ['tod','📖','Todas','sTod'], ['ini','🗡','Inimigos','sIni'], ['reg','📜','Regras','sReg']];
-function mudaAba(a){ S.aba = a; salvar(); for (const [k, , , id] of ABAS) $(id).hidden = k !== a; desenhaNav(); if (a === 'pux') desPux(); if (a === 'mao') desMao(); if (a === 'tod') desTod(); if (a === 'ini') desIni(); if (a === 'reg') desReg(); window.scrollTo(0, 0); }
-function desenhaNav(){ $('nav').replaceChildren(...ABAS.map(([k, ic, t]) => el('button', {'aria-pressed':String(S.aba === k), onclick:() => mudaAba(k)}, el('span', {class:'i'}, ic), t, k === 'mao' && maoAtiva().cartas.length ? el('span', {class:'b'}, String(maoAtiva().cartas.length)) : null))); }
-function redesenhaTudo(){ desenhaNav(); if (S.aba === 'pux') desPux(); if (S.aba === 'mao') desMao(); if (S.aba === 'tod') desTod(); }
-addEventListener('storage', ev => {   // duas abas abertas: adota o que a outra gravou (cada toque já grava na hora), em vez de sobrescrever com estado velho
-  if (MESTRE || ev.key !== CHAVE || !ev.newValue) return;
-  try { const j = JSON.parse(ev.newValue); if (!j || !Array.isArray(j.maos) || !j.maos.length) return;
-    if (!$('mo').hidden) { $('mo').hidden = true; document.body.style.overflow = ''; }
-    S = Object.assign(S, j); if (!S.maos.some(m => m.id === S.ativa)) S.ativa = S.maos[0].id; redesenhaTudo(); } catch (e) {} });
-if (MESTRE) desMestre(); else { importaDoLink(); mudaAba(S.aba in {pux:1, mao:1, tod:1, ini:1, reg:1} ? S.aba : 'pux'); }
+function dono(n){ if (n) S.o[atual] = n; else delete S.o[atual]; salvar(); if (n) { dizer(porCod(atual).n + ' ficou com ' + n); fecha(); } else pintaMo(false); }
+function desvira(){ delete S.v[atual]; delete S.o[atual]; salvar(); fecha(); dizer('Carta devolvida ao monte'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('mo').hidden) fecha(); });
+
+$('zera').addEventListener('click', function(){ if (this.dataset.sim) { S.v = {}; S.o = {}; salvar(); delete this.dataset.sim; this.textContent = 'Desvirar tudo e recomeçar'; pinta(); dizer('Tudo de volta ao monte'); return; } this.dataset.sim = 1; this.textContent = 'Toque de novo para confirmar'; setTimeout(() => { delete this.dataset.sim; this.textContent = 'Desvirar tudo e recomeçar'; }, 3500); });
+addEventListener('storage', ev => { if (ev.key !== CHAVE || !ev.newValue) return; try { const j = JSON.parse(ev.newValue); if (j && j.v && j.o) { S.v = j.v; S.o = j.o; if ($('mo').hidden) pinta(); else pintaMo(false); } } catch (e) {} });
+pinta();
+
 </script>
 <script>if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw-cartas.js').catch(()=>{});</script>
 </body>

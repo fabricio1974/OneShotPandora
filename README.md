@@ -67,9 +67,7 @@ Os dados do app foram gerados a partir do `.md` do bestiário; para conferir dep
 
 ## Cartas de Poder (para os jogadores)
 
-`cartas.html` é a página que os jogadores abrem no celular: eles rolam 1d4 (baralho: S, A, M, H) e 1d12 (carta), digitam o código (por exemplo M07) e veem a carta, com a mão guardada no próprio celular, o Eco da Fome somado e marcadores de uso por luta, por volta e recarga. Endereço depois de ativar o Pages: https://fabricio1974.github.io/OneShotPandora/cartas.html
-
-`cartas.html#mestre` mostra todas as cartas e as frases completas. Não passe esse endereço aos jogadores.
+`cartas.html` é a mesa de cartas, simplificada: as 55 cartas aparecem de costas; quem estiver com o celular toca numa carta, ela vira, e escolhe o dono entre Pedro, Wesley, Victor, Xande, Bruno e Higor (a etiqueta com o nome fica na carta). A aba "Mãos" mostra as cartas de cada jogador, e dá para trocar o dono, tirar o dono ou desvirar e devolver ao monte. Filtros por baralho (Sobrevivência, Armas, Magia, Habilidades, Abate). Tudo fica salvo no navegador. Endereço: https://fabricio1974.github.io/OneShotPandora/cartas.html
 
 ## Visual (design Arco)
 
