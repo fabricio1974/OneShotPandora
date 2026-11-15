@@ -67,7 +67,7 @@ Os dados do app foram gerados a partir do `.md` do bestiário; para conferir dep
 
 ## Cartas de Poder (para os jogadores)
 
-`cartas.html` tem só duas abas. **Mesa**: as 55 cartas de costas; toca na carta, ela vira, e escolhe-se o dono entre Pedro, Wesley, Victor, Xande, Bruno e Higor (uma bolinha com a cor do dono fica na carta; um balão flutuante mostra a legenda das cores). **Minha mão**: o jogador escolhe quem é e vê só as suas cartas, com controle de tamanho da grade e uma janela de ampliação com zoom (− / barra / +) e navegação entre as cartas. Filtros por baralho na Mesa. Tudo fica salvo no navegador do aparelho. Endereço: https://fabricio1974.github.io/OneShotPandora/cartas.html
+`cartas.html` tem só duas abas. **Mesa**: as 55 cartas de costas; toca na carta, ela vira, e escolhe-se o dono entre Pedro, Wesley, Victor, Xande, Bruno e Higor (uma bolinha com a cor do dono fica na carta; um balão flutuante mostra a legenda das cores). **Minha mão**: o jogador escolhe quem é (ou "Todas", que mostra todas as cartas viradas com a bolinha de cada dono) e vê só as suas cartas, com controle de tamanho da grade e uma janela de ampliação com zoom (− / barra / +) e navegação entre as cartas. Filtros por baralho na Mesa. Tudo fica salvo no navegador do aparelho. Endereço: https://fabricio1974.github.io/OneShotPandora/cartas.html
 
 ## Visual (design Arco)
 

@@ -31,7 +31,7 @@ select,input[type=text]{background:var(--painel);border:1px solid var(--linha);b
 select.peq{min-height:34px;padding:4px 8px;font-size:14px}
 :focus-visible{outline:2px solid var(--terra2);outline-offset:2px}
 /* ---- a carta ---- */
-.cf{position:relative;aspect-ratio:720/964;container-type:inline-size;background:#000;border-radius:3.2cqw;overflow:hidden;color:var(--tinta);user-select:none;-webkit-user-select:none}
+.cf{position:relative;aspect-ratio:720/964;container-type:inline-size;background:#000;border-radius:0;overflow:hidden;color:var(--tinta);user-select:none;-webkit-user-select:none}
 .cf>*{position:absolute}
 .cf .fr{inset:0;width:100%;height:100%;display:block}
 .cf .art{left:11.7%;top:18%;width:76.6%;height:40.3%;object-fit:cover;display:block}
@@ -101,7 +101,7 @@ select.peq{min-height:34px;padding:4px 8px;font-size:14px}
 .chip[aria-pressed="true"]{background:var(--terra);border-color:var(--terra);color:#1a0c04;font-weight:600}
 .chip small{opacity:.75;margin-left:4px}
 .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
-.slot{position:relative;padding:0;border:0;background:none;min-height:0;border-radius:3.2cqw;display:block;text-align:left}
+.slot{position:relative;padding:0;border:0;background:none;min-height:0;border-radius:0;display:block;text-align:left}
 .slot .cf{box-shadow:0 2px 10px #000a;pointer-events:none}
 .slot:hover .cf{box-shadow:0 0 0 2px var(--terra),0 2px 10px #000a}
 .slot.fechada .cf{filter:brightness(.92)}
@@ -126,7 +126,7 @@ body{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 .toast{bottom:auto!important;top:calc(12px + env(safe-area-inset-top,0px))}
 .mo .corpo{display:flex;flex-direction:column;align-items:center;gap:14px}
 .mo .virar{width:min(86vw,400px,calc((100dvh - 230px) * 720 / 964));cursor:pointer}
-.mo .dica{text-align:center;margin:0}
+.mo .dica{text-align:center;margin:0}.ctl{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
 .donos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(92vw,440px)}
 .donos button{min-height:50px;font-weight:600;border-width:2px;border-color:hsl(var(--h) 55% 45%)}
 .donos button[aria-pressed="true"]{background:hsl(var(--h) 70% 62%);border-color:hsl(var(--h) 70% 62%);color:#1a0c04}
@@ -139,6 +139,7 @@ body{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 html{-webkit-tap-highlight-color:transparent}
 button,input,a,.cf,.chip{touch-action:manipulation}
 button:active,.chip:active{filter:brightness(1.3);transform:scale(.97)}
+.cf .tt{justify-content:safe center}
 </style>
 </head>
 <body>
@@ -174,7 +175,7 @@ function fit(cf){
   const w = cf.clientWidth; if (!w) return;
   const pn = cf.querySelector('.pn'), tt = cf.querySelector('.tt');
   if (pn) { let k = .046; do { pn.style.fontSize = (w * k) + 'px'; k -= .002; } while (pn.scrollHeight > pn.clientHeight + 1 && k > .022); }
-  if (tt) { let k = .056; do { tt.style.fontSize = (w * k) + 'px'; k -= .002; } while (tt.scrollWidth > tt.clientWidth + 1 && k > .018); }
+  if (tt) { let k = .056; do { tt.style.fontSize = (w * k) + 'px'; k -= .002; } while (tt.scrollWidth > tt.clientWidth - 16 && k > .018); }
 }
 function cartaFace(c){
   const ab = c.c.startsWith('AB'), d = deck(c);
@@ -212,11 +213,11 @@ function legenda(){
   const bal = legAberta ? el('div', {class:'bal', role:'list', 'aria-label':'Cor de cada jogador'}, ...JOGADORES.map(n => { const i = el('i'); i.style.setProperty('--h', matiz(n)); const d = el('div', {role:'listitem'}, i, n); return d; }), el('div', {class:'sd', role:'listitem'}, el('i'), 'Virada, sem dono')) : null;
   L.replaceChildren(...(bal ? [bal, bt] : [bt]));
 }
-function slot(c, aoToque){
+function slot(c, aoToque, comBola){
   const aberta = !!S.v[c.c], d = donoDe(c.c);
   const b = el('button', {class:'slot' + (aberta ? '' : ' fechada'), type:'button', 'aria-label':aberta ? c.n + (d ? ', de ' + d : ', sem dono') : 'Carta ' + c.c + ', virada para baixo', onclick:aoToque || (() => abrir(c.c))},
     aberta ? cartaFace(c) : cartaCostas(c.c));
-  if (aberta && !aoToque) { const t = el('div', {class:'bola' + (d ? '' : ' sem'), 'aria-hidden':'true'}); if (d) t.style.setProperty('--h', matiz(d)); b.append(t); }
+  if (aberta && (!aoToque || comBola)) { const t = el('div', {class:'bola' + (d ? '' : ' sem'), 'aria-hidden':'true'}); if (d) t.style.setProperty('--h', matiz(d)); b.append(t); }
   return b;
 }
 function desMesa(){
@@ -227,15 +228,15 @@ function desMesa(){
     el('div', {class:'grade'}, ...lista.map(c => slot(c))),
     el('p', {class:'dica'}, 'Toque numa carta para virar e escolher o dono. A bolinha mostra de quem é.'));
 }
-const minhas = () => LISTA.filter(c => S.v[c.c] && S.o[c.c] === S.eu);
+const minhas = () => LISTA.filter(c => S.v[c.c] && (S.eu === '*' || S.o[c.c] === S.eu));
 function desMaos(){
   const eu = S.eu, mostra = eu ? minhas() : [];
   const sz = Math.min(3, Math.max(1, S.tam || 2)), larg = [100, 150, 220][sz - 1];
   const corpo = !eu ? el('div', {class:'vazio'}, 'Escolha acima quem é você.')
-    : !mostra.length ? el('div', {class:'vazio'}, 'Você ainda não tem cartas. Na aba Mesa, vire uma carta e escolha o seu nome.')
-    : el('div', {class:'grade', style:'grid-template-columns:repeat(auto-fill,minmax(' + larg + 'px,1fr))'}, ...mostra.map((c, i) => slot(c, () => ver(i))));
+    : !mostra.length ? el('div', {class:'vazio'}, (eu === '*' ? 'Nenhuma carta virada ainda. Na aba Mesa, vire uma carta.' : 'Você ainda não tem cartas. Na aba Mesa, vire uma carta e escolha o seu nome.'))
+    : el('div', {class:'grade', style:'grid-template-columns:repeat(auto-fill,minmax(' + larg + 'px,1fr))'}, ...mostra.map((c, i) => slot(c, () => ver(i), S.eu === '*')));
   $('sMaos').replaceChildren(
-    el('div', {class:'eu', role:'group', 'aria-label':'Quem é você'}, ...JOGADORES.map(n => { const b = el('button', {class:'chip', 'aria-pressed':String(eu === n), onclick:() => { S.eu = n; salvar(); desMaos(); }}); const i = el('span', {class:'bolinha'}); i.style.setProperty('--h', matiz(n)); b.append(i, n, el('small', {}, contaDono(n))); return b; })),
+    el('div', {class:'eu', role:'group', 'aria-label':'Quem é você'}, el('button', {class:'chip', 'aria-pressed':String(eu === '*'), onclick:() => { S.eu = '*'; salvar(); desMaos(); }}, 'Todas', el('small', {}, reveladas().length)), ...JOGADORES.map(n => { const b = el('button', {class:'chip', 'aria-pressed':String(eu === n), onclick:() => { S.eu = n; salvar(); desMaos(); }}); const i = el('span', {class:'bolinha'}); i.style.setProperty('--h', matiz(n)); b.append(i, n, el('small', {}, contaDono(n))); return b; })),
     eu ? el('div', {class:'ferr'}, el('span', {class:'cont'}, 'Tamanho'), el('input', {type:'range', min:1, max:3, step:1, value:sz, 'aria-label':'Tamanho das cartas', oninput:e => { S.tam = +e.target.value; salvar(); desMaos(); }}), el('span', {class:'cont'}, mostra.length + (mostra.length === 1 ? ' carta' : ' cartas'))) : null,
     corpo,
     mostra.length ? el('p', {class:'dica'}, 'Toque numa carta para ampliar, dar zoom e passar de uma para outra.') : null);
@@ -255,19 +256,31 @@ function abre(){ $('mo').hidden = false; document.body.style.overflow = 'hidden'
 function abrir(code){ atual = code; modo = 'mesa'; abre(); pintaMo(); const v = $('mo').querySelector('.virar'); v && v.focus(); }
 function fecha(){ $('mo').hidden = true; document.body.style.overflow = ''; pinta(); }
 let modo = 'mesa';
-function vira(){ if (S.v[atual]) return; S.v[atual] = 1; salvar(); pintaMo(); }
+function vira(){
+  if (S.v[atual]) return;
+  S.v[atual] = 1; salvar();
+  const v = $('mo').querySelector('.virar'); if (v) { v.classList.add('v'); v.setAttribute('aria-label', porCod(atual).n); }
+  const top = $('mo').querySelector('.topo2 .esp'); if (top) top.textContent = porCod(atual).n;
+  setTimeout(pintaCtl, 450);
+}
 function pintaMo(){
-  const c = porCod(atual), aberta = !!S.v[atual], d = donoDe(atual);
+  const c = porCod(atual), aberta = !!S.v[atual];
   const frente = cartaFace(c); frente.classList.add('frente');
   const v = el('div', {class:'virar' + (aberta ? ' v' : ''), tabindex:'0', role:'button', 'aria-label':aberta ? c.n : 'Virar a carta ' + atual, onclick:vira, onkeydown:e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vira(); } }},
     el('div', {class:'in'}, cartaCostas(atual), frente));
-  const corpo = el('div', {class:'corpo'}, v,
+  $('mo').replaceChildren(el('div', {class:'topo2'}, el('div', {class:'esp'}, aberta ? c.n : 'Carta ' + atual), el('button', {class:'peq', onclick:fecha}, 'Fechar')),
+    el('div', {class:'corpo'}, v, el('div', {id:'ctl', class:'ctl'})));
+  pintaCtl();
+}
+function pintaCtl(){
+  const ctl = $('ctl'); if (!ctl) return;
+  const aberta = !!S.v[atual], d = donoDe(atual);
+  ctl.replaceChildren(
     el('p', {class:'dica'}, !aberta ? 'Toque na carta para virar.' : d ? 'Com ' + d + '. Toque noutro nome para trocar.' : 'Quem fica com ela?'),
     aberta ? el('div', {class:'donos', role:'group', 'aria-label':'Dono da carta'}, ...JOGADORES.map(n => { const b = el('button', {type:'button', 'aria-pressed':String(d === n), onclick:() => dono(n)}, n); b.style.setProperty('--h', matiz(n)); return b; })) : null,
     aberta ? el('div', {class:'sec'}, d ? el('button', {class:'peq', onclick:() => dono('')}, 'Tirar o dono') : null, el('button', {class:'peq perigo', onclick:desvira}, 'Desvirar e devolver ao monte')) : null);
-  $('mo').replaceChildren(el('div', {class:'topo2'}, el('div', {class:'esp'}, aberta ? c.n : 'Carta ' + atual), el('button', {class:'peq', onclick:fecha}, 'Fechar')), corpo);
 }
-function dono(n){ if (n) S.o[atual] = n; else delete S.o[atual]; salvar(); if (n) { dizer(porCod(atual).n + ' ficou com ' + n); fecha(); } else pintaMo(); }
+function dono(n){ if (n) S.o[atual] = n; else delete S.o[atual]; salvar(); if (n) { dizer(porCod(atual).n + ' ficou com ' + n); fecha(); } else pintaCtl(); }
 function desvira(){ delete S.v[atual]; delete S.o[atual]; salvar(); fecha(); dizer('Carta devolvida ao monte'); }
 
 /* ---- janela: ver a própria mão com zoom (Minha mão) ---- */
