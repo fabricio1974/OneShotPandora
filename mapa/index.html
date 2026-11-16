@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#262420">
 <title>A Estrada para Maré-Alta</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IM+Fell+English+SC&display=swap">
 <style>
@@ -220,12 +221,12 @@
     .map-note{display:none}
     .map-section{padding:0}
     .map-wrap{
-      width:100%;height:100svh;border:none;outline:none;
+      width:100%;height:100vh;height:100svh;border:none;outline:none;
       overflow:auto;box-shadow:none;
       -webkit-overflow-scrolling:touch;
       display:flex;touch-action:pan-x pan-y;
     }
-    .pan{height:100svh;width:max-content;margin:auto;flex:none}
+    .pan{height:100vh;height:100svh;width:max-content;margin:auto;flex:none}
     .map-wrap img{height:100%;width:auto;max-width:none}
     .zoombtns{display:flex}
     #content{
@@ -260,7 +261,7 @@
   </div>
   <div class="map-wrap" id="wrap">
     <div class="pan" id="pan">
-      <img src="map.jpg" alt="Mapa de A Estrada para Maré-Alta" draggable="false">
+      <img src="map.jpg" alt="Mapa de A Estrada para Maré-Alta" draggable="false" fetchpriority="high" decoding="async">
       <svg class="overlay" id="ov" viewBox="0 0 2528 1696" preserveAspectRatio="xMidYMid meet"></svg>
       <div id="tip"></div>
     </div>
@@ -292,7 +293,7 @@
 <div id="lb">
   <span id="close">×</span>
   <span class="nav" id="prev">‹</span>
-  <img id="lbimg" src="" alt="">
+  <img id="lbimg" src="" alt="" decoding="async">
   <div class="cap" id="lbcap"></div>
   <div class="capsub" id="lbsub"></div>
   <span class="nav" id="next">›</span>
@@ -385,7 +386,7 @@ for(const r of ROUTES){
     BYNUM[num]=idx; FLAT.push({num,name,desc});
     const card = document.createElement('div');
     card.className='card'; card.id='loc-'+num;
-    card.innerHTML = `<div class="imgbox"><img src="img/${num}.jpg" alt="${name}" loading="lazy">`+
+    card.innerHTML = `<div class="imgbox"><img src="img/t/${num}.jpg" alt="${name}" loading="lazy" decoding="async">`+
       `<div class="badge">${num==='fora'?'✣':parseInt(num,10)}</div></div>`+
       `<div class="info"><h3>${name}</h3><p>${desc}</p></div>`;
     card.onclick = ()=> openLb(idx);
@@ -454,9 +455,9 @@ function openLb(i){ cur=i; const p=FLAT[i]; const seq=++tseq;
     setTimeout(()=>{ if(seq!==tseq)return;
       lb.classList.remove('peek');
       peekbanner.classList.remove('show');
-      setTimeout(()=>{ if(seq!==tseq)return; clearPulse(); },600);
+      setTimeout(()=>{ if(seq!==tseq)return; clearPulse(); },200);
       loadImg(p,seq);
-    },1600);
+    },900);
   } else loadImg(p,seq);
 }
 function nav(d){ openLb((cur+d+FLAT.length)%FLAT.length); }
