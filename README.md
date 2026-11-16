@@ -85,3 +85,6 @@ Miniaturas das ações: [game-icons.net](https://game-icons.net) (CC BY 3.0, vá
 
 ### Sons dos cliques (combate.html)
 Efeitos sintetizados no navegador (Web Audio, sem arquivos): dado, ataque, dano, cura, próximo turno (gongo), favoritar, desfazer e crítico. Botão "Sons" na coluna lateral liga/desliga (fica salvo no navegador).
+
+### cenarios.html (experimental)
+Gerador de mapas de combate por código (Canvas): Floresta, Taverna e Masmorra, 30 × 20 quadrados, com semente (mesma semente = mesmo mapa), grade opcional e botão "Baixar PNG". Link: `/cenarios.html` (ou `#taverna`, `#masmorra`).

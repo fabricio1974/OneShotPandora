@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cenários de combate</title>
+<style>
+:root{--fundo:#14100d;--painel:#1d1712;--linha:#3a2e24;--texto:#efe6d6;--apagado:#a89a85;--terracota:#c8672f;--ouro:#e0b24a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);color:var(--texto);font:15px/1.4 system-ui,"Segoe UI",sans-serif}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 16px;background:var(--painel);border-bottom:1px solid var(--linha);position:sticky;top:0;z-index:5}
+h1{font-size:18px;margin:0 8px 0 0}
+label{display:flex;align-items:center;gap:6px;color:var(--apagado)}
+select,input,button{font:inherit;color:var(--texto);background:#241b15;border:1px solid var(--linha);border-radius:8px;padding:7px 10px;min-height:38px}
+input[type=number]{width:110px}
+input[type=checkbox]{min-height:0;width:18px;height:18px}
+button{cursor:pointer}button:hover{border-color:var(--terracota)}
+button.pri{background:var(--terracota);border-color:var(--terracota);color:#1a0d04;font-weight:700}
+.cenas{display:flex;gap:8px;flex-wrap:wrap}
+.cenas button[aria-pressed=true]{background:color-mix(in srgb,var(--terracota) 25%,transparent);border-color:var(--terracota);font-weight:700}
+main{padding:14px 16px;display:flex;justify-content:center}
+#pal{max-width:100%;height:auto;border-radius:10px;box-shadow:0 10px 40px #000a;border:1px solid var(--linha)}
+.nota{color:var(--apagado);font-size:13px;text-align:center;padding:0 16px 20px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cenários de combate</h1>
+  <div class="cenas" id="cenas" role="group" aria-label="Cenário"></div>
+  <label>Semente <input type="number" id="seed" value="1"></label>
+  <button id="sorteia" class="pri">Sortear outro</button>
+  <label><input type="checkbox" id="grade" checked> Grade</label>
+  <button id="baixa">Baixar PNG</button>
+</header>
+<main><canvas id="pal" width="1440" height="960"></canvas></main>
+<p class="nota">Mapa 30 × 20 quadrados (1,5 m cada). Cada semente gera um mapa diferente e a mesma semente sempre repete o mesmo mapa.</p>
+<script>
+const CW = 30, CH = 20, T = 48, W = CW * T, H = CH * T;
+const cv = document.getElementById('pal'), ctx = cv.getContext('2d');
+
+/* ---------- aleatório com semente e ruído ---------- */
+function rng(seed){ let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function ruido(seed){ const h = (x, y) => { let n = Math.imul(x, 374761393) ^ Math.imul(y, 668265263) ^ Math.imul(seed, 1274126177); n = Math.imul(n ^ n >>> 13, 1274126177); return ((n ^ n >>> 16) >>> 0) / 4294967296; };
+  const sm = t => t * t * (3 - 2 * t);
+  const v = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), fx = sm(x - xi), fy = sm(y - yi);
+    return (h(xi, yi) * (1 - fx) + h(xi + 1, yi) * fx) * (1 - fy) + (h(xi, yi + 1) * (1 - fx) + h(xi + 1, yi + 1) * fx) * fy; };
+  return (x, y, o = 4) => { let s = 0, a = 0.5, f = 1, n = 0; for (let i = 0; i < o; i++) { s += v(x * f, y * f) * a; n += a; a /= 2; f *= 2; } return s / n; }; }
+const mix = (a, b, t) => a.map((c, i) => c + (b[i] - c) * t);
+const rgb = c => `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
+const pick = (r, a) => a[Math.floor(r() * a.length)];
+
+/* pinta a base pixel a pixel: fn(x, y) devolve [r,g,b] */
+function pinta(fn){ const im = ctx.createImageData(W, H), d = im.data; let p = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const c = fn(x, y); d[p++] = c[0]; d[p++] = c[1]; d[p++] = c[2]; d[p++] = 255; }
+  ctx.putImageData(im, 0, 0); }
+
+/* iluminação: escuridão ambiente com buracos de luz + brilho quente */
+function luz(luzes, ambiente, cor = [8, 5, 14]){
+  const o = document.createElement('canvas'); o.width = W; o.height = H; const c = o.getContext('2d');
+  c.fillStyle = `rgba(${cor},${ambiente})`; c.fillRect(0, 0, W, H);
+  c.globalCompositeOperation = 'destination-out';
+  luzes.forEach(l => { const g = c.createRadialGradient(l.x, l.y, 0, l.x, l.y, l.r); g.addColorStop(0, `rgba(0,0,0,${l.f ?? 1})`); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(l.x - l.r, l.y - l.r, l.r * 2, l.r * 2); });
+  ctx.drawImage(o, 0, 0);
+  ctx.save(); ctx.globalCompositeOperation = 'screen';
+  luzes.forEach(l => { if (!l.cor) return; const g = ctx.createRadialGradient(l.x, l.y, 0, l.x, l.y, l.r * 0.8); g.addColorStop(0, `rgba(${l.cor},${l.g ?? 0.45})`); g.addColorStop(1, `rgba(${l.cor},0)`); ctx.fillStyle = g; ctx.fillRect(l.x - l.r, l.y - l.r, l.r * 2, l.r * 2); });
+  ctx.restore(); }
+function vinheta(f = 0.55){ const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, W * 0.62); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${f})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+function sombra(fn, cor = 'rgba(0,0,0,.45)', blur = 10, dx = 5, dy = 7){ ctx.save(); ctx.shadowColor = cor; ctx.shadowBlur = blur; ctx.shadowOffsetX = dx; ctx.shadowOffsetY = dy; fn(); ctx.restore(); }
+function grade(){ ctx.save(); ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = 1; ctx.beginPath();
+  for (let i = 0; i <= CW; i++) { ctx.moveTo(i * T + .5, 0); ctx.lineTo(i * T + .5, H); } for (let j = 0; j <= CH; j++) { ctx.moveTo(0, j * T + .5); ctx.lineTo(W, j * T + .5); }
+  ctx.stroke(); ctx.restore(); }
+
+/* ---------- FLORESTA ---------- */
+function floresta(seed){
+  const r = rng(seed), n = ruido(seed), n2 = ruido(seed + 7);
+  // trilha serpenteando da esquerda para a direita
+  const pts = []; let y0 = H * (0.35 + r() * 0.3); const fase = r() * 6, amp = 90 + r() * 90;
+  for (let x = -40; x <= W + 40; x += 40) pts.push([x, y0 + Math.sin(x / 260 + fase) * amp + (n(x / 300, 3) - .5) * 120]);
+  const distTrilha = (x, y) => { let m = 1e9; for (let i = 0; i < pts.length - 1; i++) { const [ax, ay] = pts[i], [bx, by] = pts[i + 1]; const t = Math.max(0, Math.min(1, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / ((bx - ax) ** 2 + (by - ay) ** 2))); m = Math.min(m, Math.hypot(x - ax - t * (bx - ax), y - ay - t * (by - ay))); } return m; };
+  const lag = r() < .6 ? { x: W * (0.15 + r() * 0.7), y: r() < .5 ? H * .18 : H * .84, rx: 110 + r() * 60, ry: 60 + r() * 30 } : null;
+  const gA = [52, 92, 40], gB = [96, 140, 58], gC = [34, 66, 34], terra = [138, 108, 70], terra2 = [104, 80, 52];
+  pinta((x, y) => {
+    const f = n(x / 140, y / 140, 4), g = n2(x / 9, y / 9, 2), d = distTrilha(x, y), borda = 62 + (n(x / 40, y / 40, 2) - .5) * 40;
+    let c = mix(mix(gC, gA, Math.min(1, f * 1.6)), gB, Math.max(0, f - .5) * 1.8); c = c.map(v => v * (0.9 + g * 0.2));
+    if (d < borda) { const t = Math.min(1, (borda - d) / 18); const tc = mix(terra2, terra, n(x / 22, y / 22, 3)).map(v => v * (0.92 + g * .16)); c = mix(c, tc, t); }
+    if (lag) { const e = ((x - lag.x) / lag.rx) ** 2 + ((y - lag.y) / lag.ry) ** 2; const ee = e + (n(x / 30, y / 30, 2) - .5) * .25;
+      if (ee < 1.35) c = mix(c, [132, 120, 84], Math.min(1, (1.35 - ee) * 6));
+      if (ee < 1) c = mix(c, mix([30, 78, 104], [74, 142, 160], 1 - ee), Math.min(1, (1 - ee) * 8) * (.85 + n(x / 18, y / 40, 3) * .3)); }
+    return c; });
+  // flores e tufos
+  for (let i = 0; i < 260; i++) { const x = r() * W, y = r() * H; if (distTrilha(x, y) < 70) continue; ctx.fillStyle = pick(r, ['#e9e2a6', '#f2f2ee', '#c97fb0', '#e8b24a']); ctx.globalAlpha = .75; ctx.beginPath(); ctx.arc(x, y, 1.6 + r() * 1.6, 0, 7); ctx.fill(); }
+  ctx.globalAlpha = 1;
+  // seixos na trilha
+  for (let i = 0; i < 90; i++) { const x = r() * W, y = r() * H; if (distTrilha(x, y) > 40) continue; ctx.fillStyle = pick(r, ['#8a7a64', '#a39278', '#6f624f']); ctx.beginPath(); ctx.ellipse(x, y, 2 + r() * 3, 1.5 + r() * 2, r() * 3, 0, 7); ctx.fill(); }
+  // objetos: ordem por y
+  const obj = [];
+  const livre = (x, y, m) => distTrilha(x, y) > m && !(lag && ((x - lag.x) / (lag.rx + 40)) ** 2 + ((y - lag.y) / (lag.ry + 40)) ** 2 < 1) && !(x > W * .3 && x < W * .7 && y > H * .22 && y < H * .78);
+  let tent = 0; while (obj.filter(o => o.t === 'arv').length < 46 && tent++ < 1500) { const x = r() * W, y = r() * H, rr = 46 + r() * 46; if (livre(x, y, rr * .8 + 30) && !obj.some(o => o.t === 'arv' && Math.hypot(o.x - x, o.y - y) < (o.r + rr) * .55)) obj.push({ t: 'arv', x, y, r: rr, tom: r() }); }
+  tent = 0; while (obj.filter(o => o.t === 'pedra').length < 14 && tent++ < 400) { const x = r() * W, y = r() * H; if (distTrilha(x, y) > 55) obj.push({ t: 'pedra', x, y, r: 12 + r() * 22, a: r() * 3 }); }
+  tent = 0; while (obj.filter(o => o.t === 'mato').length < 26 && tent++ < 400) { const x = r() * W, y = r() * H; if (distTrilha(x, y) > 55) obj.push({ t: 'mato', x, y, r: 14 + r() * 14 }); }
+  for (let i = 0; i < 2; i++) { const x = W * (.3 + r() * .4), y = r() < .5 ? H * (.12 + r() * .08) : H * (.8 + r() * .08); obj.push({ t: 'tronco', x, y, r: 70 + r() * 30, a: r() * 3.14 }); }
+  obj.sort((a, b) => a.y - b.y).forEach(o => {
+    if (o.t === 'arv') { const R = o.r;
+      ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(o.x + R * .35, o.y + R * .45, R * 1.05, R * .8, 0, 0, 7); ctx.fill();
+      const base = o.tom < .5 ? [34, 84, 40] : [48, 98, 44];
+      for (let k = 0; k < 7; k++) { const a = k / 7 * 6.283 + o.tom * 5, rr = R * (.55 + .1 * Math.sin(k * 3 + o.tom * 9)); const cx = o.x + Math.cos(a) * R * .38, cy = o.y + Math.sin(a) * R * .38;
+        const g = ctx.createRadialGradient(cx - rr * .3, cy - rr * .35, rr * .1, cx, cy, rr); g.addColorStop(0, rgb(mix(base, [150, 190, 80], .55))); g.addColorStop(.6, rgb(base)); g.addColorStop(1, rgb(mix(base, [8, 24, 14], .6)));
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, rr, 0, 7); ctx.fill(); }
+      const g2 = ctx.createRadialGradient(o.x - R * .25, o.y - R * .3, 2, o.x, o.y, R * .6); g2.addColorStop(0, rgb(mix(base, [190, 220, 110], .6))); g2.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(o.x, o.y, R * .6, 0, 7); ctx.fill();
+    } else if (o.t === 'pedra') { sombra(() => { const g = ctx.createRadialGradient(o.x - o.r * .3, o.y - o.r * .3, 2, o.x, o.y, o.r); g.addColorStop(0, '#b8b2a4'); g.addColorStop(1, '#5f5b52'); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(o.x, o.y, o.r, o.r * .75, o.a, 0, 7); ctx.fill(); }, 'rgba(0,0,0,.4)', 8, 4, 6);
+    } else if (o.t === 'mato') { for (let k = 0; k < 5; k++) { ctx.fillStyle = rgb(mix([46, 104, 46], [110, 160, 70], k / 6)); ctx.beginPath(); ctx.arc(o.x + (k - 2) * o.r * .22, o.y + Math.sin(k * 2) * o.r * .25, o.r * (.55 - k * .04), 0, 7); ctx.fill(); }
+    } else if (o.t === 'tronco') { ctx.save(); ctx.translate(o.x, o.y); ctx.rotate(o.a); sombra(() => { const g = ctx.createLinearGradient(0, -14, 0, 14); g.addColorStop(0, '#8b6a45'); g.addColorStop(.5, '#6b4d2f'); g.addColorStop(1, '#3f2c1b'); ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(-o.r, -14, o.r * 2, 28, 12); ctx.fill(); }, 'rgba(0,0,0,.4)', 8, 4, 6);
+      ctx.fillStyle = '#c9a572'; ctx.beginPath(); ctx.ellipse(o.r - 2, 0, 6, 13, 0, 0, 7); ctx.fill(); ctx.restore(); } });
+  // luz do sol filtrada
+  ctx.save(); ctx.globalCompositeOperation = 'soft-light'; const gl = ctx.createLinearGradient(0, 0, W, H); gl.addColorStop(0, 'rgba(255,240,170,.35)'); gl.addColorStop(1, 'rgba(20,40,80,.35)'); ctx.fillStyle = gl; ctx.fillRect(0, 0, W, H); ctx.restore();
+  vinheta(.5); }
+
+/* ---------- TAVERNA ---------- */
+function taverna(seed){
+  const r = rng(seed), n = ruido(seed), ox = r() < .5;
+  // piso de tábuas
+  ctx.fillStyle = '#4a3220'; ctx.fillRect(0, 0, W, H);
+  for (let row = 0; row < H / 24; row++) { let x = -r() * 120; while (x < W) { const len = 120 + r() * 170, tom = r(); const c = mix([92, 62, 38], [138, 96, 58], tom * .8 + n(x / 200, row / 6) * .4);
+      ctx.fillStyle = rgb(c); ctx.fillRect(x, row * 24, len, 24);
+      ctx.strokeStyle = 'rgba(0,0,0,.22)'; ctx.lineWidth = 1; for (let k = 0; k < 3; k++) { const yy = row * 24 + 6 + k * 7 + r() * 3; ctx.beginPath(); ctx.moveTo(x + 4, yy); ctx.bezierCurveTo(x + len * .3, yy + 2 * r(), x + len * .6, yy - 2 * r(), x + len - 4, yy); ctx.stroke(); }
+      ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(x, row * 24, 2, 24); ctx.fillRect(x, row * 24 + 23, len, 1.5); x += len; } }
+  // tapete
+  const tx = W * .5, ty = H * .56; sombra(() => { ctx.fillStyle = '#7a1f1f'; ctx.beginPath(); ctx.roundRect(tx - 250, ty - 150, 500, 300, 10); ctx.fill(); }, 'rgba(0,0,0,.35)', 10, 3, 4);
+  ctx.strokeStyle = '#d6a84a'; ctx.lineWidth = 6; ctx.strokeRect(tx - 236, ty - 136, 472, 272); ctx.strokeStyle = '#4d1010'; ctx.lineWidth = 3; ctx.strokeRect(tx - 222, ty - 122, 444, 244);
+  ctx.fillStyle = 'rgba(214,168,74,.35)'; for (let i = -3; i <= 3; i++) { ctx.save(); ctx.translate(tx + i * 62, ty); ctx.rotate(.785); ctx.fillRect(-14, -14, 28, 28); ctx.restore(); }
+  // paredes de pedra
+  const parede = (x, y, w, h) => { sombra(() => { ctx.fillStyle = '#6b665c'; ctx.fillRect(x, y, w, h); }, 'rgba(0,0,0,.55)', 16, 0, 0);
+    ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); for (let yy = y; yy < y + h; yy += 24) { let xx = x - r() * 40; while (xx < x + w) { const l = 40 + r() * 36; ctx.fillStyle = rgb(mix([92, 88, 80], [150, 144, 132], r() * .7)); ctx.fillRect(xx + 1, yy + 1, l - 2, 22); ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(xx + 1, yy + 1, l - 2, 2); xx += l; } } ctx.restore(); };
+  parede(0, 0, W, T); parede(0, H - T, W, T); parede(0, 0, T, H); parede(W - T, 0, T, H);
+  // porta (embaixo) e janelas
+  const px = W * (ox ? .3 : .7); ctx.fillStyle = '#5a3a1e'; ctx.fillRect(px - T, H - T, T * 2, T); ctx.strokeStyle = '#2d1c0e'; ctx.lineWidth = 3; for (let i = 1; i < 6; i++) { ctx.beginPath(); ctx.moveTo(px - T + i * T / 3, H - T); ctx.lineTo(px - T + i * T / 3, H); ctx.stroke(); } ctx.fillStyle = '#d6a84a'; ctx.beginPath(); ctx.arc(px + 30, H - 24, 4, 0, 7); ctx.fill();
+  const jan = []; [.25, .5, .75].forEach(f => { const x = W * f; ctx.fillStyle = '#2d4a5e'; ctx.fillRect(x - 32, 6, 64, T - 12); ctx.strokeStyle = '#3b2814'; ctx.lineWidth = 4; ctx.strokeRect(x - 32, 6, 64, T - 12); ctx.beginPath(); ctx.moveTo(x, 6); ctx.lineTo(x, T - 6); ctx.stroke(); jan.push({ x, y: T + 40, r: 190, cor: '150,190,255', g: .13, f: .5 }); });
+  // balcão
+  const bx = T * 1.4, by = T * 1.6, bw = 520, bh = 78; sombra(() => { const g = ctx.createLinearGradient(0, by, 0, by + bh); g.addColorStop(0, '#9a6c3f'); g.addColorStop(1, '#6e4a28'); ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 12); ctx.fill(); }, 'rgba(0,0,0,.5)', 12, 5, 8);
+  ctx.fillStyle = 'rgba(255,230,180,.25)'; ctx.fillRect(bx + 8, by + 6, bw - 16, 5); for (let i = 0; i < 5; i++) { ctx.fillStyle = pick(r, ['#c9b37a', '#9db5c9', '#c97b6a']); ctx.beginPath(); ctx.arc(bx + 40 + i * 90 + r() * 20, by + 40, 8, 0, 7); ctx.fill(); }
+  // barris atrás do balcão
+  for (let i = 0; i < 4; i++) { const x = bx + 60 + i * 120, y = T + 12; sombra(() => { const g = ctx.createRadialGradient(x - 6, y - 6, 2, x, y, 28); g.addColorStop(0, '#a8763f'); g.addColorStop(1, '#5a3a1e'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y + 10, 24, 0, 7); ctx.fill(); }, 'rgba(0,0,0,.4)', 6, 3, 4); ctx.strokeStyle = '#2b2018'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y + 10, 24, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.arc(x, y + 10, 12, 0, 7); ctx.stroke(); }
+  // lareira
+  const lx = W - T - 6, ly = H * .5; ctx.fillStyle = '#58544c'; sombra(() => ctx.fillRect(lx - 70, ly - 90, 76, 180), 'rgba(0,0,0,.5)', 14, -4, 4); ctx.fillStyle = '#1a0f08'; ctx.fillRect(lx - 40, ly - 60, 46, 120);
+  const fg = ctx.createRadialGradient(lx - 14, ly, 4, lx - 14, ly, 56); fg.addColorStop(0, '#fff2a8'); fg.addColorStop(.4, '#ff9a30'); fg.addColorStop(1, 'rgba(255,60,0,0)'); ctx.fillStyle = fg; ctx.fillRect(lx - 70, ly - 60, 70, 120);
+  // mesas redondas e cadeiras
+  const mesas = []; let tent = 0; while (mesas.length < 6 && tent++ < 300) { const x = T * 2 + r() * (W - T * 4.5), y = T * 3.4 + r() * (H - T * 5.8); if (mesas.every(m => Math.hypot(m.x - x, m.y - y) > 210) && !(x < bx + bw + 40 && y < by + bh + 70)) mesas.push({ x, y }); }
+  const mesa = m => { const R = 40; for (let k = 0; k < 4; k++) { const a = k * 1.571 + r() * .6, cx = m.x + Math.cos(a) * (R + 22), cy = m.y + Math.sin(a) * (R + 22); sombra(() => { ctx.fillStyle = '#6a4423'; ctx.beginPath(); ctx.arc(cx, cy, 15, 0, 7); ctx.fill(); }, 'rgba(0,0,0,.4)', 5, 2, 3); ctx.fillStyle = '#845a30'; ctx.beginPath(); ctx.arc(cx, cy, 10, 0, 7); ctx.fill(); }
+    sombra(() => { const g = ctx.createRadialGradient(m.x - 12, m.y - 12, 4, m.x, m.y, R); g.addColorStop(0, '#b3844c'); g.addColorStop(1, '#7a5430'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, R, 0, 7); ctx.fill(); }, 'rgba(0,0,0,.5)', 10, 5, 7);
+    ctx.strokeStyle = 'rgba(40,24,10,.5)'; ctx.lineWidth = 2; ctx.stroke(); for (let k = 0; k < 3; k++) { ctx.fillStyle = pick(r, ['#d8c9a0', '#9db5c9', '#d0a0a0']); ctx.beginPath(); ctx.arc(m.x + (r() - .5) * 40, m.y + (r() - .5) * 40, 6, 0, 7); ctx.fill(); }
+    ctx.fillStyle = '#ffd37a'; ctx.beginPath(); ctx.arc(m.x, m.y, 4, 0, 7); ctx.fill(); };
+  mesas.forEach(mesa);
+  // caixas no canto
+  for (let i = 0; i < 3; i++) { const x = T * 1.2 + i * 40, y = H - T * 1.8 - (i % 2) * 38; sombra(() => { ctx.fillStyle = '#8a6030'; ctx.fillRect(x, y, 44, 44); }, 'rgba(0,0,0,.45)', 6, 3, 4); ctx.strokeStyle = '#4a3016'; ctx.lineWidth = 3; ctx.strokeRect(x + 2, y + 2, 40, 40); ctx.beginPath(); ctx.moveTo(x + 2, y + 2); ctx.lineTo(x + 42, y + 42); ctx.moveTo(x + 42, y + 2); ctx.lineTo(x + 2, y + 42); ctx.stroke(); }
+  luz([{ x: lx - 20, y: ly, r: 520, cor: '255,150,60', g: .5 }, ...mesas.map(m => ({ x: m.x, y: m.y, r: 200, cor: '255,200,110', g: .35 })), { x: bx + bw / 2, y: by + 40, r: 300, cor: '255,190,100', g: .3 }, ...jan], .5, [14, 8, 4]);
+  vinheta(.6); }
+
+/* ---------- MASMORRA ---------- */
+function masmorra(seed){
+  const r = rng(seed), n = ruido(seed);
+  const piso = Array.from({ length: CH }, () => Array(CW).fill(false)), salas = [];
+  let tent = 0; while (salas.length < 7 && tent++ < 400) { const w = 5 + Math.floor(r() * 6), h = 4 + Math.floor(r() * 5), x = 1 + Math.floor(r() * (CW - w - 2)), y = 1 + Math.floor(r() * (CH - h - 2));
+    if (salas.every(s => x > s.x + s.w + 1 || x + w + 1 < s.x || y > s.y + s.h + 1 || y + h + 1 < s.y)) salas.push({ x, y, w, h }); }
+  salas.forEach(s => { for (let j = s.y; j < s.y + s.h; j++) for (let i = s.x; i < s.x + s.w; i++) piso[j][i] = true; });
+  const centro = s => [Math.floor(s.x + s.w / 2), Math.floor(s.y + s.h / 2)];
+  const ord = [...salas].sort((a, b) => a.x - b.x);
+  for (let k = 0; k < ord.length - 1; k++) { const [ax, ay] = centro(ord[k]), [bx, by] = centro(ord[k + 1]);
+    for (let i = Math.min(ax, bx); i <= Math.max(ax, bx); i++) { piso[ay][i] = true; piso[ay + 1][i] = true; }
+    for (let j = Math.min(ay, by); j <= Math.max(ay, by) + 1; j++) { piso[j][bx] = true; piso[j][Math.min(CW - 2, bx + 1)] = true; } }
+  // laje do piso
+  ctx.fillStyle = '#2a2622'; ctx.fillRect(0, 0, W, H);
+  for (let j = 0; j < CH; j++) for (let i = 0; i < CW; i++) { if (!piso[j][i]) continue; const x = i * T, y = j * T;
+    for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) { const c = mix([84, 78, 70], [128, 120, 108], n((x + a * 24) / 60, (y + b * 24) / 60) * .9 + r() * .12); ctx.fillStyle = rgb(c); ctx.fillRect(x + a * 24 + 1, y + b * 24 + 1, 22, 22); ctx.fillStyle = 'rgba(255,255,255,.06)'; ctx.fillRect(x + a * 24 + 1, y + b * 24 + 1, 22, 1); ctx.fillStyle = 'rgba(0,0,0,.14)'; ctx.fillRect(x + a * 24 + 1, y + b * 24 + 22, 22, 1); }
+    if (r() < .12) { ctx.strokeStyle = 'rgba(20,16,12,.55)'; ctx.lineWidth = 1.5; ctx.beginPath(); let px = x + r() * T, py = y + r() * T; ctx.moveTo(px, py); for (let k = 0; k < 4; k++) { px += (r() - .5) * 20; py += (r() - .5) * 20; ctx.lineTo(px, py); } ctx.stroke(); }
+    if (r() < .1) { ctx.fillStyle = 'rgba(60,92,48,.35)'; ctx.beginPath(); ctx.arc(x + r() * T, y + r() * T, 6 + r() * 8, 0, 7); ctx.fill(); } }
+  // pilares, barris, entulho e tochas
+  const luzes = [], tochas = []; const noPiso = (i, j) => i > 0 && j > 0 && i < CW - 1 && j < CH - 1 && piso[j][i];
+  salas.forEach(s => { if (s.w >= 7 && s.h >= 6) [[s.x + 1, s.y + 1], [s.x + s.w - 2, s.y + 1], [s.x + 1, s.y + s.h - 2], [s.x + s.w - 2, s.y + s.h - 2]].forEach(([i, j]) => { const x = (i + .5) * T, y = (j + .5) * T; sombra(() => { const g = ctx.createRadialGradient(x - 8, y - 8, 3, x, y, 24); g.addColorStop(0, '#b4ac9a'); g.addColorStop(1, '#5c564a'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 22, 0, 7); ctx.fill(); }, 'rgba(0,0,0,.55)', 10, 6, 8); });
+    for (let k = 0; k < 2; k++) { const i = s.x + Math.floor(r() * s.w), j = s.y + Math.floor(r() * s.h), x = (i + .5) * T, y = (j + .5) * T; if (r() < .5) sombra(() => { ctx.fillStyle = '#7a5530'; ctx.beginPath(); ctx.arc(x, y, 18, 0, 7); ctx.fill(); ctx.strokeStyle = '#2b2018'; ctx.lineWidth = 3; ctx.stroke(); }, 'rgba(0,0,0,.45)', 6, 3, 4); else for (let q = 0; q < 6; q++) { ctx.fillStyle = pick(r, ['#6f6a5e', '#857e70', '#58534a']); ctx.beginPath(); ctx.ellipse(x + (r() - .5) * 44, y + (r() - .5) * 44, 5 + r() * 8, 4 + r() * 6, r() * 3, 0, 7); ctx.fill(); } }
+    for (let k = 0; k < 2; k++) { const i = s.x + (k ? s.w - 1 : 0), j = s.y + Math.floor(r() * s.h), x = (k ? i + 1 : i) * T, y = (j + .5) * T; luzes.push({ x: x + (k ? -26 : 26), y, r: 250, cor: '255,150,60', g: .4 }); tochas.push([x, y, k]); } });
+  luz(luzes, .62, [6, 6, 14]);
+  // rocha com sombra projetada no piso
+  const rocha = new Path2D(); for (let j = 0; j < CH; j++) for (let i = 0; i < CW; i++) if (!piso[j][i]) rocha.rect(i * T, j * T, T, T);
+  const tex = document.createElement('canvas'); tex.width = W; tex.height = H; const tc = tex.getContext('2d'), im = tc.createImageData(W, H);
+  for (let y = 0, p = 0; y < H; y++) for (let x = 0; x < W; x++) { const v = n(x / 22, y / 22, 4), c = mix([24, 21, 20], [58, 52, 46], v); im.data[p++] = c[0]; im.data[p++] = c[1]; im.data[p++] = c[2]; im.data[p++] = 255; }
+  tc.putImageData(im, 0, 0);
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.8)'; ctx.shadowBlur = 24; ctx.fillStyle = '#1a1714'; ctx.fill(rocha); ctx.restore();
+  ctx.save(); ctx.clip(rocha); ctx.drawImage(tex, 0, 0); ctx.restore();
+  // borda iluminada das paredes (pedras)
+  ctx.save(); ctx.strokeStyle = 'rgba(180,170,150,.35)'; ctx.lineWidth = 2; ctx.beginPath();
+  for (let j = 0; j < CH; j++) for (let i = 0; i < CW; i++) if (!piso[j][i]) { const v = (a, b) => b >= 0 && b < CH && a >= 0 && a < CW && piso[b][a]; if (v(i, j + 1)) { ctx.moveTo(i * T, j * T + T - 1); ctx.lineTo(i * T + T, j * T + T - 1); } if (v(i + 1, j)) { ctx.moveTo(i * T + T - 1, j * T); ctx.lineTo(i * T + T - 1, j * T + T); } }
+  ctx.stroke(); ctx.restore();
+  tochas.forEach(([x, y, k]) => { sombra(() => { ctx.fillStyle = '#4a3320'; ctx.fillRect(x - (k ? 0 : 10), y - 5, 10, 10); }, 'rgba(0,0,0,.5)', 4, 0, 2); const g = ctx.createRadialGradient(x + (k ? -6 : 6), y, 1, x + (k ? -6 : 6), y, 12); g.addColorStop(0, '#fff3b0'); g.addColorStop(.5, '#ffa03a'); g.addColorStop(1, 'rgba(255,100,0,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x + (k ? -6 : 6), y, 12, 0, 7); ctx.fill(); });
+  vinheta(.6); }
+
+const CENAS = { floresta: ['Floresta', floresta], taverna: ['Taverna', taverna], masmorra: ['Masmorra', masmorra] };
+let atual = 'floresta';
+function desenha(){ const seed = +document.getElementById('seed').value || 1; ctx.clearRect(0, 0, W, H); CENAS[atual][1](seed); if (document.getElementById('grade').checked) grade(); }
+const box = document.getElementById('cenas');
+Object.entries(CENAS).forEach(([k, [nome]]) => { const b = document.createElement('button'); b.textContent = nome; b.dataset.k = k; b.setAttribute('aria-pressed', k === atual); b.onclick = () => { atual = k; box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === k)); desenha(); }; box.append(b); });
+document.getElementById('sorteia').onclick = () => { document.getElementById('seed').value = Math.floor(Math.random() * 99999) + 1; desenha(); };
+document.getElementById('seed').onchange = desenha; document.getElementById('grade').onchange = desenha;
+document.getElementById('baixa').onclick = () => { const a = document.createElement('a'); a.download = `cenario-${atual}-${document.getElementById('seed').value}.png`; a.href = cv.toDataURL('image/png'); a.click(); };
+const h = location.hash.slice(1); if (CENAS[h]) { atual = h; box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === h)); }
+desenha();
+</script>
+</body>
+</html>
