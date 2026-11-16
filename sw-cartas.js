@@ -1,4 +1,4 @@
-const N='cartas-v9';
+const N='cartas-v10';
 const BASE=['cartas.html','img/cartas/moldura_p.jpg','img/cartas/moldura_ab.jpg','img/cartas/verso.jpg','img/cartas/ic_s.png','img/cartas/ic_a.png','img/cartas/ic_m.png','img/cartas/ic_h.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(N).then(c=>c.addAll(BASE)).catch(()=>{}))});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==N&&k.startsWith('cartas-')).map(k=>caches.delete(k)))).then(()=>clients.claim())));
