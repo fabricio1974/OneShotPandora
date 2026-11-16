@@ -185,13 +185,13 @@
     <svg class="overlay" id="ov" viewBox="0 0 2528 1696" preserveAspectRatio="xMidYMid meet"></svg>
     <div id="tip"></div>
   </div>
-  <div class="map-note">Passe o mouse sobre um marcador para ver a descrição — clique para ir até as imagens do trecho.</div>
+  <div class="map-note">Passe o mouse sobre um marcador para ver a descrição — clique para abrir a imagem do local.</div>
   <div id="editbar">Arraste os marcadores para a posição certa, depois use <code>Copiar posições</code> e cole no chat para eu atualizar o mapa.</div>
 </div>
 
 <div class="parchment">
   <h2>Como ler o mapa</h2>
-  Só as Cataratas <em>(3, 4, 5)</em> são passagem obrigatória. Antes da escarpa: estrada do oeste <em>(1&nbsp;Bosque dos Gigantes)</em> ou do leste <em>(2&nbsp;Charneca dos Monólitos)</em>. Depois das Cataratas: Rota da Serra, ao norte <em>(6&nbsp;Viaduto do Vale Rosa, 7&nbsp;Anel dos Peregrinos)</em>, ou Rota do Vale e do Lago, ao sul <em>(8&nbsp;Vale dos Colossos, 9&nbsp;Lago do Espelho)</em>. As duas terminam em <em>10&nbsp;Maré-Alta</em>. Quem sai das estradas anda em terra aberta, mas sem a ajuda de pontes nem de trilhas.
+  Os números dos marcadores são os mesmos das imagens abaixo. Só a garganta das Cataratas <em>(12, 10, 13, 11, 9)</em> é passagem obrigatória para o norte. Antes da escarpa: estrada do oeste <em>(4&nbsp;Bosque dos Gigantes)</em> ou do leste <em>(2&nbsp;Campo dos Monólitos)</em>. Depois da subida: Rota da Serra, ao norte <em>(17&nbsp;Viaduto do Vale Rosa, 18&nbsp;Anel dos Peregrinos)</em>, ou Rota do Vale e do Lago, ao sul <em>(14&nbsp;Deuses de Pedra, 26&nbsp;Lago Espelho)</em>. As duas terminam em <em>29&nbsp;Maré-Alta</em>.
 </div>
 
 <div class="routes" id="routes"></div>
@@ -210,39 +210,45 @@
 <script>
 /* ============ DATA ============ */
 const POIS = [
-  {id:"vila", n:"✦", start:true, name:"Vila dos Heróis", tag:"Ponto de partida — Pradarias do Sul",
+  {id:"01", n:"1", start:true, name:"Vila dos Heróis", tag:"Ponto de partida — Pradarias do Sul",
    d:"Onde a pradaria encontra a Floresta Antiga. Casas de pedra e telhado vermelho. Daqui partem as duas estradas até a Grande Escarpa.",
-   x:600, y:1230, lx:0, ly:64, go:"r-inicio"},
-  {id:"bosque", n:"1", name:"Bosque dos Gigantes", tag:"Estrada do oeste — Floresta Antiga",
-   d:"Árvores colossais num prado de clareiras, com um lago ao fundo. Fica na estrada do oeste, na borda da Floresta Antiga.",
-   x:430, y:820, lx:40, ly:-50, go:"r-oeste"},
-  {id:"charneca", n:"2", name:"Charneca dos Monólitos", tag:"Estrada do leste",
-   d:"Planície fria de urze e flores azuis, com pedras erguidas e um arco de pedra velho. A estrada passa pelo meio das pedras.",
-   x:1075, y:1185, lx:0, ly:70, go:"r-leste"},
-  {id:"lagos", n:"3", name:"Lagos do Arco-Íris", tag:"Boca da garganta — passagem obrigatória",
-   d:"Lagoas turquesa com ilhas de mata e quedas em série, sob um arco-íris quase permanente. É a única subida da escarpa.",
-   x:1090, y:930, lx:70, ly:40, go:"r-cataratas"},
-  {id:"vertigem", n:"4", name:"Vertigem das Cataratas", tag:"Passagem obrigatória",
-   d:"Desfiladeiro de cachoeiras e piscinas, cruzado por uma ponte de tábuas e cordas, entre bandos de gaivotas.",
-   x:1130, y:650, lx:-80, ly:-10, go:"r-cataratas"},
-  {id:"catarata", n:"5", name:"Grande Catarata", tag:"Passagem obrigatória",
-   d:"Queda larga, de uma parede de rocha, com muita névoa. A estrada sobe ao lado dela e sai no topo do planalto.",
-   x:1145, y:470, lx:80, ly:-30, go:"r-cataratas"},
-  {id:"viaduto", n:"6", name:"Viaduto do Vale Rosa", tag:"Rota da Serra",
-   d:"Grande arco de pedra rosada atravessando um vale alpino florido. Primeira parada da Rota da Serra.",
-   x:1170, y:280, lx:-30, ly:-55, go:"r-serra"},
-  {id:"anel", n:"7", name:"Anel dos Peregrinos", tag:"Rota da Serra",
-   d:"Portal em forma de anel esculpido num desfiladeiro, com escada e peregrinos reunidos diante de uma fonte.",
-   x:1430, y:285, lx:40, ly:-50, go:"r-serra"},
-  {id:"colossos", n:"8", name:"Vale dos Colossos", tag:"Rota do Vale e do Lago",
-   d:"Planalto de pedra e capim, com colossos de pedra e ruínas de um império esquecido.",
-   x:1520, y:545, lx:-10, ly:-60, go:"r-vale"},
-  {id:"espelho", n:"9", name:"Lago do Espelho", tag:"Rota do Vale e do Lago",
-   d:"Grande lago de águas paradas, que reflete o céu. A rota margeia a costa sul e desce ao pântano e à praia.",
-   x:1800, y:710, lx:0, ly:72, go:"r-vale"},
-  {id:"marealta", n:"10", name:"Maré-Alta", tag:"Destino — Litoral de Maré-Alta",
-   d:"Cidade de praia e porto, na foz do Rio das Torres, sob falésias brancas de giz.",
-   x:1950, y:270, lx:0, ly:-62, go:"r-litoral"}
+   x:640, y:1290, lx:0, ly:84},
+  {id:"02", n:"2", name:"Campo dos Monólitos", tag:"Estrada do leste — Charneca",
+   d:"O círculo de pedras erguidas no meio da charneca — a estrada do leste passa pelo meio delas.",
+   x:1172, y:1192, lx:30, ly:-115},
+  {id:"04", n:"4", name:"Bosque dos Gigantes", tag:"Estrada do oeste — Floresta Antiga",
+   d:"Árvores colossais na borda da Floresta Antiga, na estrada do oeste.",
+   x:430, y:1010, lx:30, ly:-120},
+  {id:"12", n:"12", name:"Lagos do Arco-Íris", tag:"Boca da garganta — início da subida",
+   d:"A grande lagoa na base da escarpa, onde as duas estradas do sul se encontram. É a única subida.",
+   x:1150, y:985, lx:-150, ly:60},
+  {id:"10", n:"10", name:"Cascatas do Urso de Pedra", tag:"A subida das Cataratas",
+   d:"A cascata guardada pelo pedestal de pedra esculpida, a meio caminho da garganta.",
+   x:1165, y:870, lx:-160, ly:10},
+  {id:"13", n:"13", name:"Vertigem das Cataratas", tag:"A subida das Cataratas",
+   d:"A ponte de tábuas e cordas que cruza o desfiladeiro, diante da queda maior.",
+   x:1195, y:678, lx:-165, ly:-40},
+  {id:"11", n:"11", name:"Grande Catarata", tag:"A subida das Cataratas",
+   d:"A queda mais alta e larga da garganta — a ponte de cordas a atravessa em meio à névoa.",
+   x:1245, y:775, lx:140, ly:45},
+  {id:"09", n:"9", name:"Queda Luminosa", tag:"A subida das Cataratas",
+   d:"As quedas em degraus no alto da garganta, onde a estrada sai no topo do planalto.",
+   x:1300, y:478, lx:130, ly:-40},
+  {id:"17", n:"17", name:"Viaduto do Vale Rosa", tag:"Rota da Serra",
+   d:"O grande arco de pedra atravessando o vale, aos pés das montanhas do norte.",
+   x:1265, y:300, lx:-60, ly:-75},
+  {id:"18", n:"18", name:"Anel dos Peregrinos", tag:"Rota da Serra",
+   d:"O portal em forma de anel erguido no caminho do norte, perto do Rio das Torres.",
+   x:1510, y:280, lx:70, ly:-65},
+  {id:"14", n:"14", name:"Os Deuses de Pedra", tag:"Rota do Vale e do Lago",
+   d:"As estátuas e ruínas de um império esquecido, no planalto central.",
+   x:1630, y:520, lx:130, ly:-50},
+  {id:"26", n:"26", name:"Lago Espelho", tag:"Rota do Vale e do Lago",
+   d:"O grande lago de águas paradas que reflete o céu, a caminho da costa.",
+   x:1850, y:700, lx:30, ly:105},
+  {id:"29", n:"29", name:"Marésia e as Falésias Brancas", tag:"Destino — Litoral de Maré-Alta",
+   d:"A cidade de praia e porto sob as falésias brancas de giz, na foz do Rio das Torres.",
+   x:2050, y:290, lx:-30, ly:-85}
 ];
 
 const ROUTES = [
@@ -251,52 +257,33 @@ const ROUTES = [
    locs:[["01","Vila dos Heróis","Ponto de partida, onde a pradaria encontra a Floresta Antiga. Casas de pedra e telhado vermelho."]]},
   {id:"r-leste", title:"Estrada do Leste — Charneca dos Monólitos", orn:"❦",
    sub:"Planície fria e baixa, de urze e solo pobre, de flores azuis e pedras erguidas.",
-   locs:[["02","Campo dos Monólitos","Pedras erguidas entre flores azuis — a estrada passa pelo meio delas."],
-         ["03","Cemitério das Pedras Rúnicas","Pedras gravadas de runas antigas, sob as estrelas da charneca."]]},
+   locs:[["02","Campo dos Monólitos","Pedras erguidas entre flores azuis — a estrada passa pelo meio delas."]]},
   {id:"r-oeste", title:"Estrada do Oeste — Floresta Antiga", orn:"❦",
    sub:"Mata úmida e fechada, de árvores gigantes. Só a borda, com clareiras, é caminhável.",
-   locs:[["04","Bosque dos Gigantes","Árvores colossais num prado de clareiras, com um lago ao fundo."],
-         ["05","Floresta dos Guarda-Chuvas","Copas enormes como guarda-chuvas, na névoa da mata fechada."],
-         ["06","Fortaleza Afogada de Musgo","Ruínas de uma fortaleza engolida pelo verde, guardada por estátuas de cavaleiros."],
-         ["07","Árvore-Mãe nas Nuvens","Uma árvore anciã retorcida acima do mar de nuvens."],
-         ["08","Árvore das Cascatas","A grande árvore cercada de quedas d'água e ilhas flutuantes."]]},
+   locs:[["04","Bosque dos Gigantes","Árvores colossais num prado de clareiras, com um lago ao fundo."]]},
   {id:"r-cataratas", title:"A Subida das Cataratas", orn:"❦",
-   sub:"A garganta das Cataratas é a única subida da Grande Escarpa — passagem obrigatória (3, 4, 5).",
-   locs:[["09","Queda Luminosa","Quedas que brilham azuis na noite, entre bandos de aves de luz."],
-         ["10","Cascatas do Urso de Pedra","Um urso de pedra vigia as cascatas em degraus."],
-         ["11","Grande Catarata","Queda larga, de uma parede de rocha, com muita névoa — a estrada sobe ao lado dela."],
-         ["12","Lagos do Arco-Íris","Lagoas turquesa, ilhas de mata e um arco-íris quase permanente."],
-         ["13","Vertigem das Cataratas","A ponte de tábuas e cordas sobre o desfiladeiro de cachoeiras."]]},
+   sub:"A garganta das Cataratas é a única subida da Grande Escarpa — passagem obrigatória. De baixo para cima: Lagos do Arco-Íris, Cascatas do Urso, a ponte da Vertigem diante da Grande Catarata, e a Queda Luminosa no topo.",
+   locs:[["12","Lagos do Arco-Íris","A grande lagoa turquesa na base da escarpa, sob um arco-íris quase permanente."],
+         ["10","Cascatas do Urso de Pedra","Um urso de pedra vigia as cascatas em degraus, a meio caminho."],
+         ["13","Vertigem das Cataratas","A ponte de tábuas e cordas sobre o desfiladeiro de cachoeiras."],
+         ["11","Grande Catarata","A queda mais alta e larga da garganta, com muita névoa — a ponte a atravessa."],
+         ["09","Queda Luminosa","As quedas que brilham no alto da garganta, na saída para o planalto."]]},
   {id:"r-vale", title:"Rota do Vale e do Lago", orn:"❦",
-   sub:"Depois das Cataratas, a rota do sul: o Vale dos Colossos e as terras baixas ao redor do grande lago.",
-   locs:[["14","Os Deuses de Pedra","Estátuas colossais dos deuses esquecidos, erguendo a espada ao céu."],
-         ["15","Escadaria dos Colossos","A grande escadaria entre colunas e sentinelas de pedra."],
-         ["16","Avenida dos Guardiões","Fileiras de guardiões armados ladeiam o caminho antigo."],
-         ["25","Monólito da Esfera","Um monólito partido que prende uma esfera de energia crepitante."],
-         ["26","Lago Espelho e Monte Branco","O grande lago de águas paradas refletindo o monte nevado."],
-         ["27","Lagoa do Dragão de Pedra","Uma lagoa esmeralda sob o perfil de um dragão esculpido pela rocha."]]},
+   sub:"Depois das Cataratas, a rota do sul: as ruínas dos colossos e as terras baixas ao redor do grande lago.",
+   locs:[["14","Os Deuses de Pedra","Estátuas colossais dos deuses esquecidos, entre ruínas de um império antigo."],
+         ["26","Lago Espelho e Monte Branco","O grande lago de águas paradas refletindo o céu."]]},
   {id:"r-serra", title:"Rota da Serra", orn:"❦",
-   sub:"A rota do norte, ao pé da Cordilheira: vales floridos, portais de peregrinos e picos estranhos.",
+   sub:"A rota do norte, ao pé da Cordilheira: o vale florido e o portal dos peregrinos.",
    locs:[["17","Viaduto do Vale Rosa","O grande arco de pedra rosada sobre o vale alpino florido."],
-         ["18","Anel dos Peregrinos","O portal em anel esculpido no desfiladeiro, com sua fonte e seus peregrinos."],
-         ["19","Pináculos Cristalinos","Torres de rocha atravessadas por lâminas de cristal translúcido."],
-         ["20","Pico da Espada","Uma espada gigantesca cravada no alto da montanha."],
-         ["21","Campo das Espadas","Milhares de espadas fincadas entre flores — um campo de batalha esquecido."],
-         ["22","Monólito Suspenso","A torre invertida que flutua sobre o altar da montanha."],
-         ["23","Torre Tombada nas Nuvens","Uma torre caída, deitada sobre as nuvens e os campos suspensos."],
-         ["24","Agulha do Anel","O pico dourado atravessado por um feixe de luz e um anel brilhante."]]},
+         ["18","Anel dos Peregrinos","O portal em anel esculpido no caminho, com sua fonte e seus peregrinos."]]},
   {id:"r-litoral", title:"O Destino — Litoral de Maré-Alta", orn:"❦",
    sub:"Costa de giz e praias a nordeste, banhada pelo mar, com colinas verdes e úmidas.",
-   locs:[["28","Picos Gêmeos","Os dois picos irmãos, cobertos de telhados e cachoeiras, anunciam a chegada."],
-         ["29","Marésia e as Falésias Brancas","Maré-Alta: a cidade de praia e porto sob as falésias brancas de giz."]]},
-  {id:"r-fora", title:"Fora do Mapa", orn:"✣",
-   sub:"Lugares de que falam os viajantes, mas que nenhuma estrada alcança.",
-   locs:[["fora","Cachoeira do Andarilho","Dizem que um andarilho de chapéu de palha aparece ao pé desta cachoeira — e some."]]}
+   locs:[["29","Marésia e as Falésias Brancas","Maré-Alta: a cidade de praia e porto sob as falésias brancas de giz."]]}
 ];
 
 /* ============ GALLERY ============ */
 const routesEl = document.getElementById('routes');
-const FLAT = [];
+const FLAT = []; const BYNUM = {};
 for(const r of ROUTES){
   const sec = document.createElement('section');
   sec.className='route'; sec.id=r.id;
@@ -304,7 +291,7 @@ for(const r of ROUTES){
   const grid = document.createElement('div'); grid.className='cards';
   for(const [num,name,desc] of r.locs){
     const idx = FLAT.length;
-    FLAT.push({num,name,desc});
+    BYNUM[num]=idx; FLAT.push({num,name,desc});
     const card = document.createElement('div');
     card.className='card'; card.id='loc-'+num;
     card.innerHTML = `<div class="imgbox"><img src="img/${num}.jpg" alt="${name}" loading="lazy">`+
@@ -365,7 +352,7 @@ function render(){
     g.addEventListener('pointerenter',()=>{if(!editMode)showTip(p)});
     g.addEventListener('pointerleave',hideTip);
     g.addEventListener('pointerdown',ev=>{ if(editMode) startDrag(ev,p,g); });
-    g.addEventListener('click',()=>{ if(!editMode && p.go){ hideTip(); document.getElementById(p.go).scrollIntoView({behavior:'smooth'}); }});
+    g.addEventListener('click',()=>{ if(!editMode && BYNUM[p.id]!==undefined){ hideTip(); openLb(BYNUM[p.id]); }});
   }
 }
 function mapPoint(x,y){const pt=new DOMPoint(x,y);return pt.matrixTransform(svg.getScreenCTM().inverse())}
@@ -378,7 +365,7 @@ function startDrag(ev,p,g){
   svg.addEventListener('pointermove',move); svg.addEventListener('pointerup',up);
 }
 function showTip(p){
-  tip.innerHTML=`<h3>${p.n!=='✦'?p.n+'. ':''}${p.name}</h3><div class="tag">${p.tag}</div><div>${p.d}</div><div class="click">Clique para ver as imagens do trecho ↓</div>`;
+  tip.innerHTML=`<h3>${p.n!=='✦'?p.n+'. ':''}${p.name}</h3><div class="tag">${p.tag}</div><div>${p.d}</div><div class="click">Clique para ver a imagem do local</div>`;
   const rect=wrap.getBoundingClientRect(), sx=rect.width/2528, sy=rect.height/1696;
   let left=p.x*sx+24, top=p.y*sy-10;
   tip.classList.add('show'); tip.style.left='0px'; tip.style.top='0px';
