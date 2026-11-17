@@ -4,7 +4,7 @@
 (function(){
   'use strict';
   var KEY = 'otl_mesa';
-  var S = {hdr:0, nav:1, dir:1, vol:70, cam:{}, fix:'', dicas:0, foco:1, retos:1, rail:1};
+  var S = {hdr:0, nav:1, dir:1, vol:70, cam:{}, fix:'', dicas:0, foco:1, retos:1, rail:1, rolar:0};
   try { var v = JSON.parse(localStorage.getItem(KEY) || 'null'); if (v && typeof v === 'object') { for (var k in S) if (k in v) S[k] = v[k]; if (!S.cam || typeof S.cam !== 'object') S.cam = {}; } } catch (e) {}
   function gravar(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
@@ -273,7 +273,7 @@
         .catch(function(){ falhas++; }).then(function(){ prox(i + 1); });
     })(0);
   }
-  function vozRedes(){ var b = document.querySelector('.mx-voz'); if (b) { b.textContent = ''; b.append(vozUI(null)); } }
+  function vozRedes(){ if (typeof ENG !== 'undefined' && ENG.on) engRender(); }
   function vozUI(idAtual){
     var chave = h('input', {type:'password', placeholder:'chave da ElevenLabs (não fica salva)', autocomplete:'off', 'aria-label':'Chave da ElevenLabs', oninput:function(ev){ VZ.chave = ev.target.value.trim(); }});
     chave.value = VZ.chave;
@@ -313,13 +313,111 @@
     }));
   }
   function secao(t, corpo, aberto){ return corpo ? h('details', {class:'dm-sec', open:aberto ? '' : null}, [h('summary', {}, [t]), corpo]) : null; }
+
+  /* ===================== SONS GERADOS (ElevenLabs) E ENGRENAGEM ===================== */
+  var CFGK = 'otl_snd';
+  var PDEF = {   // prompts padrão (em inglês: a ElevenLabs entende melhor) e duração em segundos
+    trovao:['Loud close thunderclap with a long rolling rumble', 5], impacto:['Heavy cinematic impact boom with deep sub bass hit', 2], sino:['Single deep church bell strike with long resonant decay', 5],
+    magia:['Magical spell cast whoosh with shimmering arcane sparkles', 3], meteoro:['Meteor falling from the sky with a screaming whistle then a massive explosion impact', 5], gravidade:['Gravity spell, deep warping sub bass pulling distortion', 4],
+    orbita:['Orbiting energy sphere whooshing around, rising fantasy whirl', 3], moedas:['Handful of gold coins dropping and clinking on a stone floor', 2], pincelada:['Wet paintbrush stroke swish on canvas with a magical shimmer', 2],
+    harpa:['Ascending harp glissando, magical and bright', 3], vitral:['Stained glass window shattering into many pieces', 3], coroSubida:['Angelic choir sustained chord rising, ethereal, cathedral reverb', 6],
+    luz:['Holy light shimmer, divine chime swell', 4], espada:['Flaming sword swing whoosh with fire crackle', 2], trombeta:['Epic heavenly trumpet fanfare in a cathedral', 5],
+    corrente:['Heavy iron chains rattling and dragging on stone', 3], flecha:['Arrow whooshing past then thudding into wood', 2], uivo:['Lone wolf howling at night, long and mournful, forest echo', 6],
+    tambor:['Deep tribal war drum single hit, hollow wooden, echo in a forest', 2], rufar:['Tribal war drums rolling crescendo', 5], estaca:['Wooden stake driven into the ground, heavy thud', 2],
+    sussurro:['Eerie ghostly whispers surrounding the listener', 4], relogio:['Old grandfather clock ticking then a heavy bell chime', 6], orgao:['Deep ominous church organ low chord', 6],
+    assobio:['Hunter whistling a sharp two note whistle signal outdoors', 2], chifre:['Tribal war horn blast, deep, echoing across a valley', 4], rosnado:['Large beast growling low and menacing', 3],
+    vento:['Steady wind blowing across open plains, seamless ambient loop', 20], chuva:['Steady rain falling on leaves and ground, seamless ambient loop', 20], mar:['Ocean waves rolling onto a shore, seamless ambient loop', 20],
+    fogo:['Campfire crackling softly, seamless ambient loop', 20], trovoes:['Distant thunder rumbling in a storm, seamless ambient loop', 20], grave:['Low dark ominous cinematic drone, seamless ambient loop', 20],
+    cosmos:['Deep space cosmic ambient drone with shimmering pads, seamless loop', 20], coro:['Ethereal choir pad sustained, cathedral ambience, seamless loop', 20], sinos:['Distant church bells ringing slowly, ambient, seamless loop', 20],
+    coracao:['Slow deep heartbeat thumping, seamless ambient loop', 20], sussurros:['Ghostly whispers ambience, seamless loop', 20], tambores:['Distant tribal war drums steady rhythm, seamless loop', 20],
+    floresta:['Night forest ambience with crickets and soft wind, seamless loop', 20]
+  };
+  var CFG = {p:{}, fr:{}};
+  try { var cj = JSON.parse(localStorage.getItem(CFGK) || 'null'); if (cj && typeof cj === 'object') { CFG.p = cj.p || {}; CFG.fr = cj.fr || {}; } } catch (e) {}
+  function cfgGravar(){ try { localStorage.setItem(CFGK, JSON.stringify(CFG)); } catch (e) {} }
+  function pDe(id){ var d = PDEF[id] || ['', 3], c = CFG.p[id] || {}; return {t:c.t != null ? c.t : d[0], d:c.d != null ? c.d : d[1]}; }
+  function frDe(id){ return CFG.fr[id] || CAT[id].fr; }
+  var GEN = {}, LOOPS = {};     // 'fx|id' / 'cam|id' -> endereço do áudio gerado
+  function ehCam(id){ return !!CAN[id]; }
+  function chG(id){ return (ehCam(id) ? 'cam|' : 'fx|') + id; }
+  function volG(){ return Math.min(1, S.vol / 100 * 1.15); }
+  bd().then(function(d){ var q = d.transaction('a').objectStore('a').openCursor(); q.onsuccess = function(){ var c = q.result; if (!c) { if (ENG.on) engRender(); return; } var k = String(c.key); if (/^(fx|cam)\|/.test(k)) GEN[k] = URL.createObjectURL(c.value); c.continue(); }; }).catch(function(){});
+  var _ef = AU.efeito, _li = AU.liga, _ni = AU.nivel, _de = AU.desliga, _vi = AU.viva, _tu = AU.tudo, _ms = AU.mestre;
+  AU.efeito = function(id){ var u = GEN['fx|' + id]; if (!u) return _ef(id); var a = new Audio(u); a.volume = volG(); a.play().catch(function(){ _ef(id); }); };
+  AU.liga = function(id, nv){ var u = GEN['cam|' + id]; if (!u) return _li(id, nv); if (LOOPS[id]) return; var a = new Audio(u); a.loop = true; a.volume = Math.min(1, nv * volG() * 1.6); LOOPS[id] = a; a.play().catch(function(){}); };
+  AU.nivel = function(id, nv){ if (LOOPS[id]) LOOPS[id].volume = Math.min(1, nv * volG() * 1.6); else _ni(id, nv); };
+  AU.desliga = function(id){ var a = LOOPS[id]; if (a) { delete LOOPS[id]; a.pause(); } else _de(id); };
+  AU.viva = function(id){ return !!LOOPS[id] || _vi(id); };
+  AU.tudo = function(){ Object.keys(LOOPS).forEach(function(k){ LOOPS[k].pause(); delete LOOPS[k]; }); try { if (tocandoFala) tocandoFala.pause(); } catch (e) {} _tu(); };
+  function gerarSom(id){
+    var p = pDe(id), corpo = {text:p.t, prompt_influence:.5, model_id:'eleven_text_to_sound_v2'};
+    if (p.d) corpo.duration_seconds = Math.max(.5, Math.min(30, +p.d)); if (ehCam(id)) corpo.loop = true;
+    return eleven('/v1/sound-generation', corpo).then(function(r){ if (!r.ok) return r.text().then(function(t){ throw new Error(r.status + ' ' + t.slice(0, 80)); }); return r.blob(); })
+      .then(function(b){ var k = chG(id); if (GEN[k]) URL.revokeObjectURL(GEN[k]); GEN[k] = URL.createObjectURL(b); return bdGravar(k, b); });
+  }
+  function apagarSom(id){ var k = chG(id); if (GEN[k]) { URL.revokeObjectURL(GEN[k]); delete GEN[k]; } return bd().then(function(d){ return new Promise(function(ok){ var t = d.transaction('a', 'readwrite'); t.objectStore('a').delete(k); t.oncomplete = ok; t.onerror = ok; }); }); }
+  function fila(tarefas, rotulo){   // tarefas: funções que devolvem promessas, uma por vez
+    if (VZ.ocupado) return; if (!VZ.chave) { VZ.msg = 'Cole a chave primeiro.'; engRender(); return; }
+    VZ.ocupado = true; var ok = 0, mal = 0, ult = '';
+    (function prox(i){
+      if (i >= tarefas.length) { VZ.ocupado = false; VZ.msg = rotulo + ': ' + ok + ' prontos' + (mal ? ', ' + mal + ' falharam (' + ult + ')' : '') + '.'; engRender(); return; }
+      VZ.msg = rotulo + ': ' + (i + 1) + ' de ' + tarefas.length + '…'; engRender();
+      tarefas[i]().then(function(){ ok++; }).catch(function(e){ mal++; ult = e.message; }).then(function(){ prox(i + 1); });
+    })(0);
+  }
+  var ENG = {on:false, alvo:''};
+  function linhaSom(id){
+    var p = pDe(id), tem = !!GEN[chG(id)], loop = ehCam(id);
+    var t = h('input', {type:'text', value:p.t, 'aria-label':'Descrição do som ' + (EFN[id] || CAN[id]), onchange:function(ev){ (CFG.p[id] = CFG.p[id] || {}).t = ev.target.value; cfgGravar(); }});
+    var d = h('input', {type:'number', min:'1', max:'30', value:String(p.d), class:'dur', 'aria-label':'Duração em segundos', onchange:function(ev){ (CFG.p[id] = CFG.p[id] || {}).d = +ev.target.value; cfgGravar(); }});
+    return h('div', {class:'en-lin'}, [h('div', {class:'en-n'}, [h('b', {}, [EFN[id] || CAN[id]]), h('span', {class:'sub'}, [tem ? ' · gerado' : ' · sintético'])]), t,
+      h('div', {class:'dm-efs'}, [d, h('span', {class:'sub'}, ['s']),
+        h('button', {class:'peq', onclick:function(){ if (loop) { if (AU.viva(id)) AU.desliga(id); else AU.liga(id, .5); engRender(); } else AU.efeito(id); }}, [loop ? (AU.viva(id) ? '■' : '▶') : '▶']),
+        h('button', {class:'peq', onclick:function(){ fila([function(){ return gerarSom(id); }], EFN[id] || CAN[id]); }}, [tem ? 'Gerar de novo' : 'Gerar']),
+        tem ? h('button', {class:'peq perigo', onclick:function(){ apagarSom(id).then(engRender); }}, ['Usar sintético']) : null])]);
+  }
+  function linhaFala(id, i){
+    var lista = frDe(id), x = lista[i], t = ft(x), tr = typeof x === 'string' ? '' : x[1];
+    function salvar(novoT, novoTr){ var l = frDe(id).map(function(y){ return typeof y === 'string' ? [y, ''] : y.slice(); }); l[i] = [novoT, novoTr]; CFG.fr[id] = l; cfgGravar(); }
+    var it = h('input', {type:'text', value:t, 'aria-label':'Texto da fala', onchange:function(ev){ salvar(ev.target.value, tr); engRender(); }});
+    var ir = h('input', {type:'text', value:tr, placeholder:'tradução (só para você)', 'aria-label':'Tradução', onchange:function(ev){ salvar(t, ev.target.value); }});
+    var tem = null; bdLer(chaveFala(id, t)).then(function(b){ var s = document.getElementById('fs-' + id + i); if (s) s.textContent = b ? ' · gravada' : ' · voz do aparelho'; });
+    return h('div', {class:'en-lin'}, [h('div', {class:'en-n'}, [h('b', {}, ['Fala ' + (i + 1)]), h('span', {class:'sub', id:'fs-' + id + i}, [''])]), it, ir,
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ fala(id, t, !!CAT[id].vz); }}, ['▶']),
+        h('button', {class:'peq', onclick:function(){ fila([function(){ return gerarFalaUma(id, t); }], 'Fala'); }}, ['Gerar voz']),
+        h('button', {class:'peq perigo', onclick:function(){ var l = frDe(id).slice(); l.splice(i, 1); CFG.fr[id] = l; cfgGravar(); engRender(); }}, ['Remover'])])]);
+  }
+  function gerarFalaUma(id, t){
+    return eleven('/v1/text-to-speech/' + encodeURIComponent(VZ.voz) + '?output_format=mp3_44100_64', {text:t, model_id:'eleven_multilingual_v2', voice_settings:{stability:.28, similarity_boost:.8, style:.75, use_speaker_boost:true}})
+      .then(function(r){ if (!r.ok) throw new Error(r.status); return r.blob(); }).then(function(b){ return bdGravar(chaveFala(id, t), b); });
+  }
+  function engRender(){
+    if (!ENG.on) return;
+    var nc = noCombate(), alvo = ENG.alvo || nc.atual || 'esau', c = CAT[alvo];
+    var sel = h('select', {'aria-label':'Editar os sons de', onchange:function(ev){ ENG.alvo = ev.target.value; engRender(); }}, Object.keys(CAT).map(function(id){ var o = h('option', {value:id}, [CAT[id].nome]); if (id === alvo) o.selected = true; return o; }));
+    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Editar sons']), h('button', {class:'peq', onclick:function(){ ENG.on = false; assin = ''; desenhar2(true); }}, ['Voltar'])]);
+    var tarefasAlvo = c.ef.concat(c.ca).map(function(id){ return function(){ return gerarSom(id); }; }).concat(frDe(alvo).map(function(x){ return function(){ return gerarFalaUma(alvo, ft(x)); }; }));
+    var corpo = [h('div', {class:'dm-onde'}, [sel]),
+      secao('Chave e voz', vozUI(null), !VZ.vozes.length),
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ if (VZ.voz) fila(tarefasAlvo, 'Tudo de ' + c.nome); else { VZ.msg = 'Carregue as vozes primeiro.'; engRender(); } }}, ['Gerar tudo de ' + c.nome])]),
+      secao('Efeitos', h('div', {}, c.ef.map(linhaSom)), true), secao('Sons de fundo', h('div', {}, c.ca.map(linhaSom)), true),
+      secao('Falas', h('div', {}, frDe(alvo).map(function(x, i){ return linhaFala(alvo, i); }).concat([h('button', {class:'peq', onclick:function(){ var l = frDe(alvo).slice(); l.push(['', '']); CFG.fr[alvo] = l; cfgGravar(); engRender(); }}, ['+ nova fala'])])), true),
+      VZ.msg ? h('p', {class:'sub dm-nota', role:'status'}, [VZ.msg]) : null];
+    var rol = dir.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
+    var abertos = {}; Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ abertos[d.firstChild.textContent] = d.open; });
+    dir.textContent = ''; dir.append(topo, h('div', {class:'dm-corpo en'}, corpo.filter(Boolean)));
+    Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ var k = d.firstChild.textContent; if (k in abertos) d.open = abertos[k]; });
+    var n = dir.querySelector('.dm-corpo'); if (n) n.scrollTop = st;
+  }
+
   function desenhar2(forcar){
+    if (ENG.on) { if (forcar) engRender(); return; }
     var nc = noCombate(), playing = (typeof tocando !== 'undefined' && tocando) ? tocando.id : '';
     var assinatura = VZ.msg + VZ.vozes.length + nc.atual + '|' + nc.porque + '|' + nc.presentes.join(',') + '|' + S.fix + '|' + playing;
     if (!forcar && assinatura === assin && dir.firstChild) return; assin = assinatura;
     // ao trocar de inimigo, as músicas da aba Seleção e da Sessão passam para o grupo dele
     if (nc.atual && nc.atual !== ultimo) { ultimo = nc.atual; var g0 = grupoDe(nc.atual); if (g0) { try { atual = g0.id; atualSes = g0.id; } catch (e) {} } }
-    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Sons']), h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
+    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Sons']), h('button', {class:'peq', 'aria-label':'Editar sons', title:'Editar e gerar sons e falas', onclick:function(){ ENG.on = true; ENG.alvo = nc.atual || ''; engRender(); }}, ['⚙']), h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
     var vol = h('label', {class:'dm-vol'}, [h('span', {}, ['Volume']), h('input', {type:'range', min:'0', max:'100', value:String(S.vol), 'aria-label':'Volume dos sons sintetizados', oninput:function(ev){ AU.mestre(+ev.target.value); }, onchange:gravar}),
       h('button', {class:'peq perigo', onclick:function(){ AU.tudo(); desenhar2(true); }}, ['Parar sons'])]);
     var corpo = [];
@@ -329,7 +427,7 @@
       corpo.push(secao('Músicas de ' + c.nome, musicasUI(nc.atual), true));
       corpo.push(secao('Efeitos', efeitosUI(c.ef), true));
       corpo.push(secao('Som de fundo', h('div', {class:'dm-cams'}, c.ca.map(camadaUI)), true));
-      if (c.fr.length) corpo.push(secao(c.vz ? 'Gritos e falas' : 'Frases em latim', frasesUI(c.fr, !!c.vz, nc.atual), true));
+      if (frDe(nc.atual).length) corpo.push(secao(c.vz ? 'Gritos e falas' : 'Frases em latim', frasesUI(frDe(nc.atual), !!c.vz, nc.atual), true));
     } else corpo.push(h('p', {class:'sub dm-nota'}, ['Abra a ficha de um inimigo (ou ponha um na iniciativa) e os sons e as músicas dele aparecem aqui.']));
     if (!nc.atual) corpo.push(secao('Sons gerais', h('div', {}, [efeitosUI(GERAL.ef), h('div', {class:'dm-sub'}, ['Fundo']), h('div', {class:'dm-cams'}, GERAL.ca.map(camadaUI))]), true));
     var rol = dir.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
@@ -399,9 +497,9 @@
     foc.firstChild.checked = !!S.foco;
     var ret = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.retos = ev.target.checked ? 1 : 0; gravar(); aplicar(); }}), ' Cantos retos (visual mais seco, sem cartões arredondados)']);
     ret.firstChild.checked = !!S.retos;
-    var vz = h('div', {class:'mx-voz'}); vz.append(vozUI(null));
-    aj.append(h('div', {class:'mx-aj'}, [h('h2', {}, ['Mesa do Mestre']), dic, foc, ret,
-      h('h3', {}, ['Voz realista das falas (ElevenLabs)']), vz,
+    var rol = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.rolar = ev.target.checked ? 1 : 0; gravar(); }}), ' Rolar os dados de dano (padrão: usar o dano médio da ficha)']);
+    rol.firstChild.checked = !!S.rolar;
+    aj.append(h('div', {class:'mx-aj'}, [h('h2', {}, ['Mesa do Mestre']), dic, foc, ret, rol,
       h('h3', {}, ['Zerar']), h('p', {class:'sub'}, ['As músicas escolhidas e a aparência não mudam.']),
       h('div', {class:'lin2'}, [dois('Zerar a luta (iniciativa, PV, rodada, usos)', zerarLuta), dois('Zerar a noite inteira (volta 1, abates, notas, tudo do Mestre)', zerarNoite, 'perigo')])]));
   }
@@ -409,7 +507,7 @@
   /* ===================== CABEÇALHO RECOLHÍVEL ===================== */
   var hdr = document.querySelector('header');
   var puxa = h('button', {id:'btHdr', class:'puxa', 'aria-label':'Recolher ou abrir o cabeçalho', onclick:function(){ S.hdr = S.hdr ? 0 : 1; gravar(); aplicar(); }}, ['']);
-  if (hdr) hdr.append(puxa);
+  var abasE = document.querySelector('header .abas'); if (abasE) abasE.append(puxa); else if (hdr) hdr.append(puxa);
   function medir(){
     if (!hdr) return; var r = hdr.getBoundingClientRect(), lateral = hdr.offsetWidth < window.innerWidth * .6;
     root.style.setProperty('--hdr-h', lateral ? '0px' : Math.round(r.height) + 'px');
@@ -436,6 +534,13 @@
   var pmE = document.getElementById('painelMestre'); if (pmE) new MutationObserver(marcarDicas).observe(pmE, {childList:true, subtree:true});
   var ajE = document.getElementById('ajustes'); if (ajE) new MutationObserver(ajustesExtra).observe(ajE, {childList:true});
   marcarDicas(); ajustesExtra();
+  document.addEventListener('click', function(ev){
+    var t = ev.target; if (!t || !t.isConnected) return;
+    var pm = document.getElementById('painelMestre'); if (!pm || pm.hidden || !pm.querySelector('.inm-res')) return;
+    var cartao = t.closest && t.closest('.inm-card'); if (cartao && cartao.querySelector('.inm-res')) return;
+    if (t.closest && t.closest('#dirMesa,#navMestre,.inm-aplic,.inm-ap')) return;
+    try { limpaRol(); desenhar(['inm']); } catch (e) {}
+  });
   var barraAgora = document.getElementById('agoraTit');
   setInterval(function(){
     if (document.hidden) return;

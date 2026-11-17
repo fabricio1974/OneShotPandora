@@ -663,7 +663,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .cc-tg .ic{width:16px;height:16px}
 </style>
 <link rel="stylesheet" href="visual.css">
-<link rel="stylesheet" href="mesa.css?v=6">
+<link rel="stylesheet" href="mesa.css?v=7">
 </head>
 <body>
 <header>
@@ -1673,6 +1673,8 @@ function rolarAtk(b, crit){
   return {n, t, txt:'d20 [' + n + '] + ' + b + ' = ' + t + (n === 20 ? ' · 20 natural: crítico!' : n === 1 ? ' · 1 natural: erra' : crit && n >= crit ? ' · ' + n + ' natural: crítico se o alvo estiver impedido' : '')};
 }
 const fmtE = e => e.replace('+', ' + ');
+const mediaX = ex => { if (/^\d+$/.test(ex)) return +ex; const x = /^(\d+)d(\d+)(?:\+(\d+))?$/.exec(ex); return x ? Math.floor(+x[1] * (+x[2] + 1) / 2) + +(x[3] || 0) : 0; };
+const usaMedia = () => !(window.OTLMesa && window.OTLMesa.S && window.OTLMesa.S.rolar);
 const mdLite = t => { const out = [], re = /\*\*(.+?)\*\*|\*(.+?)\*/g; let p = 0, m; while ((m = re.exec(t))) { if (m.index > p) out.push(t.slice(p, m.index)); out.push(m[1] != null ? el('b',{}, m[1]) : el('i',{}, m[2])); p = re.lastIndex; } if (p < t.length) out.push(t.slice(p)); return out; };
 function inmZerar(porQue){   // zera os usos: luta (também recargas, lendárias, Não Hoje, ambiente, Fase 2), volta, turno ou rodada
   const s = E.m.inm, grupo = {luta:['luta','dia'], volta:['volta','dia'], turno:['turno'], rodada:['rodada']}[porQue] || [porQue];
@@ -1853,8 +1855,8 @@ function ofertaUI(i, a, k){
 function rolarMulti(i, mu){   // sequência de ataques da ficha: d20 + bônus e dados de cada um
   let total = 0;
   const linhas = mu.seq.map((id, n) => { const b = inmAcao(i, id), ef = efe(i, b), p = [];
-    let crit = false; if (ef.atk) { const ra = rolarAtk(ef.atk.b, ef.atk.crit); p.push(ra.txt); crit = ra.n === 20; }
-    (ef.dano || []).filter(d => d.k === 'd').forEach(d => { const ex = crit ? dobraE(d.e) : d.e, r = rolarX(ex); total += r.t; p.push(fmtE(ex) + ' ' + d.t + ' = ' + r.t + (crit ? ' (crítico: dados dobrados)' : '')); });
+    let crit = false; if (ef.atk) { if (usaMedia()) p.push('ataque +' + ef.atk.b); else { const ra = rolarAtk(ef.atk.b, ef.atk.crit); p.push(ra.txt); crit = ra.n === 20; } }
+    (ef.dano || []).filter(d => d.k === 'd').forEach(d => { const ex = crit ? dobraE(d.e) : d.e, r = usaMedia() ? {t:mediaX(ex)} : rolarX(ex); total += r.t; p.push((usaMedia() ? 'dano médio ' : fmtE(ex) + ' ') + d.t + ' = ' + r.t + (usaMedia() ? ' (' + fmtE(ex) + ')' : '') + (crit ? ' (crítico: dados dobrados)' : '')); });
     if (ef.cd) p.push(ef.cd.map(c => c[0] + ' CD ' + c[1]).join(', '));
     return (n + 1) + ') ' + b.nome + ': ' + p.join(' · '); });
   return 'TOTAL se todos acertarem: ' + total + ' de dano\n' + linhas.join('\n');
@@ -1901,8 +1903,8 @@ function cartaAcao(i, a, pref){
   if (i.id === 'ozy' && a.id === 'resistencia-lendaria') lin.append(el('button',{class:'peq', 'aria-label':'Um jogador usou Resistência Lendária: o Ozymandias recupera uma (Avareza)', onclick:() => desf('Avareza: recupera 1 Resistência', () => { s.uso[k] = Math.max(0, usado - 1); }, ['c:' + k])}, 'Avareza: recuperar 1'));
   if (ef.atk) lin.append(el('button',{class:'inm-atk', 'aria-label':'Rolar ataque de ' + a.nome + ' com bônus +' + ef.atk.b, onclick:() => { const r = rolarAtk(ef.atk.b, ef.atk.crit); rolAt[k] = r.txt; if (r.n === 20) rolCrit[k] = 1; else delete rolCrit[k]; desenhar(['c:' + k]); }}, 'Ataque +' + ef.atk.b));
   (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk', onclick:() => { rolInm[k] = rolarMulti(i, mu); rolTot[k] = +rolInm[k].match(/: (\d+) de dano/)[1]; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; desenhar(['c:' + k]); }}, ico('dado'), mu.lab)));
-  (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = rolarX(d.e); rolInm[k] = r.txt + ' ' + d.t; rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; delete rolCrit[k]; if (d.k === 'd') { const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; } desenhar(['c:' + k]); }},
-    ico('dado'), (d.k === 'c' ? 'Curar ' : '') + fmtE(d.e) + ' ' + d.t)));
+  (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = usaMedia() && !/^\d+$/.test(d.e) ? {t:mediaX(d.e), txt:'Dano médio ' + mediaX(d.e) + ' (' + fmtE(d.e) + ')'} : rolarX(d.e); rolInm[k] = r.txt + ' ' + d.t; rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; delete rolCrit[k]; if (d.k === 'd') { const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; } desenhar(['c:' + k]); }},
+    ico('dado'), (d.k === 'c' ? 'Curar ' : '') + (usaMedia() && !/^\d+$/.test(d.e) ? mediaX(d.e) + ' (' + fmtE(d.e) + ') ' : fmtE(d.e) + ' ') + d.t)));
   const comps = (ef.dano || []).filter(d => d.k === 'd');
   if (comps.length > 1) lin.append(el('button',{class:'inm-dado inm-total', 'aria-label':'Rolar o dano completo de ' + a.nome + ' de uma vez', onclick:() => { let tot = 0; const ps = comps.map(d => { const r = rolarX(d.e); tot += r.t; return r.txt + ' ' + d.t; });
     rolInm[k] = 'DANO TOTAL = ' + tot + '\n' + ps.join('\n'); rolTot[k] = tot; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; desenhar(['c:' + k]); }}, ico('dado'), 'Dano total'));
@@ -2555,6 +2557,6 @@ if (uiRest && typeof uiRest === 'object') {
 desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
-<script src="mesa.js?v=6"></script>
+<script src="mesa.js?v=7"></script>
 </body>
 </html>
