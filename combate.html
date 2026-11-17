@@ -663,7 +663,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .cc-tg .ic{width:16px;height:16px}
 </style>
 <link rel="stylesheet" href="visual.css">
-<link rel="stylesheet" href="mesa.css?v=4">
+<link rel="stylesheet" href="mesa.css?v=6">
 </head>
 <body>
 <header>
@@ -1411,12 +1411,14 @@ const txtDur = t => t > 0 ? ' · ' + t + (t > 1 ? ' turnos' : ' turno') : '';
 const badgesCond = c => [...(c.cs || []).map(x => el('span',{class:'cb'}, x.k + txtDur(x.t))), ...(c.cond && c.cond.trim() ? [el('span',{class:'cb tx'}, c.cond.trim())] : [])];
 function poeCond(c, k, t){ if (!Array.isArray(c.cs)) c.cs = []; const x = c.cs.find(y => y.k === k); if (x) x.t = t; else c.cs.push({k, t}); }
 function tiraCond(c, k){ c.cs = (c.cs || []).filter(y => y.k !== k); }
-function aplicaCampo(c, inp){
+function aplicaCampo(c, inp, crua){
   const t = inp.value.replace(/[−–—]/g, '-').replace(/\s/g, ''), mt = /^([+-]?)(\d{1,5})$/.exec(t);
   if (!t) return;
   if (!mt) { inp.classList.add('inv'); toast('Digite só um número: 30 ou -30 tira PV, +15 cura.'); return; }
   const n = +mt[2]; inp.value = ''; if (!n) return;
   const cura = mt[1] === '+';
+  const i = inmDeLinha(c);
+  if (!cura && i && i.nh && !crua) { desf('Dano em ' + c.n, () => { const r = danoNomeado(c, n), v0 = c.pv, s = E.m.inm; c.pv = Math.max(0, c.pv - r.n); vigia(); s.ult.unshift({t:'Jogadores → ' + c.n + ': −' + r.n + r.nota + ' (PV ' + v0 + ' → ' + c.pv + ')', r:E.m.rodada}); s.ult.length = Math.min(s.ult.length, 5); }, ['l:' + c.id]); return; }
   desf((cura ? '+' : '−') + n + ' PV em ' + c.n, () => ajustaPV(c, cura ? n : -n), ['l:' + c.id]);
 }
 function linhaIni(c, i){
@@ -1436,8 +1438,8 @@ function linhaIni(c, i){
       el('button',{class:'peq', 'aria-expanded':aberta ? 'true' : 'false', 'aria-label':'Condições de ' + c.n, onclick:() => { condAberta = aberta ? null : c.id; desenhar(['l:' + c.id]); if (!aberta) { const k = document.querySelector('.ini2[data-c="' + c.id + '"] .i-pk'); if (k) k.scrollIntoView({block:'nearest'}); } }, title:'Condições (Derrubado, Impedido, Atordoado…)'}, aberta ? '▴' : '＋'),
       el('button',{class:'peq perigo', 'aria-label':'Remover ' + c.n + ' da iniciativa', onclick:() => desf('Remover ' + c.n, () => { const k = m.ini.indexOf(c); m.ini.splice(k,1); if (m.turno > k || m.turno >= m.ini.length) m.turno = Math.max(0, Math.min(m.turno - (m.turno > k ? 1 : 0), m.ini.length - 1)); }, ['ini','inm'])}, '×')),
     el('div',{class:'i-r l2'}, quick(-10), quick(-5), quick(-1),
-      el('input',{class:'q dv', type:'text', inputmode:'text', enterkeyhint:'done', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', placeholder:'dano · +cura', title:'30 ou -30 tira PV; +15 cura', 'data-keep':'dv:' + c.id, 'aria-label':'PV de ' + c.n + ': digite 30 ou -30 para tirar, +15 para curar, e Enter',
-        onkeydown:ev => { if (ev.key === 'Enter') { ev.preventDefault(); aplicaCampo(c, ev.target); } }, oninput:ev => ev.target.classList.remove('inv')}),
+      el('input',{class:'q dv', type:'text', inputmode:'text', enterkeyhint:'done', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', placeholder:'−300 dano · +50 cura', title:'30 ou -30 tira PV; +15 cura; Shift+Enter ignora o Não Hoje', 'data-keep':'dv:' + c.id, 'aria-label':'PV de ' + c.n + ': digite 30 ou -30 para tirar, +15 para curar, e Enter',
+        onkeydown:ev => { if (ev.key === 'Enter') { ev.preventDefault(); aplicaCampo(c, ev.target, ev.shiftKey); } }, oninput:ev => ev.target.classList.remove('inv')}),
       quick(1), quick(5)),
     bd.length ? el('div',{class:'i-r l3'}, ...bd) : null, pk);
 }
@@ -1822,8 +1824,7 @@ function aplicarUI(i, a, k){
 function ctlIni(i){
   const m = E.m, c = m.ini.find(x => inmDeLinha(x) === i);
   if (c) return el('div',{class:'inm-ini'}, el('span',{class:'inm-na'}, 'Na iniciativa ✓'), el('b',{class:'pvn'}, 'PV ' + c.pv + (c.max ? '/' + c.max : '')),
-    el('div',{class:'inm-pv'}, ...[-10,-5,-1,1,5].map(d => el('button',{class:'peq ' + (d > 0 ? 'pos' : 'neg'), 'aria-label':(d > 0 ? 'Mais ' : 'Menos ') + Math.abs(d) + ' PV de ' + i.nome, onclick:() => desf((d > 0 ? '+' : '−') + Math.abs(d) + ' PV em ' + c.n, () => ajustaPV(c, d), ['l:' + c.id])}, (d > 0 ? '+' : '−') + Math.abs(d))),
-      el('input',{class:'q dv', type:'text', inputmode:'text', enterkeyhint:'done', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', placeholder:'dano · +cura', title:'30 ou -30 tira PV; +15 cura', 'data-keep':'dvb:' + c.id, 'aria-label':'PV de ' + i.nome + ': digite 30 ou -30 para tirar, +15 para curar, e Enter', onkeydown:ev => { if (ev.key === 'Enter') { ev.preventDefault(); aplicaCampo(c, ev.target); } }, oninput:ev => ev.target.classList.remove('inv')})));
+    el('div',{class:'inm-pv'}, el('input',{class:'q dv', type:'text', inputmode:'text', enterkeyhint:'done', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', placeholder:'−300 dano · +50 cura', title:'30 ou -30 tira PV; +15 cura; Shift+Enter ignora o Não Hoje', 'data-keep':'dvb:' + c.id, 'aria-label':'PV de ' + i.nome + ': digite 30 ou -30 para tirar, +15 para curar, e Enter', onkeydown:ev => { if (ev.key === 'Enter') { ev.preventDefault(); aplicaCampo(c, ev.target, ev.shiftKey); } }, oninput:ev => ev.target.classList.remove('inv')}), i.nh ? el('button',{class:'peq inm-raw', title:'Tira o PV sem contar o Não Hoje (ou Shift+Enter)', onclick:ev => aplicaCampo(c, ev.currentTarget.previousElementSibling, true)}, 'sem Não Hoje') : null));
   const r = rasc[i.id] || (rasc[i.id] = {});
   const pv = el('input',{type:'number', inputmode:'numeric', min:'1', placeholder:'PV', class:'q', 'aria-label':'PV de ' + i.nome + ' (ficha: ' + i.pv + ')', value:r.pv ?? pvSug(i), oninput:ev => { r.pv = ev.target.value; ev.target.classList.remove('inv'); }});
   const ini = el('input',{type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa de ' + i.nome, value:r.ini ?? '', oninput:ev => { r.ini = ev.target.value; }});
@@ -2554,6 +2555,6 @@ if (uiRest && typeof uiRest === 'object') {
 desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
-<script src="mesa.js?v=4"></script>
+<script src="mesa.js?v=6"></script>
 </body>
 </html>

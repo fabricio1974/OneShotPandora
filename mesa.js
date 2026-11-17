@@ -4,7 +4,7 @@
 (function(){
   'use strict';
   var KEY = 'otl_mesa';
-  var S = {hdr:0, nav:1, dir:1, vol:70, cam:{}, fix:'', dicas:0, foco:1};
+  var S = {hdr:0, nav:1, dir:1, vol:70, cam:{}, fix:'', dicas:0, foco:1, retos:1, rail:1};
   try { var v = JSON.parse(localStorage.getItem(KEY) || 'null'); if (v && typeof v === 'object') { for (var k in S) if (k in v) S[k] = v[k]; if (!S.cam || typeof S.cam !== 'object') S.cam = {}; } } catch (e) {}
   function gravar(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
@@ -212,13 +212,14 @@
     elodie:{nome:'Élodie', ef:['pincelada','harpa','vitral','magia'], ca:['mar','vento','sinos'], fr:['Ars longa, vita brevis','Lux et color','Fiat lux']},
     hildegarda:{nome:'Hildegarda', ef:['coroSubida','sino','luz','orgao'], ca:['coro','sinos','grave'], fr:['Spiritus Sanctus vivificans vitam','O vis aeternitatis','O vos angeli','Ave generosa','Kyrie eleison']},
     anjo:{nome:'O Anjo', ef:['espada','trombeta','coroSubida','luz'], ca:['coro','grave','fogo'], fr:['Gloria in excelsis Deo','Sanctus, sanctus, sanctus','Nolite timere','Dies irae']},
-    esau:{nome:'Esaú', vz:'tribal', ef:['tambor','chifre','assobio','corrente','flecha','rosnado','uivo'], ca:['floresta','tambores','fogo','vento','coracao'], fr:['Ugah! Boko, boko!','Hya-ha-ha-ha!','Mubo ragah, mubo ragah!','Kaka-ra! Kaka-ra!','Oro-gah, oro-gah!','Nuk wara! Nuk wara!']},
+    esau:{nome:'Esaú', vz:'tribal', ef:['tambor','chifre','assobio','corrente','flecha','rosnado','uivo'], ca:['floresta','tambores','fogo','vento','coracao'], fr:[['Ka rago ni, tuh!','Eu vou te matar, agora!'],['Ni mubo! Ni ugo!','Você é fraco! Você morre!'],['Orga! Orga! Zuk nak!','Caçada! Caçada! A presa corre!'],['Kesh nak, zuk. Hura vahk ni.','Não corra, presa. O lobo sente o seu sangue.'],['Ugo, ugo, ugo! Ka rago vahk ni!','Morra, morra, morra! Eu levo o seu sangue!'],['Hura orga ni. Tuh ni ugo.','O lobo caça você. Agora você morre.']]},
     ezequiel:{nome:'Ezequiel', ef:['sussurro','relogio','orgao','sino'], ca:['sussurros','grave','sinos'], fr:['Tempus fugit','Videbis iterum','Memento']},
     jael:{nome:'Jael', ef:['rufar','tambor','estaca','trovao'], ca:['coracao','tambores','fogo'], fr:['Tempus et mors','Fortis et fidelis','Ad bellum']}
   };
   var GERAL = {nome:'Geral', ef:['trovao','impacto','sino','magia','sussurro'], ca:['vento','chuva','mar','fogo','trovoes','grave','coro','sinos','coracao'], fr:[]};
 
   /* ===================== INIMIGO EM COMBATE ===================== */
+  function ft(x){ return typeof x === 'string' ? x : x[0]; }
   var GRUPO = {anjo:'demonio'};   // o Anjo usa o grupo de músicas "O demônio"
   function noCombate(){
     var r = {atual:'', porque:'', presentes:[]};
@@ -256,33 +257,34 @@
     return fetch('https://api.elevenlabs.io' + caminho, corpo ? {method:'POST', headers:{'xi-api-key':VZ.chave, 'Content-Type':'application/json', 'Accept':'audio/mpeg'}, body:JSON.stringify(corpo)} : {headers:{'xi-api-key':VZ.chave}});
   }
   function carregarVozes(){
-    VZ.msg = 'Carregando as vozes…'; desenhar2(true);
+    VZ.msg = 'Carregando as vozes…'; vozRedes();
     eleven('/v1/voices').then(function(r){ if (!r.ok) throw new Error('A chave não foi aceita (' + r.status + ').'); return r.json(); }).then(function(j){
       VZ.vozes = (j.voices || []).map(function(v){ return {id:v.voice_id, n:v.name + (v.labels && v.labels.gender ? ' · ' + v.labels.gender : '')}; });
-      if (!VZ.voz && VZ.vozes[0]) VZ.voz = VZ.vozes[0].id; VZ.msg = VZ.vozes.length + ' vozes carregadas.'; desenhar2(true);
-    }).catch(function(e){ VZ.msg = 'Não deu: ' + e.message; desenhar2(true); });
+      if (!VZ.voz && VZ.vozes[0]) VZ.voz = VZ.vozes[0].id; VZ.msg = VZ.vozes.length + ' vozes carregadas.'; vozRedes();
+    }).catch(function(e){ VZ.msg = 'Não deu: ' + e.message; vozRedes(); });
   }
   function gerarFalas(lista){   // lista: [[idInimigo, texto]]
     if (VZ.ocupado) return; VZ.ocupado = true; var feitas = 0, falhas = 0;
     (function prox(i){
-      if (i >= lista.length) { VZ.ocupado = false; VZ.msg = 'Prontas: ' + feitas + ' falas' + (falhas ? ' (' + falhas + ' falharam)' : '') + '. Já funcionam sem a chave.'; desenhar2(true); return; }
-      VZ.msg = 'Gerando ' + (i + 1) + ' de ' + lista.length + '…'; desenhar2(true);
+      if (i >= lista.length) { VZ.ocupado = false; VZ.msg = 'Prontas: ' + feitas + ' falas' + (falhas ? ' (' + falhas + ' falharam)' : '') + '. Já funcionam sem a chave.'; vozRedes(); return; }
+      VZ.msg = 'Gerando ' + (i + 1) + ' de ' + lista.length + '…'; vozRedes();
       eleven('/v1/text-to-speech/' + encodeURIComponent(VZ.voz) + '?output_format=mp3_44100_64', {text:lista[i][1], model_id:'eleven_multilingual_v2', voice_settings:{stability:.28, similarity_boost:.8, style:.75, use_speaker_boost:true}})
         .then(function(r){ if (!r.ok) throw new Error(r.status); return r.blob(); }).then(function(b){ feitas++; return bdGravar(chaveFala(lista[i][0], lista[i][1]), b); })
         .catch(function(){ falhas++; }).then(function(){ prox(i + 1); });
     })(0);
   }
+  function vozRedes(){ var b = document.querySelector('.mx-voz'); if (b) { b.textContent = ''; b.append(vozUI(null)); } }
   function vozUI(idAtual){
     var chave = h('input', {type:'password', placeholder:'chave da ElevenLabs (não fica salva)', autocomplete:'off', 'aria-label':'Chave da ElevenLabs', oninput:function(ev){ VZ.chave = ev.target.value.trim(); }});
     chave.value = VZ.chave;
     var sel = h('select', {'aria-label':'Voz', onchange:function(ev){ VZ.voz = ev.target.value; try { localStorage.setItem('otl_voz', VZ.voz); } catch (e) {} }}, VZ.vozes.map(function(v){ var o = h('option', {value:v.id}, [v.n]); if (v.id === VZ.voz) o.selected = true; return o; }));
-    var daqui = idAtual && CAT[idAtual] ? CAT[idAtual].fr.map(function(t){ return [idAtual, t]; }) : [];
-    var todas = []; Object.keys(CAT).forEach(function(id){ CAT[id].fr.forEach(function(t){ todas.push([id, t]); }); });
+    var daqui = idAtual && CAT[idAtual] ? CAT[idAtual].fr.map(function(t){ return [idAtual, ft(t)]; }) : [];
+    var todas = []; Object.keys(CAT).forEach(function(id){ CAT[id].fr.forEach(function(t){ todas.push([id, ft(t)]); }); });
     return h('div', {class:'dm-voz'}, [h('p', {class:'sub dm-nota'}, ['Gera as falas uma vez, com a sua conta, e guarda neste navegador. Depois dá para apagar a chave.']), chave,
-      h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ if (VZ.chave) carregarVozes(); else { VZ.msg = 'Cole a chave primeiro.'; desenhar2(true); } }}, ['Carregar vozes'])]),
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ if (VZ.chave) carregarVozes(); else { VZ.msg = 'Cole a chave primeiro.'; vozRedes(); } }}, ['Carregar vozes'])]),
       VZ.vozes.length ? sel : null,
-      VZ.vozes.length ? h('div', {class:'dm-efs'}, [h('button', {class:'peq', disabled:VZ.ocupado ? '' : null, onclick:function(){ gerarFalas(daqui); }}, ['Gerar as falas de ' + (idAtual ? CAT[idAtual].nome : '—')]), h('button', {class:'peq', onclick:function(){ gerarFalas(todas); }}, ['Gerar todas'])]) : null,
-      h('div', {class:'dm-efs'}, [h('button', {class:'peq perigo', onclick:function(){ bdApagar().then(function(){ VZ.msg = 'Falas gravadas apagadas.'; desenhar2(true); }); }}, ['Apagar falas gravadas'])]),
+      VZ.vozes.length ? h('div', {class:'dm-efs'}, [(idAtual ? h('button', {class:'peq', onclick:function(){ gerarFalas(daqui); }}, ['Gerar as falas de ' + CAT[idAtual].nome]) : null), h('button', {class:'peq', onclick:function(){ gerarFalas(todas); }}, ['Gerar todas'])]) : null,
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq perigo', onclick:function(){ bdApagar().then(function(){ VZ.msg = 'Falas gravadas apagadas.'; vozRedes(); }); }}, ['Apagar falas gravadas'])]),
       VZ.msg ? h('p', {class:'sub dm-nota', role:'status'}, [VZ.msg]) : null]);
   }
 
@@ -298,7 +300,7 @@
     return li;
   }
   function efeitosUI(lista){ return h('div', {class:'dm-efs'}, lista.map(function(id){ return h('button', {class:'peq', onclick:function(){ AU.efeito(id); }}, [EFN[id]]); })); }
-  function frasesUI(lista, trib, id){ return lista.length ? h('div', {class:'dm-frs'}, lista.map(function(t){ return h('button', {class:'peq', title:'Fala em voz grave e lenta (voz do aparelho)', onclick:function(){ fala(id, t, trib); }}, [t]); })) : null; }
+  function frasesUI(lista, trib, id){ return lista.length ? h('div', {class:'dm-frs'}, lista.map(function(x){ var t = ft(x); return h('button', {class:'peq', title:typeof x === 'string' ? 'Fala em voz grave e lenta' : x[1], onclick:function(){ fala(id, t, trib); }}, [t].concat(typeof x === 'string' ? [] : [h('small', {}, [x[1]])])); })) : null; }
   function musicasUI(id){
     var g = grupoDe(id); if (!g) return null;
     var fs = g.faixas.filter(function(f){ return f.usar; });
@@ -317,23 +319,19 @@
     if (!forcar && assinatura === assin && dir.firstChild) return; assin = assinatura;
     // ao trocar de inimigo, as músicas da aba Seleção e da Sessão passam para o grupo dele
     if (nc.atual && nc.atual !== ultimo) { ultimo = nc.atual; var g0 = grupoDe(nc.atual); if (g0) { try { atual = g0.id; atualSes = g0.id; } catch (e) {} } }
-    var sel = h('select', {'aria-label':'Sons de qual inimigo', onchange:function(ev){ S.fix = ev.target.value; gravar(); desenhar2(true); }},
-      [h('option', {value:''}, ['Seguir a ficha aberta'])].concat(Object.keys(CAT).map(function(id){ var o = h('option', {value:id}, [CAT[id].nome + (nc.presentes.indexOf(id) >= 0 ? ' •' : '')]); if (S.fix === id) o.selected = true; return o; })));
-    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Sons']), sel, h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
+    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Sons']), h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
     var vol = h('label', {class:'dm-vol'}, [h('span', {}, ['Volume']), h('input', {type:'range', min:'0', max:'100', value:String(S.vol), 'aria-label':'Volume dos sons sintetizados', oninput:function(ev){ AU.mestre(+ev.target.value); }, onchange:gravar}),
       h('button', {class:'peq perigo', onclick:function(){ AU.tudo(); desenhar2(true); }}, ['Parar sons'])]);
     var corpo = [];
     if (nc.atual) {
       var c = CAT[nc.atual];
-      corpo.push(h('div', {class:'dm-onde'}, [h('b', {}, [c.nome]), h('span', {class:'sub'}, [nc.porque])]));
+      corpo.push(h('div', {class:'dm-onde'}, [h('b', {}, [c.nome])]));
       corpo.push(secao('Músicas de ' + c.nome, musicasUI(nc.atual), true));
       corpo.push(secao('Efeitos', efeitosUI(c.ef), true));
       corpo.push(secao('Som de fundo', h('div', {class:'dm-cams'}, c.ca.map(camadaUI)), true));
-      corpo.push(secao('Voz realista (ElevenLabs)', vozUI(nc.atual), false));
       if (c.fr.length) corpo.push(secao(c.vz ? 'Gritos e falas' : 'Frases em latim', frasesUI(c.fr, !!c.vz, nc.atual), true));
     } else corpo.push(h('p', {class:'sub dm-nota'}, ['Abra a ficha de um inimigo (ou ponha um na iniciativa) e os sons e as músicas dele aparecem aqui.']));
-    corpo.push(secao('Sons gerais', h('div', {}, [efeitosUI(GERAL.ef), h('div', {class:'dm-sub'}, ['Fundo']), h('div', {class:'dm-cams'}, GERAL.ca.map(camadaUI))]), !nc.atual));
-    corpo.push(h('p', {class:'sub dm-nota'}, ['Sons gerados no aparelho, sem internet. Toque uma vez em qualquer botão para liberar o áudio.']));
+    if (!nc.atual) corpo.push(secao('Sons gerais', h('div', {}, [efeitosUI(GERAL.ef), h('div', {class:'dm-sub'}, ['Fundo']), h('div', {class:'dm-cams'}, GERAL.ca.map(camadaUI))]), true));
     var rol = dir.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
     var abertos = {}; Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ abertos[d.firstChild.textContent] = d.open; });
     dir.textContent = ''; dir.append(topo, vol, h('div', {class:'dm-corpo'}, corpo.filter(Boolean)));
@@ -368,7 +366,14 @@
   /* ===================== LUTA ATIVA, DICAS E ZERAR ===================== */
   function lutaAtiva(){ try { return (E.m.ini || []).some(function(c){ return !!inmDeLinha(c); }); } catch (e) { return false; } }
   var DICA = /^(Direito de|Teto da volta|Já Vi|O vos angeli|Só luta|Juramento|Virada da Tela|Memória das|Conta como|Descreva o que|Volta \d+, \d|Manual:)/;
+  function botaoRail(){
+    var pm = document.getElementById('painelMestre'); if (!pm) return;
+    var main = pm.querySelector('.dk-main'); if (!main || main.querySelector(':scope>.rail-t')) { var t = main && main.querySelector(':scope>.rail-t'); var tx = S.rail ? '◧ Esconder iniciativa e PV' : '◨ Mostrar iniciativa e PV'; if (t && t.textContent !== tx) t.textContent = tx; return; }
+    var b = h('button', {class:'rail-t', onclick:function(){ S.rail = S.rail ? 0 : 1; gravar(); aplicar(); }}, [S.rail ? '◧ Esconder iniciativa e PV' : '◨ Mostrar iniciativa e PV']);
+    main.insertBefore(b, main.firstChild);
+  }
   function marcarDicas(){
+    botaoRail();
     var pm = document.getElementById('painelMestre'); if (!pm) return;
     Array.prototype.forEach.call(pm.querySelectorAll('.inm-av'), function(e){ if (DICA.test(e.textContent.trim())) e.classList.add('dica'); });
     Array.prototype.forEach.call(pm.querySelectorAll('.inm-faixa'), function(e){ var d = Array.prototype.slice.call(e.querySelectorAll(':scope>div')); if (d.length && d.every(function(x){ return /^(Esaú: Direito|Ozymandias: Memória)/.test(x.textContent.trim()); })) e.classList.add('dica'); });
@@ -392,7 +397,11 @@
     dic.firstChild.checked = !!S.dicas;
     var foc = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.foco = ev.target.checked ? 1 : 0; gravar(); aplicar(); }}), ' Durante a luta, esconder tudo que não é da luta na aba Mestre']);
     foc.firstChild.checked = !!S.foco;
-    aj.append(h('div', {class:'mx-aj'}, [h('h2', {}, ['Mesa do Mestre']), dic, foc,
+    var ret = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.retos = ev.target.checked ? 1 : 0; gravar(); aplicar(); }}), ' Cantos retos (visual mais seco, sem cartões arredondados)']);
+    ret.firstChild.checked = !!S.retos;
+    var vz = h('div', {class:'mx-voz'}); vz.append(vozUI(null));
+    aj.append(h('div', {class:'mx-aj'}, [h('h2', {}, ['Mesa do Mestre']), dic, foc, ret,
+      h('h3', {}, ['Voz realista das falas (ElevenLabs)']), vz,
       h('h3', {}, ['Zerar']), h('p', {class:'sub'}, ['As músicas escolhidas e a aparência não mudam.']),
       h('div', {class:'lin2'}, [dois('Zerar a luta (iniciativa, PV, rodada, usos)', zerarLuta), dois('Zerar a noite inteira (volta 1, abates, notas, tudo do Mestre)', zerarNoite, 'perigo')])]));
   }
@@ -412,7 +421,7 @@
   function aplicar(){
     var mes = document.getElementById('painelMestre') && !document.getElementById('painelMestre').hidden;
     root.setAttribute('data-hdr', S.hdr ? 'rec' : 'abr');
-    root.setAttribute('data-nav', S.nav ? '1' : '0'); root.setAttribute('data-dicas', S.dicas ? '1' : '0'); root.setAttribute('data-luta', lutaAtiva() ? (S.foco ? 'foco' : '1') : '0'); root.setAttribute('data-dir', S.dir ? '1' : '0');
+    root.setAttribute('data-nav', S.nav ? '1' : '0'); root.setAttribute('data-dicas', S.dicas ? '1' : '0'); root.setAttribute('data-cantos', S.retos ? '1' : '0'); root.setAttribute('data-rail', S.rail ? '1' : '0'); root.setAttribute('data-luta', lutaAtiva() ? (S.foco ? 'foco' : '1') : '0'); root.setAttribute('data-dir', S.dir ? '1' : '0');
     root.setAttribute('data-aba', mes ? 'mes' : (typeof modo !== 'undefined' ? modo : ''));
     puxa.title = S.hdr ? 'Abrir o cabeçalho' : 'Recolher o cabeçalho'; puxa.textContent = S.hdr ? '▼' : '▲';
     medir();

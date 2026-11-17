@@ -86,3 +86,63 @@ html[data-aba="mes"][data-luta="foco"] #painelMestre>:not([data-p="ini"]):not([d
 
 .dm-voz{display:flex;flex-direction:column;gap:8px}
 .dm-voz input,.dm-voz select{width:100%;background:var(--painel2);color:var(--marfim);border:1px solid var(--linha);border-radius:6px;padding:6px 8px;font:inherit;font-size:13px}
+
+/* ===== visual enxuto e moderno ===== */
+/* barras de rolagem finas e discretas */
+*{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--apagado) 40%,transparent) transparent}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--apagado) 38%,transparent);border-radius:0}
+::-webkit-scrollbar-thumb:hover{background:var(--apagado)}
+::-webkit-scrollbar-button{display:none}
+.inm-abas,.elenco{scrollbar-width:none}.inm-abas::-webkit-scrollbar,.elenco::-webkit-scrollbar{display:none}
+
+/* cantos retos (liga e desliga em Ajustes) */
+html[data-cantos="1"] :where(button,select,textarea,input:not([type=range]):not([type=checkbox]):not([type=radio]),details,.painel,.pers,.faixa,.cena,.inm-card,.inm-aba,.inm-vez,.inm-nota,.inm-ap,.inm-nh,.inm-pres,.inm-faixa,.chip,.inm-av,.inm-f,.inm-ord .o,.aj-lay,.aj-pal,.aj-mini,.dm-m,.nm-it,#navMestre,#dirMesa,.dm-bloco,.aviso,.barra,.cc-th,.lat-aba,.inm-ult,.inm-tipo,.inm-tag,.inm-cd,.inm-sem,.inm-dado,.inm-atk,.inm-usar){border-radius:2px!important}
+html[data-cantos="1"] .barra{border-radius:0!important}
+html[data-cantos="1"] .inm-abas .inm-aba{border-radius:2px!important}
+
+/* botão do cabeçalho no meio, para não cobrir o painel de sons */
+header .puxa{right:auto;left:50%;transform:translate(-50%,100%)}
+
+/* a coluna de iniciativa também recolhe */
+.rail-t{display:block;width:100%;text-align:left;margin:0 0 8px;padding:6px 10px;font-size:13px;color:var(--apagado);background:none;border:1px solid var(--linha)}
+html[data-rail="0"] .dk{grid-template-columns:minmax(0,1fr)!important}
+html[data-rail="0"] .dk-rail{display:none!important}
+
+/* luta em andamento: limpo */
+html[data-luta="foco"] .dk-rail .fpv,
+html[data-luta="foco"] .dk-rail .sfx-bt,
+html[data-luta="foco"] .dk-rail details.inm-filtros,
+html[data-luta="foco"] .dk-main .inm-nh .inm-lin,
+html[data-luta="foco"] .inm-pres~.inm-lin{display:none!important}
+html[data-luta="foco"] .dk-main>.inm-topo .inm-pv button:not(.inm-raw){display:none!important}
+.inm-pv input.dv{width:min(18em,100%)!important}
+.inm-raw{white-space:nowrap}
+
+/* cartões de ação: compactos, retangulares e mais juntos */
+.inm-card.cc{padding:7px 10px;margin:0;gap:4px;border-radius:2px;border-left-width:2px}
+.cc-th{width:34px!important;height:44px!important}
+.cc-top{gap:8px}
+.cc .inm-cab{gap:2px 8px}.cc .inm-nome{font-size:14.5px}
+.cc .inm-tags{margin:0;gap:4px}
+.cc .inm-chs{margin:0}
+.cc .inm-lin{gap:5px;margin:0}.cc .inm-lin button{min-height:32px;padding:4px 9px;font-size:13px}
+.cc-regra summary{padding:2px 0;min-height:26px}
+@media (min-width:1000px){
+  .inm-bl,.inm-bl>details.inm-sec[open]{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))!important;gap:6px!important}
+  .inm-bl>*,.inm-bl details.inm-sec>.inm-card{margin-top:0}
+}
+/* botões e campos mais baixos na luta */
+.dk-rail button,.dk-main .inm-topo button{min-height:34px}
+.dk-rail{gap:6px}
+
+/* painel de sons enxuto */
+.dm-top select{display:none}
+.dm-efs button,.dm-cams button,.dm-frs button{font-size:12.5px;padding:4px 8px;min-height:30px}
+.dm-frs button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;line-height:1.25}
+.dm-frs button small{font-style:normal;color:var(--apagado);font-size:11.5px}
+.dm-vol{padding:6px 12px}
+header .puxa{top:12px;right:130px;bottom:auto;left:auto;transform:none;height:26px;padding:0 10px;border:1px solid var(--linha);border-radius:2px;line-height:1}
+html[data-hdr="rec"] header .puxa{position:fixed;top:0;right:12px;height:20px;border-top:0;z-index:30}
+@media (max-width:899px){header .puxa{right:100px}}
