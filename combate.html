@@ -822,17 +822,17 @@ const ROTEIRO_PADRAO = [
  {titulo:'A anja aparece', nota:'Ela oferece as quatro virtudes. Cada uma só pode ser escolhida uma vez.', faixa:'mom-spiegel'},
  {titulo:'Volta 1 · A flecha', nota:'Esaú atira de longe.', faixa:'esau-helvegen'},
  {titulo:'Volta 1 · A morte da Rafaela', nota:'', faixa:'mom-stabat'},
- {titulo:'Luta 1 · Esaú · combate', nota:'Teto de 5 rodadas: depois a tinta fecha a cena e os jogadores voltam, sem vitória.', faixa:'esau-wolftotem'},
+ {titulo:'Luta 1 · Esaú · combate', nota:'Teto de rodadas pela volta (V1 1, V2 2, V3 e V4 3, V5 e V6 4): depois a tinta fecha a cena e os jogadores voltam, sem vitória.', faixa:'esau-wolftotem'},
  {titulo:'Luta 2 · Ezequiel · entrada', nota:'', faixa:'eze-apparition'},
- {titulo:'Luta 2 · Ezequiel · combate', nota:'Teto de 5 rodadas: depois a tinta fecha a cena e os jogadores voltam, sem vitória.', faixa:'eze-passacaglia'},
+ {titulo:'Luta 2 · Ezequiel · combate', nota:'Teto de rodadas pela volta (V1 1, V2 2, V3 e V4 3, V5 e V6 4): depois a tinta fecha a cena e os jogadores voltam, sem vitória.', faixa:'eze-passacaglia'},
  {titulo:'Luta 3 · Jael · entrada', nota:'', faixa:'jael-monochrome'},
- {titulo:'Luta 3 · Jael · combate', nota:'Teto de 5 rodadas: depois a tinta fecha a cena e os jogadores voltam, sem vitória.', faixa:'jael-odaiko'},
+ {titulo:'Luta 3 · Jael · combate', nota:'Teto de rodadas pela volta (V1 1, V2 2, V3 e V4 3, V5 e V6 4): depois a tinta fecha a cena e os jogadores voltam, sem vitória.', faixa:'jael-odaiko'},
  {titulo:'Pausa · 10 min', nota:'Pausa no meio da sessão. Sem música.', faixa:''},
  {titulo:'Luta 4 · Hildegarda · entrada', nota:'', faixa:'hil-ovis'},
- {titulo:'Luta 4 · Hildegarda · 3ª rodada', nota:'Na 3ª rodada o anjo desce (os jogadores veem um demônio) e a luta continua: é uma só, com Hildegarda e o anjo. Teto de 5 rodadas.', faixa:'hil-angeli'},
+ {titulo:'Luta 4 · Hildegarda · 3ª rodada', nota:'Na 3ª rodada o anjo desce (os jogadores veem um demônio) e a luta continua: é uma só, com Hildegarda e o anjo. Teto de rodadas pela volta (V1 1, V2 2, V3 e V4 3, V5 e V6 4).', faixa:'hil-angeli'},
  {titulo:'Luta 5 · Ozymandias e Élodie · entrada', nota:'Élodie pinta de costas e só convida; o Retrato coletivo leva o grupo à Tela I.', faixa:'ozy-saturno'},
  {titulo:'Akari e Thorian chegam', nota:'A Akari chega montada no dragão Thorian e confronta o Ozymandias por ter atacado as pessoas comuns.', faixa:'aka-dragon'},
- {titulo:'Luta 5 · Ozymandias e Élodie · combate', nota:'Teto de 5 rodadas: depois a tinta fecha a cena e os jogadores voltam, sem vitória. Virada da Tela de Élodie a 50% dos PV (Tela III).', faixa:'ozy-marte'},
+ {titulo:'Luta 5 · Ozymandias e Élodie · combate', nota:'Teto de rodadas pela volta (V1 1, V2 2, V3 e V4 3, V5 e V6 4): depois a tinta fecha a cena e os jogadores voltam, sem vitória. Virada da Tela de Élodie a 50% dos PV (Tela III).', faixa:'ozy-marte'},
  {titulo:'Revelação (fora do jogo)', nota:'Contar a revelação em voz alta, fora da ficção.', faixa:'mom-miserere'}
 ];
 const ROTEIRO_ANTIGO = [["Ato 1 · A estrada","mom-departure"],["Ato 1 · Esaú, o caçador ferido","esau-kongurei"],["Ato 1 · Chegada a Maré-Alta","via-kiki"],["A anja aparece","mom-spiegel"],["Volta 1 · A flecha","esau-helvegen"],["Volta 1 · A morte da Rafaela","mom-stabat"],["Esaú · combate","esau-wolftotem"],["Ezequiel · entrada","eze-apparition"],["Ezequiel · combate","eze-passacaglia"],["Jael · entrada","jael-monochrome"],["Jael · combate","jael-odaiko"],["Hildegarda · entrada","hil-ovis"],["Hildegarda · 3ª rodada","hil-angeli"],["Os “demônios” · combate","dem-kyrie"],["Raquel","raq-gorecki"],["Ozymandias · entrada","ozy-saturno"],["Akari e Thorian chegam","aka-dragon"],["Ozymandias · combate","ozy-marte"],["Revelação (fora do jogo)","mom-miserere"]];   // roteiro de 6 lutas (versão anterior), para a migração
@@ -855,10 +855,10 @@ const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel,
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:'',
   ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:[{id:'j1',n:'Pedro',pv:'',nota:'',falou:false},{id:'j2',n:'Victor',pv:'',nota:'',falou:false},{id:'j3',n:'Jogador 3',pv:'',nota:'',falou:false},{id:'j4',n:'Jogador 4',pv:'',nota:'',falou:false}],
-  voto:{s:0,n:0}, inm:{v:2, sel:'esau', todos:false, tag:'', tipo:'', sem:false, uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:'', pvLuta:{}, lutaSel:{}, lend:{}, nh:{}, amb:{}, pres:null, f2:false, f2man:false, elLonge:false, fatorPV:65, vt:false}, loops:{}, falas:{}, teste:{}, durTotal:270, inicioMesa:0, derrota:false});
+  voto:{s:0,n:0}, inm:{v:2, sel:'esau', todos:false, tag:'', tipo:'', sem:false, uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:'', pvLuta:{}, lutaSel:{}, lend:{}, nh:{}, amb:{}, pres:null, f2:false, f2man:false, elLonge:false, fatorPV:65, auto:true, nJog:4, vt:false}, loops:{}, falas:{}, teste:{}, durTotal:270, inicioMesa:0, derrota:false});
 function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m.inm && E.m.inm.v !== 2); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = []; if (!E.m.inm.fav || typeof E.m.inm.fav !== 'object') E.m.inm.fav = {}; if (!Array.isArray(E.m.inm.av)) E.m.inm.av = []; ['pvLuta','lutaSel','lend','nh','amb'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; });
   { const s = E.m.inm; if (inmVelho) { s.v = 2; s.uso = {}; s.rec = {}; s.fav = {}; s.ult = []; s.pvLuta = {}; s.lend = {}; s.nh = {}; s.amb = {}; s.pres = null; s.f2 = false; s.f2man = false; }   // fichas novas: ids de ações novos, estado antigo das cartas é descartado
-    if (!['acao','bonus','recarga','passiva','reacao','lend','amb'].includes(s.tipo)) s.tipo = ''; if (typeof s.sem !== 'boolean') s.sem = false; s.f2 = !!s.f2; s.f2man = !!s.f2man; if (s['raq' + 'Longe']) s.elLonge = true; delete s['raq' + 'Longe']; s.elLonge = !!s.elLonge; if (!(+s.fatorPV >= 10 && +s.fatorPV <= 200)) s.fatorPV = 65; s.vt = !!s.vt; if (!s.pres || !Array.isArray(s.pres.d)) s.pres = null; }
+    if (!['acao','bonus','recarga','passiva','reacao','lend','amb'].includes(s.tipo)) s.tipo = ''; if (typeof s.sem !== 'boolean') s.sem = false; s.f2 = !!s.f2; s.f2man = !!s.f2man; if (s['raq' + 'Longe']) s.elLonge = true; delete s['raq' + 'Longe']; s.elLonge = !!s.elLonge; if (!(+s.fatorPV >= 10 && +s.fatorPV <= 200)) s.fatorPV = 65; s.auto = s.auto !== false; if (s.nJog !== 3 && s.nJog !== 4) s.nJog = 4; s.vt = !!s.vt; if (!s.pres || !Array.isArray(s.pres.d)) s.pres = null; }
   { const m = E.m; if (!Array.isArray(m.jog)) m.jog = []; m.jog = m.jog.filter(j => j && typeof j === 'object'); if (!Array.isArray(m.ini)) m.ini = [];
     m.ini = m.ini.filter(c => c && typeof c === 'object');   // estado velho ou corrompido: linhas inválidas saem, números viram números
     m.ini.forEach(c => { c.n = String(c.n ?? '?'); c.ini = Number.isFinite(+c.ini) ? +c.ini : 0; c.pv = Number.isFinite(+c.pv) ? +c.pv : 0; if (c.max != null && !Number.isFinite(+c.max)) c.max = c.pv; if (c.cs && !Array.isArray(c.cs)) c.cs = []; });
@@ -1640,7 +1640,12 @@ const efe = (i, a) => { const r = a.ref && inmAcao(i, a.ref); return {atk:a.atk 
 const inmUso = a => { const x = /^(\d+)\/(luta|volta|turno|rodada|dia)$/.exec(a.uso || ''); if (!x) return null; let n = +x[1]; if (a.nVolta && E.m.volta >= a.nVolta[0]) n = a.nVolta[1]; return {n, por:x[2]}; };
 const rolInm = {}, rolAt = {}, rolTip = {}; let inmSL = 0;
 const fatorPV = () => { const f = +E.m.inm.fatorPV; return f >= 10 && f <= 200 ? f : 65; };   // Formato A: PV sugerido = ficha × fator (a ficha original não muda)
-const pvSug = i => Math.max(1, Math.round(i.pv * fatorPV() / 100));
+const FPV = {"1,1,3":100,"1,2,3":85,"1,3,3":95,"1,4,3":95,"1,5,3":110,"1,6,3":50,"2,1,3":100,"2,2,3":95,"2,3,3":90,"2,4,3":80,"2,5,3":95,"2,6,3":40,"3,1,3":100,"3,2,3":75,"3,3,3":70,"3,4,3":80,"3,5,3":95,"3,6,3":40,"4,1,3":100,"4,2,3":75,"4,3,3":60,"4,4,3":50,"4,5,3":40,"4,6,3":25,"5,1,3":100,"5,2,3":70,"5,3,3":35,"5,4,3":35,"5,5,3":35,"5,6,3":25,"1,1,4":100,"1,2,4":105,"1,3,4":130,"1,4,4":150,"1,5,4":145,"1,6,4":100,"2,1,4":100,"2,2,4":115,"2,3,4":140,"2,4,4":125,"2,5,4":155,"2,6,4":85,"3,1,4":100,"3,2,4":90,"3,3,4":105,"3,4,4":120,"3,5,4":125,"3,6,4":70,"4,1,4":100,"4,2,4":95,"4,3,4":105,"4,4,4":105,"4,5,4":80,"4,6,4":25,"5,1,4":100,"5,2,4":70,"5,3,4":60,"5,4,4":60,"5,5,4":65,"5,6,4":40};   // simulação v7: "luta,volta,jogadores" -> % do PV da ficha (2 cartas por jogador por volta)
+const LUTA_DE = {esau:1, ezequiel:2, jael:3, hildegarda:4, anjo:4, elodie:5, ozy:5};
+const TETO_ROD = {1:1, 2:2, 3:3, 4:3, 5:4, 6:4};
+const tetoRod = v => TETO_ROD[v] || 3;
+const fatorDe = i => { const s = E.m.inm; if (!s.auto) return fatorPV(); const v = Math.min(6, Math.max(1, E.m.volta || 1)); return FPV[LUTA_DE[i.id] + ',' + v + ',' + s.nJog] || fatorPV(); };
+const pvSug = i => Math.max(1, Math.round(i.pv * fatorDe(i) / 100));
 const f2Lim = c => Math.floor(((c && c.max) || inmPorId('ozy').pv) / 2);   // Fase 2 do Ozymandias: 50% do PV usado (312 na ficha)
 const presN = v => v <= 1 ? 3 : v <= 3 ? 4 : 5;
 const lendMax = i => i.id === 'ozy' && E.m.inm.f2 ? 4 : i.lend;
@@ -1674,7 +1679,7 @@ function novaRodadaInm(){   // vira a rodada: usos 1/rodada, Não Hoje e ambient
   const s = E.m.inm; inmZerar('rodada'); s.nh = {};
   Object.keys(s.amb).forEach(id => { s.amb[id] = {ant:s.amb[id].atual || [], atual:[]}; });
 }
-const inmNovaVolta = () => { const s = E.m.inm; s.nh = {}; s.amb = {}; };
+const inmNovaVolta = () => { const s = E.m.inm; s.nh = {}; s.amb = {}; s.pvLuta = {}; Object.keys(rasc).forEach(k => delete rasc[k]); };
 const rolTot = {}, rolAp = {}, rasc = {}, rnh = {};
 const inmPorNome = n => { const sc = slugInm(n || ''); return INIMIGOS.find(i => sc === i.id || sc === slugInm(i.nome) || sc.startsWith(slugInm(i.nome) + '-')); };
 const inmDeLinha = c => c.i ? INIMIGOS.find(x => x.id === c.i) : (c.j ? undefined : inmPorNome(c.n));   // vínculo por id/marca; o nome só vale para linhas antigas sem marca
@@ -1938,14 +1943,17 @@ function iniciarLuta(escolhidos){
   }, ['ini','inm']);
   irParaVez();
 }
-function fatorUI(){   // Formato A: fator de PV (padrão 65%, editável, salvo no navegador)
-  const s = E.m.inm, f = fatorPV(), ativo = f !== 100, el0 = inmPorId('elodie');
-  const campo = el('input',{type:'number', class:'q', min:'10', max:'200', step:'5', inputmode:'numeric', value:f, 'aria-label':'Fator de PV do Formato A, em porcento da ficha',
-    onchange:ev => { const v = Math.round(+ev.target.value); mudar(() => { s.fatorPV = v >= 10 && v <= 200 ? v : 65; s.pvLuta = {}; Object.keys(rasc).forEach(k => delete rasc[k]); })(); }});
-  const fixa = (v, t) => el('button',{class:'peq', 'aria-pressed':f === v ? 'true' : 'false', onclick:mudar(() => { s.fatorPV = v; s.pvLuta = {}; Object.keys(rasc).forEach(k => delete rasc[k]); })}, t);
-  return el('div',{class:'inm-nh fpv', role:'group', 'aria-label':'Formato A: PV dos inimigos'}, el('b',{}, 'Formato A · PV dos inimigos'),
-    el('div',{class:'inm-lin'}, el('label',{}, 'Fator ', campo, ' % da ficha'), fixa(65, 'Padrão 65%'), fixa(100, 'Ficha cheia')),
-    el('span',{class:'inm-av' + (ativo ? ' agora' : '')}, ativo ? 'ATIVO: PV sugeridos a ' + f + '% da ficha (Élodie ' + pvSug(el0) + ' de ' + el0.pv + ', Ozymandias ' + pvSug(inmPorId('ozy')) + ' de ' + inmPorId('ozy').pv + '). Teto de 5 rodadas por luta.' : 'Desligado: PV sugeridos = ficha cheia.'));
+function fatorUI(){   // PV dos inimigos: automático pela tabela (volta × nº de jogadores) ou manual
+  const s = E.m.inm, v = E.m.volta;
+  const reset = () => { s.pvLuta = {}; Object.keys(rasc).forEach(k => delete rasc[k]); };
+  const bt = (t, ativo, fn) => el('button',{class:'peq', 'aria-pressed':ativo ? 'true' : 'false', onclick:mudar(() => { fn(); reset(); })}, t);
+  const campo = el('input',{type:'number', class:'q', min:'10', max:'200', step:'5', inputmode:'numeric', value:fatorPV(), disabled:s.auto, 'aria-label':'Fator de PV manual, em porcento da ficha',
+    onchange:ev => { const x = Math.round(+ev.target.value); mudar(() => { s.fatorPV = x >= 10 && x <= 200 ? x : 65; reset(); })(); }});
+  const teto = 'Teto de ' + tetoRod(v) + ' rodada' + (tetoRod(v) > 1 ? 's' : '') + ' nesta volta.';
+  return el('div',{class:'inm-nh fpv', role:'group', 'aria-label':'PV dos inimigos'}, el('b',{}, 'PV dos inimigos'),
+    el('div',{class:'inm-lin'}, bt('3 jogadores', s.nJog === 3, () => { s.nJog = 3; }), bt('4 jogadores', s.nJog === 4, () => { s.nJog = 4; }),
+      bt('Automático', s.auto, () => { s.auto = true; }), bt('Manual', !s.auto, () => { s.auto = false; }), el('label',{}, 'Manual ', campo, ' % da ficha')),
+    el('span',{class:'inm-av agora'}, s.auto ? 'Volta ' + v + ', ' + s.nJog + ' jogadores: ' + INIMIGOS.filter(i => i.id !== 'anjo').map(i => i.nome + ' ' + pvSug(i) + ' (' + fatorDe(i) + '%)').join(' · ') + '. ' + teto : 'Manual: PV sugeridos a ' + fatorPV() + '% da ficha. ' + teto));
 }
 function formLuta(){
   const m = E.m, s = m.inm, linhas = [];
@@ -1963,7 +1971,7 @@ function formLuta(){
     iniciarLuta(esc.map(l => ({i:l.i, pv:Math.floor(+l.pv.value)})));
   };
   return el('div',{class:'luta', role:'group', 'aria-label':'Iniciar luta'},
-    el('p',{class:'sub', style:'margin:0 0 6px'}, 'Marque quem entra. O PV sugerido é o da ficha × ' + fatorPV() + '% — Formato A (' + INIMIGOS.map(i => i.nome + ' ' + pvSug(i)).join(', ') + ') — e pode ser editado. Cada um rola 1d20 de iniciativa, a ordem é refeita e os usos por luta e por dia, as recargas, as ações lendárias e o Não Hoje voltam ao início. Quem já está na lista (jogadores) é mantido.'),
+    el('p',{class:'sub', style:'margin:0 0 6px'}, 'Marque quem entra. O PV sugerido segue a tabela da volta ' + E.m.volta + ' para ' + E.m.inm.nJog + ' jogadores (' + INIMIGOS.map(i => i.nome + ' ' + pvSug(i)).join(', ') + ') e pode ser editado. Cada um rola 1d20 de iniciativa, a ordem é refeita e os usos por luta e por dia, as recargas, as ações lendárias e o Não Hoje voltam ao início. Quem já está na lista (jogadores) é mantido.'),
     ...linhas.map(l => l.el),
     el('div',{class:'lin2'}, el('button',{class:'inm-aplic', onclick:go}, ico('dado'), 'Rolar iniciativa e começar'), el('button',{onclick:() => { lutaAberta = false; desenhar(); }}, 'Cancelar')));
 }
@@ -1974,7 +1982,7 @@ const AVISOS = i => { const m = E.m, v = m.volta, r = m.rodada, o = [];
   if (i.id === 'ezequiel') add(v >= 2 ? 'Já Vi Isso ativo (volta ' + v + '): vantagem na salvaguarda ou ataque com desvantagem se repetirem algo de uma volta anterior' : 'Já Vi Isso: só a partir da 2ª volta', v >= 2);
   if (i.id === 'hildegarda') add(r >= 3 ? 'O vos angeli disponível (rodada ' + r + '): os anjos vêm, a menos que ela esteja incapacitada, silenciada ou morta antes do turno dela na 3ª rodada' : 'O vos angeli: só a partir da 3ª rodada', r >= 3);
   if (i.id === 'elodie') { add('Só luta junto com o Ozymandias'); add('Juramento: dá +2 de CA a ele (CA 23) a até 9 m'); add(m.inm.vt ? 'Virada da Tela já usada' : 'Virada da Tela: a 50% dos PV usados, uma vez'); }
-  if (r >= 4) add('Formato A: a luta fecha ao fim da 5ª rodada (agora: ' + r + '). A tinta cobre a cena e os jogadores voltam, sem vitória.', r >= 5);
+  { const cap = tetoRod(v); if (r >= cap - 1) add('Teto da volta ' + v + ': a luta fecha ao fim da ' + cap + 'ª rodada (agora: ' + r + '). A tinta cobre a cena e os jogadores voltam, sem vitória.', r >= cap); }
   if (i.id === 'ozy') add(v >= 4 ? 'Memória das Voltas (volta ' + v + '): vantagem na iniciativa; 1º alvo é quem segura a flor' : 'Memória das Voltas: só a partir da 4ª volta', v >= 4);
   if (i.id === 'anjo') { add('Conta como demônio para as regras do jogo', true); add('Descreva o que eles veem, nunca o que ele é', true); }
   return o; };
@@ -2011,7 +2019,7 @@ function fichaUI(i){
   const ca = caDe(i), L = (r, v) => v ? el('div',{class:'inm-fl'}, el('b',{}, r), el('span',{}, v)) : null;
   const ro = ['FOR','DES','CON','INT','SAB','CAR'];
   const corpo = () => el('div',{class:'inm-fg'}, el('p',{class:'inm-rot', style:'margin:0'}, i.sub),
-      L('Classe de Armadura', i.id === 'ozy' ? i.caTxt + ' · agora: ' + ca : i.caTxt), L('Pontos de Vida', i.pvTxt + (fatorPV() !== 100 ? ' · Formato A (' + fatorPV() + '%): ' + pvSug(i) : '')), L('Deslocamento', i.desl),
+      L('Classe de Armadura', i.id === 'ozy' ? i.caTxt + ' · agora: ' + ca : i.caTxt), L('Pontos de Vida', i.pvTxt + (fatorDe(i) !== 100 ? ' · volta ' + E.m.volta + ' (' + fatorDe(i) + '%): ' + pvSug(i) : '')), L('Deslocamento', i.desl),
       el('div',{class:'inm-atr'}, ...i.atr.map((v, x) => el('div',{}, el('b',{}, ro[x]), el('span',{}, v)))),
       L('Salvaguardas', i.salv), L('Perícias', i.per), L('Resistências a dano', i.res), L('Imunidade a condição', i.imun), L('Sentidos', i.sent), L('Idiomas', i.idi),
       L('Nível de Desafio', i.nd + ' · Bônus de Proficiência ' + i.prof), L('Música', i.mus),
@@ -2026,7 +2034,7 @@ const ultUI = () => { const s = E.m.inm; return s.ult.length ? el('div',{class:'
 function topoUI(i){
   const m = E.m, cur = m.ini[m.turno], curI = cur && inmDeLinha(cur);
   const av = AVISOS(i).map(x => el('span',{class:'inm-av' + (x.agora ? ' agora' : '')}, x.t));
-  return el('div',{class:'inm-topo' + (curI === i ? ' vez' : '') + (m.inm.todos ? ' mini' : '')}, el('div',{class:'arco'}, el('img',{src:i.img, alt:''})), el('div',{class:'inm-id'}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, el('span',{class:'inm-av'}, 'CA ' + caDe(i) + ' · PV ' + i.pv + (fatorPV() !== 100 ? ' (Formato A: ' + pvSug(i) + ')' : '')), ...av)), ctlIni(i));
+  return el('div',{class:'inm-topo' + (curI === i ? ' vez' : '') + (m.inm.todos ? ' mini' : '')}, el('div',{class:'arco'}, el('img',{src:i.img, alt:''})), el('div',{class:'inm-id'}, el('h4',{}, i.nome), el('div',{class:'inm-avs'}, el('span',{class:'inm-av'}, 'CA ' + caDe(i) + ' · PV ' + i.pv + (fatorDe(i) !== 100 ? ' (volta ' + E.m.volta + ': ' + pvSug(i) + ')' : '')), ...av)), ctlIni(i));
 }
 function stripUI(i){
   const m = E.m, s = m.inm, strip = [];
