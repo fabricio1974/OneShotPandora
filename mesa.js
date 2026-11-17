@@ -572,6 +572,24 @@
     return b;
   }
   var ajx = null;
+  /* exporta os sons gerados (IndexedDB) em MP3, num único arquivo, para colocar na pasta audio/ do repositório */
+  function exportarSons(st){
+    function lame(){ return window.lamejs ? Promise.resolve() : new Promise(function(ok, no){ var s = document.createElement('script'); s.src = 'vendor/lame.min.js'; s.onload = ok; s.onerror = function(){ no(new Error('encoder')); }; document.head.append(s); }); }
+    st.textContent = 'Lendo os sons…';
+    return lame().then(bd).then(function(d){ return new Promise(function(ok){ var o = [], q = d.transaction('a').objectStore('a').openCursor(); q.onsuccess = function(){ var c = q.result; if (!c) return ok(o); if (/^(fx|cam)\|/.test(String(c.key))) o.push([String(c.key), c.value]); c.continue(); }; }); })
+      .then(function(lista){ var ac = new (window.AudioContext || window.webkitAudioContext)(), partes = [], indice = [], i = 0;
+        function prox(){ if (i >= lista.length) return Promise.resolve(); var k = lista[i][0]; st.textContent = 'Convertendo ' + (i + 1) + ' de ' + lista.length + '…';
+          return lista[i][1].arrayBuffer().then(function(ab){ return ac.decodeAudioData(ab); }).then(function(buf){
+            var a = buf.getChannelData(0), pcm = new Int16Array(a.length); for (var j = 0; j < a.length; j++) pcm[j] = Math.max(-1, Math.min(1, a[j])) * 32767;
+            var enc = new lamejs.Mp3Encoder(1, buf.sampleRate, 64), out = [], p = 1152, x;
+            for (var s = 0; s < pcm.length; s += p) { x = enc.encodeBuffer(pcm.subarray(s, s + p)); if (x.length) out.push(x); } x = enc.flush(); if (x.length) out.push(x);
+            var blob = new Blob(out, {type:'audio/mpeg'}); partes.push(blob); indice.push({k:k, n:blob.size}); i++; return new Promise(function(r){ setTimeout(r, 0); }).then(prox); }); }
+        return prox().then(function(){ var cab = new TextEncoder().encode(JSON.stringify(indice)), len = new Uint8Array(4); new DataView(len.buffer).setUint32(0, cab.length);
+          var pacote = new Blob([new TextEncoder().encode('OTLSONS1'), len, cab].concat(partes), {type:'application/octet-stream'});
+          var a = document.createElement('a'); a.href = URL.createObjectURL(pacote); a.download = 'otl_sons.bin'; document.body.append(a); a.click(); a.remove();
+          st.textContent = 'Pronto: otl_sons.bin (' + Math.round(pacote.size / 1024) + ' KB) na pasta Downloads.'; }); })
+      .catch(function(e){ st.textContent = 'Não deu: ' + e.message; });
+  }
   function ajustesExtra(){
     var aj = document.getElementById('ajustes'); if (!aj || aj.querySelector('.mx-aj')) return;
     var dic = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.dicas = ev.target.checked ? 1 : 0; gravar(); aplicar(); }}), ' Mostrar as dicas em amarelo (lembretes de regra nas fichas dos inimigos)']);
@@ -583,6 +601,7 @@
     var rol = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.rolar = ev.target.checked ? 1 : 0; gravar(); }}), ' Rolar os dados de dano (padrão: usar o dano médio da ficha)']);
     rol.firstChild.checked = !!S.rolar;
     aj.append(h('div', {class:'mx-aj'}, [h('h2', {}, ['Mesa do Mestre']), dic, foc, ret, rol,
+      h('h3', {}, ['Sons gerados']), h('p', {class:'sub'}, ['Salva todos os sons e fundos já gerados neste navegador em um arquivo (MP3), para guardar no repositório.']), (function(){ var st = h('p', {class:'sub'}, []); return h('div', {}, [h('button', {class:'peq', onclick:function(){ exportarSons(st); }}, ['Exportar os sons']), st]); })(),
       h('h3', {}, ['Zerar']), h('p', {class:'sub'}, ['As músicas escolhidas e a aparência não mudam.']),
       h('div', {class:'lin2'}, [dois('Zerar a luta (iniciativa, PV, rodada, usos)', zerarLuta), dois('Zerar a noite inteira (volta 1, abates, notas, tudo do Mestre)', zerarNoite, 'perigo')])]));
   }
