@@ -75,3 +75,11 @@ html[data-aba="mes"][data-nav="0"] #nmAbrir,html[data-aba="mes"][data-dir="0"] #
   html[data-aba="mes"][data-dir="1"] #dirMesa{right:6px;width:min(380px,calc(100vw - 48px))}
 }
 @media (prefers-reduced-motion:no-preference){#navMestre,#dirMesa{animation:gv .18s ease-out}@keyframes gv{from{opacity:0;transform:translateX(-6px)}}}
+
+/* dicas em amarelo: só aparecem se ligadas em Ajustes */
+html:not([data-dicas="1"]) .dica{display:none}
+/* luta em andamento: só o que é da luta */
+html[data-aba="mes"][data-luta="foco"] #painelMestre>:not([data-p="ini"]):not([data-p="inm"]):not([data-p="noite"]){display:none}
+.nm-rod{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-top:1px solid var(--linha);flex:none}
+.mx-lin{display:flex;gap:8px;align-items:flex-start;margin:8px 0;font-size:14px}
+.mx-aj{max-width:860px;margin-top:24px}

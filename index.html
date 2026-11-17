@@ -441,7 +441,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .retrato{border-radius:4px}
 </style>
 <link rel="stylesheet" href="visual.css">
-<link rel="stylesheet" href="mesa.css">
+<link rel="stylesheet" href="mesa.css?v=3">
 </head>
 <body>
 <header>
@@ -2263,6 +2263,6 @@ if (uiRest && typeof uiRest === 'object') {
 desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
-<script src="mesa.js"></script>
+<script src="mesa.js?v=3"></script>
 </body>
 </html>
