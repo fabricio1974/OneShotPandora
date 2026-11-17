@@ -448,6 +448,20 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .cena-exp{margin:0 0 12px;color:var(--apagado)} .cena-grupo{margin:18px 0 8px;font-size:15px}
 .cl-sel{display:flex;gap:8px;flex-wrap:wrap;grid-column:2/-1}
 .cena-s{opacity:.75}
+.cen-topo p{color:var(--apagado);margin:0 0 10px;line-height:1.5}
+.cen-bts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.cen-sec{border:1px solid var(--linha);border-left-width:5px;border-radius:8px;margin-bottom:10px;background:var(--painel)}
+.cen-sec.tG{border-left-color:#9b3d2c}.cen-sec.tA{border-left-color:var(--ouro)}.cen-sec.tM{border-left-color:#5f8f6a}.cen-sec.tE{border-left-color:#6b4fa0}
+.cen-cab{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;width:100%;text-align:left;background:none;border:0;padding:12px 14px;cursor:pointer;color:inherit;font:inherit}
+.cen-cab .nm{font-weight:600}.cen-cab .ax{color:var(--apagado);font-size:13px}.cen-cab .n{margin-left:auto;color:var(--apagado);font-size:13px}
+.cen-lista{padding:0 10px 10px}
+.cen-lin{display:grid;grid-template-columns:auto 1fr auto;gap:6px 10px;align-items:center;padding:8px 6px;border-top:1px solid var(--linha)}
+.cen-lin.fora .cen-tx{opacity:.7}.cen-lin.tocando{background:rgba(255,255,255,.04)}
+.cen-tx{min-width:0}.cen-lin .t,.cen-lin .m{overflow-wrap:anywhere}.cen-lin{min-width:0}.cen-lin select{width:100%;min-width:0}.cen-lin .t{font-weight:600}.cen-lin .m{color:var(--apagado);font-size:13px}
+.cen-lin select{grid-column:2/-1;max-width:100%}
+.cen-usar{display:flex;gap:4px;align-items:center;font-size:13px}
+.novo{font-size:10px;letter-spacing:.06em;padding:1px 6px;border-radius:4px;background:var(--ouro);color:#1a1612;margin-right:6px;vertical-align:2px}
+@media (max-width:560px){.cen-lin{grid-template-columns:auto 1fr}.cen-usar{grid-column:2}}
 </style>
 <link rel="stylesheet" href="visual.css">
 <link rel="stylesheet" href="mesa.css?v=10">
@@ -458,6 +472,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   <div class="abas" role="tablist">
     <button role="tab" id="abaSel" aria-selected="true">Seleção</button>
     <button role="tab" id="abaTri" aria-selected="false">Triagem</button>
+    <button role="tab" id="abaCen" aria-selected="false">Cenas</button>
     <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
     <button role="tab" id="abaMes" aria-selected="false">Mestre</button>
     <button role="tab" id="abaAj" aria-selected="false">Ajustes</button>
@@ -469,6 +484,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   <nav class="elenco" id="elenco" aria-label="Personagens"></nav>
   <section id="selecao"></section>
   <section id="triagem" hidden></section>
+  <section id="cenas" hidden></section>
   <section id="sessao" hidden></section>
   <section id="painelMestre" hidden></section>
   <section id="ajustes" hidden></section>
@@ -963,6 +979,42 @@ function filtroCenas(){
   ORDEM_CENA.filter(c => cont[c] && !(c==='REM'||c==='LEM')).forEach(c => box.append(
     el('button',{class:'chip so t'+c[1], 'aria-pressed':String(cenaF===c), title:cenaTit(c), onclick:()=>{ cenaF = cenaF===c ? '' : c; desenhar(); }}, cenaNome(c).split(':')[0], el('span',{class:'n'}, String(cont[c])))));
   return box;
+}
+
+
+// ---------- Aba Cenas: todas as músicas por tipo de cena, para ouvir e corrigir ----------
+const NOVAS = new Set(['esau-lobo','eze-koyaa','jael-traust','hil-agnikai','vir-zoltraak','vir-dragonsmasher','vir-heart','vir-victory','vir-protectors','vir-pirate','vir-testdrive','ban-imperial','ban-dream','ban-beast','ban-terminator','ban-duel','ban-brothers','ban-time','ban-onelast','ban-nowfree']);
+let cenSoNovas = false, cenAbertas = new Set(['RAM']);
+function desenharCenas(){
+  const raiz = document.getElementById('cenas'); raiz.replaceChildren();
+  const porCena = {}; const semCl = [];
+  E.grupos.forEach(g => g.faixas.forEach(f => { if (cenSoNovas && !NOVAS.has(f.id)) return; const c = clDe(f); if (!c) { semCl.push([g,f]); return; } (porCena[c] = porCena[c] || []).push([g,f]); }));
+  raiz.append(el('div',{class:'cen-topo'},
+    el('p',{}, 'As músicas de todos os personagens, separadas pelo tipo de cena (método do vídeo: ', el('b',{},'ritmo'), ' rápido = urgência, lento = concentração; ', el('b',{},'tom'), ' grave = o desafio é mais forte, agudo = os jogadores brilham, médio = calma, extremos = horror; ', el('b',{},'compasso'), ' marcado = esforço físico, fluido = drama). A classificação foi feita sem ouvir: ouça e corrija no seletor de cada música.'),
+    el('div',{class:'cen-bts'},
+      el('label',{class:'lin'}, el('input',{type:'checkbox', id:'cenNovas', checked:cenSoNovas, onchange:ev=>{ cenSoNovas = ev.target.checked; desenhar(); }}), 'Só as músicas novas'),
+      el('button',{class:'peq', onclick:()=>{ ORDEM_CENA.forEach(c => cenAbertas.add(c)); desenhar(); }},'Abrir todas'),
+      el('button',{class:'peq', onclick:()=>{ cenAbertas.clear(); desenhar(); }},'Fechar todas'))));
+  const opcoes = ORDEM_CENA.filter(c => !(c==='REM'||c==='LEM'));
+  const linha = (g, f, lista) => el('div',{class:'cen-lin'+(f.usar?'':' fora')+(tocando===f?' tocando':'')},
+    el('button',{class:'ouvir'+(tocando===f?' tocando':''), onclick:()=>tocar(f,600,{fila:lista.map(x=>x[1])})}, tocando===f ? 'Parar' : '▶ Ouvir'),
+    el('div',{class:'cen-tx'},
+      el('div',{class:'t'}, NOVAS.has(f.id) ? el('span',{class:'novo'},'NOVA') : null, f.nome),
+      el('div',{class:'m'}, el('b',{}, g.nome.split(' — ')[0]), ' · ', f.momento || PAPEIS[f.papel])),
+    el('label',{class:'cen-usar', title:'Marcar para aparecer na Sessão'}, el('input',{type:'checkbox', id:'cu-'+f.id, checked:f.usar, onchange:ev=>{ f.usar = ev.target.checked; salvar(); desenhar(); }}), 'Usar'),
+    (()=>{ const s = el('select',{id:'cc-'+f.id, 'aria-label':'Tipo de cena de '+f.nome, onchange:ev=>{ f.cl = ev.target.value; cenAbertas.add(f.cl); salvar(); desenhar(); }});
+      opcoes.forEach(c => s.append(el('option',{value:c, selected:clDe(f)===c}, cenaNome(c).split(':')[0]+' ('+cenaTit(c)+')'))); return s; })());
+  for (const c of opcoes) {
+    const lista = porCena[c] || []; const aberta = cenAbertas.has(c);
+    const sec = el('section',{class:'cen-sec t'+c[1]},
+      el('button',{class:'cen-cab', 'aria-expanded':String(aberta), onclick:()=>{ aberta ? cenAbertas.delete(c) : cenAbertas.add(c); desenhar(); }},
+        el('span',{class:'nm'}, cenaNome(c)), el('span',{class:'ax'}, cenaTit(c)), el('span',{class:'n'}, lista.length ? String(lista.length) : 'nenhuma')));
+    if (aberta) sec.append(lista.length ? el('div',{class:'cen-lista'}, ...lista.map(([g,f]) => linha(g,f,lista)))
+      : el('p',{class:'vazio'}, 'Nenhuma música deste tipo ainda.'));
+    raiz.append(sec);
+  }
+  if (semCl.length) raiz.append(el('section',{class:'cen-sec'}, el('div',{class:'cen-cab'}, el('span',{class:'nm'},'Sem classificação'), el('span',{class:'n'}, String(semCl.length))),
+    el('div',{class:'cen-lista'}, ...semCl.map(([g,f]) => linha(g,f,semCl)))));
 }
 
 // ---------- Modo Seleção ----------
@@ -2188,7 +2240,7 @@ function desenhar(esc){
 }
 function desenhar0(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
+  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cen'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -2271,12 +2323,13 @@ $('btSil').onclick = () => parar(0);
 $('btVid').onclick = ev => { const p = $('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
 let trava = null;
 function aba(qual){ modo = qual;
-  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
+  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['cen','cenas','abaCen'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
   if (qual === 'mes') rotRolar = true;
   if (qual!=='sel' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga
   desenhar(); salvaUI(); }
 $('abaSel').onclick = () => aba('sel');
 $('abaTri').onclick = () => aba('tri');
+$('abaCen').onclick = () => aba('cen');
 $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
 $('abaAj').onclick = () => aba('aj');

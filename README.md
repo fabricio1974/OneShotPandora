@@ -21,6 +21,8 @@ Para usar sem internet de hospedagem, rode `abrir_trilha.bat` (precisa de Python
 
 Cada música tem uma classificação pelo método do vídeo "Trilha sonora no RPG" (Professor DM): **ritmo** (rápido = urgência; lento = concentração), **tom** (grave = o desafio é mais forte; agudo = os jogadores brilham; médio = calma; extremos = horror) e **compasso** (marcado = esforço físico; fluido = drama). Na Seleção, o filtro **Tipo de cena** mostra as músicas de todos os personagens que servem para aquele tipo de cena; cada cartão mostra a classificação e tem três seletores (Ritmo, Tom, Compasso) para corrigir depois de ouvir. A classificação inicial foi feita pelo conhecimento das peças, não ouvindo. Grupos novos: **Virada — os jogadores brilham** e **Banco por tipo de cena**.
 
+A aba **Cenas** reúne todas as músicas por tipo de cena, em seções recolhíveis: ▶ Ouvir (as próximas da mesma cena seguem na fila), "Usar" para levar à Sessão, seletor para corrigir o tipo, selo NOVA e o filtro "Só as músicas novas".
+
 ## Inimigos e ações (aba Mestre)
 
 Painel de referência dos Bellacord (Esaú, Jael, Ezequiel, Hildegarda, Elizabeth, Ozymandias e o Anjo) com as **fichas originais** do bestiário "O Cordeiro e o Lobo" (texto, bônus de ataque, alcances, dados e médias, CDs, recargas e custos copiados sem alteração; as cartas dos jogadores deixaram de ser a fonte). Cada inimigo tem:
