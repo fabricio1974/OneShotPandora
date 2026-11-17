@@ -1,0 +1,366 @@
+{
+ "vozes": {
+  "esau": {
+   "desc": "Young wild male hunter in his early twenties, rough raspy guttural voice with a harsh tribal accent, aggressive and growling, Nordic steppe warrior",
+   "genero": "male"
+  },
+  "ezequiel": {
+   "desc": "Elderly West African man in his seventies, deep warm gravelly voice, slow and wise old sailor storyteller, Nigerian accent",
+   "genero": "male"
+  },
+  "jael": {
+   "desc": "Confident adult woman, clearly female voice, in her late twenties, strong husky voice, battle-hardened warrior with a firm direct tone, slight Eastern European accent",
+   "genero": "female"
+  },
+  "hildegarda": {
+   "desc": "Young German woman, clearly female voice, in her early twenties, soft clear gentle voice, serene and pious, light German accent, like a cathedral choir singer speaking",
+   "genero": "female"
+  },
+  "ozy": {
+   "desc": "Very old aristocratic man around ninety years old, deep raspy commanding voice, cold and arrogant, slow and measured, Mediterranean accent, ominous",
+   "genero": "male"
+  },
+  "elodie": {
+   "desc": "Young woman in her early twenties, female voice, soft gentle and slightly shy, calm artistic tone, light French accent, speaking quietly like a painter",
+   "genero": "female"
+  },
+  "akari": {
+   "desc": "Young Japanese woman, female voice, in her early twenties, fierce determined voice with a Japanese accent, emotional, shouting and trembling with anger when confronting someone",
+   "genero": "female"
+  },
+  "thorian": {
+   "desc": "Ancient wise dragon, enormous deep resonant androgynous voice, very slow and serene, mythic Eastern sage, calm authority",
+   "genero": "male"
+  },
+  "anjo": {
+   "desc": "Androgynous celestial being, powerful ethereal resonant voice, solemn and awe-inspiring, echoing, terrifying holiness",
+   "genero": "male"
+  }
+ },
+ "falas": [
+  [
+   "ozy",
+   "Memento mori"
+  ],
+  [
+   "ozy",
+   "Sic transit gloria mundi"
+  ],
+  [
+   "ozy",
+   "Omnia mea mecum porto"
+  ],
+  [
+   "ozy",
+   "Tempus rerum imperator"
+  ],
+  [
+   "elodie",
+   "Ars longa, vita brevis"
+  ],
+  [
+   "elodie",
+   "Lux et color"
+  ],
+  [
+   "elodie",
+   "Fiat lux"
+  ],
+  [
+   "hildegarda",
+   "Spiritus Sanctus vivificans vitam"
+  ],
+  [
+   "hildegarda",
+   "O vis aeternitatis"
+  ],
+  [
+   "hildegarda",
+   "O vos angeli"
+  ],
+  [
+   "hildegarda",
+   "Ave generosa"
+  ],
+  [
+   "hildegarda",
+   "Kyrie eleison"
+  ],
+  [
+   "anjo",
+   "Gloria in excelsis Deo"
+  ],
+  [
+   "anjo",
+   "Sanctus, sanctus, sanctus"
+  ],
+  [
+   "anjo",
+   "Nolite timere"
+  ],
+  [
+   "anjo",
+   "Dies irae"
+  ],
+  [
+   "esau",
+   "Ka rago ni, tuh!"
+  ],
+  [
+   "esau",
+   "Ni mubo! Ni ugo!"
+  ],
+  [
+   "esau",
+   "Orga! Orga! Zuk nak!"
+  ],
+  [
+   "esau",
+   "Kesh nak, zuk. Hura vahk ni."
+  ],
+  [
+   "esau",
+   "Ugo, ugo, ugo! Ka rago vahk ni!"
+  ],
+  [
+   "esau",
+   "Hura orga ni. Tuh ni ugo."
+  ],
+  [
+   "ezequiel",
+   "Tempus fugit"
+  ],
+  [
+   "ezequiel",
+   "Videbis iterum"
+  ],
+  [
+   "ezequiel",
+   "Memento"
+  ],
+  [
+   "jael",
+   "Tempus et mors"
+  ],
+  [
+   "jael",
+   "Fortis et fidelis"
+  ],
+  [
+   "jael",
+   "Ad bellum"
+  ],
+  [
+   "akari",
+   "Ozymandias! Você disse que ninguém ia morrer!"
+  ],
+  [
+   "thorian",
+   "Eu vi os reinos nascerem, criança. Nenhum durou."
+  ],
+  [
+   "akari",
+   "Ozymandias! Olhe para mim! Você disse que ninguém ia morrer!"
+  ],
+  [
+   "ozy",
+   "Eu disse muitas coisas, jovem. Palavras são moedas, e eu sempre soube gastá-las."
+  ],
+  [
+   "akari",
+   "Não ouse! Eu vi os corpos! Eu vi os rostos! Você mentiu na minha cara, e eles pagaram por isso!"
+  ],
+  [
+   "ozy",
+   "Os mortos já não reclamam. Os vivos, sim. É por isso que ainda tenho o que fazer aqui."
+  ],
+  [
+   "akari",
+   "Cale a boca! Cale a boca! Hoje a minha lâmina responde por cada um deles! Urusai! Hoje você paga!"
+  ]
+ ],
+ "fx": {
+  "magia": {
+   "prompt": "Magical spell cast whoosh with shimmering arcane sparkles",
+   "seg": 3
+  },
+  "meteoro": {
+   "prompt": "Meteor falling from the sky with a screaming whistle then a massive explosion impact",
+   "seg": 5
+  },
+  "gravidade": {
+   "prompt": "Gravity spell, deep warping sub bass pulling distortion",
+   "seg": 4
+  },
+  "orbita": {
+   "prompt": "Orbiting energy sphere whooshing around, rising fantasy whirl",
+   "seg": 3
+  },
+  "moedas": {
+   "prompt": "Handful of gold coins dropping and clinking on a stone floor",
+   "seg": 2
+  },
+  "trovao": {
+   "prompt": "Loud close thunderclap with a long rolling rumble",
+   "seg": 5
+  },
+  "pincelada": {
+   "prompt": "Wet paintbrush stroke swish on canvas with a magical shimmer",
+   "seg": 2
+  },
+  "harpa": {
+   "prompt": "Ascending harp glissando, magical and bright",
+   "seg": 3
+  },
+  "vitral": {
+   "prompt": "Stained glass window shattering into many pieces",
+   "seg": 3
+  },
+  "coroSubida": {
+   "prompt": "Angelic choir sustained chord rising, ethereal, cathedral reverb",
+   "seg": 6
+  },
+  "sino": {
+   "prompt": "Single deep church bell strike with long resonant decay",
+   "seg": 5
+  },
+  "luz": {
+   "prompt": "Holy light shimmer, divine chime swell",
+   "seg": 4
+  },
+  "orgao": {
+   "prompt": "Deep ominous church organ low chord",
+   "seg": 6
+  },
+  "espada": {
+   "prompt": "Flaming sword swing whoosh with fire crackle",
+   "seg": 2
+  },
+  "trombeta": {
+   "prompt": "Epic heavenly trumpet fanfare in a cathedral",
+   "seg": 5
+  },
+  "tambor": {
+   "prompt": "Deep tribal war drum single hit, hollow wooden, echo in a forest",
+   "seg": 2
+  },
+  "chifre": {
+   "prompt": "Tribal war horn blast, deep, echoing across a valley",
+   "seg": 4
+  },
+  "assobio": {
+   "prompt": "Hunter whistling a sharp two note whistle signal outdoors",
+   "seg": 2
+  },
+  "corrente": {
+   "prompt": "Heavy iron chains rattling and dragging on stone",
+   "seg": 3
+  },
+  "flecha": {
+   "prompt": "Arrow whooshing past then thudding into wood",
+   "seg": 2
+  },
+  "rosnado": {
+   "prompt": "Large beast growling low and menacing",
+   "seg": 3
+  },
+  "uivo": {
+   "prompt": "Lone wolf howling at night, long and mournful, forest echo",
+   "seg": 6
+  },
+  "sussurro": {
+   "prompt": "Eerie ghostly whispers surrounding the listener",
+   "seg": 4
+  },
+  "relogio": {
+   "prompt": "Old grandfather clock ticking then a heavy bell chime",
+   "seg": 6
+  },
+  "rufar": {
+   "prompt": "Tribal war drums rolling crescendo",
+   "seg": 5
+  },
+  "estaca": {
+   "prompt": "Wooden stake driven into the ground, heavy thud",
+   "seg": 2
+  },
+  "katana": {
+   "prompt": "Samurai katana drawn from its scabbard with a sharp metallic ring, then a swift slash",
+   "seg": 2
+  },
+  "passos": {
+   "prompt": "Heavy determined footsteps on dry dirt and gravel",
+   "seg": 3
+  },
+  "impacto": {
+   "prompt": "Heavy cinematic impact boom with deep sub bass hit",
+   "seg": 2
+  },
+  "dragao": {
+   "prompt": "Enormous ancient dragon roar, deep and resonant, long echo over mountains",
+   "seg": 5
+  },
+  "asas": {
+   "prompt": "Giant dragon wings flapping slowly with powerful gusts of wind",
+   "seg": 4
+  },
+  "fogoSopro": {
+   "prompt": "Dragon fire breath roaring, intense flames whoosh",
+   "seg": 4
+  }
+ },
+ "cam": {
+  "cosmos": {
+   "prompt": "Deep space cosmic ambient drone with shimmering pads, seamless loop",
+   "seg": 20
+  },
+  "trovoes": {
+   "prompt": "Distant thunder rumbling in a storm, seamless ambient loop",
+   "seg": 20
+  },
+  "vento": {
+   "prompt": "Steady wind blowing across open plains, seamless ambient loop",
+   "seg": 20
+  },
+  "mar": {
+   "prompt": "Ocean waves rolling onto a shore, seamless ambient loop",
+   "seg": 20
+  },
+  "sinos": {
+   "prompt": "Distant church bells ringing slowly, ambient, seamless loop",
+   "seg": 20
+  },
+  "coro": {
+   "prompt": "Ethereal choir pad sustained, cathedral ambience, seamless loop",
+   "seg": 20
+  },
+  "grave": {
+   "prompt": "Low dark ominous cinematic drone, seamless ambient loop",
+   "seg": 20
+  },
+  "fogo": {
+   "prompt": "Campfire crackling softly, seamless ambient loop",
+   "seg": 20
+  },
+  "floresta": {
+   "prompt": "Night forest ambience with crickets and soft wind, seamless loop",
+   "seg": 20
+  },
+  "tambores": {
+   "prompt": "Distant tribal war drums steady rhythm, seamless loop",
+   "seg": 20
+  },
+  "coracao": {
+   "prompt": "Slow deep heartbeat thumping, seamless ambient loop",
+   "seg": 20
+  },
+  "sussurros": {
+   "prompt": "Ghostly whispers ambience, seamless loop",
+   "seg": 20
+  },
+  "chuva": {
+   "prompt": "Steady rain falling on leaves and ground, seamless ambient loop",
+   "seg": 20
+  }
+ }
+}

@@ -152,7 +152,9 @@ header .puxa,html[data-hdr="rec"] header .puxa{position:static;transform:none;to
 @media (min-width:900px){:root[data-layout="2"] header .puxa{display:none}}
 html[data-hdr="rec"] header>*:not(.abas){display:none!important}
 html[data-hdr="rec"] header{padding:0;height:auto;min-height:0;border:0;display:block}
-html[data-hdr="rec"] header .abas{margin:0}
+html[data-hdr="rec"] header .abas>*:not(.puxa){display:none!important}
+html[data-hdr="rec"] header .abas{margin:0;justify-content:flex-end}
+.nm-abas2{display:flex;flex-wrap:wrap;gap:4px;padding:6px 8px;border-bottom:1px solid var(--linha)}
 html[data-hdr="rec"] header .puxa{min-height:26px;background:var(--painel);border:1px solid var(--linha);border-top:0;width:56px}
 /* luta: sem a faixa de inimigos no topo */
 html[data-luta="foco"] .dk-main .inm-abas{display:none!important}

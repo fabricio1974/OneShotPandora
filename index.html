@@ -441,7 +441,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .retrato{border-radius:4px}
 </style>
 <link rel="stylesheet" href="visual.css">
-<link rel="stylesheet" href="mesa.css?v=8">
+<link rel="stylesheet" href="mesa.css?v=9">
 </head>
 <body>
 <header>
@@ -619,7 +619,7 @@ const ROTEIRO_PADRAO = [
  {titulo:'Revelação (fora do jogo)', nota:'Contar a revelação em voz alta, fora da ficção.', faixa:'mom-miserere'}
 ];
 const ROTEIRO_ANTIGO = [["Ato 1 · A estrada","mom-departure"],["Ato 1 · Esaú, o caçador ferido","esau-kongurei"],["Ato 1 · Chegada a Maré-Alta","via-kiki"],["A anja aparece","mom-spiegel"],["Volta 1 · A flecha","esau-helvegen"],["Volta 1 · A morte da Rafaela","mom-stabat"],["Esaú · combate","esau-wolftotem"],["Ezequiel · entrada","eze-apparition"],["Ezequiel · combate","eze-passacaglia"],["Jael · entrada","jael-monochrome"],["Jael · combate","jael-odaiko"],["Hildegarda · entrada","hil-ovis"],["Hildegarda · 3ª rodada","hil-angeli"],["Os “demônios” · combate","dem-kyrie"],["Raquel","raq-gorecki"],["Ozymandias · entrada","ozy-saturno"],["Akari e Thorian chegam","aka-dragon"],["Ozymandias · combate","ozy-marte"],["Revelação (fora do jogo)","mom-miserere"]];   // roteiro de 6 lutas (versão anterior), para a migração
-const IMG_PADRAO = {esau:'img/esau.jpg', ezequiel:'img/ezequiel.jpg', jael:'img/jael.jpg', hildegarda:'img/hildegarda.jpg', demonio:'img/diabo.jpg', momentos:'img/anja.jpg', akari:'img/akari.jpg', ozy:'img/ozymandias.jpg', viagem:'img/rafaela.jpg'};
+const IMG_PADRAO = {esau:'img/esau.jpg', ezequiel:'img/ezequiel.jpg', jael:'img/jael.jpg', hildegarda:'img/hildegarda.jpg', demonio:'img/diabo.jpg', momentos:'img/anja.jpg', akari:'img/akari.jpg', ozy:'img/ozymandias.jpg', elodie:'img/elizabeth.jpg', viagem:'img/rafaela.jpg'};
 const ALT_PADRAO = {esau:'img/esau_acena.jpg', akari:'img/thorian.jpg'};            // segunda versão da arte (Esaú sorrindo e acenando)
 const APOIO = [
  {id:'rafaela', nome:'Rafaela', papel:'A curandeira', img:'img/rafaela.jpg', nota:'Cura o que ninguém mais cura, e as mãos brilham. Nasceu com poder celestial: a mãe, Aurélia, nasceu, cresceu e morreu em Maré-Alta: matou um demônio grávida e morreu no parto (a estátua dela fica no centro da cidade). A irmã dela, Clara, é quem se casa; o pai nunca voltou lá. Na volta 1 é morta pela flecha de Esaú.'},
@@ -1353,7 +1353,7 @@ const INIMIGOS = [
   {"id":"a-silencio-sagrado","nome":"Silêncio Sagrado","cat":"amb","tags":["controle","debuff"],"txt":"Até a próxima contagem 20, quem lançar uma magia com componente verbal faz salvaguarda de Con CD 18. *Falha:* a magia falha, mas o espaço não é gasto.","cd":[["Con",18]]},
   {"id":"a-coro-distante","nome":"Coro Distante","cat":"amb","tags":["debuff"],"txt":"Até a próxima contagem 20, toda cura recebida pelos jogadores é reduzida à metade."}
 ]},
-{"id":"elodie","nome":"Elizabeth","titulo":"Elizabeth Vermeil, a Pintora do Rei","img":"img/cartas/vin_criados.jpg","sub":"Humana Média (Bellacord), neutra. Mestra do Cavalete, pintora da corte. Só luta junto com o Ozymandias.","ca":20,"caTxt":"20 (casaco de tinta seca)","pv":462,"pvTxt":"462 (44d8 + 264)","desl":"9 m","atr":["10 (+0)","24 (+7)","22 (+6)","20 (+5)","16 (+3)","18 (+4)"],"salv":"Des +13, Con +12, Int +11, Sab +9","per":"Arcanismo +11, Percepção +9, Persuasão +10","res":"psíquico","imun":"enfeitiçado, amedrontado","sent":"visão no escuro 18 m, Percepção passiva 19","idi":"Comum","mus":"a mesma do Ozymandias (\"Os Planetas\", de Holst). **Elizabeth só luta junto com o Ozymandias.**","nd":"20 (25.000 XP)","prof":"+6","lend":2,"nh":150,"ambTitulo":"O Cavalete Gira","ambIntro":"Na contagem 20, escolha uma:","lendIntro":"Elizabeth pode realizar 2 ações lendárias.","notaMestre":"Nada do que ela pinta é criatura: tudo é terreno, efeito, clima ou objeto (a Moldura). Ela nunca grita nem ameaça crianças. Abertura: pinta de costas, intocável; se alguém se aproxima ou a ataca (ou em 3 rodadas), o Retrato coletivo leva o grupo para a Tela I. Nas Telas I e III do Formato A: a Virada da Tela (50% dos PV usados) leva à Tela III. Arte de Elizabeth ainda não existe (usa a vinheta dos criados).","acoes":[
+{"id":"elodie","nome":"Elizabeth","titulo":"Elizabeth Vermeil, a Pintora do Rei","img":"img/elizabeth.jpg","sub":"Humana Média (Bellacord), neutra. Mestra do Cavalete, pintora da corte. Só luta junto com o Ozymandias.","ca":20,"caTxt":"20 (casaco de tinta seca)","pv":462,"pvTxt":"462 (44d8 + 264)","desl":"9 m","atr":["10 (+0)","24 (+7)","22 (+6)","20 (+5)","16 (+3)","18 (+4)"],"salv":"Des +13, Con +12, Int +11, Sab +9","per":"Arcanismo +11, Percepção +9, Persuasão +10","res":"psíquico","imun":"enfeitiçado, amedrontado","sent":"visão no escuro 18 m, Percepção passiva 19","idi":"Comum","mus":"a mesma do Ozymandias (\"Os Planetas\", de Holst). **Elizabeth só luta junto com o Ozymandias.**","nd":"20 (25.000 XP)","prof":"+6","lend":2,"nh":150,"ambTitulo":"O Cavalete Gira","ambIntro":"Na contagem 20, escolha uma:","lendIntro":"Elizabeth pode realizar 2 ações lendárias.","notaMestre":"Nada do que ela pinta é criatura: tudo é terreno, efeito, clima ou objeto (a Moldura). Ela nunca grita nem ameaça crianças. Abertura: pinta de costas, intocável; se alguém se aproxima ou a ataca (ou em 3 rodadas), o Retrato coletivo leva o grupo para a Tela I. Nas Telas I e III do Formato A: a Virada da Tela (50% dos PV usados) leva à Tela III.","acoes":[
   {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"Elizabeth faz três ataques de Pincelada. Pode trocar um deles por Raspar (use o botão de Raspar à parte).","multi":[{"lab":"3 × Pincelada","seq":["pincelada","pincelada","pincelada"]}]},
   {"id":"pincelada","nome":"Pincelada","cat":"acao","tags":["dano"],"txt":"*Ataque Corpo a Corpo ou à Distância com Magia (usa Des):* +13, alcance 4,5 m ou 18 m, um alvo. *Acerto:* **4d8 + 7 (25)** psíquico mais **3d6 (10)** do tipo do último pigmento usado.","atk":{"k":"ccm","b":13},"dano":[{"e":"4d8+7","m":25,"t":"psíquico","k":"d"},{"e":"3d6","m":10,"t":"do pigmento","k":"d"}]},
   {"id":"raspar","nome":"Raspar","cat":"recarga","par":"Recarga 6","sem":1,"tags":["dano","controle"],"txt":"*Ataque Corpo a Corpo com Arma:* +13, alcance 1,5 m, um alvo. *Acerto:* **8d10 + 7 (51)** perfurante. Se o alvo ficar com metade dos PV máximos ou menos, fica **atordoado** até o fim do próximo turno dele ◆ (sem salvaguarda).","rec":6,"atk":{"k":"cc","b":13},"dano":[{"e":"8d10+7","m":51,"t":"perfurante","k":"d"}]},
@@ -2264,6 +2264,6 @@ if (uiRest && typeof uiRest === 'object') {
 desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
-<script src="mesa.js?v=8"></script>
+<script src="mesa.js?v=9"></script>
 </body>
 </html>

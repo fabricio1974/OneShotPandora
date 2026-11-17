@@ -222,14 +222,15 @@
   var VOZP = {
     esau:['Young wild male hunter in his early twenties, rough raspy guttural voice with a harsh tribal accent, aggressive and growling, Nordic steppe warrior', 'homem, ~22 anos, caçador tribal (chifres, arco)'],
     ezequiel:['Elderly West African man in his seventies, deep warm gravelly voice, slow and wise old sailor storyteller, Nigerian accent', 'homem, ~70 anos, africano, timoneiro'],
-    jael:['Confident adult woman in her late twenties, strong husky voice, battle-hardened warrior with a firm direct tone, slight Eastern European accent', 'mulher, ~28 anos, guerreira de martelo'],
-    hildegarda:['Young German woman in her early twenties, soft clear gentle voice, serene and pious, light German accent, like a cathedral choir singer speaking', 'mulher, ~22 anos, clériga alemã'],
+    jael:['Confident adult woman, clearly female voice, in her late twenties, strong husky voice, battle-hardened warrior with a firm direct tone, slight Eastern European accent', 'mulher, ~28 anos, guerreira de martelo'],
+    hildegarda:['Young German woman, clearly female voice, in her early twenties, soft clear gentle voice, serene and pious, light German accent, like a cathedral choir singer speaking', 'mulher, ~22 anos, clériga alemã'],
     ozy:['Very old aristocratic man around ninety years old, deep raspy commanding voice, cold and arrogant, slow and measured, Mediterranean accent, ominous', 'homem, ~90 anos, encapuzado, avareza'],
-    elodie:['Refined woman in her forties, calm artistic voice, soft French accent, elegant and warm, speaking gently like a painter', 'mulher, ~40 anos, pintora (Elizabeth)'],
-    akari:['Young Japanese woman in her early twenties, fierce determined voice with a Japanese accent, emotional, shouting and trembling with anger when confronting someone', 'mulher, ~22 anos, japonesa, samurai'],
+    elodie:['Young woman in her early twenties, female voice, soft gentle and slightly shy, calm artistic tone, light French accent, speaking quietly like a painter', 'mulher jovem, ~20 anos, pintora de chapéu vermelho (Elizabeth)'],
+    akari:['Young Japanese woman, female voice, in her early twenties, fierce determined voice with a Japanese accent, emotional, shouting and trembling with anger when confronting someone', 'mulher, ~22 anos, japonesa, samurai'],
     thorian:['Ancient wise dragon, enormous deep resonant androgynous voice, very slow and serene, mythic Eastern sage, calm authority', 'dragão ancestral, oriental, sereno'],
     anjo:['Androgynous celestial being, powerful ethereal resonant voice, solemn and awe-inspiring, echoing, terrifying holiness', 'anjo sombrio, andrógino']
   };
+  var GEN_V = {esau:'male', ezequiel:'male', jael:'female', hildegarda:'female', ozy:'male', elodie:'female', akari:'female', thorian:'male', anjo:'male'};
   /* diálogo de Akari contra Ozymandias (campo: personagem, texto) */
   var DIAL = [
     ['akari','Ozymandias! Olhe para mim! Você disse que ninguém ia morrer!'],
@@ -271,6 +272,7 @@
   var tocandoFala = null;
   function fala(id, t, trib){
     bdLer(chaveFala(id, t)).then(function(b){
+      if (!b && PRONTO.falas[chaveFala(id, t)]) { try { if (tocandoFala) tocandoFala.pause(); } catch (e) {} var a0 = new Audio('audio/' + PRONTO.falas[chaveFala(id, t)]); a0.volume = Math.min(1, S.vol / 100 + .2); tocandoFala = a0; a0.play().catch(function(){ falar(t, trib); }); return; }
       if (b) { try { if (tocandoFala) tocandoFala.pause(); } catch (e) {} var a = new Audio(URL.createObjectURL(b)); a.volume = Math.min(1, S.vol / 100 + .2); tocandoFala = a; a.play().catch(function(){ falar(t, trib); }); }
       else falar(t, trib);
     });
@@ -281,7 +283,7 @@
   function carregarVozes(){
     VZ.msg = 'Carregando as vozes…'; vozRedes();
     eleven('/v1/voices').then(function(r){ if (!r.ok) throw new Error('A chave não foi aceita (' + r.status + ').'); return r.json(); }).then(function(j){
-      VZ.vozes = (j.voices || []).map(function(v){ return {id:v.voice_id, n:v.name + (v.labels && v.labels.gender ? ' · ' + v.labels.gender : '')}; });
+      VZ.vozes = (j.voices || []).map(function(v){ return {id:v.voice_id, g:(v.labels && v.labels.gender) || '', n:v.name + (v.labels && v.labels.gender ? ' · ' + v.labels.gender : '')}; });
       if (!VZ.voz && VZ.vozes[0]) VZ.voz = VZ.vozes[0].id; VZ.msg = VZ.vozes.length + ' vozes carregadas.'; vozRedes();
     }).catch(function(e){ VZ.msg = 'Não deu: ' + e.message; vozRedes(); });
   }
@@ -365,6 +367,10 @@
   function chG(id){ return (ehCam(id) ? 'cam|' : 'fx|') + id; }
   function volG(){ return Math.min(1, S.vol / 100 * 1.15); }
   bd().then(function(d){ var q = d.transaction('a').objectStore('a').openCursor(); q.onsuccess = function(){ var c = q.result; if (!c) { if (ENG.on) engRender(); return; } var k = String(c.key); if (/^(fx|cam)\|/.test(k)) GEN[k] = URL.createObjectURL(c.value); c.continue(); }; }).catch(function(){});
+  var PRONTO = {falas:{}};
+  try { fetch('audio/manifest.json', {cache:'no-cache'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(m){ if (!m) return;
+    ['fx','cam'].forEach(function(t){ Object.keys(m[t] || {}).forEach(function(id){ if (!GEN[t + '|' + id]) GEN[t + '|' + id] = 'audio/' + m[t][id]; }); });
+    PRONTO.falas = m.falas || {}; if (ENG.on) engRender(); }).catch(function(){}); } catch (e) {}
   var _ef = AU.efeito, _li = AU.liga, _ni = AU.nivel, _de = AU.desliga, _vi = AU.viva, _tu = AU.tudo, _ms = AU.mestre;
   var SIN = {katana:'flecha', passos:'tambor', dragao:'rosnado', asas:'chifre', fogoSopro:'trovao'};
   AU.efeito = function(id){ var u = GEN['fx|' + id]; if (!u) return _ef(SIN[id] || id); var a = new Audio(u); a.volume = volG(); a.play().catch(function(){ _ef(SIN[id] || id); }); };
@@ -411,8 +417,13 @@
         h('button', {class:'peq', onclick:function(){ fila([function(){ return gerarFalaUma(id, t); }], 'Fala'); }}, ['Gerar voz']),
         h('button', {class:'peq perigo', onclick:function(){ var l = frDe(id).slice(); l.splice(i, 1); CFG.fr[id] = l; cfgGravar(); engRender(); }}, ['Remover'])])]);
   }
-  function vozDe(id){ return (CFG.voz[id] && CFG.voz[id].id) || VZ.voz; }
+  function vozDe(id){
+    if (CFG.voz[id] && CFG.voz[id].id) return CFG.voz[id].id;
+    var g = GEN_V[id], c = VZ.vozes.filter(function(v){ return v.g === g; })[0];   // sem voz própria: pega uma do gênero certo
+    return c ? c.id : (VZ.vozes.filter(function(v){ return v.id === VZ.voz; })[0] || {g:g}).g === g ? VZ.voz : '';
+  }
   function gerarFalaUma(id, t){
+    if (!vozDe(id)) return Promise.reject(new Error('sem voz ' + (GEN_V[id] === 'female' ? 'feminina' : 'masculina')));
     return eleven('/v1/text-to-speech/' + encodeURIComponent(vozDe(id)) + '?output_format=mp3_44100_64', {text:t, model_id:'eleven_multilingual_v2', voice_settings:{stability:.28, similarity_boost:.8, style:.75, use_speaker_boost:true}})
       .then(function(r){ if (!r.ok) throw new Error(r.status); return r.blob(); }).then(function(b){ return bdGravar(chaveFala(id, t), b); });
   }
@@ -440,8 +451,9 @@
   }
   function dialogoUI(){
     function tocarSeq(i){ if (i >= DIAL.length) return; var d = DIAL[i]; bdLer(chaveFala(d[0], d[1])).then(function(b){
-      if (!b) { falar(d[1]); setTimeout(function(){ tocarSeq(i + 1); }, 4000); return; }
-      var a = new Audio(URL.createObjectURL(b)); a.volume = Math.min(1, S.vol / 100 + .2); a.onended = function(){ tocarSeq(i + 1); }; a.play().catch(function(){ tocarSeq(i + 1); }); }); }
+      var u = b ? URL.createObjectURL(b) : (PRONTO.falas[chaveFala(d[0], d[1])] ? 'audio/' + PRONTO.falas[chaveFala(d[0], d[1])] : '');
+      if (!u) { falar(d[1]); setTimeout(function(){ tocarSeq(i + 1); }, 4000); return; }
+      var a = new Audio(u); a.volume = Math.min(1, S.vol / 100 + .2); a.onended = function(){ tocarSeq(i + 1); }; a.play().catch(function(){ tocarSeq(i + 1); }); }); }
     return h('div', {}, [h('p', {class:'sub dm-nota'}, ['Akari enfrenta Ozymandias por ter matado depois de dizer que não mataria.'])].concat(DIAL.map(function(d){ return h('p', {class:'sub'}, [CAT[d[0]].nome + ': ' + d[1]]); })).concat([
       h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ tocarSeq(0); }}, ['▶ Tocar o diálogo']),
         h('button', {class:'peq', onclick:function(){ if (!VZ.chave) { VZ.msg = 'Cole a chave primeiro.'; engRender(); return; } fila(DIAL.map(function(d){ return function(){ return gerarFalaUma(d[0], d[1]); }; }), 'Diálogo'); }}, ['Gerar as vozes do diálogo'])])]));
@@ -515,6 +527,8 @@
       lista.append(h('button', {class:'nm-it', onclick:function(){ var alvo = pm.querySelector(':scope > [data-p="' + it.id + '"]'); irPara(alvo); }}, [it.t]));
     });
     nav.textContent = ''; var rod = h('div', {class:'nm-rod'}, [dois('Zerar a luta', zerarLuta), dois('Zerar a noite', zerarNoite, 'perigo')]); nav.append(h('div', {class:'nm-top'}, [h('b', {}, ['Tópicos']), h('button', {class:'peq', 'aria-label':'Recolher os tópicos', onclick:function(){ S.nav = 0; gravar(); aplicar(); }}, ['«'])]), lista, rod);
+    var tabs = Array.prototype.filter.call(document.querySelectorAll('header .abas button'), function(b){ return b.id !== 'btHdr'; });
+    if (tabs.length) nav.prepend(h('div', {class:'nm-abas2'}, tabs.map(function(b){ return h('button', {class:'peq', 'aria-pressed':String(b.getAttribute('aria-selected') === 'true'), onclick:function(){ b.click(); }}, [b.textContent.trim()]); })));
   }
 
 
@@ -608,5 +622,5 @@
   window.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && window.innerWidth < 1100 && (S.nav || S.dir)) { /* fecha as gavetas em telas estreitas */ S.nav = 0; S.dir = 0; gravar(); aplicar(); } });
   if (window.innerWidth < 1100) { S.nav = 0; S.dir = 0; }   // em tela estreita começam fechadas
   aplicar();
-  window.OTLMesa = {AU:AU, S:S, aplicar:aplicar, CAT:CAT, noCombate:noCombate};
+  window.OTLMesa = {AU:AU, S:S, aplicar:aplicar, CAT:CAT, noCombate:noCombate, DEFS:{CAT:CAT, VOZP:VOZP, GEN_V:GEN_V, PDEF:PDEF, DIAL:DIAL, CAN:CAN, EFN:EFN}};
 })();
