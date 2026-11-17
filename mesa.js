@@ -10,7 +10,7 @@
 
   function h(tag, a, kids){
     var e = document.createElement(tag);
-    for (var x in (a || {})) { if (x === 'class') e.className = a[x]; else if (x.slice(0, 2) === 'on') e[x] = a[x]; else e.setAttribute(x, a[x]); }
+    for (var x in (a || {})) { if (a[x] == null) continue; if (x === 'class') e.className = a[x]; else if (x.slice(0, 2) === 'on') e[x] = a[x]; else e.setAttribute(x, a[x]); }
     (kids || []).forEach(function(c){ if (c != null && c !== false) e.append(c.nodeType ? c : document.createTextNode(c)); });
     return e;
   }
@@ -235,6 +235,57 @@
   }
   function grupoDe(id){ try { return E.grupos.filter(function(g){ return g.id === (GRUPO[id] || id); })[0] || null; } catch (e) { return null; } }
 
+
+  /* ===================== VOZ REALISTA (ElevenLabs, gerada no seu navegador) ===================== */
+  var VZ = {chave:'', vozes:[], voz:'', msg:'', ocupado:false};   // a chave fica só na memória desta aba: nunca é salva
+  try { VZ.voz = localStorage.getItem('otl_voz') || ''; } catch (e) {}
+  var idb = null;
+  function bd(){ return idb || (idb = new Promise(function(ok, no){ var r = indexedDB.open('otl_falas', 1); r.onupgradeneeded = function(){ r.result.createObjectStore('a'); }; r.onsuccess = function(){ ok(r.result); }; r.onerror = function(){ no(r.error); }; })); }
+  function bdLer(k){ return bd().then(function(d){ return new Promise(function(ok){ var q = d.transaction('a').objectStore('a').get(k); q.onsuccess = function(){ ok(q.result || null); }; q.onerror = function(){ ok(null); }; }); }).catch(function(){ return null; }); }
+  function bdGravar(k, v){ return bd().then(function(d){ return new Promise(function(ok){ var t = d.transaction('a', 'readwrite'); t.objectStore('a').put(v, k); t.oncomplete = ok; t.onerror = ok; }); }); }
+  function bdApagar(){ return bd().then(function(d){ return new Promise(function(ok){ var t = d.transaction('a', 'readwrite'); t.objectStore('a').clear(); t.oncomplete = ok; t.onerror = ok; }); }); }
+  function chaveFala(id, t){ return id + '|' + t; }
+  var tocandoFala = null;
+  function fala(id, t, trib){
+    bdLer(chaveFala(id, t)).then(function(b){
+      if (b) { try { if (tocandoFala) tocandoFala.pause(); } catch (e) {} var a = new Audio(URL.createObjectURL(b)); a.volume = Math.min(1, S.vol / 100 + .2); tocandoFala = a; a.play().catch(function(){ falar(t, trib); }); }
+      else falar(t, trib);
+    });
+  }
+  function eleven(caminho, corpo){
+    return fetch('https://api.elevenlabs.io' + caminho, corpo ? {method:'POST', headers:{'xi-api-key':VZ.chave, 'Content-Type':'application/json', 'Accept':'audio/mpeg'}, body:JSON.stringify(corpo)} : {headers:{'xi-api-key':VZ.chave}});
+  }
+  function carregarVozes(){
+    VZ.msg = 'Carregando as vozes…'; desenhar2(true);
+    eleven('/v1/voices').then(function(r){ if (!r.ok) throw new Error('A chave não foi aceita (' + r.status + ').'); return r.json(); }).then(function(j){
+      VZ.vozes = (j.voices || []).map(function(v){ return {id:v.voice_id, n:v.name + (v.labels && v.labels.gender ? ' · ' + v.labels.gender : '')}; });
+      if (!VZ.voz && VZ.vozes[0]) VZ.voz = VZ.vozes[0].id; VZ.msg = VZ.vozes.length + ' vozes carregadas.'; desenhar2(true);
+    }).catch(function(e){ VZ.msg = 'Não deu: ' + e.message; desenhar2(true); });
+  }
+  function gerarFalas(lista){   // lista: [[idInimigo, texto]]
+    if (VZ.ocupado) return; VZ.ocupado = true; var feitas = 0, falhas = 0;
+    (function prox(i){
+      if (i >= lista.length) { VZ.ocupado = false; VZ.msg = 'Prontas: ' + feitas + ' falas' + (falhas ? ' (' + falhas + ' falharam)' : '') + '. Já funcionam sem a chave.'; desenhar2(true); return; }
+      VZ.msg = 'Gerando ' + (i + 1) + ' de ' + lista.length + '…'; desenhar2(true);
+      eleven('/v1/text-to-speech/' + encodeURIComponent(VZ.voz) + '?output_format=mp3_44100_64', {text:lista[i][1], model_id:'eleven_multilingual_v2', voice_settings:{stability:.28, similarity_boost:.8, style:.75, use_speaker_boost:true}})
+        .then(function(r){ if (!r.ok) throw new Error(r.status); return r.blob(); }).then(function(b){ feitas++; return bdGravar(chaveFala(lista[i][0], lista[i][1]), b); })
+        .catch(function(){ falhas++; }).then(function(){ prox(i + 1); });
+    })(0);
+  }
+  function vozUI(idAtual){
+    var chave = h('input', {type:'password', placeholder:'chave da ElevenLabs (não fica salva)', autocomplete:'off', 'aria-label':'Chave da ElevenLabs', oninput:function(ev){ VZ.chave = ev.target.value.trim(); }});
+    chave.value = VZ.chave;
+    var sel = h('select', {'aria-label':'Voz', onchange:function(ev){ VZ.voz = ev.target.value; try { localStorage.setItem('otl_voz', VZ.voz); } catch (e) {} }}, VZ.vozes.map(function(v){ var o = h('option', {value:v.id}, [v.n]); if (v.id === VZ.voz) o.selected = true; return o; }));
+    var daqui = idAtual && CAT[idAtual] ? CAT[idAtual].fr.map(function(t){ return [idAtual, t]; }) : [];
+    var todas = []; Object.keys(CAT).forEach(function(id){ CAT[id].fr.forEach(function(t){ todas.push([id, t]); }); });
+    return h('div', {class:'dm-voz'}, [h('p', {class:'sub dm-nota'}, ['Gera as falas uma vez, com a sua conta, e guarda neste navegador. Depois dá para apagar a chave.']), chave,
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ if (VZ.chave) carregarVozes(); else { VZ.msg = 'Cole a chave primeiro.'; desenhar2(true); } }}, ['Carregar vozes'])]),
+      VZ.vozes.length ? sel : null,
+      VZ.vozes.length ? h('div', {class:'dm-efs'}, [h('button', {class:'peq', disabled:VZ.ocupado ? '' : null, onclick:function(){ gerarFalas(daqui); }}, ['Gerar as falas de ' + (idAtual ? CAT[idAtual].nome : '—')]), h('button', {class:'peq', onclick:function(){ gerarFalas(todas); }}, ['Gerar todas'])]) : null,
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq perigo', onclick:function(){ bdApagar().then(function(){ VZ.msg = 'Falas gravadas apagadas.'; desenhar2(true); }); }}, ['Apagar falas gravadas'])]),
+      VZ.msg ? h('p', {class:'sub dm-nota', role:'status'}, [VZ.msg]) : null]);
+  }
+
   /* ===================== PAINEL DIREITO ===================== */
   var dir = h('aside', {id:'dirMesa', 'aria-label':'Ambiente e sons'});
   var abrirDir = h('button', {id:'dmAbrir', class:'lat-aba dir', 'aria-label':'Abrir o painel de ambiente e sons', onclick:function(){ S.dir = 1; gravar(); aplicar(); }}, ['Sons']);
@@ -247,7 +298,7 @@
     return li;
   }
   function efeitosUI(lista){ return h('div', {class:'dm-efs'}, lista.map(function(id){ return h('button', {class:'peq', onclick:function(){ AU.efeito(id); }}, [EFN[id]]); })); }
-  function frasesUI(lista, trib){ return lista.length ? h('div', {class:'dm-frs'}, lista.map(function(t){ return h('button', {class:'peq', title:'Fala em voz grave e lenta (voz do aparelho)', onclick:function(){ falar(t, trib); }}, [t]); })) : null; }
+  function frasesUI(lista, trib, id){ return lista.length ? h('div', {class:'dm-frs'}, lista.map(function(t){ return h('button', {class:'peq', title:'Fala em voz grave e lenta (voz do aparelho)', onclick:function(){ fala(id, t, trib); }}, [t]); })) : null; }
   function musicasUI(id){
     var g = grupoDe(id); if (!g) return null;
     var fs = g.faixas.filter(function(f){ return f.usar; });
@@ -262,7 +313,7 @@
   function secao(t, corpo, aberto){ return corpo ? h('details', {class:'dm-sec', open:aberto ? '' : null}, [h('summary', {}, [t]), corpo]) : null; }
   function desenhar2(forcar){
     var nc = noCombate(), playing = (typeof tocando !== 'undefined' && tocando) ? tocando.id : '';
-    var assinatura = nc.atual + '|' + nc.porque + '|' + nc.presentes.join(',') + '|' + S.fix + '|' + playing;
+    var assinatura = VZ.msg + VZ.vozes.length + nc.atual + '|' + nc.porque + '|' + nc.presentes.join(',') + '|' + S.fix + '|' + playing;
     if (!forcar && assinatura === assin && dir.firstChild) return; assin = assinatura;
     // ao trocar de inimigo, as músicas da aba Seleção e da Sessão passam para o grupo dele
     if (nc.atual && nc.atual !== ultimo) { ultimo = nc.atual; var g0 = grupoDe(nc.atual); if (g0) { try { atual = g0.id; atualSes = g0.id; } catch (e) {} } }
@@ -278,12 +329,15 @@
       corpo.push(secao('Músicas de ' + c.nome, musicasUI(nc.atual), true));
       corpo.push(secao('Efeitos', efeitosUI(c.ef), true));
       corpo.push(secao('Som de fundo', h('div', {class:'dm-cams'}, c.ca.map(camadaUI)), true));
-      if (c.fr.length) corpo.push(secao(c.vz ? 'Gritos e falas' : 'Frases em latim', frasesUI(c.fr, !!c.vz), true));
+      corpo.push(secao('Voz realista (ElevenLabs)', vozUI(nc.atual), false));
+      if (c.fr.length) corpo.push(secao(c.vz ? 'Gritos e falas' : 'Frases em latim', frasesUI(c.fr, !!c.vz, nc.atual), true));
     } else corpo.push(h('p', {class:'sub dm-nota'}, ['Abra a ficha de um inimigo (ou ponha um na iniciativa) e os sons e as músicas dele aparecem aqui.']));
     corpo.push(secao('Sons gerais', h('div', {}, [efeitosUI(GERAL.ef), h('div', {class:'dm-sub'}, ['Fundo']), h('div', {class:'dm-cams'}, GERAL.ca.map(camadaUI))]), !nc.atual));
     corpo.push(h('p', {class:'sub dm-nota'}, ['Sons gerados no aparelho, sem internet. Toque uma vez em qualquer botão para liberar o áudio.']));
     var rol = dir.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
+    var abertos = {}; Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ abertos[d.firstChild.textContent] = d.open; });
     dir.textContent = ''; dir.append(topo, vol, h('div', {class:'dm-corpo'}, corpo.filter(Boolean)));
+    Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ var k = d.firstChild.textContent; if (k in abertos) d.open = abertos[k]; });
     var n = dir.querySelector('.dm-corpo'); if (n) n.scrollTop = st;
   }
 

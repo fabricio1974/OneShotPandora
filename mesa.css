@@ -83,3 +83,6 @@ html[data-aba="mes"][data-luta="foco"] #painelMestre>:not([data-p="ini"]):not([d
 .nm-rod{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-top:1px solid var(--linha);flex:none}
 .mx-lin{display:flex;gap:8px;align-items:flex-start;margin:8px 0;font-size:14px}
 .mx-aj{max-width:860px;margin-top:24px}
+
+.dm-voz{display:flex;flex-direction:column;gap:8px}
+.dm-voz input,.dm-voz select{width:100%;background:var(--painel2);color:var(--marfim);border:1px solid var(--linha);border-radius:6px;padding:6px 8px;font:inherit;font-size:13px}
