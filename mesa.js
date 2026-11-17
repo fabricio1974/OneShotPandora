@@ -205,17 +205,39 @@
 
   /* ---- catálogo: nomes e sons de cada inimigo ---- */
   var EFN = {trovao:'Trovão', impacto:'Impacto', sino:'Sino grave', magia:'Magia', meteoro:'Meteoro', gravidade:'Gravidade', orbita:'Órbita', moedas:'Moedas (cobrança)', pincelada:'Pincelada', harpa:'Harpa', vitral:'Vitral quebrando',
-    coroSubida:'Coro de anjos', luz:'Luz sagrada', espada:'Espada flamejante', trombeta:'Trombeta', corrente:'Correntes', flecha:'Flecha', uivo:'Uivo de lobo', assobio:'Assobio do caçador', chifre:'Chifre de guerra', rosnado:'Rosnado', tambor:'Tambor', rufar:'Rufar de tambores', estaca:'Estaca', sussurro:'Sussurros', relogio:'Relógio e sino', orgao:'Órgão grave'};
+    coroSubida:'Coro de anjos', luz:'Luz sagrada', espada:'Espada flamejante', trombeta:'Trombeta', corrente:'Correntes', flecha:'Flecha', uivo:'Uivo de lobo', assobio:'Assobio do caçador', chifre:'Chifre de guerra', rosnado:'Rosnado', tambor:'Tambor', rufar:'Rufar de tambores', estaca:'Estaca', sussurro:'Sussurros', relogio:'Relógio e sino', orgao:'Órgão grave', katana:'Katana saindo da bainha', passos:'Passos na terra', dragao:'Rugido de dragão', asas:'Asas enormes', fogoSopro:'Sopro de fogo'};
   var CAN = {vento:'Vento', chuva:'Chuva', mar:'Ondas', fogo:'Fogueira', trovoes:'Trovões distantes', grave:'Zumbido grave', cosmos:'Cosmos e gravidade', coro:'Coro (pad)', sinos:'Sinos ao longe', coracao:'Coração batendo', sussurros:'Sussurros', tambores:'Tambores tribais', floresta:'Floresta à noite'};
   var CAT = {
     ozy:{nome:'Ozymandias', ef:['magia','meteoro','gravidade','orbita','moedas','trovao'], ca:['cosmos','trovoes','vento'], fr:['Memento mori','Sic transit gloria mundi','Omnia mea mecum porto','Tempus rerum imperator']},
-    elodie:{nome:'Élodie', ef:['pincelada','harpa','vitral','magia'], ca:['mar','vento','sinos'], fr:['Ars longa, vita brevis','Lux et color','Fiat lux']},
+    elodie:{nome:'Elizabeth', ef:['pincelada','harpa','vitral','magia'], ca:['mar','vento','sinos'], fr:['Ars longa, vita brevis','Lux et color','Fiat lux']},
     hildegarda:{nome:'Hildegarda', ef:['coroSubida','sino','luz','orgao'], ca:['coro','sinos','grave'], fr:['Spiritus Sanctus vivificans vitam','O vis aeternitatis','O vos angeli','Ave generosa','Kyrie eleison']},
     anjo:{nome:'O Anjo', ef:['espada','trombeta','coroSubida','luz'], ca:['coro','grave','fogo'], fr:['Gloria in excelsis Deo','Sanctus, sanctus, sanctus','Nolite timere','Dies irae']},
     esau:{nome:'Esaú', vz:'tribal', ef:['tambor','chifre','assobio','corrente','flecha','rosnado','uivo'], ca:['floresta','tambores','fogo','vento','coracao'], fr:[['Ka rago ni, tuh!','Eu vou te matar, agora!'],['Ni mubo! Ni ugo!','Você é fraco! Você morre!'],['Orga! Orga! Zuk nak!','Caçada! Caçada! A presa corre!'],['Kesh nak, zuk. Hura vahk ni.','Não corra, presa. O lobo sente o seu sangue.'],['Ugo, ugo, ugo! Ka rago vahk ni!','Morra, morra, morra! Eu levo o seu sangue!'],['Hura orga ni. Tuh ni ugo.','O lobo caça você. Agora você morre.']]},
     ezequiel:{nome:'Ezequiel', ef:['sussurro','relogio','orgao','sino'], ca:['sussurros','grave','sinos'], fr:['Tempus fugit','Videbis iterum','Memento']},
-    jael:{nome:'Jael', ef:['rufar','tambor','estaca','trovao'], ca:['coracao','tambores','fogo'], fr:['Tempus et mors','Fortis et fidelis','Ad bellum']}
+    jael:{nome:'Jael', ef:['rufar','tambor','estaca','trovao'], ca:['coracao','tambores','fogo'], fr:['Tempus et mors','Fortis et fidelis','Ad bellum']},
+    akari:{nome:'Akari', ef:['katana','passos','impacto','flecha'], ca:['vento','coracao','chuva'], fr:[['Ozymandias! Você disse que ninguém ia morrer!','']]},
+    thorian:{nome:'Thorian', ef:['dragao','asas','fogoSopro','trovao'], ca:['vento','trovoes','mar'], fr:[['Eu vi os reinos nascerem, criança. Nenhum durou.','']]}
   };
+  /* perfil de voz de cada personagem (descrição em inglês, que a ElevenLabs entende melhor) */
+  var VOZP = {
+    esau:['Young wild male hunter in his early twenties, rough raspy guttural voice with a harsh tribal accent, aggressive and growling, Nordic steppe warrior', 'homem, ~22 anos, caçador tribal (chifres, arco)'],
+    ezequiel:['Elderly West African man in his seventies, deep warm gravelly voice, slow and wise old sailor storyteller, Nigerian accent', 'homem, ~70 anos, africano, timoneiro'],
+    jael:['Confident adult woman in her late twenties, strong husky voice, battle-hardened warrior with a firm direct tone, slight Eastern European accent', 'mulher, ~28 anos, guerreira de martelo'],
+    hildegarda:['Young German woman in her early twenties, soft clear gentle voice, serene and pious, light German accent, like a cathedral choir singer speaking', 'mulher, ~22 anos, clériga alemã'],
+    ozy:['Very old aristocratic man around ninety years old, deep raspy commanding voice, cold and arrogant, slow and measured, Mediterranean accent, ominous', 'homem, ~90 anos, encapuzado, avareza'],
+    elodie:['Refined woman in her forties, calm artistic voice, soft French accent, elegant and warm, speaking gently like a painter', 'mulher, ~40 anos, pintora (Elizabeth)'],
+    akari:['Young Japanese woman in her early twenties, fierce determined voice with a Japanese accent, emotional, shouting and trembling with anger when confronting someone', 'mulher, ~22 anos, japonesa, samurai'],
+    thorian:['Ancient wise dragon, enormous deep resonant androgynous voice, very slow and serene, mythic Eastern sage, calm authority', 'dragão ancestral, oriental, sereno'],
+    anjo:['Androgynous celestial being, powerful ethereal resonant voice, solemn and awe-inspiring, echoing, terrifying holiness', 'anjo sombrio, andrógino']
+  };
+  /* diálogo de Akari contra Ozymandias (campo: personagem, texto) */
+  var DIAL = [
+    ['akari','Ozymandias! Olhe para mim! Você disse que ninguém ia morrer!'],
+    ['ozy','Eu disse muitas coisas, jovem. Palavras são moedas, e eu sempre soube gastá-las.'],
+    ['akari','Não ouse! Eu vi os corpos! Eu vi os rostos! Você mentiu na minha cara, e eles pagaram por isso!'],
+    ['ozy','Os mortos já não reclamam. Os vivos, sim. É por isso que ainda tenho o que fazer aqui.'],
+    ['akari','Cale a boca! Cale a boca! Hoje a minha lâmina responde por cada um deles! Urusai! Hoje você paga!']
+  ];
   var GERAL = {nome:'Geral', ef:['trovao','impacto','sino','magia','sussurro'], ca:['vento','chuva','mar','fogo','trovoes','grave','coro','sinos','coracao'], fr:[]};
 
   /* ===================== INIMIGO EM COMBATE ===================== */
@@ -268,7 +290,7 @@
     (function prox(i){
       if (i >= lista.length) { VZ.ocupado = false; VZ.msg = 'Prontas: ' + feitas + ' falas' + (falhas ? ' (' + falhas + ' falharam)' : '') + '. Já funcionam sem a chave.'; vozRedes(); return; }
       VZ.msg = 'Gerando ' + (i + 1) + ' de ' + lista.length + '…'; vozRedes();
-      eleven('/v1/text-to-speech/' + encodeURIComponent(VZ.voz) + '?output_format=mp3_44100_64', {text:lista[i][1], model_id:'eleven_multilingual_v2', voice_settings:{stability:.28, similarity_boost:.8, style:.75, use_speaker_boost:true}})
+      eleven('/v1/text-to-speech/' + encodeURIComponent(vozDe(lista[i][0])) + '?output_format=mp3_44100_64', {text:lista[i][1], model_id:'eleven_multilingual_v2', voice_settings:{stability:.28, similarity_boost:.8, style:.75, use_speaker_boost:true}})
         .then(function(r){ if (!r.ok) throw new Error(r.status); return r.blob(); }).then(function(b){ feitas++; return bdGravar(chaveFala(lista[i][0], lista[i][1]), b); })
         .catch(function(){ falhas++; }).then(function(){ prox(i + 1); });
     })(0);
@@ -330,10 +352,11 @@
     fogo:['Campfire crackling softly, seamless ambient loop', 20], trovoes:['Distant thunder rumbling in a storm, seamless ambient loop', 20], grave:['Low dark ominous cinematic drone, seamless ambient loop', 20],
     cosmos:['Deep space cosmic ambient drone with shimmering pads, seamless loop', 20], coro:['Ethereal choir pad sustained, cathedral ambience, seamless loop', 20], sinos:['Distant church bells ringing slowly, ambient, seamless loop', 20],
     coracao:['Slow deep heartbeat thumping, seamless ambient loop', 20], sussurros:['Ghostly whispers ambience, seamless loop', 20], tambores:['Distant tribal war drums steady rhythm, seamless loop', 20],
+    katana:['Samurai katana drawn from its scabbard with a sharp metallic ring, then a swift slash', 2], passos:['Heavy determined footsteps on dry dirt and gravel', 3], dragao:['Enormous ancient dragon roar, deep and resonant, long echo over mountains', 5], asas:['Giant dragon wings flapping slowly with powerful gusts of wind', 4], fogoSopro:['Dragon fire breath roaring, intense flames whoosh', 4],
     floresta:['Night forest ambience with crickets and soft wind, seamless loop', 20]
   };
-  var CFG = {p:{}, fr:{}};
-  try { var cj = JSON.parse(localStorage.getItem(CFGK) || 'null'); if (cj && typeof cj === 'object') { CFG.p = cj.p || {}; CFG.fr = cj.fr || {}; } } catch (e) {}
+  var CFG = {p:{}, fr:{}, voz:{}};
+  try { var cj = JSON.parse(localStorage.getItem(CFGK) || 'null'); if (cj && typeof cj === 'object') { CFG.p = cj.p || {}; CFG.fr = cj.fr || {}; CFG.voz = cj.voz || {}; } } catch (e) {}
   function cfgGravar(){ try { localStorage.setItem(CFGK, JSON.stringify(CFG)); } catch (e) {} }
   function pDe(id){ var d = PDEF[id] || ['', 3], c = CFG.p[id] || {}; return {t:c.t != null ? c.t : d[0], d:c.d != null ? c.d : d[1]}; }
   function frDe(id){ return CFG.fr[id] || CAT[id].fr; }
@@ -343,7 +366,8 @@
   function volG(){ return Math.min(1, S.vol / 100 * 1.15); }
   bd().then(function(d){ var q = d.transaction('a').objectStore('a').openCursor(); q.onsuccess = function(){ var c = q.result; if (!c) { if (ENG.on) engRender(); return; } var k = String(c.key); if (/^(fx|cam)\|/.test(k)) GEN[k] = URL.createObjectURL(c.value); c.continue(); }; }).catch(function(){});
   var _ef = AU.efeito, _li = AU.liga, _ni = AU.nivel, _de = AU.desliga, _vi = AU.viva, _tu = AU.tudo, _ms = AU.mestre;
-  AU.efeito = function(id){ var u = GEN['fx|' + id]; if (!u) return _ef(id); var a = new Audio(u); a.volume = volG(); a.play().catch(function(){ _ef(id); }); };
+  var SIN = {katana:'flecha', passos:'tambor', dragao:'rosnado', asas:'chifre', fogoSopro:'trovao'};
+  AU.efeito = function(id){ var u = GEN['fx|' + id]; if (!u) return _ef(SIN[id] || id); var a = new Audio(u); a.volume = volG(); a.play().catch(function(){ _ef(SIN[id] || id); }); };
   AU.liga = function(id, nv){ var u = GEN['cam|' + id]; if (!u) return _li(id, nv); if (LOOPS[id]) return; var a = new Audio(u); a.loop = true; a.volume = Math.min(1, nv * volG() * 1.6); LOOPS[id] = a; a.play().catch(function(){}); };
   AU.nivel = function(id, nv){ if (LOOPS[id]) LOOPS[id].volume = Math.min(1, nv * volG() * 1.6); else _ni(id, nv); };
   AU.desliga = function(id){ var a = LOOPS[id]; if (a) { delete LOOPS[id]; a.pause(); } else _de(id); };
@@ -387,9 +411,40 @@
         h('button', {class:'peq', onclick:function(){ fila([function(){ return gerarFalaUma(id, t); }], 'Fala'); }}, ['Gerar voz']),
         h('button', {class:'peq perigo', onclick:function(){ var l = frDe(id).slice(); l.splice(i, 1); CFG.fr[id] = l; cfgGravar(); engRender(); }}, ['Remover'])])]);
   }
+  function vozDe(id){ return (CFG.voz[id] && CFG.voz[id].id) || VZ.voz; }
   function gerarFalaUma(id, t){
-    return eleven('/v1/text-to-speech/' + encodeURIComponent(VZ.voz) + '?output_format=mp3_44100_64', {text:t, model_id:'eleven_multilingual_v2', voice_settings:{stability:.28, similarity_boost:.8, style:.75, use_speaker_boost:true}})
+    return eleven('/v1/text-to-speech/' + encodeURIComponent(vozDe(id)) + '?output_format=mp3_44100_64', {text:t, model_id:'eleven_multilingual_v2', voice_settings:{stability:.28, similarity_boost:.8, style:.75, use_speaker_boost:true}})
       .then(function(r){ if (!r.ok) throw new Error(r.status); return r.blob(); }).then(function(b){ return bdGravar(chaveFala(id, t), b); });
+  }
+  /* ---- voz própria de cada personagem: Voice Design da ElevenLabs a partir da descrição ---- */
+  function criarVoz(id){
+    var desc = (CFG.voz[id] && CFG.voz[id].d) || VOZP[id][0];
+    VZ.msg = 'Criando a voz de ' + CAT[id].nome + '…'; vozRedes();
+    return eleven('/v1/text-to-voice/design', {voice_description:desc, auto_generate_text:true})
+      .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(j){ var pv = (j.previews || [])[0]; if (!pv) throw new Error('sem prévia');
+        return eleven('/v1/text-to-voice', {voice_name:'OTL ' + CAT[id].nome, voice_description:desc, generated_voice_id:pv.generated_voice_id}); })
+      .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(j){ CFG.voz[id] = {id:j.voice_id, d:desc}; cfgGravar(); VZ.msg = 'Voz de ' + CAT[id].nome + ' criada.'; vozRedes(); })
+      .catch(function(e){ VZ.msg = 'Não criou a voz de ' + CAT[id].nome + ' (' + e.message + '). Escolha uma da lista.'; vozRedes(); });
+  }
+  function vozPersonagemUI(id){
+    if (!VOZP[id]) return null;
+    var cur = CFG.voz[id] || {}, desc = cur.d || VOZP[id][0];
+    var ta = h('textarea', {rows:'4', 'aria-label':'Descrição da voz de ' + CAT[id].nome, onchange:function(ev){ CFG.voz[id] = Object.assign({}, CFG.voz[id], {d:ev.target.value}); cfgGravar(); }}, [desc]);
+    var sel = VZ.vozes.length ? h('select', {'aria-label':'Voz de ' + CAT[id].nome, onchange:function(ev){ CFG.voz[id] = Object.assign({}, CFG.voz[id], {id:ev.target.value}); cfgGravar(); vozRedes(); }},
+      [h('option', {value:''}, ['(voz geral)'])].concat(VZ.vozes.map(function(v){ var o = h('option', {value:v.id}, [v.n]); if (v.id === cur.id) o.selected = true; return o; }))) : null;
+    return h('div', {class:'dm-voz'}, [h('p', {class:'sub dm-nota'}, ['Pela imagem: ' + VOZP[id][1] + '.']), ta,
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ if (!VZ.chave) { VZ.msg = 'Cole a chave primeiro.'; vozRedes(); return; } criarVoz(id); }}, [cur.id ? 'Recriar a voz' : 'Criar a voz']),
+        cur.id ? h('span', {class:'sub'}, ['voz pronta']) : null]), sel]);
+  }
+  function dialogoUI(){
+    function tocarSeq(i){ if (i >= DIAL.length) return; var d = DIAL[i]; bdLer(chaveFala(d[0], d[1])).then(function(b){
+      if (!b) { falar(d[1]); setTimeout(function(){ tocarSeq(i + 1); }, 4000); return; }
+      var a = new Audio(URL.createObjectURL(b)); a.volume = Math.min(1, S.vol / 100 + .2); a.onended = function(){ tocarSeq(i + 1); }; a.play().catch(function(){ tocarSeq(i + 1); }); }); }
+    return h('div', {}, [h('p', {class:'sub dm-nota'}, ['Akari enfrenta Ozymandias por ter matado depois de dizer que não mataria.'])].concat(DIAL.map(function(d){ return h('p', {class:'sub'}, [CAT[d[0]].nome + ': ' + d[1]]); })).concat([
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ tocarSeq(0); }}, ['▶ Tocar o diálogo']),
+        h('button', {class:'peq', onclick:function(){ if (!VZ.chave) { VZ.msg = 'Cole a chave primeiro.'; engRender(); return; } fila(DIAL.map(function(d){ return function(){ return gerarFalaUma(d[0], d[1]); }; }), 'Diálogo'); }}, ['Gerar as vozes do diálogo'])])]));
   }
   function engRender(){
     if (!ENG.on) return;
@@ -400,6 +455,8 @@
     var corpo = [h('div', {class:'dm-onde'}, [sel]),
       secao('Chave e voz', vozUI(null), !VZ.vozes.length),
       h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ if (VZ.voz) fila(tarefasAlvo, 'Tudo de ' + c.nome); else { VZ.msg = 'Carregue as vozes primeiro.'; engRender(); } }}, ['Gerar tudo de ' + c.nome])]),
+      secao('Voz de ' + c.nome, vozPersonagemUI(alvo), false),
+      (alvo === 'akari' || alvo === 'ozy') ? secao('Diálogo Akari × Ozymandias', dialogoUI(), false) : null,
       secao('Efeitos', h('div', {}, c.ef.map(linhaSom)), true), secao('Sons de fundo', h('div', {}, c.ca.map(linhaSom)), true),
       secao('Falas', h('div', {}, frDe(alvo).map(function(x, i){ return linhaFala(alvo, i); }).concat([h('button', {class:'peq', onclick:function(){ var l = frDe(alvo).slice(); l.push(['', '']); CFG.fr[alvo] = l; cfgGravar(); engRender(); }}, ['+ nova fala'])])), true),
       VZ.msg ? h('p', {class:'sub dm-nota', role:'status'}, [VZ.msg]) : null];
@@ -420,7 +477,7 @@
     var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Sons']), h('button', {class:'peq', 'aria-label':'Editar sons', title:'Editar e gerar sons e falas', onclick:function(){ ENG.on = true; ENG.alvo = nc.atual || ''; engRender(); }}, ['⚙']), h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
     var vol = h('label', {class:'dm-vol'}, [h('span', {}, ['Volume']), h('input', {type:'range', min:'0', max:'100', value:String(S.vol), 'aria-label':'Volume dos sons sintetizados', oninput:function(ev){ AU.mestre(+ev.target.value); }, onchange:gravar}),
       h('button', {class:'peq perigo', onclick:function(){ AU.tudo(); desenhar2(true); }}, ['Parar sons'])]);
-    var corpo = [];
+    var corpo = [h('label', {class:'dm-onde'}, [h('span', {}, ['Personagem ']), h('select', {'aria-label':'Ver sons de', onchange:function(ev){ S.fix = ev.target.value; gravar(); desenhar2(true); }}, [h('option', {value:''}, ['(automático)'])].concat(Object.keys(CAT).map(function(k){ var o = h('option', {value:k}, [CAT[k].nome]); if (k === S.fix) o.selected = true; return o; })))])];
     if (nc.atual) {
       var c = CAT[nc.atual];
       corpo.push(h('div', {class:'dm-onde'}, [h('b', {}, [c.nome])]));

@@ -441,7 +441,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .retrato{border-radius:4px}
 </style>
 <link rel="stylesheet" href="visual.css">
-<link rel="stylesheet" href="mesa.css?v=7">
+<link rel="stylesheet" href="mesa.css?v=8">
 </head>
 <body>
 <header>
@@ -545,7 +545,7 @@ const PADRAO = [
   F('dem-heptapod','Jóhann Jóhannsson — “Heptapod B” (A Chegada)','Entrada: vozes que não parecem humanas','entrada',0,['KzaqrQuwr1k','1cAKKKpnGoU','ndasBUpI9WY','g8GcuUnHQb0']),
   F('dem-diesirae','Verdi — Réquiem, “Dies Irae”','Combate épico, se a mesa gostar de exagero','combate',0,['60mRj_9Rybc','oV5UKScdHUU','CUGMZlvrR4c','aVJTQcOMLQw']),
  ]},
- { id:'elodie', nome:'Élodie — a pintora', sub:'Luta junto com o Ozymandias (a música dela é a dele). Estas são para os momentos dela.', faixas:[
+ { id:'elodie', nome:'Elizabeth — a pintora', sub:'Luta junto com o Ozymandias (a música dela é a dele). Estas são para os momentos dela.', faixas:[
   F('raq-gorecki','Górecki — Sinfonia nº 3, 2º movimento','Quando ela se coloca na frente dele e não sai','momento',0,['g5fg8-VWNo0','9NkQsfYI4T0','V-3ND_VSXpE','zY9Z0GLoeM8']),
   F('raq-daylight','Max Richter — “On the Nature of Daylight”','Quando ela morre de vez','momento',0,['InyT9Gyoz_o','b_YHE4Sx-08','tUMc_-Bcunk','GNFuiMZYDpQ']),
   F('raq-barber','Barber — “Adágio para Cordas”','Alternativa para a morte dela','momento',0,['WAoLJ8GbA4Y','KylMqxLzNGo','fmaP17h8jqA','Ai6F1pWxayA']),
@@ -613,9 +613,9 @@ const ROTEIRO_PADRAO = [
  {titulo:'Pausa · 10 min', nota:'Pausa no meio da sessão. Sem música.', faixa:''},
  {titulo:'Luta 4 · Hildegarda · entrada', nota:'', faixa:'hil-ovis'},
  {titulo:'Luta 4 · Hildegarda · 3ª rodada', nota:'Na 3ª rodada o anjo desce (os jogadores veem um demônio) e a luta continua: é uma só, com Hildegarda e o anjo. Teto de rodadas pela volta (V1 1, V2 2, V3 e V4 3, V5 e V6 4).', faixa:'hil-angeli'},
- {titulo:'Luta 5 · Ozymandias e Élodie · entrada', nota:'Élodie pinta de costas e só convida; o Retrato coletivo leva o grupo à Tela I.', faixa:'ozy-saturno'},
+ {titulo:'Luta 5 · Ozymandias e Elizabeth · entrada', nota:'Elizabeth pinta de costas e só convida; o Retrato coletivo leva o grupo à Tela I.', faixa:'ozy-saturno'},
  {titulo:'Akari e Thorian chegam', nota:'A Akari chega montada no dragão Thorian e confronta o Ozymandias por ter atacado as pessoas comuns.', faixa:'aka-dragon'},
- {titulo:'Luta 5 · Ozymandias e Élodie · combate', nota:'Teto de rodadas pela volta (V1 1, V2 2, V3 e V4 3, V5 e V6 4): depois a tinta fecha a cena e os jogadores voltam, sem vitória. Virada da Tela de Élodie a 50% dos PV (Tela III).', faixa:'ozy-marte'},
+ {titulo:'Luta 5 · Ozymandias e Elizabeth · combate', nota:'Teto de rodadas pela volta (V1 1, V2 2, V3 e V4 3, V5 e V6 4): depois a tinta fecha a cena e os jogadores voltam, sem vitória. Virada da Tela de Elizabeth a 50% dos PV (Tela III).', faixa:'ozy-marte'},
  {titulo:'Revelação (fora do jogo)', nota:'Contar a revelação em voz alta, fora da ficção.', faixa:'mom-miserere'}
 ];
 const ROTEIRO_ANTIGO = [["Ato 1 · A estrada","mom-departure"],["Ato 1 · Esaú, o caçador ferido","esau-kongurei"],["Ato 1 · Chegada a Maré-Alta","via-kiki"],["A anja aparece","mom-spiegel"],["Volta 1 · A flecha","esau-helvegen"],["Volta 1 · A morte da Rafaela","mom-stabat"],["Esaú · combate","esau-wolftotem"],["Ezequiel · entrada","eze-apparition"],["Ezequiel · combate","eze-passacaglia"],["Jael · entrada","jael-monochrome"],["Jael · combate","jael-odaiko"],["Hildegarda · entrada","hil-ovis"],["Hildegarda · 3ª rodada","hil-angeli"],["Os “demônios” · combate","dem-kyrie"],["Raquel","raq-gorecki"],["Ozymandias · entrada","ozy-saturno"],["Akari e Thorian chegam","aka-dragon"],["Ozymandias · combate","ozy-marte"],["Revelação (fora do jogo)","mom-miserere"]];   // roteiro de 6 lutas (versão anterior), para a migração
@@ -650,7 +650,7 @@ function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m
   E.m.ini.forEach(c => { if (!c.id) c.id = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); });
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
   if (typeof E.rpos !== 'number') E.rpos = -1;
-  if (E.fmtA !== 1) {   // Formato A: Raquel virou Élodie, 270 min, roteiro de 5 lutas (migra o que já estava salvo, sem apagar o resto)
+  if (E.fmtA !== 1) {   // Formato A: Raquel virou Elizabeth, 270 min, roteiro de 5 lutas (migra o que já estava salvo, sem apagar o resto)
     E.fmtA = 1; const m = E.m, s = m.inm;
     if (m.durTotal === 240) m.durTotal = 270;
     const velho = k => k === 'raquel' || k.startsWith('raquel:');
@@ -658,7 +658,7 @@ function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m
     if (s.lutaSel && 'raquel' in s.lutaSel) { if (!('elodie' in s.lutaSel)) s.lutaSel.elodie = s.lutaSel.raquel; delete s.lutaSel.raquel; }
     if (s.sel === 'raquel') s.sel = 'elodie';
     if (m.abates && 'raquel' in m.abates) { if (!('elodie' in m.abates)) m.abates.elodie = m.abates.raquel; delete m.abates.raquel; }
-    m.ini.forEach(c => { if (c.i === 'raquel') { c.i = 'elodie'; if (/^Raquel( \d+)?$/.test(c.n)) c.n = c.n.replace('Raquel', 'Élodie'); } });
+    m.ini.forEach(c => { if (c.i === 'raquel') { c.i = 'elodie'; if (/^Raquel( \d+)?$/.test(c.n)) c.n = c.n.replace('Raquel', 'Elizabeth'); } });
     const igual = Array.isArray(E.roteiro) && E.roteiro.length === ROTEIRO_ANTIGO.length && E.roteiro.every((r, k) => r.titulo === ROTEIRO_ANTIGO[k][0] && r.faixa === ROTEIRO_ANTIGO[k][1]);
     if (igual && E.rpos < 0) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));   // roteiro sem edições e noite ainda não iniciada: troca pelo de 5 lutas
   }
@@ -676,8 +676,8 @@ function carregar(){
     return s;
   }
   s.rem = s.rem || []; s.cruzar = s.cruzar ?? 1.5;
-  { const gr = s.grupos.find(x => x.id === 'raquel');   // Raquel virou Élodie: o grupo da trilha muda de id sem perder as músicas editadas
-    if (gr && !s.grupos.some(x => x.id === 'elodie')) { gr.id = 'elodie'; if (gr.nome === 'Raquel — a escudeira') gr.nome = 'Élodie — a pintora'; if (gr.sub === 'Luta junto com o Ozymandias. Estas são para os momentos dela.') gr.sub = 'Luta junto com o Ozymandias (a música dela é a dele). Estas são para os momentos dela.'; }
+  { const gr = s.grupos.find(x => x.id === 'raquel');   // Raquel virou Elizabeth: o grupo da trilha muda de id sem perder as músicas editadas
+    if (gr && !s.grupos.some(x => x.id === 'elodie')) { gr.id = 'elodie'; if (gr.nome === 'Raquel — a escudeira') gr.nome = 'Elizabeth — a pintora'; if (gr.sub === 'Luta junto com o Ozymandias. Estas são para os momentos dela.') gr.sub = 'Luta junto com o Ozymandias (a música dela é a dele). Estas são para os momentos dela.'; }
     if (Array.isArray(s.rem)) s.rem = s.rem.map(x => x === 'raquel' ? 'elodie' : x); }
   for (const pg of PADRAO) {                                // músicas novas do padrão entram sem apagar nada do que foi mexido
     if (s.rem.includes(pg.id)) continue;
@@ -981,7 +981,7 @@ function desenharSelecao(){
 // ---------- Controle da noite: volta, pétalas, rodada, abates e notas ----------
 const ABATES = [
  {id:'hildegarda', nome:'Hildegarda', g:'hildegarda'}, {id:'jael', nome:'Jael', g:'jael'}, {id:'esau', nome:'Esaú', g:'esau'},
- {id:'ezequiel', nome:'Ezequiel', g:'ezequiel'}, {id:'elodie', nome:'Élodie', g:'elodie'}, {id:'ozy', nome:'Ozymandias', g:'ozy'}, {id:'anjo', nome:'O Anjo', g:'demonio', img:'img/diabo.jpg'}
+ {id:'ezequiel', nome:'Ezequiel', g:'ezequiel'}, {id:'elodie', nome:'Elizabeth', g:'elodie'}, {id:'ozy', nome:'Ozymandias', g:'ozy'}, {id:'anjo', nome:'O Anjo', g:'demonio', img:'img/diabo.jpg'}
 ];
 const faixaDe = (gid, papel) => { const g = E.grupos.find(x => x.id === gid); return g && g.faixas.find(f => f.usar && f.papel === papel); };
 let cron = {ini:null, acum:0};
@@ -1353,30 +1353,30 @@ const INIMIGOS = [
   {"id":"a-silencio-sagrado","nome":"Silêncio Sagrado","cat":"amb","tags":["controle","debuff"],"txt":"Até a próxima contagem 20, quem lançar uma magia com componente verbal faz salvaguarda de Con CD 18. *Falha:* a magia falha, mas o espaço não é gasto.","cd":[["Con",18]]},
   {"id":"a-coro-distante","nome":"Coro Distante","cat":"amb","tags":["debuff"],"txt":"Até a próxima contagem 20, toda cura recebida pelos jogadores é reduzida à metade."}
 ]},
-{"id":"elodie","nome":"Élodie","titulo":"Élodie Vermeil, a Pintora do Rei","img":"img/cartas/vin_criados.jpg","sub":"Humana Média (Bellacord), neutra. Mestra do Cavalete, pintora da corte. Só luta junto com o Ozymandias.","ca":20,"caTxt":"20 (casaco de tinta seca)","pv":462,"pvTxt":"462 (44d8 + 264)","desl":"9 m","atr":["10 (+0)","24 (+7)","22 (+6)","20 (+5)","16 (+3)","18 (+4)"],"salv":"Des +13, Con +12, Int +11, Sab +9","per":"Arcanismo +11, Percepção +9, Persuasão +10","res":"psíquico","imun":"enfeitiçado, amedrontado","sent":"visão no escuro 18 m, Percepção passiva 19","idi":"Comum","mus":"a mesma do Ozymandias (\"Os Planetas\", de Holst). **Élodie só luta junto com o Ozymandias.**","nd":"20 (25.000 XP)","prof":"+6","lend":2,"nh":150,"ambTitulo":"O Cavalete Gira","ambIntro":"Na contagem 20, escolha uma:","lendIntro":"Élodie pode realizar 2 ações lendárias.","notaMestre":"Nada do que ela pinta é criatura: tudo é terreno, efeito, clima ou objeto (a Moldura). Ela nunca grita nem ameaça crianças. Abertura: pinta de costas, intocável; se alguém se aproxima ou a ataca (ou em 3 rodadas), o Retrato coletivo leva o grupo para a Tela I. Nas Telas I e III do Formato A: a Virada da Tela (50% dos PV usados) leva à Tela III. Arte de Élodie ainda não existe (usa a vinheta dos criados).","acoes":[
-  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"Élodie faz três ataques de Pincelada. Pode trocar um deles por Raspar (use o botão de Raspar à parte).","multi":[{"lab":"3 × Pincelada","seq":["pincelada","pincelada","pincelada"]}]},
+{"id":"elodie","nome":"Elizabeth","titulo":"Elizabeth Vermeil, a Pintora do Rei","img":"img/cartas/vin_criados.jpg","sub":"Humana Média (Bellacord), neutra. Mestra do Cavalete, pintora da corte. Só luta junto com o Ozymandias.","ca":20,"caTxt":"20 (casaco de tinta seca)","pv":462,"pvTxt":"462 (44d8 + 264)","desl":"9 m","atr":["10 (+0)","24 (+7)","22 (+6)","20 (+5)","16 (+3)","18 (+4)"],"salv":"Des +13, Con +12, Int +11, Sab +9","per":"Arcanismo +11, Percepção +9, Persuasão +10","res":"psíquico","imun":"enfeitiçado, amedrontado","sent":"visão no escuro 18 m, Percepção passiva 19","idi":"Comum","mus":"a mesma do Ozymandias (\"Os Planetas\", de Holst). **Elizabeth só luta junto com o Ozymandias.**","nd":"20 (25.000 XP)","prof":"+6","lend":2,"nh":150,"ambTitulo":"O Cavalete Gira","ambIntro":"Na contagem 20, escolha uma:","lendIntro":"Elizabeth pode realizar 2 ações lendárias.","notaMestre":"Nada do que ela pinta é criatura: tudo é terreno, efeito, clima ou objeto (a Moldura). Ela nunca grita nem ameaça crianças. Abertura: pinta de costas, intocável; se alguém se aproxima ou a ataca (ou em 3 rodadas), o Retrato coletivo leva o grupo para a Tela I. Nas Telas I e III do Formato A: a Virada da Tela (50% dos PV usados) leva à Tela III. Arte de Elizabeth ainda não existe (usa a vinheta dos criados).","acoes":[
+  {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"Elizabeth faz três ataques de Pincelada. Pode trocar um deles por Raspar (use o botão de Raspar à parte).","multi":[{"lab":"3 × Pincelada","seq":["pincelada","pincelada","pincelada"]}]},
   {"id":"pincelada","nome":"Pincelada","cat":"acao","tags":["dano"],"txt":"*Ataque Corpo a Corpo ou à Distância com Magia (usa Des):* +13, alcance 4,5 m ou 18 m, um alvo. *Acerto:* **4d8 + 7 (25)** psíquico mais **3d6 (10)** do tipo do último pigmento usado.","atk":{"k":"ccm","b":13},"dano":[{"e":"4d8+7","m":25,"t":"psíquico","k":"d"},{"e":"3d6","m":10,"t":"do pigmento","k":"d"}]},
   {"id":"raspar","nome":"Raspar","cat":"recarga","par":"Recarga 6","sem":1,"tags":["dano","controle"],"txt":"*Ataque Corpo a Corpo com Arma:* +13, alcance 1,5 m, um alvo. *Acerto:* **8d10 + 7 (51)** perfurante. Se o alvo ficar com metade dos PV máximos ou menos, fica **atordoado** até o fim do próximo turno dele ◆ (sem salvaguarda).","rec":6,"atk":{"k":"cc","b":13},"dano":[{"e":"8d10+7","m":51,"t":"perfurante","k":"d"}]},
   {"id":"obra-prima-de-sala","nome":"Obra-Prima de Sala","cat":"recarga","par":"Recarga 5–6","tags":["area","dano","debuff"],"txt":"Todas as criaturas a até 12 m fazem salvaguarda de Con CD 21. *Falha:* **10d10 (55)** do tipo do último pigmento, e o alvo tem desvantagem nas salvaguardas até o fim do próximo turno dele. *Sucesso:* metade.","rec":5,"cd":[["Con",21]],"dano":[{"e":"10d10","m":55,"t":"do pigmento","k":"d"}]},
   {"id":"salto-de-cor","nome":"Salto de Cor","cat":"bonus","tags":["movimento"],"txt":"Ela se move até 9 m através de uma Tinta Fresca ou Seca, sem provocar ataques de oportunidade, e sai em outra Tinta."},
   {"id":"salto-de-cor-reacao","nome":"Salto de Cor (reação)","cat":"reacao","par":"1/Rodada","tags":["defesa","movimento"],"txt":"*Gatilho:* um ataque de arma a atingiria. Ela se move até 3 m para uma Tinta e o ataque erra.","uso":"1/rodada"},
-  {"id":"interpor","nome":"Interpor","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* o Ozymandias, a até 9 m de Élodie, é alvo de um ataque. Os dois trocam de lugar e Élodie vira o alvo, usando a CA dela."},
-  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se Élodie falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
+  {"id":"interpor","nome":"Interpor","cat":"reacao","tags":["defesa"],"txt":"*Gatilho:* o Ozymandias, a até 9 m de Elizabeth, é alvo de um ataque. Os dois trocam de lugar e Elizabeth vira o alvo, usando a CA dela."},
+  {"id":"resistencia-lendaria","nome":"Resistência Lendária","cat":"passiva","par":"3/Dia","tags":["defesa"],"txt":"Se Elizabeth falhar numa salvaguarda, pode escolher passar.","uso":"3/dia"},
   {"id":"casaco-de-tinta-seca","nome":"Casaco de Tinta Seca","cat":"passiva","tags":["defesa"],"txt":"Ela não pode ser empurrada, puxada nem movida contra a vontade."},
-  {"id":"juramento","nome":"Juramento","cat":"passiva","tags":["buff","defesa"],"txt":"Enquanto Élodie estiver a até 9 m do Ozymandias, ele tem +2 na CA."},
-  {"id":"imunidades-de-cenario","nome":"Imunidades de Cenário","cat":"passiva","tags":["defesa"],"txt":"Élodie é imune ao Gesso, ao Redemoinho, às mudanças de gravidade do Ozymandias e às Ações de Ambiente dele, e enxerga normalmente na escuridão do Preto. Ignora todo o dano e o terreno difícil da Tinta."},
+  {"id":"juramento","nome":"Juramento","cat":"passiva","tags":["buff","defesa"],"txt":"Enquanto Elizabeth estiver a até 9 m do Ozymandias, ele tem +2 na CA."},
+  {"id":"imunidades-de-cenario","nome":"Imunidades de Cenário","cat":"passiva","tags":["defesa"],"txt":"Elizabeth é imune ao Gesso, ao Redemoinho, às mudanças de gravidade do Ozymandias e às Ações de Ambiente dele, e enxerga normalmente na escuridão do Preto. Ignora todo o dano e o terreno difícil da Tinta."},
   {"id":"pigmentos","nome":"Pigmentos","cat":"passiva","tags":["info","dano"],"txt":"O \"último pigmento usado\" é o do último Esboço criado; começa em Azul e volta a Azul a cada Virada da Tela. **Carmim** fogo (incendeia). **Verde** veneno (vinhas: quem falhou faz outra de For CD 21 ou fica impedido). **Azul** gélido (maré: empurra 3 m, terreno difícil). **Amarelo** radiante (cego até o fim do próximo turno dele). **Preto** necrótico (escuridão e silêncio enquanto durar a Tinta). **Branco** psíquico (só na Tela III: o contador do Gesso sobe 1 por Branco detonado)."},
   {"id":"esboco-e-tinta","nome":"Esboço e Tinta","cat":"passiva","tags":["area","dano","controle"],"txt":"*Esboço:* linhas de grafite, nada acontece. Borrar (ação, Des ou For CD 18) cancela; água ou gélido apagam sem teste. No máximo 4 Esboços. *Tinta:* no fim da rodada seguinte o Esboço detona: Des CD 21, **10d6 (35)** do pigmento (metade se passar), mais o efeito extra; a área vira Tinta Fresca (2d6 (7) por turno) e na rodada seguinte seca em terreno difícil com o mesmo dano. No máximo 3 manchas. Esboços de pigmentos opostos que se sobreponham (Carmim e Verde, Azul e Amarelo, Preto e Branco) viram cinza e somem. Tudo some a cada Virada da Tela.","cd":[["Des",21]],"dano":[{"e":"10d6","m":35,"t":"do pigmento","k":"d"}]},
-  {"id":"moldura","nome":"Moldura","cat":"passiva","tags":["controle","defesa"],"txt":"Objeto, não criatura: CA 19, 60 PV, imune a veneno e psíquico, vulnerável a gélido. Não age. Aparece a até 3 m de Élodie com a criatura dentro; no máximo 2. Se Élodie morrer, todas se desfazem. Ao destruir uma, quem estava dentro volta à arena com os PV que tinha."},
+  {"id":"moldura","nome":"Moldura","cat":"passiva","tags":["controle","defesa"],"txt":"Objeto, não criatura: CA 19, 60 PV, imune a veneno e psíquico, vulnerável a gélido. Não age. Aparece a até 3 m de Elizabeth com a criatura dentro; no máximo 2. Se Elizabeth morrer, todas se desfazem. Ao destruir uma, quem estava dentro volta à arena com os PV que tinha."},
   {"id":"virada-da-tela","nome":"Virada da Tela","cat":"passiva","par":"Uma vez, a 50% dos PV","tags":["buff","controle"],"txt":"No Formato A, uma vez, quando os PV chegam a **50% do PV usado** ou abaixo, ficam exatamente nesse limiar (o dano que sobrar é perdido) e ela vira o cavalete. O grupo cai na Tela III, sem salvaguarda e sem perda de PV. Todo Esboço e toda Tinta somem, as Molduras se desfazem e os capturados voltam, o limite de Não Hoje reinicia e ela ganha **40 PV temporários**. Fora do Formato A: a 2/3 e a 1/3 dos PV."},
-  {"id":"l-pincelada-rapida","nome":"Pincelada Rápida","cat":"lend","par":"custa 1","tags":["dano"],"txt":"Élodie faz uma Pincelada.","custo":1,"ref":"pincelada"},
+  {"id":"l-pincelada-rapida","nome":"Pincelada Rápida","cat":"lend","par":"custa 1","tags":["dano"],"txt":"Elizabeth faz uma Pincelada.","custo":1,"ref":"pincelada"},
   {"id":"l-retoque","nome":"Retoque","cat":"lend","par":"custa 1","tags":["movimento","area"],"txt":"Ela se move 6 m e esboça uma área de 3 m de raio.","custo":1},
   {"id":"l-retrato","nome":"Retrato","cat":"lend","par":"custa 2","tags":["controle","debuff"],"txt":"Uma criatura a até 18 m faz salvaguarda de Sab CD 21. *Falha:* é puxada para uma Moldura: fica incapacitada, fora do mapa, e ainda pode falar. Um aliado a liberta destruindo a Moldura. Num alvo já emoldurado é desperdiçado; não funciona no Ozymandias.","custo":2,"cd":[["Sab",21]]},
   {"id":"a-esbocar","nome":"Esboçar","cat":"amb","tags":["area","controle"],"txt":"Risque até 3 áreas de 4,5 m de raio, cada uma com um pigmento liberado pela Tela."},
   {"id":"a-antecipar","nome":"Antecipar","cat":"amb","tags":["area","dano"],"txt":"Um Esboço à sua escolha, riscado em rodada anterior, detona agora, em vez de no fim da rodada. Des CD 21: **10d6 (35)** do pigmento (metade se passar).","cd":[["Des",21]],"dano":[{"e":"10d6","m":35,"t":"do pigmento","k":"d"}]},
   {"id":"a-virar-a-pagina","nome":"Virar a Página","cat":"amb","tags":["controle"],"txt":"Uma Tinta Seca vira Esboço do pigmento seguinte (ordem: Carmim, Verde, Azul, Amarelo, Preto, Branco; pule os não liberados pela Tela)."}
 ]},
-{"id":"ozy","nome":"Ozymandias","titulo":"Ozymandias Bellacord Donovan","img":"img/ozymandias.jpg","sub":"Humano Médio (Bellacord), a Avareza, neutro e mau. Perto dos 90 anos.","ca":21,"caTxt":"21 (campo de massa; 23 com Élodie a até 9 m)","pv":625,"pvTxt":"625 (50d10 + 350)","desl":"9 m, voo 18 m (pairar)","atr":["20 (+5)","14 (+2)","24 (+7)","24 (+7)","22 (+6)","24 (+7)"],"salv":"Con +15, Int +15, Sab +14, Car +15","imun":"derrubado, impedido, agarrado","sent":"Percepção passiva 16","idi":"todos","mus":"Holst, \"Os Planetas\": **Saturno** (entrada), **Marte** (combate), **Urano** (quando arranca a terra), **Netuno** (quando cai ou vai embora)","nd":"24 (62.000 XP)","prof":"+7","lend":3,"nh":200,"ambTitulo":"O Céu que Cai","ambIntro":"Pedaços de terra flutuam por toda a arena. Na contagem 20, escolha uma (duas na Fase 2):","lendIntro":"O Ozymandias pode realizar 3 ações lendárias (4 na Fase 2).","acoes":[
+{"id":"ozy","nome":"Ozymandias","titulo":"Ozymandias Bellacord Donovan","img":"img/ozymandias.jpg","sub":"Humano Médio (Bellacord), a Avareza, neutro e mau. Perto dos 90 anos.","ca":21,"caTxt":"21 (campo de massa; 23 com Elizabeth a até 9 m)","pv":625,"pvTxt":"625 (50d10 + 350)","desl":"9 m, voo 18 m (pairar)","atr":["20 (+5)","14 (+2)","24 (+7)","24 (+7)","22 (+6)","24 (+7)"],"salv":"Con +15, Int +15, Sab +14, Car +15","imun":"derrubado, impedido, agarrado","sent":"Percepção passiva 16","idi":"todos","mus":"Holst, \"Os Planetas\": **Saturno** (entrada), **Marte** (combate), **Urano** (quando arranca a terra), **Netuno** (quando cai ou vai embora)","nd":"24 (62.000 XP)","prof":"+7","lend":3,"nh":200,"ambTitulo":"O Céu que Cai","ambIntro":"Pedaços de terra flutuam por toda a arena. Na contagem 20, escolha uma (duas na Fase 2):","lendIntro":"O Ozymandias pode realizar 3 ações lendárias (4 na Fase 2).","acoes":[
   {"id":"ataques-multiplos","nome":"Ataques Múltiplos","cat":"acao","tags":["dano"],"txt":"O Ozymandias faz três ataques de Mão de Órbita, ou dois ataques de Mão de Órbita e um de Pedra Orbital.","multi":[{"lab":"3 × Mão de Órbita","seq":["mao-de-orbita","mao-de-orbita","mao-de-orbita"]},{"lab":"2 × Mão de Órbita + Pedra Orbital","seq":["mao-de-orbita","mao-de-orbita","pedra-orbital"]}]},
   {"id":"mao-de-orbita","nome":"Mão de Órbita","cat":"acao","tags":["dano","movimento"],"txt":"*Ataque Corpo a Corpo com Magia:* +15, alcance 4,5 m, um alvo. *Acerto:* **3d10 + 8 (24)** energia, e o alvo é puxado 3 m na direção dele.","atk":{"k":"ccm","b":15},"dano":[{"e":"3d10+8","m":24,"t":"energia","k":"d"}]},
   {"id":"pedra-orbital","nome":"Pedra Orbital","cat":"acao","tags":["dano","controle"],"txt":"*Ataque à Distância com Magia:* +15, alcance 90 m, um alvo. *Acerto:* **6d10 + 8 (41)** contundente, e o alvo cai **derrubado** (se estiver voando, cai).","atk":{"k":"distm","b":15},"dano":[{"e":"6d10+8","m":41,"t":"contundente","k":"d"}]},
@@ -1398,7 +1398,7 @@ const INIMIGOS = [
   {"id":"l-inverter","nome":"Inverter","cat":"lend","par":"custa 2","tags":["area","movimento","controle"],"txt":"Ele usa Inverter.","custo":2,"ref":"inverter"},
   {"id":"a-ilhas-flutuantes","nome":"Ilhas Flutuantes","cat":"amb","tags":["movimento","controle"],"txt":"1d4 blocos de terra de 6 × 6 m se soltam do chão e sobem 9 m, levando quem estiver em cima. Quem cair de uma ilha sofre o dano normal de queda.","dano":[{"e":"1d4","t":"blocos de terra","k":"n"}]},
   {"id":"a-chuva-de-rochas","nome":"Chuva de Rochas","cat":"amb","tags":["area","dano"],"txt":"Três pontos que o Mestre escolhe, cada um com 3 m de raio. Salvaguarda de Des CD 21. *Falha:* **6d10 (33)** contundente. *Sucesso:* metade.","cd":[["Des",21]],"dano":[{"e":"6d10","m":33,"t":"contundente","k":"d"}]},
-  {"id":"a-gravidade-pesada","nome":"Gravidade Pesada","cat":"amb","sem":1,"tags":["controle"],"txt":"Até a próxima contagem 20, deslocamentos de voo caem pela metade, ninguém pode saltar, e quem anda no chão tem o deslocamento reduzido à metade (exceto o Ozymandias e Élodie). Sem salvaguarda."},
+  {"id":"a-gravidade-pesada","nome":"Gravidade Pesada","cat":"amb","sem":1,"tags":["controle"],"txt":"Até a próxima contagem 20, deslocamentos de voo caem pela metade, ninguém pode saltar, e quem anda no chão tem o deslocamento reduzido à metade (exceto o Ozymandias e Elizabeth). Sem salvaguarda."},
   {"id":"a-orbita","nome":"Órbita","cat":"amb","tags":["area","movimento","controle"],"txt":"Toda criatura voando faz salvaguarda de For CD 21. *Falha:* é arrastada 9 m em círculo em volta do Ozymandias, para um ponto que ele escolhe.","cd":[["For",21]]}
 ]},
 {"id":"anjo","nome":"Anjo","titulo":"O Anjo","img":"img/diabo.jpg","sub":"Celestial Grande. Para as regras do jogo, conta como demônio.","ca":21,"caTxt":"21 (armadura natural)","pv":500,"pvTxt":"500 (40d10 + 280)","desl":"9 m, voo 27 m (pairar)","atr":["26 (+8)","18 (+4)","24 (+7)","18 (+4)","24 (+7)","24 (+7)"],"salv":"Con +14, Sab +14, Car +14","res":"radiante; contundente, cortante e perfurante","imun":"amedrontado, enfeitiçado, exaustão","sent":"visão verdadeira 36 m, Percepção passiva 24","idi":"todos","mus":"continua a da Hildegarda, \"O vos angeli\"","nd":"21 (33.000 XP)","prof":"+7","lend":3,"nh":150,"notaMestre":"Os jogadores veem um demônio: chifres, pele de brasa, asas de couro. É um anjo verdadeiro. Tudo que funciona contra demônios funciona contra ele. Descreva sempre o que eles veem, nunca o que ele é.","lendIntro":"O Anjo pode realizar 3 ações lendárias.","acoes":[
@@ -1481,11 +1481,11 @@ const inmEsgotada = (i, a) => { const s = E.m.inm, k = i.id + ':' + a.id, u = in
 let f2Mudou = false;
 const elodieAtiva = () => E.m.ini.some(c => inmDeLinha(c) === inmPorId('elodie') && c.pv > 0);
 const caDe = i => i.id === 'ozy' ? (elodieAtiva() && !E.m.inm.elLonge ? 23 : 21) : i.ca;
-function vigia(){   // Ozymandias abaixo de 50% do PV usado: Fase 2; Élodie a 50%: Virada da Tela (avisos automáticos, uma vez)
+function vigia(){   // Ozymandias abaixo de 50% do PV usado: Fase 2; Elizabeth a 50%: Virada da Tela (avisos automáticos, uma vez)
   const s = E.m.inm, o = inmPorId('ozy'), c = E.m.ini.find(x => inmDeLinha(x) === o); let mudou = false;
   if (c && c.pv < f2Lim(c) && !s.f2 && !s.f2man) { s.f2 = true; f2Mudou = true; const t = 'Ozymandias abaixo de ' + f2Lim(c) + ' PV (metade): Fase 2 (Urano). Duas Ações de Ambiente por rodada e 4 ações lendárias.'; s.av.push(t); toast(t); mudou = true; }
   const ce = E.m.ini.find(x => inmDeLinha(x) === inmPorId('elodie'));
-  if (ce && ce.max && ce.pv > 0 && ce.pv <= Math.floor(ce.max / 2) && !s.vt) { s.vt = true; const t = 'Élodie a 50% dos PV: Virada da Tela (uma vez). Os PV ficam em ' + Math.floor(ce.max / 2) + ', +40 PV temporários, o grupo cai na Tela III e todo Esboço e Tinta somem.'; s.av.push(t); toast(t); mudou = true; }
+  if (ce && ce.max && ce.pv > 0 && ce.pv <= Math.floor(ce.max / 2) && !s.vt) { s.vt = true; const t = 'Elizabeth a 50% dos PV: Virada da Tela (uma vez). Os PV ficam em ' + Math.floor(ce.max / 2) + ', +40 PV temporários, o grupo cai na Tela III e todo Esboço e Tinta somem.'; s.av.push(t); toast(t); mudou = true; }
   return mudou;
 }
 function danoNomeado(c, n){   // Não Hoje: passou do limite de dano na rodada, o que vier a mais vale pela metade
@@ -1802,7 +1802,7 @@ function stripUI(i){
   if (i.id === 'ozy') { const ra = elodieAtiva();
     strip.push(el('div',{class:'inm-nh'}, el('b',{}, 'Fase 2: Urano (abaixo de ' + f2Lim(m.ini.find(x => inmDeLinha(x) === i)) + ' PV)'), el('span',{class:'inm-rot ' + (s.f2 ? 'gasta' : '')}, s.f2 ? 'ATIVA: 2 Ações de Ambiente por rodada e 4 ações lendárias' : 'inativa: 1 Ação de Ambiente por rodada e 3 ações lendárias'),
       el('div',{class:'inm-lin'}, el('button',{class:'peq', 'aria-pressed':s.f2 ? 'true' : 'false', onclick:mudar(() => { s.f2 = !s.f2; s.f2man = !s.f2; }, ['inm'])}, s.f2 ? 'Desligar Fase 2' : 'Ligar Fase 2'),
-        ra ? el('button',{class:'peq', 'aria-pressed':s.elLonge ? 'true' : 'false', onclick:mudar(() => { s.elLonge = !s.elLonge; })}, s.elLonge ? 'Élodie longe: CA 21 (tocar para CA 23)' : 'Élodie a até 9 m: CA 23 (tocar para CA 21)') : el('span',{class:'inm-rot'}, 'CA 21; 23 com Élodie a até 9 m')))); }
+        ra ? el('button',{class:'peq', 'aria-pressed':s.elLonge ? 'true' : 'false', onclick:mudar(() => { s.elLonge = !s.elLonge; })}, s.elLonge ? 'Elizabeth longe: CA 21 (tocar para CA 23)' : 'Elizabeth a até 9 m: CA 23 (tocar para CA 21)') : el('span',{class:'inm-rot'}, 'CA 21; 23 com Elizabeth a até 9 m')))); }
   const nh = nhUI(i); if (nh) strip.push(nh);
   return el('div',{class:'inm-strip'}, ...strip);
 }
@@ -2149,7 +2149,7 @@ function folhaMestre(){
   const chars = E.grupos.filter(g => g.faixas.some(f => f.usar)).map(g => '<div class="c"><h3>'+esc(g.nome.split(' — ')[0])+'</h3>'+g.faixas.filter(f => f.usar).sort((a,b) => ORDEM.indexOf(a.papel)-ORDEM.indexOf(b.papel)).map(f => '<p><b>'+esc(PAPEIS[f.papel])+':</b> '+esc(f.nome)+(f.momento ? ' <i>('+esc(f.momento)+')</i>' : '')+'</p>').join('')+'</div>').join('');
   w.document.write('<!doctype html><meta charset="utf-8"><title>Folha do Mestre</title><style>@page{size:A4;margin:12mm}body{font:11px/1.35 Georgia,serif;color:#111;margin:0}h1{font-size:18px;margin:0 0 4px}h2{font-size:13px;margin:10px 0 4px;border-bottom:1px solid #444}h3{font-size:12px;margin:0 0 2px}table{border-collapse:collapse;width:100%}td{border:1px solid #999;padding:2px 5px;vertical-align:top}td span{color:#444}.g{columns:2;column-gap:14px}.c{break-inside:avoid;margin-bottom:6px}p{margin:0}.k td:first-child{width:90px;font-weight:bold}</style>'
    + '<h1>O Cordeiro e o Lobo — Folha do Mestre</h1>'
-   + '<h2>Regras da noite</h2><p>6 voltas, lírio branco de 6 pétalas (uma pétala cai a cada volta). Abate só vale com a anja em combate. Rodada 3: Hildegarda invoca. Vitória: abater Hildegarda, Jael, Esaú, Ezequiel, Élodie, Ozymandias e o Anjo. Derrota: os Bellacord levam o Tobias.</p>'
+   + '<h2>Regras da noite</h2><p>6 voltas, lírio branco de 6 pétalas (uma pétala cai a cada volta). Abate só vale com a anja em combate. Rodada 3: Hildegarda invoca. Vitória: abater Hildegarda, Jael, Esaú, Ezequiel, Elizabeth, Ozymandias e o Anjo. Derrota: os Bellacord levam o Tobias.</p>'
    + '<h2>Teclas</h2><table class="k"><tr><td>1 – 9</td><td>tocar o pad</td></tr><tr><td>Espaço</td><td>pausar / continuar</td></tr><tr><td>V</td><td>voz: abaixa a música (toque liga/desliga, segurar solta ao soltar)</td></tr><tr><td>R</td><td>voltar à música anterior, de onde parou</td></tr><tr><td>T</td><td>repetir a faixa</td></tr><tr><td>− / +</td><td>volume da faixa</td></tr><tr><td>← / →</td><td>±10 s</td></tr><tr><td>N / P</td><td>próxima / anterior</td></tr><tr><td>] / [</td><td>próxima / anterior cena do roteiro</td></tr><tr><td>B</td><td>baixar aos poucos</td></tr><tr><td>Esc</td><td>silêncio imediato</td></tr><tr><td>Shift + clique</td><td>entrar sem transição</td></tr></table>'
    + '<h2>Roteiro</h2><table>'+rot+'</table><h2>Músicas escolhidas</h2><div class="g">'+chars+'</div>');
   w.document.close();
@@ -2264,6 +2264,6 @@ if (uiRest && typeof uiRest === 'object') {
 desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
-<script src="mesa.js?v=7"></script>
+<script src="mesa.js?v=8"></script>
 </body>
 </html>
