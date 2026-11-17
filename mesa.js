@@ -230,6 +230,8 @@
     thorian:['Ancient wise dragon, enormous deep resonant androgynous voice, very slow and serene, mythic Eastern sage, calm authority', 'dragão ancestral, oriental, sereno'],
     anjo:['Androgynous celestial being, powerful ethereal resonant voice, solemn and awe-inspiring, echoing, terrifying holiness', 'anjo sombrio, andrógino']
   };
+  /* vozes prontas da conta (a conta só tem 3 vagas de voz própria, então só Esaú e Ezequiel são criadas; as demais são vozes de biblioteca): fem = Akari, Elizabeth, Jael, Hildegarda */
+  var VOZ_PADRAO = {"esau": "2zCx8HB0ozFoxQGJ3lwR", "ezequiel": "LBXo4JC51IOVPjEVdSIB", "ozy": "pqHfZKP75CvOlQylNhV4", "thorian": "nPczCjzI2devNBz1zQrb", "anjo": "SAz9YHcvj6GT2YYXdXww", "jael": "EXAVITQu4vr4xnSDxMaL", "hildegarda": "Xb7hH8MSUJpSbSDYk0k2", "elodie": "lWq4KDY8znfkV0DrK8Vb", "akari": "oi8rgjIfLgJRsQ6rbZh3"};
   var GEN_V = {esau:'male', ezequiel:'male', jael:'female', hildegarda:'female', ozy:'male', elodie:'female', akari:'female', thorian:'male', anjo:'male'};
   /* diálogo de Akari contra Ozymandias (campo: personagem, texto) */
   var DIAL = [
@@ -419,6 +421,7 @@
   }
   function vozDe(id){
     if (CFG.voz[id] && CFG.voz[id].id) return CFG.voz[id].id;
+    if (VOZ_PADRAO[id]) return VOZ_PADRAO[id];
     var g = GEN_V[id], c = VZ.vozes.filter(function(v){ return v.g === g; })[0];   // sem voz própria: pega uma do gênero certo
     return c ? c.id : (VZ.vozes.filter(function(v){ return v.id === VZ.voz; })[0] || {g:g}).g === g ? VZ.voz : '';
   }
@@ -622,5 +625,5 @@
   window.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && window.innerWidth < 1100 && (S.nav || S.dir)) { /* fecha as gavetas em telas estreitas */ S.nav = 0; S.dir = 0; gravar(); aplicar(); } });
   if (window.innerWidth < 1100) { S.nav = 0; S.dir = 0; }   // em tela estreita começam fechadas
   aplicar();
-  window.OTLMesa = {AU:AU, S:S, aplicar:aplicar, CAT:CAT, noCombate:noCombate, DEFS:{CAT:CAT, VOZP:VOZP, GEN_V:GEN_V, PDEF:PDEF, DIAL:DIAL, CAN:CAN, EFN:EFN}};
+  window.OTLMesa = {AU:AU, S:S, aplicar:aplicar, CAT:CAT, noCombate:noCombate, DEFS:{VOZ_PADRAO:VOZ_PADRAO, CAT:CAT, VOZP:VOZP, GEN_V:GEN_V, PDEF:PDEF, DIAL:DIAL, CAN:CAN, EFN:EFN}};
 })();

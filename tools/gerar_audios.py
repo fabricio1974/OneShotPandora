@@ -22,7 +22,8 @@ def api(caminho, corpo=None, bin=False):
         raise SystemExit('Erro %s em %s: %s' % (e.code, caminho, e.read()[:300].decode('utf-8', 'ignore')))
     return d if bin else json.loads(d)
 
-# 1) uma voz por personagem (Voice Design). A descrição já diz o gênero; confirmo pelo rótulo quando a API devolve.
+# 1) voz de cada personagem: usa as vozes prontas de tools/pedidos.json (a conta tem só 3 vagas para vozes próprias)
+for pid, vid in PED.get('voz_padrao', {}).items(): vozes.setdefault(pid, vid)
 for pid, v in PED['vozes'].items():
     if pid in vozes: continue
     print('Criando a voz de', pid, '(' + v['genero'] + ')...')
