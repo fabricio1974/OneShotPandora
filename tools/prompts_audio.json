@@ -18,7 +18,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Single deep tribal war drum hit, hollow stretched hide, resonant wooden body, short natural reverb outdoors",
-   "pq": "Tambor tribal dele e da Jael: um golpe seco e oco, sem música em volta."
+   "pq": "Tambor tribal dele e da Jael: um golpe seco e oco, sem música em volta.",
+   "nome": "Tambor tribal dele e da Jael"
   },
   {
    "id": "chifre",
@@ -28,7 +29,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Ancient horn blast, a long low tribal war horn sounding across open grassland, raw and breathy",
-   "pq": "Chifres na cabeça e cultura de caça: chamado de guerra no campo aberto."
+   "pq": "Chifres na cabeça e cultura de caça: chamado de guerra no campo aberto.",
+   "nome": "Chifres na cabeça e cultura de caç"
   },
   {
    "id": "corrente",
@@ -38,7 +40,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Heavy iron chain links dragging and rattling across packed earth, then a sharp metallic snap taut",
-   "pq": "Marca registrada: correntes de ferro (Arpão, Cão de Corrente, Grilhão)."
+   "pq": "Marca registrada: correntes de ferro (Arpão, Cão de Corrente, Grilhão).",
+   "nome": "Marca registrada"
   },
   {
    "id": "flecha",
@@ -48,7 +51,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Arrow shot from a recurve bow, string twang, fast whoosh past the listener, thud into a wooden post",
-   "pq": "Arco recurvo ao estilo das imagens: o corte do ar antes do impacto."
+   "pq": "Arco recurvo ao estilo das imagens: o corte do ar antes do impacto.",
+   "nome": "Arco recurvo ao estilo das imagens"
   },
   {
    "id": "rosnado",
@@ -58,7 +62,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Large chained hound snarling low and menacing with iron chain links clinking as it strains forward",
-   "pq": "Cão de Corrente: rosnado de fera com correntes. Também serve de fallback do rugido."
+   "pq": "Cão de Corrente: rosnado de fera com correntes. Também serve de fallback do rugido.",
+   "nome": "Cão de Corrente"
   },
   {
    "id": "uivo",
@@ -68,7 +73,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Single wolf howl at dusk, rising and falling, long and mournful, distant hills echo",
-   "pq": "O Lobo do título e a Matilha: um uivo só, limpo, com eco de colinas."
+   "pq": "O Lobo do título e a Matilha: um uivo só, limpo, com eco de colinas.",
+   "nome": "O Lobo do título e a Matilha"
   },
   {
    "id": "arpao",
@@ -78,7 +84,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Iron harpoon on a chain fired with a hard metallic launch, chain rushing out through the air, then a meaty impact and chain pulling taut",
-   "pq": "Arpão de Corrente: lançamento, corrente correndo e impacto."
+   "pq": "Arpão de Corrente: lançamento, corrente correndo e impacto.",
+   "nome": "Arpão de Corrente"
   },
   {
    "id": "chuvaFerro",
@@ -88,7 +95,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Volley of many arrows whistling through the air and raining down thudding into the ground and wood, rapid and heavy",
-   "pq": "Chuva de Ferro: vários projéteis caindo, não um só."
+   "pq": "Chuva de Ferro: vários projéteis caindo, não um só.",
+   "nome": "Chuva de Ferro"
   },
   {
    "id": "ponteFerro",
@@ -98,7 +106,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Iron chains rushing out of the ground and linking together into a bridge, loud metal clanking and grinding, heavy and fast",
-   "pq": "Ponte de Ferro: correntes brotando do chão e se encaixando."
+   "pq": "Ponte de Ferro: correntes brotando do chão e se encaixando.",
+   "nome": "Ponte de Ferro"
   },
   {
    "id": "floresta",
@@ -109,7 +118,8 @@
    "prio": 2,
    "prompt": "Night forest ambience, steady crickets and soft wind through leaves, no animal calls, seamless ambient loop",
    "pq": "Cenário de caça noturna.",
-   "loop": true
+   "loop": true,
+   "nome": "Cenário de caça noturna"
   },
   {
    "id": "tambores",
@@ -120,7 +130,8 @@
    "prio": 2,
    "prompt": "Distant tribal war drums playing a slow steady heavy rhythm, hide drums only, no melody, seamless loop",
    "pq": "Pulso de guerra ao fundo, só percussão.",
-   "loop": true
+   "loop": true,
+   "nome": "Pulso de guerra ao fundo, só percu"
   },
   {
    "id": "fogo",
@@ -131,7 +142,8 @@
    "prio": 3,
    "prompt": "Campfire crackling softly with occasional pops and embers, seamless ambient loop",
    "pq": "Acampamento da caçada.",
-   "loop": true
+   "loop": true,
+   "nome": "Acampamento da caçada"
   },
   {
    "id": "coracao",
@@ -142,7 +154,8 @@
    "prio": 3,
    "prompt": "Slow deep heartbeat thumping in the chest, low and tense, seamless loop",
    "pq": "Tensão de perseguição (Marca do Caçador).",
-   "loop": true
+   "loop": true,
+   "nome": "Tensão de perseguição (Marca do Ca"
   },
   {
    "id": "rufar",
@@ -152,7 +165,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Tribal war drums rolling in a tense crescendo, several hide drums hit rapidly then ending on one big hit",
-   "pq": "Rufar antes de um golpe grande."
+   "pq": "Rufar antes de um golpe grande.",
+   "nome": "Rufar antes de um golpe grande"
   },
   {
    "id": "martelo",
@@ -162,7 +176,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Giant iron war hammer swung hard and smashing into stone ground, heavy metallic crash, rock cracking, low boom",
-   "pq": "Martelo de Guerra enorme na imagem: peso, metal e pedra rachando."
+   "pq": "Martelo de Guerra enorme na imagem: peso, metal e pedra rachando.",
+   "nome": "Martelo de Guerra enorme na imagem"
   },
   {
    "id": "estaca",
@@ -172,7 +187,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Thick wooden stake hammered deep into hard ground with a heavy dull thud and wood creak",
-   "pq": "Estaca cravada no chão, seca e pesada."
+   "pq": "Estaca cravada no chão, seca e pesada.",
+   "nome": "Estaca cravada no chão, seca e pes"
   },
   {
    "id": "estacasChao",
@@ -182,7 +198,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Many wooden and iron stakes bursting up out of the ground in a rapid line, splintering dirt and wood cracking",
-   "pq": "Estacas do Chão: erupção em linha, não um golpe só."
+   "pq": "Estacas do Chão: erupção em linha, não um golpe só.",
+   "nome": "Estacas do Chão"
   },
   {
    "id": "tendaDesaba",
@@ -192,7 +209,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Giant war hammer slamming into the ground, thunderous shockwave boom, then a high ringing tone fading, dust and cloth flapping",
-   "pq": "Jael crava o martelo (trovejante) e a vítima fica surda: onda de choque e zumbido."
+   "pq": "Jael crava o martelo (trovejante) e a vítima fica surda: onda de choque e zumbido.",
+   "nome": "Jael crava o martelo (trovejante)"
   },
   {
    "id": "pulsoTambor",
@@ -202,7 +220,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Powerful deep drum shockwave thump from a single huge drum, ground-shaking sub bass pulse that fades, no melody",
-   "pq": "Tambor no Peito / Pulso: onda grave, quase só sensação."
+   "pq": "Tambor no Peito / Pulso: onda grave, quase só sensação.",
+   "nome": "Tambor no Peito / Pulso"
   },
   {
    "id": "trovao",
@@ -212,7 +231,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Loud close thunderclap with a long rolling rumble across the sky",
-   "pq": "Trovão geral."
+   "pq": "Trovão geral.",
+   "nome": "Trovão geral"
   },
   {
    "id": "relogio",
@@ -222,7 +242,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Old grandfather clock ticking steadily then a deep bronze chime strike with a long decay",
-   "pq": "Tempo e presságio: relógio antigo e badalada."
+   "pq": "Tempo e presságio: relógio antigo e badalada.",
+   "nome": "Tempo e presságio"
   },
   {
    "id": "sussurro",
@@ -232,7 +253,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Eerie overlapping whispers circling around the listener, breathy and unintelligible, ghostly",
-   "pq": "Visões do futuro (Eco do Futuro)."
+   "pq": "Visões do futuro (Eco do Futuro).",
+   "nome": "Visões do futuro (Eco do Futuro)"
   },
   {
    "id": "orgao",
@@ -242,7 +264,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Deep ominous low organ chord, sustained, cathedral reverb, slow swell",
-   "pq": "Nota Grave: acorde de órgão sombrio."
+   "pq": "Nota Grave: acorde de órgão sombrio.",
+   "nome": "Nota Grave"
   },
   {
    "id": "rodaLeme",
@@ -252,7 +275,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Large wooden ship steering wheel turning slowly with creaking wood, rope and a rhythmic ratchet click, nautical",
-   "pq": "A roda de leme gigante da imagem dele (Girar a Roda, Raio da Roda)."
+   "pq": "A roda de leme gigante da imagem dele (Girar a Roda, Raio da Roda).",
+   "nome": "A roda de leme gigante da imagem d"
   },
   {
    "id": "rodasFogo",
@@ -262,7 +286,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Burning wheels spinning through the air, fire whooshing and crackling, rotating whoosh with swelling flames",
-   "pq": "Rodas de Fogo: fogo girando."
+   "pq": "Rodas de Fogo: fogo girando.",
+   "nome": "Rodas de Fogo"
   },
   {
    "id": "tempoParado",
@@ -272,7 +297,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Time stop effect: a sudden deep reversed whoosh sucking all sound out then total muffled silence with a faint high ring",
-   "pq": "Parar o Tempo; o modelo não faz silêncio real, então aparar no editor."
+   "pq": "Parar o Tempo; o modelo não faz silêncio real, então aparar no editor.",
+   "nome": "Parar o Tempo"
   },
   {
    "id": "grave",
@@ -283,7 +309,8 @@
    "prio": 3,
    "prompt": "Low dark ominous cinematic drone, slowly evolving, seamless ambient loop",
    "pq": "Zumbido grave para tensão.",
-   "loop": true
+   "loop": true,
+   "nome": "Zumbido grave para tensão"
   },
   {
    "id": "coroSubida",
@@ -293,7 +320,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Wordless sustained vowel voices rising in a stone cathedral, ethereal and reverent, no melody",
-   "pq": "Coro sem palavras e sem melodia, para não virar música."
+   "pq": "Coro sem palavras e sem melodia, para não virar música.",
+   "nome": "Coro sem palavras e sem melodia, p"
   },
   {
    "id": "luz",
@@ -303,7 +331,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Holy light shimmer, divine bell-like chime swell, warm and bright, short",
-   "pq": "Palavra Curativa / Proteção Divina."
+   "pq": "Palavra Curativa / Proteção Divina.",
+   "nome": "Palavra Curativa / Proteção Divina"
   },
   {
    "id": "macaSagrada",
@@ -313,7 +342,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Heavy flanged mace striking armor with a metallic clang and a bright holy ringing overtone",
-   "pq": "Maça Sagrada: golpe físico com brilho sagrado."
+   "pq": "Maça Sagrada: golpe físico com brilho sagrado.",
+   "nome": "Maça Sagrada"
   },
   {
    "id": "chamaSagrada",
@@ -323,7 +353,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Column of holy fire descending from above with a roaring flame whoosh and a bright shimmer, no music",
-   "pq": "Chama Sagrada Maior: fogo vindo do céu, não explosão comum."
+   "pq": "Chama Sagrada Maior: fogo vindo do céu, não explosão comum.",
+   "nome": "Chama Sagrada Maior"
   },
   {
    "id": "sinoBronze",
@@ -333,7 +364,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Large bronze bell struck once with a warm round tone and long shimmering decay in a stone chapel",
-   "pq": "Sino de Bronze, mais quente que o sino do Ezequiel."
+   "pq": "Sino de Bronze, mais quente que o sino do Ezequiel.",
+   "nome": "Sino de Bronze, mais quente que o"
   },
   {
    "id": "coro",
@@ -344,7 +376,8 @@
    "prio": 2,
    "prompt": "Wordless sustained vowel voices in a cathedral, soft and ethereal, no melody, seamless ambient loop",
    "pq": "Coro ao longe.",
-   "loop": true
+   "loop": true,
+   "nome": "Coro ao longe"
   },
   {
    "id": "sinos",
@@ -355,7 +388,8 @@
    "prio": 3,
    "prompt": "Distant church bells ringing slowly across a valley, soft wind, seamless loop",
    "pq": "Sinos distantes.",
-   "loop": true
+   "loop": true,
+   "nome": "Sinos distantes"
   },
   {
    "id": "pincelada",
@@ -365,7 +399,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Wet paintbrush swishing across rough canvas in one broad confident stroke, bristles and paint",
-   "pq": "Pincelada: o gesto principal dela."
+   "pq": "Pincelada: o gesto principal dela.",
+   "nome": "Pincelada"
   },
   {
    "id": "raspar",
@@ -375,7 +410,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Metal palette knife scraping dry paint off a canvas with a gritty rasp",
-   "pq": "Raspar: tinta seca saindo."
+   "pq": "Raspar: tinta seca saindo.",
+   "nome": "Raspar"
   },
   {
    "id": "saltoCor",
@@ -385,7 +421,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Bright magical colour splash teleport, wet paint splatter whoosh with glass-like sparkling chimes",
-   "pq": "Salto de Cor: respingo molhado com brilho mágico."
+   "pq": "Salto de Cor: respingo molhado com brilho mágico.",
+   "nome": "Salto de Cor"
   },
   {
    "id": "moldura",
@@ -395,7 +432,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Heavy ornate wooden picture frame slamming into place with a deep wooden thump and short echo",
-   "pq": "Moldura: prende o cenário."
+   "pq": "Moldura: prende o cenário.",
+   "nome": "Moldura"
   },
   {
    "id": "viradaTela",
@@ -405,7 +443,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Canvas ripping open and a big painted world swelling in with a rising orchestral shimmer, dramatic reveal",
-   "pq": "Virada da Tela: transição para a Tela III."
+   "pq": "Virada da Tela: transição para a Tela III.",
+   "nome": "Virada da Tela"
   },
   {
    "id": "atelie",
@@ -416,7 +455,8 @@
    "prio": 3,
    "prompt": "Quiet painter studio, soft brush strokes, faint wind at a window and a distant clock, intimate, seamless loop",
    "pq": "Cenário calmo de pintora.",
-   "loop": true
+   "loop": true,
+   "nome": "Cenário calmo de pintora"
   },
   {
    "id": "moedas",
@@ -426,7 +466,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Heavy purse of gold coins dropped and spilling and clinking on a stone floor, rich and metallic",
-   "pq": "Cobrança / Avareza."
+   "pq": "Cobrança / Avareza.",
+   "nome": "Cobrança / Avareza"
   },
   {
    "id": "gravidade",
@@ -436,7 +477,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Gravity surge: low heavy pressure thump, earth cracking and all sound being pushed down, sub bass swell",
-   "pq": "Gravidade Pesada."
+   "pq": "Gravidade Pesada.",
+   "nome": "Gravidade Pesada"
   },
   {
    "id": "pedraOrbital",
@@ -446,7 +488,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Heavy boulder orbiting in a circle whooshing past the listener with deep rock rumble and wind",
-   "pq": "Pedra Orbital / Mão de Órbita."
+   "pq": "Pedra Orbital / Mão de Órbita.",
+   "nome": "Pedra Orbital / Mão de Órbita"
   },
   {
    "id": "inverterGrav",
@@ -456,7 +499,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Gravity inversion: debris lifting off the ground with a rising reversed whoosh, rocks scraping and floating up",
-   "pq": "Inverter: coisas subindo, o contrário da queda."
+   "pq": "Inverter: coisas subindo, o contrário da queda.",
+   "nome": "Inverter"
   },
   {
    "id": "ilhasFlutuantes",
@@ -466,7 +510,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Huge slabs of earth tearing out of the ground and floating upward, massive rumble, cracking soil and falling rocks",
-   "pq": "Ilhas Flutuantes / O Céu que Cai."
+   "pq": "Ilhas Flutuantes / O Céu que Cai.",
+   "nome": "Ilhas Flutuantes / O Céu que Cai"
   },
   {
    "id": "meteoro",
@@ -476,7 +521,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Heavy boulders crashing down onto rocky ground, deep thuds, stone shattering, dust, no fire",
-   "pq": "Chuva de Rochas: pedras, sem explosão de fogo."
+   "pq": "Chuva de Rochas: pedras, sem explosão de fogo.",
+   "nome": "Chuva de Rochas"
   },
   {
    "id": "cobranca",
@@ -486,7 +532,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Ledger book slammed shut with a heavy leather thud, then a single gold coin ringing on stone",
-   "pq": "Isso Também é Meu: o livro de contas fechando."
+   "pq": "Isso Também é Meu: o livro de contas fechando.",
+   "nome": "Isso Também é Meu"
   },
   {
    "id": "cosmos",
@@ -497,7 +544,8 @@
    "prio": 2,
    "prompt": "Low deep space rumble and faint cosmic wind, vast and empty, no melody, seamless ambient loop",
    "pq": "Fundo dos Planetas de Holst.",
-   "loop": true
+   "loop": true,
+   "nome": "Fundo dos Planetas de Holst"
   },
   {
    "id": "rochasFlutuando",
@@ -508,7 +556,8 @@
    "prio": 2,
    "prompt": "Slow deep stone rumble with small pebbles drifting and grinding in mid-air, seamless loop",
    "pq": "Fundo das ilhas flutuantes no ar.",
-   "loop": true
+   "loop": true,
+   "nome": "Fundo das ilhas flutuantes no ar"
   },
   {
    "id": "espada",
@@ -518,7 +567,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Flaming greatsword swung with a heavy whoosh, fire roaring along the blade, with a faint choir tone underneath",
-   "pq": "Espada Flamejante: fogo vivo mais um brilho sagrado por baixo, para soar ambíguo."
+   "pq": "Espada Flamejante: fogo vivo mais um brilho sagrado por baixo, para soar ambíguo.",
+   "nome": "Espada Flamejante"
   },
   {
    "id": "trombeta",
@@ -528,7 +578,8 @@
    "influencia": 0.5,
    "prio": 3,
    "prompt": "Epic heavenly trumpet fanfare in a vast cathedral, brass swelling then sustained, majestic and slightly dreadful",
-   "pq": "Julgamento: o sagrado que soa aterrorizante."
+   "pq": "Julgamento: o sagrado que soa aterrorizante.",
+   "nome": "Julgamento"
   },
   {
    "id": "asasCouro",
@@ -538,7 +589,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Huge dark wings beating once, heavy deep thump of large wing membrane and feathers and a strong gust of wind",
-   "pq": "Asas grandes e escuras; a imagem do Anjo tem penas, a descrição do Mestre fala em couro: som neutro serve aos dois."
+   "pq": "Asas grandes e escuras; a imagem do Anjo tem penas, a descrição do Mestre fala em couro: som neutro serve aos dois.",
+   "nome": "Asas grandes e escuras"
   },
   {
    "id": "escudoAsas",
@@ -548,7 +600,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Giant dark wings snapping shut around a body like a shield, heavy slap, dull impact",
-   "pq": "Escudo de Asas."
+   "pq": "Escudo de Asas.",
+   "nome": "Escudo de Asas"
   },
   {
    "id": "clarao",
@@ -558,7 +611,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Blinding flash of white light with a piercing high ring, a short deep boom, shocking, no music",
-   "pq": "Luz Insuportável / Clarão."
+   "pq": "Luz Insuportável / Clarão.",
+   "nome": "Luz Insuportável / Clarão"
   },
   {
    "id": "rugidoAnjo",
@@ -568,7 +622,8 @@
    "influencia": 0.5,
    "prio": 3,
    "prompt": "Deep inhuman demonic growl blended with a wide angelic choir chord, enormous and terrifying",
-   "pq": "O núcleo do conceito: voz de demônio com coro de anjos."
+   "pq": "O núcleo do conceito: voz de demônio com coro de anjos.",
+   "nome": "O núcleo do conceito"
   },
   {
    "id": "graveAnjo",
@@ -579,7 +634,8 @@
    "prio": 3,
    "prompt": "Dark sacred drone with low distorted choir voices and faint ember crackle, ominous, seamless loop",
    "pq": "Presença: grave com coro e brasas.",
-   "loop": true
+   "loop": true,
+   "nome": "Presença"
   },
   {
    "id": "katana",
@@ -589,7 +645,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Katana drawn from its scabbard with a sharp metallic ring and a swift slash through the air",
-   "pq": "Duas katanas na imagem dela."
+   "pq": "Duas katanas na imagem dela.",
+   "nome": "Duas katanas na imagem dela"
   },
   {
    "id": "katanaCorte",
@@ -599,7 +656,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Two fast katana slashes cutting the air one after another, very sharp whooshes, no impact",
-   "pq": "Corte duplo: duas lâminas."
+   "pq": "Corte duplo: duas lâminas.",
+   "nome": "Corte duplo"
   },
   {
    "id": "aterrissa",
@@ -609,7 +667,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Warrior leaping off a high place and landing hard on dirt, boots and armor plates thudding, cloth flapping, dust",
-   "pq": "Desce do Thorian."
+   "pq": "Desce do Thorian.",
+   "nome": "Desce do Thorian"
   },
   {
    "id": "passos",
@@ -619,7 +678,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Determined footsteps in leather boots on dry dirt and gravel, armor plates and cloth creaking",
-   "pq": "Akari usa botas e caneleiras."
+   "pq": "Akari usa botas e caneleiras.",
+   "nome": "Akari usa botas e caneleiras"
   },
   {
    "id": "vento",
@@ -630,7 +690,8 @@
    "prio": 2,
    "prompt": "Steady wind blowing across open plains, seamless ambient loop",
    "pq": "Vento aberto: Akari, Thorian e mapa.",
-   "loop": true
+   "loop": true,
+   "nome": "Vento aberto"
   },
   {
    "id": "dragaoRugido",
@@ -640,7 +701,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Enormous eastern dragon roar, deep resonant and serpentine with a rolling thunder undertone, vast mountains echo",
-   "pq": "Rugido grave e sereno, mais trovão que fera."
+   "pq": "Rugido grave e sereno, mais trovão que fera.",
+   "nome": "Rugido grave e sereno, mais trovão"
   },
   {
    "id": "dragaoChega",
@@ -650,7 +712,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "A giant serpentine dragon arriving: sudden thunder crack, a huge gust of wind sweeping overhead, long body whooshing through the sky",
-   "pq": "Chegada de Akari e Thorian: a cena inteira."
+   "pq": "Chegada de Akari e Thorian: a cena inteira.",
+   "nome": "Chegada de Akari e Thorian"
   },
   {
    "id": "ondulacao",
@@ -660,7 +723,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Long smooth body gliding through the air, slow deep airy whoosh with a low rumble, gentle sweeping motion",
-   "pq": "Sem asas: deslizar do corpo longo (descrito em positivo)."
+   "pq": "Sem asas: deslizar do corpo longo (descrito em positivo).",
+   "nome": "Sem asas"
   },
   {
    "id": "raioAzul",
@@ -670,7 +734,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Blue lightning energy crackling and arcing with a sharp electric snap and rolling thunder, cold and eerie",
-   "pq": "Brilho azul das mãos e olhos: eletricidade fria."
+   "pq": "Brilho azul das mãos e olhos: eletricidade fria.",
+   "nome": "Brilho azul das mãos e olhos"
   },
   {
    "id": "ventoAlto",
@@ -681,7 +746,8 @@
    "prio": 2,
    "prompt": "High altitude wind rushing past clouds, thin cold air, distant faint rumbling thunder, seamless ambient loop",
    "pq": "Voo entre nuvens.",
-   "loop": true
+   "loop": true,
+   "nome": "Voo entre nuvens"
   },
   {
    "id": "vila",
@@ -692,7 +758,8 @@
    "prio": 2,
    "prompt": "Peaceful village morning ambience, soft birdsong, light wind and distant faint activity, no voices, seamless ambient loop",
    "pq": "Vila dos Heróis.",
-   "loop": true
+   "loop": true,
+   "nome": "Vila dos Heróis"
   },
   {
    "id": "bosqueGigantes",
@@ -703,7 +770,8 @@
    "prio": 2,
    "prompt": "Ancient giant forest, deep creaking of enormous trees, wind high in the canopy, rare birdsong, huge calm space, seamless loop",
    "pq": "Bosque dos Gigantes.",
-   "loop": true
+   "loop": true,
+   "nome": "Bosque dos Gigantes"
   },
   {
    "id": "charneca",
@@ -714,7 +782,8 @@
    "prio": 2,
    "prompt": "Bright flowery meadow with wind, faint hollow whistling through huge ancient bones and stones, seamless ambient loop",
    "pq": "Campo dos Monólitos: esqueleto gigante e dragão de nuvem na imagem.",
-   "loop": true
+   "loop": true,
+   "nome": "Campo dos Monólitos"
   },
   {
    "id": "lagos",
@@ -725,7 +794,8 @@
    "prio": 2,
    "prompt": "Many tiered waterfalls pouring over small islands, bright layered water roar, light mist, distant birds, seamless ambient loop",
    "pq": "Lagos do Arco-Íris (imagem: cascatas escalonadas com ilhotas).",
-   "loop": true
+   "loop": true,
+   "nome": "Lagos do Arco-Íris (imagem"
   },
   {
    "id": "cataratas",
@@ -736,7 +806,8 @@
    "prio": 1,
    "prompt": "Enormous waterfall roaring continuously, deep powerful water thunder with white-noise spray and a low rumble, seamless loop",
    "pq": "Grande Catarata: a única passagem obrigatória do mapa.",
-   "loop": true
+   "loop": true,
+   "nome": "Grande Catarata"
   },
   {
    "id": "cascatas",
@@ -747,7 +818,8 @@
    "prio": 2,
    "prompt": "Several medium cascades pouring over rocks, bright splashing water and echoing gorge, birds, seamless loop",
    "pq": "Cascatas do Urso de Pedra / Queda Luminosa.",
-   "loop": true
+   "loop": true,
+   "nome": "Cascatas do Urso de Pedra / Queda"
   },
   {
    "id": "vertigem",
@@ -758,7 +830,8 @@
    "prio": 1,
    "prompt": "Waterfall heard far below from a wooden plank rope bridge in a gorge, creaking ropes and planks, huge distant roar, gulls, strong wind and echo, seamless loop",
    "pq": "Vertigem das Cataratas: ponte de tábuas sobre a garganta.",
-   "loop": true
+   "loop": true,
+   "nome": "Vertigem das Cataratas"
   },
   {
    "id": "viaduto",
@@ -769,7 +842,8 @@
    "prio": 3,
    "prompt": "Wind passing through ancient stone arches of a viaduct, birds echoing in the valley below, calm, seamless loop",
    "pq": "Viaduto do Vale Rosa.",
-   "loop": true
+   "loop": true,
+   "nome": "Viaduto do Vale Rosa"
   },
   {
    "id": "pedras",
@@ -780,7 +854,8 @@
    "prio": 2,
    "prompt": "Ancient stone circle at dusk, deep low mystical hum, soft wind, faint distant pilgrim murmur, seamless loop",
    "pq": "Os Deuses de Pedra / Anel dos Peregrinos.",
-   "loop": true
+   "loop": true,
+   "nome": "Os Deuses de Pedra / Anel dos Pere"
   },
   {
    "id": "lagoEspelho",
@@ -791,7 +866,8 @@
    "prio": 3,
    "prompt": "Still lake in daylight, soft breeze over a flower field, bees and tiny insects humming, quiet, seamless ambient loop",
    "pq": "Lago Espelho (imagem diurna com campo de flores).",
-   "loop": true
+   "loop": true,
+   "nome": "Lago Espelho (imagem diurna com ca"
   },
   {
    "id": "falesias",
@@ -802,7 +878,8 @@
    "prio": 1,
    "prompt": "Waves crashing against tall white sea cliffs, seagulls calling, strong sea wind, seamless loop",
    "pq": "Marésia e as Falésias Brancas: destino da Rafaela, que nunca viu o mar.",
-   "loop": true
+   "loop": true,
+   "nome": "Marésia e as Falésias Brancas"
   },
   {
    "id": "mar",
@@ -813,7 +890,8 @@
    "prio": 2,
    "prompt": "Ocean waves rolling onto a sandy shore, gentle and wide, seamless loop",
    "pq": "Litoral de Maré-Alta.",
-   "loop": true
+   "loop": true,
+   "nome": "Litoral de Maré-Alta"
   },
   {
    "id": "pradaria",
@@ -824,7 +902,8 @@
    "prio": 3,
    "prompt": "Southern grassland prairie, wind moving through tall grass, crickets and a distant bird, seamless loop",
    "pq": "Pradarias do Sul.",
-   "loop": true
+   "loop": true,
+   "nome": "Pradarias do Sul"
   },
   {
    "id": "estrada",
@@ -835,7 +914,8 @@
    "prio": 3,
    "prompt": "Dirt road travel, slow cart wheels creaking and a horse walking, soft wind, seamless loop",
    "pq": "Estradas do Oeste e do Leste.",
-   "loop": true
+   "loop": true,
+   "nome": "Estradas do Oeste e do Leste"
   },
   {
    "id": "serra",
@@ -846,7 +926,8 @@
    "prio": 3,
    "prompt": "High mountain pass, steady cold wind and rocks settling, no animal calls, seamless ambient loop",
    "pq": "Rota da Serra.",
-   "loop": true
+   "loop": true,
+   "nome": "Rota da Serra"
   },
   {
    "id": "raioRoda",
@@ -856,7 +937,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Beam of pure white radiant light fired from a staff, bright searing whoosh with a short crackle, no music",
-   "pq": "Raio da Roda: o ataque principal dele (radiante)."
+   "pq": "Raio da Roda: o ataque principal dele (radiante).",
+   "nome": "Raio da Roda"
   },
   {
    "id": "facao",
@@ -866,7 +948,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Three fast heavy machete slashes cutting the air one after another with a metallic edge, no impact",
-   "pq": "Facão x3: o ataque corpo a corpo dele."
+   "pq": "Facão x3: o ataque corpo a corpo dele.",
+   "nome": "Facão x3"
   },
   {
    "id": "correntesBrotam",
@@ -876,7 +959,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Many iron chains bursting up out of the ground and whipping around, metal rattle and dirt spray, violent",
-   "pq": "Correntes Brotam / Corrente do Chão."
+   "pq": "Correntes Brotam / Corrente do Chão.",
+   "nome": "Correntes Brotam / Corrente do Chã"
   },
   {
    "id": "aveGenerosa",
@@ -886,7 +970,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Wide radiant burst of warm light with a rising wordless choir swell, healing shimmer and soft chimes, no melody",
-   "pq": "Ave Generosa: dano radiante em área e cura."
+   "pq": "Ave Generosa: dano radiante em área e cura.",
+   "nome": "Ave Generosa"
   },
   {
    "id": "julgamento",
@@ -896,7 +981,8 @@
    "influencia": 0.5,
    "prio": 1,
    "prompt": "Cone of blinding holy light blasting forward with a deep roaring whoosh, short sharp ring and a low boom, no music",
-   "pq": "Julgamento: cone de luz."
+   "pq": "Julgamento: cone de luz.",
+   "nome": "Julgamento"
   },
   {
    "id": "esboco",
@@ -906,7 +992,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Fast pencil graphite sketching lines on paper, scratchy quick strokes",
-   "pq": "Esboço e Tinta: grafite riscando."
+   "pq": "Esboço e Tinta: grafite riscando.",
+   "nome": "Esboço e Tinta"
   },
   {
    "id": "obraPrima",
@@ -916,7 +1003,8 @@
    "influencia": 0.5,
    "prio": 2,
    "prompt": "Paint pigment detonating in a wet colourful burst with a muffled boom and splattering drops",
-   "pq": "Obra-Prima de Sala / Antecipar: detonação de tinta."
+   "pq": "Obra-Prima de Sala / Antecipar: detonação de tinta.",
+   "nome": "Obra-Prima de Sala / Antecipar"
   },
   {
    "id": "deusesPedra",
@@ -927,7 +1015,8 @@
    "prio": 2,
    "prompt": "Stream running under an old stone bridge, soft wind, a small waterfall, birds, seamless ambient loop",
    "pq": "Os Deuses de Pedra.",
-   "loop": true
+   "loop": true,
+   "nome": "Os Deuses de Pedra"
   },
   {
    "id": "anelPeregrinos",
@@ -938,7 +1027,8 @@
    "prio": 2,
    "prompt": "Distant crowd murmuring and shuffling in a rocky gorge, water fountains trickling, soft echo, seamless ambient loop",
    "pq": "Anel dos Peregrinos.",
-   "loop": true
+   "loop": true,
+   "nome": "Anel dos Peregrinos"
   },
   {
    "id": "quedaLuminosa",
@@ -949,7 +1039,8 @@
    "prio": 2,
    "prompt": "Night waterfall, soft cold mist, low water hush, faint distant wing flutters, seamless ambient loop",
    "pq": "Queda Luminosa (noturna, com bandos de aves).",
-   "loop": true
+   "loop": true,
+   "nome": "Queda Luminosa (noturna, com bando"
   }
  ],
  "revisao": "Revisado por subagente contra imagens, fichas e mapa em 17/11/2026; ajustes aplicados."

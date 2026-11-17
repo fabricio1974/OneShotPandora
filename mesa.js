@@ -364,6 +364,15 @@
   function cfgGravar(){ try { localStorage.setItem(CFGK, JSON.stringify(CFG)); } catch (e) {} }
   function pDe(id){ var d = PDEF[id] || ['', 3], c = CFG.p[id] || {}; return {t:c.t != null ? c.t : d[0], d:c.d != null ? c.d : d[1]}; }
   function frDe(id){ return CFG.fr[id] || CAT[id].fr; }
+
+  /* sons novos e prompts vêm de tools/prompts_audio.json (um arquivo só, revisado): sobrescreve a lista de efeitos e fundos de cada personagem */
+  try { fetch('tools/prompts_audio.json', {cache:'no-cache'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (!j || !j.sons) return;
+    var lista = {};
+    j.sons.forEach(function(s){ PDEF[s.id] = [s.prompt, s.seg]; if (s.tipo === 'cam') CAN[s.id] = s.nome || s.id; else EFN[s.id] = s.nome || s.id;
+      if (s.dono === 'mapa' && !CAT.mapa) CAT.mapa = {nome:'Mapa e lugares', ef:[], ca:[], fr:[]}; var c = CAT[s.dono]; if (!c) return;
+      (lista[s.dono] = lista[s.dono] || {ef:[], ca:[]})[s.tipo === 'cam' ? 'ca' : 'ef'].push(s.id); });
+    Object.keys(lista).forEach(function(k){ if (lista[k].ef.length) CAT[k].ef = lista[k].ef; if (lista[k].ca.length) CAT[k].ca = lista[k].ca; });
+    assin = ''; try { desenhar2(true); } catch (e) {} }).catch(function(){}); } catch (e) {}
   var GEN = {}, LOOPS = {};     // 'fx|id' / 'cam|id' -> endereço do áudio gerado
   function ehCam(id){ return !!CAN[id]; }
   function chG(id){ return (ehCam(id) ? 'cam|' : 'fx|') + id; }
