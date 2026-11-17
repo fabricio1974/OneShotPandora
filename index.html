@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trilha do Cordeiro</title>
+<script src="visual.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
 <style>
@@ -27,7 +28,7 @@ button:hover{border-color:var(--terracota2)}
 button.peq{padding:5px 10px;font-size:13px}
 button.perigo{border-color:#7a2a22;background:#3a1512}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
-.abas button[aria-selected="true"]{background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.abas button[aria-selected="true"]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
 .aviso{margin:14px 0;padding:12px 14px;border:1px solid var(--erro);border-radius:6px;background:#2a1512;color:#ffd9d2;display:flex;gap:12px;align-items:start}
 .aviso span{flex:1}
 .aviso code{background:#0006;padding:1px 5px;border-radius:3px}
@@ -35,7 +36,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .elenco{display:flex;gap:8px;overflow-x:auto;padding:14px 0 10px;scrollbar-width:thin}
 .chip{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:999px;white-space:nowrap;flex:none}
 .chip.so{padding-left:12px}
-.chip[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
 .rosto{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--linha);display:grid;place-items:center;font:400 14px/1 var(--titulo);color:var(--marfim);flex:none}
 .chip .n{font-size:11px;opacity:.7}
 h2{font:400 20px/1.2 var(--titulo);letter-spacing:.1em;margin:0;color:var(--marfim)}
@@ -67,7 +68,7 @@ input[type=number]{width:74px}
 input[type=text]{width:230px}
 input[type=text].largo{width:340px}
 input[type=range]{accent-color:var(--terracota);width:110px}
-.ouvir.tocando{background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.ouvir.tocando{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
 .editar{grid-column:2/-1;margin:0;border:0;padding:0;background:none}
 .editar summary{font-size:12px;color:var(--apagado);font-weight:400}
 .editar .ctrl{margin-top:10px}
@@ -84,7 +85,7 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .cena .t{font-weight:600;font-size:16px;line-height:1.25}
 .cena .m{font-size:12.5px;color:var(--apagado)}
 .cena .tecla{margin-top:auto;font-size:11px;color:var(--apagado)}
-.cena.tocando{background:var(--terracota);border-color:var(--terracota);color:#1a0f08}
+.cena.tocando{background:var(--terracota);border-color:var(--terracota);color:var(--sobre)}
 .cena.tocando .papel,.cena.tocando .m,.cena.tocando .tecla{color:#3a1d0c}
 .vazio{color:var(--apagado);padding:14px 0}
 /* Barra */
@@ -99,7 +100,7 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .barra .vol{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--apagado)}
 .barra .vol input{width:140px}
 .transp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.transp #btPausa{min-width:104px;background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.transp #btPausa{min-width:104px;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
 .linhaPos{flex:1 1 100%;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--apagado);font-variant-numeric:tabular-nums}
 .linhaPos input{flex:1;width:auto;min-width:0}
 .players{display:flex;gap:8px}
@@ -146,7 +147,7 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .noite .bloco h4{font:400 12px/1 var(--titulo);letter-spacing:.14em;color:var(--terracota);margin:0 0 10px}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{min-width:42px;padding:10px 0;font-weight:600}
-.seg button[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:#1a0f08}
+.seg button[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre)}
 .grande{font:400 54px/1 var(--titulo);color:var(--marfim);text-align:center;font-variant-numeric:tabular-nums}
 .lirio{display:block;margin:0 auto;width:120px;height:120px}
 .aviso2{margin:10px 0 0;padding:8px 10px;border-radius:6px;background:#3a2410;border:1px solid var(--ouro);color:#ffe9b8;font-size:13px}
@@ -179,7 +180,7 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .gat button .q{font-weight:600}
 .gat button .t{color:var(--apagado);font-size:12px}
 
-#btVoz[aria-pressed="true"]{background:var(--ouro);border-color:var(--ouro);color:#1a0f08;font-weight:600}
+#btVoz[aria-pressed="true"]{background:var(--ouro);border-color:var(--ouro);color:var(--sobre);font-weight:600}
 #btRep[aria-pressed="true"]{border-color:var(--terracota);color:var(--terracota)}
 
 .cxm>summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none}.cxm>summary::-webkit-details-marker{display:none}.cxm>summary::before{content:'▸ ';color:var(--ouro)}.cxm[open]>summary::before{content:'▾ '}.cxm[open]>summary{margin-bottom:10px}
@@ -194,12 +195,12 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .inm-abas{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:thin;margin-top:10px}
 .inm-aba{display:flex;align-items:center;gap:8px;flex:none;min-height:44px;padding:4px 14px 4px 5px;border-radius:999px;white-space:nowrap}
 .inm-aba img,.inm-todos{width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--linha);display:grid;place-items:center;flex:none}
-.inm-aba[aria-selected="true"]{background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+.inm-aba[aria-selected="true"]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
 .inm-fil{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
 .inm-f{min-height:40px;padding:4px 11px;border-radius:999px;font-size:13px;border-color:color-mix(in srgb,var(--tc,#a8998a) 55%,transparent);color:var(--tc,var(--marfim))}
 .inm-f.tp{--tc:#d8cbb4}
 .inm-f small{margin-left:2px}
-.inm-f[aria-pressed="true"]{background:var(--tc,var(--terracota));color:#1a0f08;font-weight:600}
+.inm-f[aria-pressed="true"]{background:var(--tc,var(--terracota));color:var(--sobre);font-weight:600}
 .inm-lim{min-height:40px;margin-top:8px}
 .inm-rot{font-size:12px;color:var(--apagado)}.inm-rot.gasta{color:var(--erro)}.inm-rot.pronta{color:#6fcf8f}
 .inm-ult{margin-top:12px;padding:8px 10px;border:1px dashed var(--linha);border-radius:8px;font-size:13px}.inm-ult b{display:block;color:var(--ouro);margin-bottom:2px}
@@ -207,7 +208,7 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .inm-topo{display:flex;gap:10px;align-items:center;margin-bottom:8px}.inm-topo img{width:48px;height:48px;border-radius:8px;object-fit:cover;flex:none}
 .inm-topo h4{margin:0;font:400 17px/1.2 var(--titulo);letter-spacing:.08em;color:var(--terracota)}
 .inm-avs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.inm-av{font-size:12px;color:var(--apagado);border:1px solid var(--linha);border-radius:6px;padding:2px 7px}.inm-av.agora{color:#1a0f08;background:var(--ouro);border-color:var(--ouro);font-weight:600}
+.inm-av{font-size:12px;color:var(--apagado);border:1px solid var(--linha);border-radius:6px;padding:2px 7px}.inm-av.agora{color:var(--sobre);background:var(--ouro);border-color:var(--ouro);font-weight:600}
 .inm-card{margin-top:8px;padding:10px 12px;border:1px solid var(--linha);border-left:3px solid var(--terracota2);border-radius:8px;background:var(--painel2)}
 .inm-card.pass{border-left-color:var(--linha);opacity:.92}.inm-card.esgotada{opacity:.55}
 .inm-cab{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.inm-nome{font-size:15px}
@@ -245,7 +246,7 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 html{scroll-padding-bottom:calc(var(--barra-h,360px) + 80px)}
 #faixaTurno{position:fixed;right:10px;bottom:calc(var(--barra-h,0px) + 10px);z-index:6;max-width:calc(100vw - 20px);display:flex;gap:10px;align-items:center;padding:4px 4px 4px 12px;border-radius:999px;background:#2a2410;border:1px solid var(--ouro);box-shadow:0 2px 10px #000a;font-size:13px}
 #faixaTurno[hidden]{display:none}#faixaTurno .ft-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#faixaTurno .ft-r{color:var(--apagado);white-space:nowrap}
-#faixaTurno button{min-height:44px;border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600;white-space:nowrap}
+#faixaTurno button{min-height:44px;border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600;white-space:nowrap}
 .barra.compacta .linhaPos,.barra.compacta #btVolta,.barra.compacta #btRep,.barra.compacta #btVid,.barra.compacta #btAnt,.barra.compacta #btProx,.barra.compacta #btMenos,.barra.compacta #btMais,.barra.compacta .x{display:none}
 #btCompacto{min-height:40px}
 .inm-filtros{margin-top:8px}.inm-filtros summary{min-height:40px;display:flex;align-items:center;font-size:13px;color:#d8cbb4;cursor:pointer}
@@ -257,7 +258,7 @@ html{scroll-padding-bottom:calc(var(--barra-h,360px) + 80px)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 #toast{position:fixed;left:10px;right:10px;bottom:calc(var(--barra-h,0px) + var(--pill-h,0px) + 20px);z-index:9;margin:0 auto;max-width:440px;display:flex;gap:10px;align-items:center;justify-content:space-between;padding:4px 4px 4px 14px;border-radius:10px;background:#2a2410;border:1px solid var(--ouro);box-shadow:0 2px 12px #000c;font-size:14px}
 #toast[hidden]{display:none}#toast span{min-width:0;overflow-wrap:anywhere}
-#toast button{min-height:44px;min-width:44px;flex:none;background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600}
+#toast button{min-height:44px;min-width:44px;flex:none;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
 .inm-abas{position:sticky;top:0;z-index:5;background:var(--painel);margin-top:6px;padding-top:6px;border-bottom:1px solid var(--linha)}
 .inm-card.esgotada{opacity:1;background:#171210;border-left-color:#6b5a4d;border-style:dashed;border-left-style:solid}
 .inm-card.esgotada .inm-nome{color:var(--apagado);text-decoration:line-through;text-decoration-thickness:1px}
@@ -271,9 +272,9 @@ html{scroll-padding-bottom:calc(var(--barra-h,360px) + 80px)}
 .cb{display:inline-flex;align-items:center;font-size:12.5px;padding:2px 9px;border-radius:999px;background:#3b1f3f;border:1px solid #b48be0;color:#f1e4ff;font-weight:600}
 .cb.tx{background:#2f2a1c;border-color:var(--ouro);color:#f3e6bf;font-weight:400}
 .i-pk{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border:1px dashed var(--linha);border-radius:8px}
-.i-pk .inm-f[aria-pressed="true"]{background:#b48be0;border-color:#b48be0;color:#1a0f08}
+.i-pk .inm-f[aria-pressed="true"]{background:#b48be0;border-color:#b48be0;color:var(--sobre)}
 .seg2{display:flex;gap:4px;align-items:center}.seg2 button{min-width:44px}
-.seg2 button[aria-pressed="true"],.inm-luta-bt[aria-expanded="true"]{background:var(--ouro);border-color:var(--ouro);color:#1a0f08;font-weight:700}
+.seg2 button[aria-pressed="true"],.inm-luta-bt[aria-expanded="true"]{background:var(--ouro);border-color:var(--ouro);color:var(--sobre);font-weight:700}
 .inm-luta-bt{min-height:44px;font-weight:600;border-color:var(--terracota)}
 .luta{margin-top:8px;padding:10px;border:1px solid var(--terracota2);border-radius:10px;background:var(--painel2)}
 .luta-l{display:flex;align-items:center;gap:8px;min-height:44px;border-bottom:1px solid var(--linha)}
@@ -315,7 +316,7 @@ body.lg .inm-bol{min-height:46px;min-width:46px}
 .inm-die{min-width:44px;min-height:44px;padding:0;border-radius:10px;font-size:18px;font-weight:700;border-color:var(--ouro);color:#ffd98a;font-variant-numeric:tabular-nums}
 .inm-die.usado{background:#171210;border-style:dashed;color:#b4a595;text-decoration:line-through}
 .inm-regras p{margin:6px 0;font-size:14px}.inm-regras p.inm-hoje{border-left:3px solid var(--ouro);padding-left:8px}
-.inm-fs[aria-pressed="true"]{background:#b48be0;border-color:#b48be0;color:#1a0f08}
+.inm-fs[aria-pressed="true"]{background:#b48be0;border-color:#b48be0;color:var(--sobre)}
 body.lg .inm-cd,body.lg .inm-sem,body.lg .inm-fl,body.lg .inm-nh,body.lg .inm-pres,body.lg .inm-regras p,body.lg .inm-fg{font-size:16px}
 
 /* Rodada 4: barra compacta útil, toast compacto, roteiro, iniciativa em 2 linhas */
@@ -330,7 +331,7 @@ html{scroll-padding-bottom:calc(var(--barra-h,360px) + var(--pill-h,0px) + 84px)
 .barra.compacta .transp{display:contents}
 .barra.compacta #btPausa{order:3;min-width:0;flex:1 1 auto}.barra.compacta #btVoz{order:4;flex:1 1 auto}.barra.compacta #btBaixar{order:5;flex:1 1 auto}.barra.compacta #btSil{order:6;flex:1 1 auto}.barra.compacta .in>button,.barra.compacta .transp button{font-size:14px;padding-inline:6px;white-space:nowrap}.barra.compacta #btCompacto{order:7;flex:0 0 44px;padding-inline:0}
 .barra.compacta button{min-height:40px;padding:6px 8px}
-#btVoz[aria-pressed="true"]{background:var(--ouro);border-color:var(--ouro);color:#1a0f08;font-weight:700}
+#btVoz[aria-pressed="true"]{background:var(--ouro);border-color:var(--ouro);color:var(--sobre);font-weight:700}
 #toast{left:10px;right:auto;margin:0;max-width:min(330px,calc(100vw - 20px));font-size:13px;padding:2px 2px 2px 10px;gap:8px;border-radius:10px;bottom:calc(var(--barra-h,0px) + var(--pill-h,0px) + 14px);justify-content:flex-start}
 #toast span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #toast button{min-height:40px;min-width:40px;padding:4px 10px}
@@ -379,7 +380,7 @@ button.inm-luta-bt,.inm-atk,.inm-rec,.inm-aplic,.inm-die{display:inline-flex;ali
 .inm-topo h4{font:700 40px/1.05 var(--titulo);letter-spacing:-.02em;color:var(--marfim);text-transform:none;margin:0}
 .inm-topo.vez h4{color:var(--marfim)}
 .inm-topo .inm-avs{justify-content:center;margin-top:8px}
-.inm-av.agora{background:var(--terracota);border-color:var(--terracota);color:#1a0d04}
+.inm-av.agora{background:var(--terracota);border-color:var(--terracota);color:var(--sobre)}
 .inm-topo .inm-ini{justify-content:center}
 .inm-topo.mini{flex-direction:row;text-align:left;align-items:center;gap:12px}
 .inm-topo.mini .arco{width:72px;height:90px;border-radius:36px 36px 4px 4px;padding:3px;max-width:none;max-height:none}
@@ -396,7 +397,7 @@ button.inm-luta-bt,.inm-atk,.inm-rec,.inm-aplic,.inm-die{display:inline-flex;ali
 .inm-ord .bar{width:48px;height:3px;background:var(--linha);border-radius:2px;overflow:hidden}.inm-ord .bar i{display:block;height:100%;background:var(--terracota)}
 .inm-ord button.o:active{transform:none;filter:brightness(1.2)}
 .inm-vez{border-color:var(--linha);background:var(--painel)}
-.inm-vez button.inm-prox{border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:#1a0d04;font-weight:700;padding-inline:16px;display:inline-flex;align-items:center;gap:4px}.inm-vez button.inm-prox .ic{margin-right:0}
+.inm-vez button.inm-prox{border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:700;padding-inline:16px;display:inline-flex;align-items:center;gap:4px}.inm-vez button.inm-prox .ic{margin-right:0}
 .inm-vez b{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.inm-vez .inm-rot{flex:none;font-size:11px}
 .inm-card{border-left-color:var(--terracota2);border-radius:10px}
 .inm-tag{display:inline-flex;align-items:center}
@@ -420,10 +421,10 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .inm-aba[aria-selected="true"]{background:none;color:var(--terracota);border-color:var(--terracota)}
 .barra{background:var(--fundo);border-top:0;position:fixed;box-shadow:0 -16px 14px -6px var(--fundo)}
 .barra::before{content:"";position:absolute;left:0;right:0;top:-14px;height:12px;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11H3V2H12V8H7V5' fill='none' stroke='%23dd8440' stroke-width='1.2'/%3E%3C/svg%3E") repeat-x center;opacity:.55;pointer-events:none}
-.barra #btPausa,.barra.compacta #btPausa{border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:#1a0d04;font-weight:700}
+.barra #btPausa,.barra.compacta #btPausa{border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:700}
 .barra .agora .tit{font:600 16px/1.2 var(--titulo)}
 .barra.compacta .in>button,.barra.compacta .transp button{border-color:transparent;background:none;color:var(--marfim)}
-.barra.compacta #btPausa{color:#1a0d04;background:var(--terracota)}
+.barra.compacta #btPausa{color:var(--sobre);background:var(--terracota)}
 .barra.compacta #btSil{color:#ff9c8e}
 #btVoz[aria-pressed="true"],.barra.compacta #btVoz[aria-pressed="true"]{background:none;color:var(--terracota);border-color:var(--terracota)}
 .palco{border:0;background:none;padding:8px 0;gap:20px;align-items:flex-end}
@@ -439,6 +440,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .pers,.faixa,details.cx{background:none;border-radius:6px}
 .retrato{border-radius:4px}
 </style>
+<link rel="stylesheet" href="visual.css">
 </head>
 <body>
 <header>
@@ -448,6 +450,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
     <button role="tab" id="abaTri" aria-selected="false">Triagem</button>
     <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
     <button role="tab" id="abaMes" aria-selected="false">Mestre</button>
+    <button role="tab" id="abaAj" aria-selected="false">Ajustes</button>
   </div>
   <button id="btLetra" class="peq" aria-pressed="false" title="Aumenta as letras e os botões">Letra grande</button>
 </header>
@@ -458,6 +461,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   <section id="triagem" hidden></section>
   <section id="sessao" hidden></section>
   <section id="painelMestre" hidden></section>
+  <section id="ajustes" hidden></section>
 </main>
 
 <div class="barra" id="barra"><div class="in">
@@ -836,7 +840,7 @@ function desenharTriagem(){
         el('label',{class:'c'},'Quais músicas', sel('triQuais', [['todas','Todas'],['marcadas','Só as marcadas'],['desmarcadas','Só as desmarcadas']], E.triQuais||'todas', 'triQuais')),
         el('label',{class:'c'},'Duração do trecho (s)', el('input',{type:'number', id:'previa', min:15, max:600, step:15, value:E.previa||120, onchange:mud('previa', v => Math.max(15, +v||120))})),
         el('label',{class:'lin'}, el('input',{type:'checkbox', id:'meio', checked:E.meio!==false, onchange:mud('meio')}), 'Começar pelo meio da música'),
-        el('button',{onclick:triComecar, disabled:!n, style:'background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600'}, n ? 'Começar ('+n+' músicas)' : 'Nenhuma música nesse filtro')));
+        el('button',{onclick:triComecar, disabled:!n, style:'background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600'}, n ? 'Começar ('+n+' músicas)' : 'Nenhuma música nesse filtro')));
     return;
   }
   const f = tri.lista[tri.pos], g = grupoDe(f);
@@ -1060,7 +1064,7 @@ function painelRoteiro(){
   const r = E.roteiro;
   const topo = el('div',{class:'rot-top'},
     el('button',{onclick:()=>passoCena(-1), disabled:E.rpos<=0, title:'Tecla ['}, ico('esq'), 'Cena anterior'),
-    el('button',{style:'background:var(--terracota);border-color:var(--terracota);color:#1a0f08;font-weight:600', onclick:()=>passoCena(1), disabled:E.rpos>=r.length-1, title:'Tecla ]'}, E.rpos < 0 ? 'Começar' : 'Próxima cena', ico('dir')),
+    el('button',{style:'background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600', onclick:()=>passoCena(1), disabled:E.rpos>=r.length-1, title:'Tecla ]'}, E.rpos < 0 ? 'Começar' : 'Próxima cena', ico('dir')),
     el('span',{class:'sub grow'}, r.length ? (E.rpos < 0 ? 'Ainda não começou' : 'Cena ' + (E.rpos+1) + ' de ' + r.length) : 'Roteiro vazio'),
     el('button',{class:'peq', onclick:()=>{ editRot = !editRot; desenhar(); }}, editRot ? 'Terminar edição' : 'Editar roteiro'));
   const lista = el('div',{class:'rot', id:'rotLista', tabindex:'-1', 'aria-label':'Cenas do roteiro'});
@@ -2189,7 +2193,7 @@ $('btSil').onclick = () => parar(0);
 $('btVid').onclick = ev => { const p = $('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
 let trava = null;
 function aba(qual){ modo = qual;
-  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
+  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
   if (qual === 'mes') rotRolar = true;
   if (qual!=='sel' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga
   desenhar(); salvaUI(); }
@@ -2197,6 +2201,8 @@ $('abaSel').onclick = () => aba('sel');
 $('abaTri').onclick = () => aba('tri');
 $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
+$('abaAj').onclick = () => aba('aj');
+if (window.OTL) OTL.ui($('ajustes'));
 let vozIni = 0;
 document.addEventListener('keyup', ev => { if (ev.key.toLowerCase() === 'v' && !/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) && vozIni && Date.now()-vozIni > 600) alternarVoz(false); vozIni = 0; });
 document.addEventListener('keydown', ev => {

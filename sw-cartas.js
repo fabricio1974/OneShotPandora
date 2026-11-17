@@ -1,5 +1,5 @@
-const N='cartas-v10';
-const BASE=['cartas.html','img/cartas/moldura_p.jpg','img/cartas/moldura_ab.jpg','img/cartas/verso.jpg','img/cartas/ic_s.png','img/cartas/ic_a.png','img/cartas/ic_m.png','img/cartas/ic_h.png'];
+const N='cartas-v11';
+const BASE=['cartas.html','visual.js','img/cartas/moldura_p.jpg','img/cartas/moldura_ab.jpg','img/cartas/verso.jpg','img/cartas/ic_s.png','img/cartas/ic_a.png','img/cartas/ic_m.png','img/cartas/ic_h.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(N).then(c=>c.addAll(BASE)).catch(()=>{}))});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==N&&k.startsWith('cartas-')).map(k=>caches.delete(k)))).then(()=>clients.claim())));
 // A página (navegação) vai primeiro à rede, com 2,5 s de prazo, e cai no cache: assim uma atualização aparece na hora e sem sinal ainda abre.

@@ -96,3 +96,10 @@ Efeitos sintetizados no navegador (Web Audio, sem arquivos): dado, ataque, dano,
 
 ### cenarios.html (experimental)
 Gerador de mapas de combate por código (Canvas): Floresta, Taverna e Masmorra, 30 × 20 quadrados, com semente (mesma semente = mesmo mapa), grade opcional e botão "Baixar PNG". Link: `/cenarios.html` (ou `#taverna`, `#masmorra`).
+
+## Aparência (aba Ajustes)
+Aba **Ajustes** no app (e no combate): 3 layouts e 5 paletas por layout, com troca na hora e escolha salva no navegador (chave `otl_visual`).
+- **Palco** (o visual de antes): Brasa, Meia-noite, Floresta, Ametista, Pergaminho (clara).
+- **Painel** (menu lateral em telas largas; botões no celular): Grafite, Meia-noite, Carmim, Brasa, Floresta.
+- **Cartaz** (cartões arredondados, abas em cápsula, barra de música flutuante): Ametista, Brasa, Carmim, Pergaminho, Grafite.
+`visual.js` guarda as paletas e monta a aba; `visual.css` tem os layouts. As cartas (`cartas.html`) seguem só as paletas escuras. O padrão continua sendo Palco + Brasa. Se `visual.js` não carregar, o site abre com o visual de antes.

@@ -1,0 +1,102 @@
+/* Layouts (data-layout 1, 2, 3 no <html>) e a aba Ajustes. As cores vêm das variáveis de cada paleta (visual.js). */
+:root{--sobre:#1a0f08;--sombra:rgba(0,0,0,.5)}
+
+/* Enfeites que eram desenhados com a cor fixa: agora seguem o acento da paleta */
+:root header h1::after,:root .barra::before,:root .greca{
+  background:var(--terracota);
+  -webkit-mask:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11H3V2H12V8H7V5' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E") repeat-x left center;
+          mask:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11H3V2H12V8H7V5' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E") repeat-x left center}
+:root .barra::before{-webkit-mask-position:center;mask-position:center}
+:root .inm-ord .o.vez .md{box-shadow:0 0 0 3px var(--fundo),0 0 0 4px color-mix(in srgb,var(--terracota) 33%,transparent)}
+:root button.perigo{border-color:var(--erro);color:var(--erro)}
+
+/* ===== Layout 2 · Painel ===== */
+:root[data-layout="2"] .abas{gap:4px}
+@media (max-width:899px){
+  :root[data-layout="2"] .abas{border-bottom:0;padding:12px 0 2px}
+  :root[data-layout="2"] .abas button{border:1px solid var(--linha);border-radius:8px;background:var(--painel);padding:10px 2px;min-height:44px;font-size:13px}
+  :root[data-layout="2"] .abas button:hover{border-color:var(--terracota2)}
+  :root[data-layout="2"] .abas button[aria-selected="true"]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre)}
+  :root[data-layout="2"] .pers,:root[data-layout="2"] .faixa,:root[data-layout="2"] details.cx{background:var(--painel);border-radius:8px}
+}
+@media (min-width:900px){
+  :root[data-layout="2"] body{display:grid;grid-template-columns:240px minmax(0,1fr);column-gap:40px;align-items:start;padding-left:0}
+  :root[data-layout="2"] header{grid-column:1;grid-row:1;position:sticky;top:0;display:flex;flex-direction:column;align-items:stretch;gap:20px;
+    max-width:none;width:auto;margin:0;height:100vh;padding:30px 18px 24px 24px;background:var(--painel);border-right:1px solid var(--linha)}
+  :root[data-layout="2"] header h1{font-size:21px;line-height:1.15}
+  :root[data-layout="2"] .abas{flex-direction:column;gap:2px;border:0;padding:0}
+  :root[data-layout="2"] .abas button{flex:none;display:block;text-align:left;border:0;border-left:3px solid transparent;border-radius:0 8px 8px 0;padding:12px 14px;min-height:44px;font-size:15px}
+  :root[data-layout="2"] .abas button:hover{background:var(--painel2);border-left-color:var(--linha)}
+  :root[data-layout="2"] .abas button[aria-selected="true"]{background:var(--painel2);border-left-color:var(--terracota);color:var(--terracota)}
+  :root[data-layout="2"] #btLetra{grid-column:auto;grid-row:auto;align-self:flex-start;padding-left:14px}
+  :root[data-layout="2"] main{grid-column:2;grid-row:1;max-width:1040px;margin:0;padding-top:12px}
+  :root[data-layout="2"] .elenco{padding-top:20px}
+}
+
+/* ===== Layout 3 · Cartaz ===== */
+:root[data-layout="3"] body{font-size:16px}
+:root[data-layout="3"] header,:root[data-layout="3"] main{max-width:920px}
+:root[data-layout="3"] header{grid-template-columns:1fr auto;padding-block:22px 6px}
+:root[data-layout="3"] header h1{font-size:28px;letter-spacing:-.02em}
+:root[data-layout="3"] header h1::after{width:64px;margin-top:10px}
+:root[data-layout="3"] .abas{margin:12px 0 4px;padding:4px;gap:4px;border:1px solid var(--linha);border-radius:999px;background:var(--painel)}
+:root[data-layout="3"] .abas button{border:0;border-radius:999px;padding:11px 6px;min-height:44px}
+:root[data-layout="3"] .abas button:hover{background:var(--painel2)}
+:root[data-layout="3"] .abas button[aria-selected="true"]{background:var(--terracota);color:var(--sobre);border:0}
+:root[data-layout="3"] .elenco{padding-top:18px;gap:10px}
+:root[data-layout="3"] .chip{background:var(--painel);border:1px solid var(--linha);border-radius:999px;padding:6px 14px 6px 6px}
+:root[data-layout="3"] .chip[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre)}
+:root[data-layout="3"] .pers,:root[data-layout="3"] .faixa,:root[data-layout="3"] details.cx,:root[data-layout="3"] .painel,:root[data-layout="3"] .inm-card,:root[data-layout="3"] .palco{
+  background:var(--painel);border:1px solid var(--linha);border-radius:18px;padding:16px;
+  box-shadow:0 1px 0 color-mix(in srgb,var(--marfim) 6%,transparent) inset,0 14px 30px -18px var(--sombra)}
+:root[data-layout="3"] .painel{border-top:1px solid var(--linha)}
+:root[data-layout="3"] .retrato{border-radius:14px}
+:where(:root[data-layout="3"]) button{background:var(--painel2)}
+:root[data-layout="3"] button{border-radius:10px}
+:root[data-layout="3"] .cena{background:var(--painel);border-radius:12px}
+:root[data-layout="3"] .cena.tocando{background:var(--terracota);color:var(--sobre);box-shadow:none}
+:root[data-layout="3"] .cena.tocando .papel,:root[data-layout="3"] .cena.tocando .m,:root[data-layout="3"] .cena.tocando .tecla{color:var(--sobre)}
+:root[data-layout="3"] #btLetra{background:none;border:0}
+:root[data-layout="3"] .barra{left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom,0px));border:1px solid var(--linha);border-radius:22px;
+  background:color-mix(in srgb,var(--painel) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 18px 40px -12px var(--sombra)}
+:root[data-layout="3"] .barra::before{display:none}
+:root[data-layout="3"] .barra #btPausa,:root[data-layout="3"] .barra.compacta #btPausa{background:var(--terracota);color:var(--sobre)}
+
+/* ===== Aba Ajustes ===== */
+#ajustes{max-width:860px}
+#ajustes h2{margin-top:18px}
+.aj-lays,.aj-pals{display:grid;gap:12px}
+.aj-lays{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.aj-pals{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.aj-lay,.aj-pal{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;padding:12px;border:1px solid var(--linha);border-radius:12px;background:var(--painel);min-height:0}
+.aj-lay[aria-pressed="true"],.aj-pal[aria-pressed="true"]{border-color:var(--terracota);box-shadow:0 0 0 2px var(--terracota)}
+.aj-lay b,.aj-pal b{font:600 15px/1.2 var(--titulo,inherit);color:var(--marfim)}
+.aj-lay .sub,.aj-pal .sub{font-size:12.5px;line-height:1.4}
+.aj-pal .sw{display:flex;gap:6px;align-items:center;width:100%;padding:8px;border-radius:8px;border:1px solid var(--linha)}
+.aj-pal .sw i{width:22px;height:22px;border-radius:50%;border:1px solid #0003;display:block}
+/* miniaturas dos layouts */
+.aj-mini{display:block;position:relative;width:100%;height:84px;border-radius:8px;background:var(--fundo);border:1px solid var(--linha);overflow:hidden}
+.aj-mini i{display:block;border-radius:3px;background:var(--linha)}
+.aj-mini .s{background:var(--terracota)!important}
+.aj-mini.m1 .t{position:absolute;left:8px;right:8px;top:8px;height:8px;display:flex;gap:6px;border-bottom:1px solid var(--linha)}
+.aj-mini.m1 .t i{flex:1;height:6px;background:var(--linha)}
+.aj-mini.m1>i.l{position:absolute;left:8px;height:8px;top:30px;width:55%}
+.aj-mini.m1>i.l:nth-of-type(2){top:46px;width:80%}
+.aj-mini.m1>i.l:nth-of-type(3){top:62px;width:40%}
+.aj-mini.m2 .side{position:absolute;left:0;top:0;bottom:0;width:28%;background:var(--painel);border-right:1px solid var(--linha);padding:8px 6px;display:flex;flex-direction:column;gap:6px}
+.aj-mini.m2 .side i{height:7px}
+.aj-mini.m2 .corpo{position:absolute;left:34%;right:8px;top:10px;display:flex;flex-direction:column;gap:9px}
+.aj-mini.m2 .corpo i{height:8px;width:70%}.aj-mini.m2 .corpo i.w{width:95%}
+.aj-mini.m3 .t{position:absolute;left:10px;right:10px;top:7px;height:12px;border-radius:999px;background:var(--painel);border:1px solid var(--linha);display:flex;gap:3px;padding:2px}
+.aj-mini.m3 .t i{flex:1;border-radius:999px;height:6px}
+.aj-mini.m3 .cards{position:absolute;left:10px;right:10px;top:26px;display:flex;gap:6px}
+.aj-mini.m3 .cards i{flex:1;height:30px;border-radius:7px;background:var(--painel);border:1px solid var(--linha)}
+.aj-mini.m3 .dock{position:absolute;left:10px;right:10px;bottom:6px;height:12px;border-radius:7px;background:var(--painel2);border:1px solid var(--linha)}
+
+/* Pergaminho (paleta clara): trocas das cores que eram fixas para fundo escuro */
+:root[data-paleta="pergaminho"] .aviso{background:#f7ddd6;color:#4d1710}
+:root[data-paleta="pergaminho"] .aviso code{background:#0001}
+:root[data-paleta="pergaminho"] .barra.compacta #btSil{color:var(--erro)}
+:root[data-paleta="pergaminho"] .inm-rot{color:var(--apagado)}
+:root[data-paleta="pergaminho"] .inm-rot.gasta,:root[data-paleta="pergaminho"] .inm-crit{color:var(--erro);border-color:var(--erro)}
+:root[data-paleta="pergaminho"] .tri-bot .sai{background:#f7ddd6;border-color:var(--erro)}
