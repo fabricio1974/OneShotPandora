@@ -164,3 +164,33 @@ html[data-luta="foco"] .dk-main .inm-abas{display:none!important}
 .en-lin input.dur{width:56px;background:var(--painel2);color:var(--marfim);border:1px solid var(--linha);padding:4px;font:inherit;font-size:13px}
 .en-n{display:flex;gap:4px;align-items:baseline;font-size:13px}
 .dm-top{gap:6px}.dm-top b{flex:1}
+
+/* ===== gaveta de sons: controles no mesmo idioma visual ===== */
+#dirMesa{--ctl-h:34px}
+#dirMesa .dm-top b{font-size:15px;font-weight:600;letter-spacing:.02em}
+#dirMesa .dm-top button,#dirMesa .dm-vol button{min-height:var(--ctl-h);min-width:var(--ctl-h);padding:0 12px;font-size:13px}
+#dirMesa .dm-top button{padding:0;width:var(--ctl-h)}
+/* volume: trilho fino + marcador terracota, sem o bloco branco do navegador */
+#dirMesa input[type=range]{-webkit-appearance:none;appearance:none;background:none;height:var(--ctl-h);margin:0;padding:0;cursor:pointer}
+#dirMesa input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:color-mix(in srgb,var(--apagado) 45%,transparent)}
+#dirMesa input[type=range]::-moz-range-track{height:3px;border-radius:2px;background:color-mix(in srgb,var(--apagado) 45%,transparent)}
+#dirMesa input[type=range]::-moz-range-progress{height:3px;border-radius:2px;background:var(--terracota)}
+#dirMesa input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5.5px;border-radius:50%;background:var(--terracota);border:2px solid var(--painel);box-shadow:0 0 0 1px var(--terracota)}
+#dirMesa input[type=range]::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:var(--terracota);border:2px solid var(--painel);box-shadow:0 0 0 1px var(--terracota)}
+#dirMesa input[type=range]:focus-visible{outline:2px solid var(--terracota);outline-offset:2px;border-radius:4px}
+.dm-vol{gap:10px}
+/* seletor de personagem: mesmo tamanho dos outros controles, seta própria */
+#dirMesa .dm-onde{align-items:center;padding-top:10px;font-size:13px;color:var(--apagado)}
+#dirMesa .dm-onde:has(select){display:grid;grid-template-columns:auto 1fr;gap:10px}
+#dirMesa .dm-onde select{-webkit-appearance:none;appearance:none;min-width:0;width:100%;height:var(--ctl-h);padding:0 30px 0 10px;font:inherit;font-size:14px;color:var(--marfim);background:var(--painel2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23999' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 10px center;border:1px solid var(--linha);border-radius:6px;cursor:pointer;color-scheme:dark}
+#dirMesa .dm-onde select:hover{border-color:var(--apagado)}
+#dirMesa .dm-onde select:focus-visible{outline:2px solid var(--terracota);outline-offset:1px}
+#dirMesa .dm-onde select option{background:var(--painel2);color:var(--marfim)}
+#dirMesa .dm-onde b{font-size:18px;font-weight:600}
+/* títulos de seção e botões de efeito alinhados */
+#dirMesa .dm-sec>summary{font-size:13px;font-weight:600;color:var(--marfim);letter-spacing:.02em;list-style:none;display:flex;align-items:center;gap:6px}
+#dirMesa .dm-sec>summary::-webkit-details-marker{display:none}
+#dirMesa .dm-sec>summary::before{content:"▸";color:var(--terracota);font-size:11px;transition:transform .12s}
+#dirMesa .dm-sec[open]>summary::before{transform:rotate(90deg)}
+#dirMesa .dm-efs button,#dirMesa .dm-chips button,#dirMesa .dm-cam>button{min-height:var(--ctl-h);padding:0 12px;font-size:13px}
+#dirMesa .dm-onde b{color:var(--marfim)}
