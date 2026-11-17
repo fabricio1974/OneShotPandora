@@ -50,7 +50,7 @@ for tipo in ('fx', 'cam'):
         nome = '%s/%s.mp3' % (tipo, sid)
         if sid in man[tipo] and os.path.exists(os.path.join(AUD, nome)): continue
         print('Som', tipo, sid)
-        corpo = {'text': p['prompt'], 'prompt_influence': .5, 'model_id': 'eleven_text_to_sound_v2', 'duration_seconds': max(.5, min(30, p['seg']))}
+        corpo = {'text': p['prompt'], 'prompt_influence': .5, 'model_id': 'eleven_text_to_sound_v3', 'duration_seconds': max(.5, min(30, p['seg']))}
         if tipo == 'cam': corpo['loop'] = True
         open(os.path.join(AUD, nome), 'wb').write(api('/v1/sound-generation', corpo, bin=True)); man[tipo][sid] = nome
         json.dump(man, open(MAN, 'w', encoding='utf-8'), indent=1, ensure_ascii=False)

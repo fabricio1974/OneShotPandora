@@ -382,7 +382,7 @@
   AU.viva = function(id){ return !!LOOPS[id] || _vi(id); };
   AU.tudo = function(){ Object.keys(LOOPS).forEach(function(k){ LOOPS[k].pause(); delete LOOPS[k]; }); try { if (tocandoFala) tocandoFala.pause(); } catch (e) {} _tu(); };
   function gerarSom(id){
-    var p = pDe(id), corpo = {text:p.t, prompt_influence:.5, model_id:'eleven_text_to_sound_v2'};
+    var p = pDe(id), corpo = {text:p.t, prompt_influence:.5, model_id:'eleven_text_to_sound_v3'};
     if (p.d) corpo.duration_seconds = Math.max(.5, Math.min(30, +p.d)); if (ehCam(id)) corpo.loop = true;
     return eleven('/v1/sound-generation', corpo).then(function(r){ if (!r.ok) return r.text().then(function(t){ throw new Error(r.status + ' ' + t.slice(0, 80)); }); return r.blob(); })
       .then(function(b){ var k = chG(id); if (GEN[k]) URL.revokeObjectURL(GEN[k]); GEN[k] = URL.createObjectURL(b); return bdGravar(k, b); });
