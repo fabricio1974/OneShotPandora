@@ -198,63 +198,77 @@
   var GERAL = {nome:'Geral', ef:['trovao','impacto','sino','magia','sussurro'], ca:['vento','chuva','mar','fogo','trovoes','grave','coro','sinos','coracao'], fr:[]};
 
   /* ===================== INIMIGO EM COMBATE ===================== */
+  var GRUPO = {anjo:'demonio'};   // o Anjo usa o grupo de músicas "O demônio"
   function noCombate(){
     var r = {atual:'', porque:'', presentes:[]};
     try {
       var m = E.m, vistos = {};
       (m.ini || []).forEach(function(c){ var i = inmDeLinha(c); if (i && CAT[i.id] && !vistos[i.id]) { vistos[i.id] = 1; r.presentes.push(i.id); } });
-      if (S.fix && CAT[S.fix]) { r.atual = S.fix; r.porque = 'fixado'; return r; }
+      if (S.fix && CAT[S.fix]) { r.atual = S.fix; r.porque = 'escolhido aqui'; return r; }
+      if (m.inm && !m.inm.todos && CAT[m.inm.sel]) { r.atual = m.inm.sel; r.porque = 'o escolhido na ficha'; return r; }
       var c = m.ini && m.ini[m.turno], i = c && inmDeLinha(c);
-      if (i && CAT[i.id]) { r.atual = i.id; r.porque = 'é a vez dele'; return r; }
-      if (r.presentes.length) { r.atual = r.presentes[0]; r.porque = 'na iniciativa'; return r; }
-      if (m.inm && CAT[m.inm.sel]) { r.atual = m.inm.sel; r.porque = 'ficha aberta'; return r; }
+      if (i && CAT[i.id]) { r.atual = i.id; r.porque = 'a vez dele'; return r; }
+      if (r.presentes.length) { r.atual = r.presentes[0]; r.porque = 'na iniciativa'; }
     } catch (e) {}
     return r;
   }
+  function grupoDe(id){ try { return E.grupos.filter(function(g){ return g.id === (GRUPO[id] || id); })[0] || null; } catch (e) { return null; } }
 
   /* ===================== PAINEL DIREITO ===================== */
   var dir = h('aside', {id:'dirMesa', 'aria-label':'Ambiente e sons'});
-  var abrirDir = h('button', {id:'dmAbrir', class:'lat-aba dir', 'aria-label':'Abrir o painel de ambiente e sons', onclick:function(){ S.dir = 1; gravar(); aplicar(); }}, ['♪ Sons']);
-  var assin = '';
+  var abrirDir = h('button', {id:'dmAbrir', class:'lat-aba dir', 'aria-label':'Abrir o painel de ambiente e sons', onclick:function(){ S.dir = 1; gravar(); aplicar(); }}, ['Sons']);
+  var assin = '', ultimo = '';
   function nivelCam(id){ return typeof S.cam[id] === 'number' ? S.cam[id] : 40; }
   function camadaUI(id){
-    var on = AU.viva(id), li = h('div', {class:'dm-cam'});
-    var bt = h('button', {class:'peq', 'aria-pressed':String(on), onclick:function(){ if (AU.viva(id)) AU.desliga(id); else AU.liga(id, nivelCam(id) / 100); desenhar2(true); }}, [(on ? '● ' : '') + CAN[id]]);
-    var sl = h('input', {type:'range', min:'0', max:'100', value:String(nivelCam(id)), 'aria-label':'Volume de ' + CAN[id], oninput:function(ev){ S.cam[id] = +ev.target.value; AU.nivel(id, S.cam[id] / 100); }, onchange:gravar});
-    li.append(bt, sl); return li;
+    var on = AU.viva(id), li = h('div', {class:'dm-cam' + (on ? ' on' : '')});
+    li.append(h('button', {class:'peq', 'aria-pressed':String(on), onclick:function(){ if (AU.viva(id)) AU.desliga(id); else AU.liga(id, nivelCam(id) / 100); desenhar2(true); }}, [CAN[id]]));
+    if (on) li.append(h('input', {type:'range', min:'0', max:'100', value:String(nivelCam(id)), 'aria-label':'Volume de ' + CAN[id], oninput:function(ev){ S.cam[id] = +ev.target.value; AU.nivel(id, S.cam[id] / 100); }, onchange:gravar}));
+    return li;
   }
   function efeitosUI(lista){ return h('div', {class:'dm-efs'}, lista.map(function(id){ return h('button', {class:'peq', onclick:function(){ AU.efeito(id); }}, [EFN[id]]); })); }
-  function frasesUI(lista){ return lista.length ? h('div', {class:'dm-efs frases'}, lista.map(function(t){ return h('button', {class:'peq', title:'Fala em voz grave e lenta (usa uma voz do aparelho)', onclick:function(){ if (!falar(t)) alert('Este aparelho não tem voz de fala.'); }}, ['“' + t + '”']); })) : null; }
-  function bloco(nome, c, aberto){
-    return h('details', {class:'dm-bloco', open:aberto ? '' : null}, [h('summary', {}, [nome]), h('div', {class:'dm-sub'}, ['Efeitos']), efeitosUI(c.ef), h('div', {class:'dm-sub'}, ['Som de fundo']), h('div', {class:'dm-cams'}, c.ca.map(camadaUI)),
-      c.fr.length ? h('div', {class:'dm-sub'}, ['Frases em latim']) : null, frasesUI(c.fr)]);
+  function frasesUI(lista){ return lista.length ? h('div', {class:'dm-frs'}, lista.map(function(t){ return h('button', {class:'peq', title:'Fala em voz grave e lenta (voz do aparelho)', onclick:function(){ falar(t); }}, [t]); })) : null; }
+  function musicasUI(id){
+    var g = grupoDe(id); if (!g) return null;
+    var fs = g.faixas.filter(function(f){ return f.usar; });
+    if (!fs.length) return h('p', {class:'sub dm-nota'}, ['Nenhuma música marcada para este inimigo na aba Seleção.']);
+    var playing = (typeof tocando !== 'undefined') ? tocando : null;
+    return h('div', {class:'dm-mus'}, fs.map(function(f){
+      var on = playing === f;
+      return h('button', {class:'dm-m' + (on ? ' on' : ''), 'aria-pressed':String(on), title:f.momento, onclick:function(){ try { tocar(f, 600, {fila:g.faixas.filter(function(x){ return x.usar; })}); } catch (e) {} setTimeout(function(){ desenhar2(true); }, 250); }},
+        [h('span', {class:'dm-mp'}, [on ? '■' : '▶']), h('span', {class:'dm-mn'}, [f.nome, h('small', {}, [f.momento])])]);
+    }));
   }
-  function mirror(id, txt){ return h('button', {class:'peq', onclick:function(){ var b = document.getElementById(id); if (b) b.click(); }}, [txt]); }
+  function secao(t, corpo, aberto){ return corpo ? h('details', {class:'dm-sec', open:aberto ? '' : null}, [h('summary', {}, [t]), corpo]) : null; }
   function desenhar2(forcar){
-    var nc = noCombate(), assinatura = nc.atual + '|' + nc.porque + '|' + nc.presentes.join(',') + '|' + S.fix + '|' + Object.keys(S.cam).length;
+    var nc = noCombate(), playing = (typeof tocando !== 'undefined' && tocando) ? tocando.id : '';
+    var assinatura = nc.atual + '|' + nc.porque + '|' + nc.presentes.join(',') + '|' + S.fix + '|' + playing;
     if (!forcar && assinatura === assin && dir.firstChild) return; assin = assinatura;
-    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Ambiente e sons']), h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
-    var tit = (document.getElementById('agoraTit') || {}).textContent || 'Silêncio';
-    var agora = h('div', {class:'dm-agora'}, [h('span', {class:'sub'}, ['Música tocando']), h('b', {id:'dmTit'}, [tit]), h('div', {class:'dm-trans'}, [mirror('btAnt', 'Anterior'), mirror('btPausa', 'Pausar / tocar'), mirror('btProx', 'Próxima'), mirror('btSil', 'Silêncio')])]);
-    var vol = h('label', {class:'dm-vol'}, ['Volume dos sons ', h('input', {type:'range', min:'0', max:'100', value:String(S.vol), 'aria-label':'Volume dos sons sintetizados', oninput:function(ev){ AU.mestre(+ev.target.value); }, onchange:gravar}),
-      h('button', {class:'peq perigo', onclick:function(){ AU.tudo(); desenhar2(true); }}, ['Parar tudo'])]);
-    var chips = h('div', {class:'dm-chips', role:'group', 'aria-label':'Inimigo em combate'}, [h('button', {class:'peq', 'aria-pressed':String(!S.fix), onclick:function(){ S.fix = ''; gravar(); desenhar2(true); }}, ['Automático'])].concat(Object.keys(CAT).map(function(id){
-      var est = (nc.presentes.indexOf(id) >= 0 ? ' •' : ''); return h('button', {class:'peq', 'aria-pressed':String(S.fix === id), onclick:function(){ S.fix = id; gravar(); desenhar2(true); }}, [CAT[id].nome + est]); })));
-    var onde = nc.atual ? h('div', {class:'dm-onde'}, [h('span', {class:'sub'}, ['Em combate · ' + nc.porque]), h('b', {}, [CAT[nc.atual].nome])]) : h('div', {class:'dm-onde'}, [h('span', {class:'sub'}, ['Nenhum inimigo na iniciativa. Os sons gerais estão abaixo; escolha um inimigo para ver os dele.'])]);
-    var corpo = [onde, chips];
-    if (nc.atual) corpo.push(bloco('Sons de ' + CAT[nc.atual].nome, CAT[nc.atual], true));
-    var gen = bloco('Sons gerais', GERAL, !nc.atual);
-    var outros = h('details', {class:'dm-bloco'}, [h('summary', {}, ['Sons dos outros inimigos'])].concat(Object.keys(CAT).filter(function(id){ return id !== nc.atual; }).map(function(id){ return bloco(CAT[id].nome, CAT[id], false); })));
-    corpo.push(gen, outros);
-    var nota = h('p', {class:'sub dm-nota'}, ['Os sons são gerados no aparelho: funcionam sem internet. Toque uma vez em qualquer botão para o navegador liberar o áudio. As frases em latim usam a voz do aparelho.']);
+    // ao trocar de inimigo, as músicas da aba Seleção e da Sessão passam para o grupo dele
+    if (nc.atual && nc.atual !== ultimo) { ultimo = nc.atual; var g0 = grupoDe(nc.atual); if (g0) { try { atual = g0.id; atualSes = g0.id; } catch (e) {} } }
+    var sel = h('select', {'aria-label':'Sons de qual inimigo', onchange:function(ev){ S.fix = ev.target.value; gravar(); desenhar2(true); }},
+      [h('option', {value:''}, ['Seguir a ficha aberta'])].concat(Object.keys(CAT).map(function(id){ var o = h('option', {value:id}, [CAT[id].nome + (nc.presentes.indexOf(id) >= 0 ? ' •' : '')]); if (S.fix === id) o.selected = true; return o; })));
+    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Sons']), sel, h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
+    var vol = h('label', {class:'dm-vol'}, [h('span', {}, ['Volume']), h('input', {type:'range', min:'0', max:'100', value:String(S.vol), 'aria-label':'Volume dos sons sintetizados', oninput:function(ev){ AU.mestre(+ev.target.value); }, onchange:gravar}),
+      h('button', {class:'peq perigo', onclick:function(){ AU.tudo(); desenhar2(true); }}, ['Parar sons'])]);
+    var corpo = [];
+    if (nc.atual) {
+      var c = CAT[nc.atual];
+      corpo.push(h('div', {class:'dm-onde'}, [h('b', {}, [c.nome]), h('span', {class:'sub'}, [nc.porque])]));
+      corpo.push(secao('Músicas de ' + c.nome, musicasUI(nc.atual), true));
+      corpo.push(secao('Efeitos', efeitosUI(c.ef), true));
+      corpo.push(secao('Som de fundo', h('div', {class:'dm-cams'}, c.ca.map(camadaUI)), true));
+      if (c.fr.length) corpo.push(secao('Frases em latim', frasesUI(c.fr), true));
+    } else corpo.push(h('p', {class:'sub dm-nota'}, ['Abra a ficha de um inimigo (ou ponha um na iniciativa) e os sons e as músicas dele aparecem aqui.']));
+    corpo.push(secao('Sons gerais', h('div', {}, [efeitosUI(GERAL.ef), h('div', {class:'dm-sub'}, ['Fundo']), h('div', {class:'dm-cams'}, GERAL.ca.map(camadaUI))]), !nc.atual));
+    corpo.push(h('p', {class:'sub dm-nota'}, ['Sons gerados no aparelho, sem internet. Toque uma vez em qualquer botão para liberar o áudio.']));
     var rol = dir.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
-    dir.textContent = ''; dir.append(topo, agora, vol, h('div', {class:'dm-corpo'}, corpo.concat([nota])));
+    dir.textContent = ''; dir.append(topo, vol, h('div', {class:'dm-corpo'}, corpo.filter(Boolean)));
     var n = dir.querySelector('.dm-corpo'); if (n) n.scrollTop = st;
   }
 
   /* ===================== MENU LATERAL (tópicos do Mestre) ===================== */
   var nav = h('aside', {id:'navMestre', 'aria-label':'Tópicos do Mestre'});
-  var abrirNav = h('button', {id:'nmAbrir', class:'lat-aba esq', 'aria-label':'Abrir os tópicos do Mestre', onclick:function(){ S.nav = 1; gravar(); aplicar(); }}, ['☰ Tópicos']);
+  var abrirNav = h('button', {id:'nmAbrir', class:'lat-aba esq', 'aria-label':'Abrir os tópicos do Mestre', onclick:function(){ S.nav = 1; gravar(); aplicar(); }}, ['Tópicos']);
   var NOMES = {palco:'Agora tocando', rot:'Roteiro da noite', gat:'Gatilhos', esp:'Cena especial', noite:'A noite (volta e pétalas)', ab:'Abates', notas:'Notas', ini:'Iniciativa e PV', inm:'Inimigos e ações', apo:'Tobias e Rafaela', fim:'Fim da noite', anja:'Oferta da anja', loops:'Registro das voltas', jog:'Jogadores e votação', falas:'Falas e anotações', rit:'Ritmo da noite', dados:'Dados', aud:'Clima e som', elenco:'Elenco de apoio'};
   function titulo(el0, id){ var s = el0.querySelector(':scope > summary'); if (s && s.textContent.trim()) return s.textContent.trim(); var t = el0.querySelector('h3, h2'); return (NOMES[id] || (t && t.textContent.trim()) || id); }
   function irPara(el0){
@@ -267,13 +281,10 @@
     var pm = document.getElementById('painelMestre'); if (!pm) return;
     var itens = [], sig = '';
     Array.prototype.forEach.call(pm.children, function(c){ var id = c.dataset && c.dataset.p; if (!id || c.hidden) return; var t = titulo(c, id); itens.push({id:id, t:t, el:c}); sig += id + t + '|'; });
-    var bls = Array.prototype.slice.call(pm.querySelectorAll('.inm-bl[data-e]')); bls.forEach(function(b){ sig += b.dataset.e + ','; });
     if (sig === navSig && nav.firstChild) return; navSig = sig;
     var lista = h('nav', {class:'nm-lista'});
     itens.forEach(function(it){
       lista.append(h('button', {class:'nm-it', onclick:function(){ var alvo = pm.querySelector(':scope > [data-p="' + it.id + '"]'); irPara(alvo); }}, [it.t]));
-      if (it.id === 'inm') bls.forEach(function(b){ var inm = (typeof INIMIGOS !== 'undefined') ? INIMIGOS.filter(function(x){ return x.id === b.dataset.e; })[0] : null;
-        lista.append(h('button', {class:'nm-it sub2', onclick:function(){ var bb = pm.querySelector('.inm-bl[data-e="' + b.dataset.e + '"]'); if (bb) bb.scrollIntoView({block:'start', behavior:'smooth'}); }}, [inm ? inm.nome : b.dataset.e])); });
     });
     nav.textContent = ''; nav.append(h('div', {class:'nm-top'}, [h('b', {}, ['Tópicos']), h('button', {class:'peq', 'aria-label':'Recolher os tópicos', onclick:function(){ S.nav = 0; gravar(); aplicar(); }}, ['«'])]), lista);
   }
