@@ -1,0 +1,74 @@
+/* Mesa do Mestre: largura total, cabeçalho que acompanha e recolhe, menu lateral de tópicos e painel de sons. */
+:root{--hdr-h:0px;--nav-w:214px;--dir-w:336px;--gv-top:calc(var(--hdr-h) + 8px);--gv-h:calc(100vh - var(--hdr-h) - var(--barra-h,0px) - 28px)}
+
+/* largura: usa a tela toda */
+header,main{max-width:none}
+html[data-aba="mes"] body{padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+html:not([data-aba="mes"]) header,html:not([data-aba="mes"]) main{max-width:1500px}
+:root[data-layout="3"]:not([data-aba="mes"]) header,:root[data-layout="3"]:not([data-aba="mes"]) main{max-width:1500px}
+:root[data-layout="3"][data-aba="mes"] header,:root[data-layout="3"][data-aba="mes"] main{max-width:none}
+:root[data-layout="2"][data-aba="mes"] main{max-width:none}
+
+/* cabeçalho que segue a rolagem */
+header{position:relative}
+@media (max-width:899px){header{position:sticky;top:env(safe-area-inset-top,0px);z-index:25;background:var(--fundo)}}
+@media (min-width:900px){:root:not([data-layout="2"]) header{position:sticky;top:0;z-index:25;background:var(--fundo)}}
+header .puxa{position:absolute;right:0;bottom:-1px;transform:translateY(100%);z-index:2;padding:0 16px;height:18px;min-height:0;line-height:16px;font-size:10px;border-radius:0 0 8px 8px;background:var(--painel2);border:1px solid var(--linha);border-top:0;color:var(--apagado)}
+:root[data-layout="2"] header .puxa{display:none}
+@media (max-width:899px){:root[data-layout="2"] header .puxa{display:block}}
+html[data-hdr="rec"] header>*:not(.puxa){display:none!important}
+html[data-hdr="rec"] header{padding:0;min-height:0;height:0;border:0;display:block}
+@media (min-width:900px){html[data-hdr="rec"][data-layout="2"] header>*:not(.puxa){display:revert!important}}
+.inm-abas{top:var(--hdr-h,0px)!important}
+
+/* grade da aba Mestre: tópicos | conteúdo | sons */
+@media (min-width:1100px){
+  html[data-aba="mes"] main{display:grid;grid-template-columns:var(--cn,var(--nav-w)) minmax(0,1fr) var(--cd,var(--dir-w));column-gap:16px;align-items:start}
+  html[data-aba="mes"][data-nav="0"] main{--cn:0px;column-gap:0}
+  html[data-aba="mes"][data-nav="0"][data-dir="0"] main{column-gap:0}
+  html[data-aba="mes"][data-dir="0"] main{--cd:0px}
+  html[data-aba="mes"] main>*{grid-column:2;min-width:0}
+  html[data-aba="mes"] main>#navMestre{grid-column:1;grid-row:1/span 30}
+  html[data-aba="mes"] main>#dirMesa{grid-column:3;grid-row:1/span 30}
+  html[data-aba="mes"][data-nav="0"] main{column-gap:16px;grid-template-columns:0 minmax(0,1fr) var(--cd,var(--dir-w))}
+  html[data-aba="mes"][data-nav="0"][data-dir="0"] main{grid-template-columns:0 minmax(0,1fr) 0}
+  html[data-aba="mes"][data-dir="0"] main{grid-template-columns:var(--cn,var(--nav-w)) minmax(0,1fr) 0}
+  html[data-aba="mes"] main>#navMestre,html[data-aba="mes"] main>#dirMesa{position:sticky;top:var(--gv-top);align-self:start}
+}
+
+/* as duas gavetas */
+#navMestre,#dirMesa{display:none;flex-direction:column;background:var(--painel);border:1px solid var(--linha);border-radius:10px;overflow:hidden;max-height:max(220px,var(--gv-h))}
+html[data-aba="mes"][data-nav="1"] #navMestre,html[data-aba="mes"][data-dir="1"] #dirMesa{display:flex}
+.nm-top,.dm-top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--linha);flex:none}
+.nm-lista{display:flex;flex-direction:column;overflow:auto;padding:6px;gap:2px;overscroll-behavior:contain}
+.nm-it{text-align:left;border:0;border-left:3px solid transparent;border-radius:0 6px 6px 0;background:none;padding:9px 10px;min-height:40px;font-size:14px;color:var(--marfim)}
+.nm-it:hover{background:var(--painel2);border-left-color:var(--terracota)}
+.nm-it.sub2{padding-left:26px;font-size:13px;color:var(--apagado)}
+.dm-corpo{overflow:auto;padding:4px 12px 14px;overscroll-behavior:contain;display:flex;flex-direction:column;gap:10px}
+.dm-agora,.dm-vol,.dm-onde{padding:10px 12px 0;display:flex;flex-direction:column;gap:6px}
+.dm-agora b,.dm-onde b{font-size:15px;overflow-wrap:anywhere}
+.dm-trans,.dm-efs,.dm-chips{display:flex;flex-wrap:wrap;gap:6px}
+.dm-vol{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--apagado)}
+.dm-vol input{flex:1;min-width:90px}
+.dm-bloco{border:1px solid var(--linha);border-radius:8px;padding:0 10px 10px;background:var(--painel2)}
+.dm-bloco>summary{cursor:pointer;padding:10px 0;font-weight:600}
+.dm-bloco .dm-bloco{background:none}
+.dm-sub{font-size:12px;color:var(--apagado);margin:8px 0 4px}
+.dm-cam{display:grid;grid-template-columns:minmax(0,1fr) minmax(70px,1fr);gap:8px;align-items:center;margin-bottom:4px}
+.dm-cam button[aria-pressed="true"],.dm-chips button[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
+.dm-efs.frases button{font-style:italic;text-align:left}
+.dm-nota{font-size:12px;line-height:1.4}
+#dirMesa input[type=range]{accent-color:var(--terracota);min-width:0}
+
+/* abas laterais que reabrem as gavetas */
+.lat-aba{display:none;position:fixed;z-index:21;top:calc(var(--hdr-h) + 12px);padding:8px 12px;border-radius:0 8px 8px 0;background:var(--painel);border:1px solid var(--linha);font-size:13px}
+.lat-aba.esq{left:0}.lat-aba.dir{right:0;border-radius:8px 0 0 8px}
+html[data-aba="mes"][data-nav="0"] #nmAbrir,html[data-aba="mes"][data-dir="0"] #dmAbrir{display:block}
+
+/* tela estreita: as gavetas flutuam por cima */
+@media (max-width:1099px){
+  html[data-aba="mes"][data-nav="1"] #navMestre,html[data-aba="mes"][data-dir="1"] #dirMesa{position:fixed;z-index:40;top:calc(var(--hdr-h) + 6px);bottom:calc(var(--barra-h,0px) + 6px);max-height:none;box-shadow:0 18px 40px -8px var(--sombra)}
+  html[data-aba="mes"][data-nav="1"] #navMestre{left:6px;width:min(300px,calc(100vw - 48px))}
+  html[data-aba="mes"][data-dir="1"] #dirMesa{right:6px;width:min(380px,calc(100vw - 48px))}
+}
+@media (prefers-reduced-motion:no-preference){#navMestre,#dirMesa{animation:gv .18s ease-out}@keyframes gv{from{opacity:0;transform:translateX(-6px)}}}
