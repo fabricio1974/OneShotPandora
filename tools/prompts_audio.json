@@ -7,7 +7,8 @@
   "Fundos em loop de 20 s com \"seamless loop\"; efeitos de 2 a 6 s.",
   "O Thorian não tem asas (dragão oriental serpentino): nada de batida de asas nem de sopro de fogo; o poder dele é azul/elétrico.",
   "O Anjo parece um demônio (chifres, pele de brasa, asas de couro): voz e asas de demônio, brilho sagrado por baixo.",
-  "prio 1 = gerar primeiro; prio 3 = só se sobrar crédito."
+  "prio 1 = gerar primeiro; prio 3 = só se sobrar crédito.",
+  "Ambientes saem muito baixos do modelo: ao gerar, acrescente \", recorded close up and clearly audible at full volume\" (prompt_influence 0.6) e normalize o volume depois (alvo RMS 0.06 nos fundos e 0.12 nos efeitos, pico máximo 0.92)."
  ],
  "sons": [
   {
@@ -1043,5 +1044,6 @@
    "nome": "Queda Luminosa (noturna, com bando"
   }
  ],
- "revisao": "Revisado por subagente contra imagens, fichas e mapa em 17/11/2026; ajustes aplicados."
+ "revisao": "Revisado por subagente contra imagens, fichas e mapa em 17/11/2026; ajustes aplicados.",
+ "geradoEm": "17/11/2026: 91 sons gerados e normalizados no navegador do app (IndexedDB do site); ainda não existem em audio/ no repositório."
 }
