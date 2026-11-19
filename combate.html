@@ -2026,24 +2026,24 @@ function cartaAcao(i, a, pref){
   else if (a.desdeRodada) uso.append(el('span',{class:'inm-rot pronta'}, 'Disponível (rodada ' + m.rodada + ')'));
   const lin = el('div',{class:'inm-lin'});
   if (a.cat === 'amb') { const x = ambEst(i), on = x.atual.includes(a.id), ant = x.ant.includes(a.id);
-    lin.append(el('button',{class:'inm-usar', 'aria-pressed':on ? 'true' : 'false', disabled:!on && ambBloq(i, a), 'aria-label':(on ? 'Desmarcar ' : 'Usar nesta rodada: ') + a.nome,
+    lin.append(el('button',{class:'inm-usar','data-i':i.id,'data-a':a.id, 'aria-pressed':on ? 'true' : 'false', disabled:!on && ambBloq(i, a), 'aria-label':(on ? 'Desmarcar ' : 'Usar nesta rodada: ') + a.nome,
       onclick:() => desf('Ambiente: ' + a.nome, () => { const e = s.amb[i.id] || (s.amb[i.id] = {ant:[], atual:[]}); if (on) e.atual = e.atual.filter(y => y !== a.id); else { e.atual.push(a.id); s.ult.unshift({t:i.nome + ' (ambiente): ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); } ofer = ACAO_COND[k] && !on ? {k} : null; }, ['inm'])},
       on ? '✓ Usada nesta rodada' : 'Usar nesta rodada'),
       ...(ant ? [el('span',{class:'inm-rot gasta'}, 'Usada na rodada anterior: não repete')] : []));
   } else if (a.cat === 'lend') {
     const ok = a.custo <= lendMax(i) - lendGasto(i);
-    lin.append(el('button',{class:'inm-usar', 'aria-disabled':ok ? 'false' : 'true', 'aria-label':'Usar ' + a.nome + ' (custa ' + a.custo + ')', onclick:() => { if (!ok) { toast('Sem ações lendárias suficientes (custa ' + a.custo + ').'); return; }
+    lin.append(el('button',{class:'inm-usar','data-i':i.id,'data-a':a.id, 'aria-disabled':ok ? 'false' : 'true', 'aria-label':'Usar ' + a.nome + ' (custa ' + a.custo + ')', onclick:() => { if (!ok) { toast('Sem ações lendárias suficientes (custa ' + a.custo + ').'); return; }
       desf('Lendária: ' + a.nome, () => { s.lend[i.id] = lendGasto(i) + a.custo; ofer = ACAO_COND[k] ? {k} : null; s.ult.unshift({t:i.nome + ' (lendária): ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); }, ['inm']); }}, 'Usar (−' + a.custo + ')'));
   } else if (u || a.rec || ACAO_COND[k]) {
-    lin.append(el('button',{class:'inm-usar', disabled:gasta, 'aria-label':'Usar ' + a.nome, onclick:() => desf('Usar ' + a.nome, () => {
+    lin.append(el('button',{class:'inm-usar','data-i':i.id,'data-a':a.id, disabled:gasta, 'aria-label':'Usar ' + a.nome, onclick:() => desf('Usar ' + a.nome, () => {
       if (u && usado < u.n) s.uso[k] = usado + 1;
       if (a.rec) s.rec[k] = {r:0, ok:false};
       ofer = ACAO_COND[k] ? {k} : null;
       s.ult.unshift({t:i.nome + ': ' + a.nome, r:m.rodada}); s.ult.length = Math.min(s.ult.length, 5); }, escCard(k))}, 'Usar'));
   }
   if (i.id === 'ozy' && a.id === 'resistencia-lendaria') lin.append(el('button',{class:'peq', 'aria-label':'Um jogador usou Resistência Lendária: o Ozymandias recupera uma (Avareza)', onclick:() => desf('Avareza: recupera 1 Resistência', () => { s.uso[k] = Math.max(0, usado - 1); }, ['c:' + k])}, 'Avareza: recuperar 1'));
-  if (ef.atk) lin.append(el('button',{class:'inm-atk', 'aria-label':'Rolar ataque de ' + a.nome + ' com bônus +' + ef.atk.b, onclick:() => { const r = rolarAtk(ef.atk.b, ef.atk.crit); rolAt[k] = r.txt; if (r.n === 20) rolCrit[k] = 1; else delete rolCrit[k]; desenhar(['c:' + k]); }}, 'Ataque +' + ef.atk.b));
-  (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk', onclick:() => { rolInm[k] = rolarMulti(i, mu); rolTot[k] = +rolInm[k].match(/: (\d+) de dano/)[1]; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; desenhar(['c:' + k]); }}, ico('dado'), mu.lab)));
+  if (ef.atk) lin.append(el('button',{class:'inm-atk','data-i':i.id,'data-a':a.id, 'aria-label':'Rolar ataque de ' + a.nome + ' com bônus +' + ef.atk.b, onclick:() => { const r = rolarAtk(ef.atk.b, ef.atk.crit); rolAt[k] = r.txt; if (r.n === 20) rolCrit[k] = 1; else delete rolCrit[k]; desenhar(['c:' + k]); }}, 'Ataque +' + ef.atk.b));
+  (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk','data-i':i.id,'data-a':a.id, onclick:() => { rolInm[k] = rolarMulti(i, mu); rolTot[k] = +rolInm[k].match(/: (\d+) de dano/)[1]; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; desenhar(['c:' + k]); }}, ico('dado'), mu.lab)));
   (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = usaMedia() && !/^\d+$/.test(d.e) ? {t:mediaX(d.e), txt:'Dano médio ' + mediaX(d.e) + ' (' + fmtE(d.e) + ')'} : rolarX(d.e); rolInm[k] = r.txt + ' ' + d.t; rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; delete rolCrit[k]; if (d.k === 'd') { const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; } desenhar(['c:' + k]); }},
     ico('dado'), (d.k === 'c' ? 'Curar ' : '') + (usaMedia() && !/^\d+$/.test(d.e) ? mediaX(d.e) + ' (' + fmtE(d.e) + ') ' : fmtE(d.e) + ' ') + d.t)));
   const comps = (ef.dano || []).filter(d => d.k === 'd');
@@ -2144,7 +2144,7 @@ function pressUI(){
     el('div',{class:'inm-pd'}, ...dados),
     p && !atual ? el('span',{class:'inm-rot gasta'}, 'Estes dados são da volta ' + p.v + '. Role de novo para a volta ' + v + '.') : null,
     el('div',{class:'inm-lin'},
-      el('button',{class:'inm-atk', onclick:() => desf('Presságio rolado', () => { s.pres = {v, d:Array.from({length:n}, () => ({v:rdN(20), u:0}))}; })}, ico('dado'), (atual ? 'Rolar de novo ' : 'Rolar ') + n + ' dados'),
+      el('button',{class:'inm-atk','data-i':i.id,'data-a':a.id, onclick:() => desf('Presságio rolado', () => { s.pres = {v, d:Array.from({length:n}, () => ({v:rdN(20), u:0}))}; })}, ico('dado'), (atual ? 'Rolar de novo ' : 'Rolar ') + n + ' dados'),
       p && p.d.length < 6 ? el('button',{class:'peq', 'aria-label':'Ler a Roda: acrescentar 1d20 (no máximo 6 guardados)', onclick:() => desf('Ler a Roda', () => { p.d.push({v:rdN(20), u:0}); })}, '+1d20 (Ler a Roda)') : null,
       p && p.d.some(d => d.u) ? el('span',{class:'inm-rot'}, p.d.filter(d => !d.u).length + ' disponíveis') : null));
 }
@@ -2699,6 +2699,6 @@ if (uiRest && typeof uiRest === 'object') {
 desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
-<script src="mesa.js?v=13"></script>
+<script src="mesa.js?v=14"></script>
 </body>
 </html>

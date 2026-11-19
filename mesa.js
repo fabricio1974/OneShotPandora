@@ -653,5 +653,13 @@
   window.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && window.innerWidth < 1100 && (S.nav || S.dir)) { /* fecha as gavetas em telas estreitas */ S.nav = 0; S.dir = 0; gravar(); aplicar(); } });
   if (window.innerWidth < 1100) { S.nav = 0; S.dir = 0; }   // em tela estreita começam fechadas
   aplicar();
+  /* efeitos dos inimigos: botão de ação (Usar / Rolar ataque) toca o MP3 correspondente */
+  var FX_ACAO = {"ozy":{"pedra-orbital":"pedraOrbital","mao-de-orbita":"pedraOrbital","ataques-multiplos":"pedraOrbital","inverter":"inverterGrav","l-inverter":"inverterGrav","cobranca":"moedas","l-cobranca":"moedas","peso-da-conta":"gravidade","saturno":"gravidade","a-gravidade-pesada":"gravidade","a-ilhas-flutuantes":"ilhasFlutuantes","a-chuva-de-rochas":"meteoro"},"elodie":{"pincelada":"pincelada","ataques-multiplos":"pincelada","l-pincelada-rapida":"pincelada","raspar":"raspar","salto-de-cor":"saltoCor","l-retrato":"moldura","a-esbocar":"esboco","obra-prima-de-sala":"obraPrima","a-antecipar":"obraPrima"},"esau":{"arpao-de-corrente":"arpao","l-arpao":"arpao","chuva-de-ferro":"chuvaFerro","a-ponte-de-ferro":"ponteFerro","a-correntes-brotam":"correntesBrotam","facao":"facao","flecha-de-ferro":"flecha"},"jael":{"martelo-de-guerra":"martelo","estaca":"estaca","arremessar-estaca":"estaca","a-estacas-do-chao":"estacasChao","a-tenda-desaba":"tendaDesaba","batida-do-tambor":"pulsoTambor","a-tambor-no-peito":"pulsoTambor","l-rufar":"rufar"},"ezequiel":{"rodas-de-fogo":"rodasFogo","raio-da-roda":"raioRoda","a-eco-do-futuro":"sussurro","a-nota-grave":"orgao"},"hildegarda":{"maca-sagrada":"macaSagrada","chama-sagrada-maior":"chamaSagrada","sino-de-bronze":"sinoBronze","ave-generosa":"aveGenerosa","palavra-curativa":"luz"},"anjo":{"espada-flamejante":"espada","julgamento":"julgamento","l-clarao":"clarao","escudo-de-asas":"escudoAsas","asas":"asasCouro"}};
+  document.addEventListener('click', function(e){
+    var b = e.target && e.target.closest && e.target.closest('.inm-usar,.inm-atk');
+    if (!b || b.getAttribute('aria-disabled') === 'true' || b.getAttribute('aria-pressed') === 'true' || b.disabled) return;
+    var m = FX_ACAO[b.getAttribute('data-i')], id = m && m[b.getAttribute('data-a')];
+    if (id) { try { AU.efeito(id); } catch (x) {} }
+  }, true);
   window.OTLMesa = {AU:AU, S:S, aplicar:aplicar, CAT:CAT, noCombate:noCombate, DEFS:{VOZ_PADRAO:VOZ_PADRAO, CAT:CAT, VOZP:VOZP, GEN_V:GEN_V, PDEF:PDEF, DIAL:DIAL, CAN:CAN, EFN:EFN}};
 })();
