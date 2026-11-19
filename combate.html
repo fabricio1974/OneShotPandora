@@ -661,6 +661,29 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .cc-cat{display:flex;align-items:center;gap:8px}.cc-cat .gi{width:18px;height:18px;display:inline-block;color:var(--terracota)}.cc-cat .gi svg{width:100%;height:100%;display:block}
 .cc-cat.t-bonus .gi{color:#e6c84a}.cc-cat.t-reacao .gi{color:#7fb0e6}.cc-cat.t-recarga .gi{color:#e58a5a}
 .cc-tg .ic{width:16px;height:16px}
+.cena{display:inline-block;margin-top:5px;font-size:12px;line-height:1.35;padding:2px 9px;border-radius:999px;border:1px solid var(--linha);border-left-width:4px;color:var(--apagado)}
+.cena b{font-weight:600}
+.cena.tG,.chip.tG{border-left-color:#9b3d2c}.cena.tA,.chip.tA{border-left-color:var(--ouro)}.cena.tM,.chip.tM{border-left-color:#5f8f6a}.cena.tE,.chip.tE{border-left-color:#6b4fa0}
+.chip.tG,.chip.tA,.chip.tM,.chip.tE{border-left-width:4px;border-left-style:solid}
+.filtro-cena{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 14px}
+.filtro-cena .rot{font-size:13px;color:var(--apagado);margin-right:4px}
+.cena-exp{margin:0 0 12px;color:var(--apagado)} .cena-grupo{margin:18px 0 8px;font-size:15px}
+.cl-sel{display:flex;gap:8px;flex-wrap:wrap;grid-column:2/-1}
+.cena-s{opacity:.75}
+.cen-topo p{color:var(--apagado);margin:0 0 10px;line-height:1.5}
+.cen-bts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.cen-sec{border:1px solid var(--linha);border-left-width:5px;border-radius:8px;margin-bottom:10px;background:var(--painel)}
+.cen-sec.tG{border-left-color:#9b3d2c}.cen-sec.tA{border-left-color:var(--ouro)}.cen-sec.tM{border-left-color:#5f8f6a}.cen-sec.tE{border-left-color:#6b4fa0}
+.cen-cab{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;width:100%;text-align:left;background:none;border:0;padding:12px 14px;cursor:pointer;color:inherit;font:inherit}
+.cen-cab .nm{font-weight:600}.cen-cab .ax{color:var(--apagado);font-size:13px}.cen-cab .n{margin-left:auto;color:var(--apagado);font-size:13px}
+.cen-lista{padding:0 10px 10px}
+.cen-lin{display:grid;grid-template-columns:auto 1fr auto;gap:6px 10px;align-items:center;padding:8px 6px;border-top:1px solid var(--linha)}
+.cen-lin.fora .cen-tx{opacity:.7}.cen-lin.tocando{background:rgba(255,255,255,.04)}
+.cen-tx{min-width:0}.cen-lin .t,.cen-lin .m{overflow-wrap:anywhere}.cen-lin{min-width:0}.cen-lin select{width:100%;min-width:0}.cen-lin .t{font-weight:600}.cen-lin .m{color:var(--apagado);font-size:13px}
+.cen-lin select{grid-column:2/-1;max-width:100%}
+.cen-usar{display:flex;gap:4px;align-items:center;font-size:13px}
+.novo{font-size:10px;letter-spacing:.06em;padding:1px 6px;border-radius:4px;background:var(--ouro);color:#1a1612;margin-right:6px;vertical-align:2px}
+@media (max-width:560px){.cen-lin{grid-template-columns:auto 1fr}.cen-usar{grid-column:2}}
 </style>
 <link rel="stylesheet" href="visual.css">
 <link rel="stylesheet" href="mesa.css?v=10">
@@ -671,6 +694,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   <div class="abas" role="tablist">
     <button role="tab" id="abaSel" aria-selected="true">Seleção</button>
     <button role="tab" id="abaTri" aria-selected="false">Triagem</button>
+    <button role="tab" id="abaCen" aria-selected="false">Cenas</button>
     <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
     <button role="tab" id="abaMes" aria-selected="false">Mestre</button>
     <button role="tab" id="abaAj" aria-selected="false">Ajustes</button>
@@ -682,6 +706,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   <nav class="elenco" id="elenco" aria-label="Personagens"></nav>
   <section id="selecao"></section>
   <section id="triagem" hidden></section>
+  <section id="cenas" hidden></section>
   <section id="sessao" hidden></section>
   <section id="painelMestre" hidden></section>
   <section id="ajustes" hidden></section>
@@ -732,15 +757,17 @@ const PADRAO = [
   F('esau-wolftotem','The HU — “Wolf Totem”','Combate: canto difônico com bateria pesada','combate',0,['jM8dCGIm6yc','WQ7XW0_teB4','rMbH9zimuG0','sv29DzgiXZA']),
   F('esau-yuve','The HU — “Yuve Yuve Yu”','Combate alternativo','combate',0,['v4xZUr0BEfE','KpqERx0nyw0','1Gtn1RPXdsg','HqVjBiuRg0c']),
   F('esau-helvegen','Wardruna — “Helvegen”','A flecha que mata a Rafaela (volta 1)','momento',0,['DD65K4VR6Lw','n90SVmnomdM','Fjm93-0ssFo','CuWPsx6U8rU']),
+  F('esau-lobo','Heitor Pereira — tema da Morte, o Lobo (Gato de Botas 2)','O assobio: quando o Esaú surge do nada ou a morte se aproxima','momento',0,['oFWjOD0duuA','dVbyQkn6GWg','QnkE47Kmvv4']),
  ]},
  { id:'ezequiel', nome:'Ezequiel — o vidente', sub:'Órgão de tubos.', faixas:[
   F('eze-apparition','Messiaen — “Apparition de l’église éternelle”','Entrada: lenta, esmagadora, cresce até o insuportável','entrada',1,['NPpS5QxqGT0','-kPQC4ET9yk','U55l83hRplE','wMgtq-2mLvg']),
   F('eze-volumina','Ligeti — “Volumina”','Quando ele usa o Presságio','momento',0,['G7bdwarV6SQ','w6U0qXfBArc','_hnoMNgKrwg','5ih0Mc4cG8M']),
   F('eze-passacaglia','Bach — Passacaglia em Dó menor, BWV 582','Combate: implacável, como destino','combate',0,['I8A4vyLvO4M','M_YbYOamKCc','0U1IXmxADFE','3v2dWK8N5OE']),
-  F('eze-tocata','Bach — Tocata e Fuga em Ré menor, BWV 565','Combate (clássico, todo mundo reconhece)','combate',0,['Nnuq9PXbywA','8tpzyYFqJWM','erXG9vnN-GI','dkQrj-eEs-M']),
-  F('eze-caution','Hans Zimmer — “No Time for Caution” (Interstellar)','Combate moderno, órgão e urgência','combate',0,['m3zvVGJrTP8','2o9KfyPqQzY','pXEiGpchK1U','rpWC9-VBjPM']),
+  F('eze-tocata','Bach — Tocata e Fuga em Ré menor, BWV 565','Combate (conhecida demais: pode virar piada)','combate',0,['Nnuq9PXbywA','8tpzyYFqJWM','erXG9vnN-GI','dkQrj-eEs-M']),
+  F('eze-caution','Hans Zimmer — “No Time for Caution” (Interstellar)','Virada: os jogadores descobrem como quebrar o presságio','combate',0,['m3zvVGJrTP8','2o9KfyPqQzY','pXEiGpchK1U','rpWC9-VBjPM']),
   F('eze-dieu','Messiaen — “Dieu parmi nous”','Quando ele percebe que já viveu aquilo (a partir da volta 2)','momento',0,['1wZnq7S3LPg','cMlYI2hCd-Y','Mg9qeDZnVW4','1oRSr6t0n7M']),
   F('eze-annum','Arvo Pärt — “Annum per annum”','Entrada alternativa, fria e meditativa','entrada',0,['HyO9Qt4QNQM','13ODUyBxIRg','xb78DY2UMHE','Wf7Wln0tQA8']),
+  F('eze-koyaa','Philip Glass — “Koyaanisqatsi”','Presságio: o órgão repetindo o mesmo destino enquanto ele lê o futuro','momento',0,['YvmyEY9N4j4','rBID6WwPUUA']),
  ]},
  { id:'jael', nome:'Jael — a força bruta', sub:'Taikô e tambores de guerra.', faixas:[
   F('jael-odaiko','Kodo — “O-Daiko”','Combate: o grande tambor','combate',1,['3cqOTcW-upA','QiFS6if581A','C7HL5wYqAbU','uTJQV2-WRts']),
@@ -749,6 +776,7 @@ const PADRAO = [
   F('jael-yamato','Yamato — “The Drummers of Japan”','Combate alternativo, mais rápido','combate',0,['tVames7B5P8','XTlxkQBTTtA','B-2QEeTgDLw','KOcc-ybd1Rs']),
   F('jael-krigsgaldr','Heilung — “Krigsgaldr”','Entrada ritual, canto de guerra','entrada',0,['VZZjSb393L4','QRg_8NNPTD8']),
   F('jael-battle','Hans Zimmer — “The Battle” (Gladiador)','Combate cinematográfico','combate',0,['4A3tP6Ium80','xdJ5dWYwIn0','DMi8AgoHqdM','qUwbhKkLK4c']),
+  F('jael-traust','Heilung — “Traust”','Entrada ritual, lenta e pesada, antes do primeiro golpe','entrada',0,['HVw_1RZncec','viqXlfkbWmQ','y6Yahh_I7IE']),
  ]},
  { id:'hildegarda', nome:'Hildegarda — a clériga', sub:'Hildegard von Bingen. Melhores gravações: Sequentia, Gothic Voices, Anonymous 4.', faixas:[
   F('hil-ovis','“O vis aeternitatis”','Entrada: a oração antes da luta','entrada',1,['1SlL-hBeSA4','9eFPJa95qQE','_Vcv2HdApcs','GMW6AD2F2-4']),
@@ -759,6 +787,7 @@ const PADRAO = [
   F('hil-virtus','“O virtus Sapientiae”','Entrada alternativa, curta e luminosa','entrada',0,['T9cZv9A8h50','q0zhnNh4D9k','lQXaDwkcQAk','xBtmxupy0Mw']),
   F('hil-columba','“Columba aspexit”','Quando ela morre de vez','momento',0,['puAOTgq3Wkc','ULzsbJPCXuE','p5EtfnhD8_g','e1czFcmmkUg']),
   F('hil-ordo','“Ordo Virtutum”','Reserva para o final: as Virtudes lutando por uma alma','momento',0,['zUMlhtoGTzY','WBGgRSPyUFQ','yq7Gm7eKY0I','38bHeVw_nAA']),
+  F('hil-agnikai','Jeremy Zuckerman — “The Last Agni Kai” (Avatar)','Combate quando a luta vira drama: ela luta pela família, não para vencer','combate',0,['JONpdQyvl88']),
  ]},
  { id:'demonio', nome:'O “demônio”', sub:'O sagrado que soa aterrorizante.', faixas:[
   F('dem-lux','Ligeti — “Lux Aeterna”','Quando ele desce: um coro santo e assustador','entrada',0,['j2cRjiC4ODI','vxLzzF2_nJA','CXULsghOD4o','YM3jPUK278I']),
@@ -777,7 +806,7 @@ const PADRAO = [
   F('ozy-marte','Holst — “Marte, o Portador da Guerra”','Combate','combate',1,['xZfIUz1S97U','yBGrdJM5XNk','l0rYwQByJs8','Xmuzpg7ucb8']),
   F('ozy-urano','Holst — “Urano, o Mágico”','Quando ele arranca a terra e vira a gravidade','momento',1,['ETF_uEgACuo','DEb1gtMljyA','fUyVFKA1MaU','gCMf2oENmEM']),
   F('ozy-netuno','Holst — “Netuno, o Místico”','Quando ele cai ou vai embora','momento',1,['pcyfAgnlO-8','oFMXNUHuWug','2w8Bz6vNVlw','JnemonlWKjU']),
-  F('ozy-zaratustra','Richard Strauss — “Assim Falou Zaratustra” (abertura)','Fase 2: quando ele chega à metade da vida','momento',0,['dK-QO3v41a0','SLuW-GBaJ8k','YrosMLXK7mo','6mmuNxYLxTs']),
+  F('ozy-zaratustra','Richard Strauss — “Assim Falou Zaratustra” (abertura)','Fase 2: a virada — os jogadores percebem que podem vencer','momento',0,['dK-QO3v41a0','SLuW-GBaJ8k','YrosMLXK7mo','6mmuNxYLxTs']),
   F('ozy-atmospheres','Ligeti — “Atmosphères”','Quando ele lembra das voltas (a partir da volta 4)','momento',0,['jUaPwTL5vL8','E-bemE-bCXQ','zDP3DJYFqEA','STFREC64OvA']),
   F('ozy-mountains','Hans Zimmer — “Mountains” (Interstellar)','Combate alternativo: tempo e gravidade','combate',0,['OtOd3Aa-xqg','wAf-UE0g2bk','hXFqaVlL7pA','arNkB9vxS3Q']),
  ]},
@@ -817,6 +846,39 @@ const PADRAO = [
   F('via-girlslast','Shōjo Shūmatsu Ryokō — trilha original','Silêncio da estrada, o mundo vazio','momento',0,['PbTmTN6y288','uIoZymsd1sI','sVJHUzIjBs0']),
   F('via-mipha','Zelda: Breath of the Wild — “Mipha’s Theme”','Rafaela cura alguém, as mãos brilham','momento',0,['IMUskzgFGN8','S6LRtGtBygI']),
   F('via-mushishi','Lucy Rose — “Shiver” (Mushishi)','Noite de chuva, floresta, tensão baixa','momento',0,['1YoYbpBGaJM','HeGOII4mKjA','VZyJDN_dC20']),
+ ]},
+ { id:'virada', nome:'Virada — os jogadores brilham', sub:'Rápidas, agudas e marcadas: para quando o grupo vira a luta (chefe abaixo de 25%, Não Hoje acionado, golpe decisivo). Servem para qualquer inimigo.', faixas:[
+  F('vir-zoltraak','Evan Call — “Zoltraak” (Frieren)','Virada: o golpe que muda a luta','combate',1,['7S3eJG-8v_E']),
+  F('vir-dragonsmasher','Evan Call — “Dragon Smasher” (Frieren)','Virada: o grupo encurrala o inimigo','combate',0,['__dQcNsxhTI']),
+  F('vir-heart','Two Steps From Hell — “Heart of Courage”','Virada épica, coro e percussão','combate',0,['K2iC1aCPbKA','-V3jz_zXBlI']),
+  F('vir-victory','Two Steps From Hell — “Victory”','Virada final: a vitória está ao alcance','combate',0,['hKRUPYrAQoE','4rWDum7A5-c']),
+  F('vir-protectors','Two Steps From Hell — “Protectors of the Earth”','Virada: todos juntos contra o chefe','combate',0,['x5Q_TSNk-p4','ASj81daun5Q']),
+  F('vir-pirate','Klaus Badelt — “He’s a Pirate”','Virada com ousadia e bom humor','combate',0,['BuYf0taXoNw','yRh-dzrI4Z4']),
+  F('vir-testdrive','John Powell — “Test Drive” (Como Treinar o Seu Dragão)','Esforço heroico fora da luta: voo, fuga ousada, salto impossível','momento',0,['IpPIK4T068s','zTSXiF_cxG8']),
+ ]},
+ { id:'banco', nome:'Banco por tipo de cena', sub:'Faixas de uso geral para completar os tipos de cena do vídeo (ritmo × tom × compasso). Use o filtro “Tipo de cena” na Seleção.', faixas:[
+  F('ban-imperial','John Williams — “A Marcha Imperial”','Imponência: algo maior que os jogadores chega','entrada',0,['vsMWVW4xtwI','F2l01rUZQmc']),
+  F('ban-dream','Hans Zimmer — “Dream Is Collapsing” (A Origem)','Imponência: o mundo desaba ao redor','entrada',0,['OzLhXesNkCI','jvT9Sq97mhg']),
+  F('ban-beast','Jóhann Jóhannsson — “The Beast” (Sicario)','Perigo que se aproxima devagar, tensão sem luta','momento',0,['k4zh8RwhjZ0','sN9gcEZMZO8']),
+  F('ban-terminator','Brad Fiedel — tema de “O Exterminador do Futuro”','Ameaça imparável: o inimigo não negocia (exemplo do vídeo)','combate',0,['2D9FfPyebss']),
+  F('ban-duel','John Williams — “Duel of the Fates”','Combate pesado, coro e urgência','combate',0,['D_2bluVPsb0','97-0ghnBMcs','J1gH_cjdb60']),
+  F('ban-brothers','Junkie XL — “Brothers in Arms” (Mad Max)','Combate em movimento, perseguição','combate',0,['akggf50-mRI']),
+  F('ban-time','Hans Zimmer — “Time” (A Origem)','Determinação: a decisão antes do último esforço','momento',0,['c56t7upa8Bk','va1oiojnGrA']),
+  F('ban-onelast','Evan Call — “One Last Adventure” (Frieren)','Determinação: partir para a última luta juntos','momento',0,['q5cw38y5Ajo']),
+  F('ban-nowfree','Hans Zimmer e Lisa Gerrard — “Now We Are Free”','Esperança depois da luta, despedida','momento',0,['mQQKZ5cgybU','PV4GKu_A10U']),
+  F('ban-baldmountain','Mussorgsky — “Uma Noite no Monte Calvo”','Pânico e fuga: o perigo vem de todos os lados','momento',0,['52iOdAVU4C8','iCEDfZgDPS8']),
+  F('ban-supermarine','Hans Zimmer — “Supermarine” (Dunkirk)','Pânico e fuga: o tempo acabando, a tensão que não para de subir','momento',0,['n1VJ39nVIBk','P_wDEQn_DhU']),
+  F('ban-moldau','Smetana — “O Moldava”','Leveza em movimento: viagem pelo rio, estrada que corre','momento',0,['l6kqu2mk-Kw']),
+  F('ban-hebrides','Mendelssohn — Abertura “As Hébridas”','Leveza em movimento: travessia pelo mar e pela costa','momento',0,['zcogD-hHEYs','MdQyN7MYSN8']),
+  F('ban-arabesque','Debussy — “Arabesque nº 1”','Leveza em movimento: algo mágico e delicado acontecendo','momento',0,['cVYH-7QGE-A','JCTQTp1PdnA']),
+  F('ban-romanticflight','John Powell — “Romantic Flight” (Como Treinar o Seu Dragão)','Esforço heroico: voo, descoberta, o mundo visto do alto','momento',0,['ZJR8tuO-mIU','imb7I9AzRZk']),
+  F('ban-laputa','Joe Hisaishi — “The Girl Who Fell from the Sky” (Laputa)','Esforço heroico: alguém cai do céu, é preciso agir já','momento',0,['m6uCJ0DNUWE','Yy8MEO_2AYo']),
+  F('ban-psycho','Bernard Herrmann — “The Murder” (Psicose)','Horror em ação: o golpe de surpresa, o grito','momento',0,['gcQVMhL-PgY','AMk3IYxErGE']),
+  F('ban-polymorphia','Penderecki — “Polymorphia”','Horror em ação: algo antinatural se mexe','momento',0,['Wtq5iCxCIdU','cgAVtI6g4zg']),
+  F('ban-chevaliers','Hans Zimmer — “Chevaliers de Sangreal” (O Código Da Vinci)','Determinação solene: a revelação que dá coragem','momento',0,['aAi5FHSkUAQ','pAL6sGxOWEs']),
+  F('ban-finlandia','Sibelius — “Finlândia”','Determinação solene: o hino antes da última batalha','momento',0,['fE0RbPsC9uE','F5zg_af9b8c']),
+  F('ban-gymnopedie','Satie — “Gymnopédie nº 1”','Fundo calmo com pulso: taverna, conversa, descanso','momento',0,['2WfaotSK3mI','S-Xm7s9eGxU']),
+  F('ban-bolero','Ravel — “Boléro”','Fundo com pulso que cresce: preparação, tensão que acumula','momento',0,['Dh9bUD-hC0A','LwLABSm0yYc']),
  ]},
 ];
 
@@ -901,6 +963,11 @@ function carregar(){
   { const gr = s.grupos.find(x => x.id === 'raquel');   // Raquel virou Elizabeth: o grupo da trilha muda de id sem perder as músicas editadas
     if (gr && !s.grupos.some(x => x.id === 'elodie')) { gr.id = 'elodie'; if (gr.nome === 'Raquel — a escudeira') gr.nome = 'Elizabeth — a pintora'; if (gr.sub === 'Luta junto com o Ozymandias. Estas são para os momentos dela.') gr.sub = 'Luta junto com o Ozymandias (a música dela é a dele). Estas são para os momentos dela.'; }
     if (Array.isArray(s.rem)) s.rem = s.rem.map(x => x === 'raquel' ? 'elodie' : x); }
+  if (!s.trilhaV3) { s.trilhaV3 = 1;                       // faixas reposicionadas pelo método ritmo × tom × compasso
+    const troca = {'eze-caution':['Combate moderno, órgão e urgência','Virada: os jogadores descobrem como quebrar o presságio'],
+      'eze-tocata':['Combate (clássico, todo mundo reconhece)','Combate (conhecida demais: pode virar piada)'],
+      'ozy-zaratustra':['Fase 2: quando ele chega à metade da vida','Fase 2: a virada — os jogadores percebem que podem vencer']};
+    s.grupos.forEach(g => g.faixas.forEach(f => { const t = troca[f.id]; if (t && f.momento === t[0]) { f.momento = t[1]; if (f.id === 'eze-tocata') f.usar = false; } })); }
   for (const pg of PADRAO) {                                // músicas novas do padrão entram sem apagar nada do que foi mexido
     if (s.rem.includes(pg.id)) continue;
     let g = s.grupos.find(x => x.id === pg.id);
@@ -1125,6 +1192,69 @@ document.getElementById('arqImg').onchange = ev => {
   im.src = url;
 };
 
+
+// ---------- Tipo de cena (método do vídeo: ritmo × tom × compasso) ----------
+// Ritmo: R rápido (urgência) / L lento (concentração). Tom: G grave (o desafio é mais forte), M médio (calma),
+// A agudo (os jogadores brilham), E extremos (grave e agudo juntos: horror). Compasso: M marcado (esforço físico) / F fluido (drama).
+const CL = {'esau-kongurei':'LGF','esau-60horses':'LMM','esau-alash':'LMF','esau-kaakhem':'RGM','esau-wolftotem':'RGM','esau-yuve':'RGM','esau-helvegen':'LGF','esau-lobo':'LEF','eze-apparition':'LGF','eze-volumina':'LEF','eze-passacaglia':'LGM','eze-tocata':'RGM','eze-caution':'RAM','eze-dieu':'RAM','eze-annum':'LMF','eze-koyaa':'LGM','jael-odaiko':'LGM','jael-yatai':'RGM','jael-monochrome':'LMM','jael-yamato':'RGM','jael-krigsgaldr':'LGM','jael-battle':'RGM','jael-traust':'LGM','hil-ovis':'LAF','hil-spiritus':'LAF','hil-angeli':'LAF','hil-ave':'LAF','hil-ignis':'LAF','hil-virtus':'LAF','hil-columba':'LAF','hil-ordo':'LAF','hil-agnikai':'LGF','dem-lux':'LEF','dem-kyrie':'LEF','dem-trenodia':'REF','dem-heptapod':'LEF','dem-diesirae':'RGM','raq-gorecki':'LGF','raq-daylight':'LGF','raq-barber':'LGF','ozy-saturno':'LGM','ozy-marte':'RGM','ozy-urano':'RGM','ozy-netuno':'LAF','ozy-zaratustra':'LAM','ozy-atmospheres':'LEF','ozy-mountains':'LGM','aka-dragon':'RAM','mom-spiegel':'LMF','mom-alina':'LAF','mom-departure':'LMF','mom-stabat':'LGF','mom-dido':'LGM','mom-lacrimosa':'LGM','mom-miserere':'LAF','via-frieren-journey':'RMM','via-frieren-time':'LMF','via-konosuba-town':'RMM','via-konosuba-chiisana':'RMM','via-konosuba-sleeps':'LMF','via-totoro':'LMF','via-kiki':'RMM','via-spirited':'LMF','via-howl':'LMM','via-kikujiro':'RMM','via-porco':'LMF','via-laputa':'LMF','via-windrises':'LMF','via-shire':'RMM','via-spice':'LMF','via-flyingwitch':'LMF','via-kino':'LMF','via-natsume':'LMF','via-violet':'LMF','via-yokohama':'LMF','via-girlslast':'LMF','via-mipha':'LMF','via-mushishi':'LMF','vir-zoltraak':'RAM','vir-dragonsmasher':'RAM','vir-heart':'RAM','vir-victory':'RAM','vir-protectors':'RAM','vir-pirate':'RAM','vir-testdrive':'RAF','ban-imperial':'LGM','ban-dream':'LGM','ban-beast':'LGM','ban-terminator':'RGM','ban-duel':'RGM','ban-brothers':'RGM','ban-time':'LAM','ban-onelast':'LAM','ban-nowfree':'LAF','ban-baldmountain':'RGF','ban-supermarine':'RGF','ban-moldau':'RMF','ban-hebrides':'RMF','ban-arabesque':'RMF','ban-romanticflight':'RAF','ban-laputa':'RAF','ban-psycho':'REF','ban-polymorphia':'REF','ban-chevaliers':'LAM','ban-finlandia':'LAM','ban-gymnopedie':'LMM','ban-bolero':'LMM'};
+const CL_RIT = {R:'Rápido', L:'Lento'}, CL_TOM = {G:'Grave', M:'Médio', A:'Agudo', E:'Extremos'}, CL_COM = {M:'Marcado', F:'Fluido'};
+const CENAS = {
+ RGM:'Ameaça física: vocês estão perdendo', RGF:'Pânico e fuga', LGM:'Imponência: o chefe chega', LGF:'Pavor, luto e drama sombrio',
+ RAM:'Virada: os jogadores brilham', RAF:'Esforço heroico ou descoberta urgente', LAM:'Determinação solene', LAF:'Luz e esperança: cura, prece, revelação',
+ RMM:'Aventura leve, estrada animada', RMF:'Leveza em movimento', LMM:'Fundo calmo com pulso', LMF:'Calma, conversa e viagem',
+ REM:'Horror em ação', REF:'Horror em ação', LEM:'Horror que se aproxima', LEF:'Horror que se aproxima: o sagrado que assusta'};
+const ORDEM_CENA = ['RGM','RGF','LGM','LGF','REM','REF','LEM','LEF','RAM','RAF','LAM','LAF','RMM','RMF','LMM','LMF'];
+const clDe = f => (f.cl || CL[f.id] || '');
+const cenaNome = c => CENAS[c] || '';
+const cenaTit = c => c ? CL_RIT[c[0]]+' · '+CL_TOM[c[1]]+' · '+CL_COM[c[2]] : '';
+function chipCena(f){ const c = clDe(f); if (!c) return null;
+  return el('div',{class:'cena t'+c[1], title:cenaTit(c)}, el('b',{}, cenaNome(c)), ' — ', cenaTit(c)); }
+let cenaF = '';
+function filtroCenas(){
+  const cont = {}; E.grupos.forEach(g => g.faixas.forEach(f => { const c = clDe(f); if (c) cont[c] = (cont[c]||0)+1; }));
+  const box = el('div',{class:'filtro-cena'}, el('span',{class:'rot'},'Tipo de cena:'),
+    el('button',{class:'chip so', 'aria-pressed':String(!cenaF), onclick:()=>{ cenaF=''; desenhar(); }},'Por personagem'));
+  ORDEM_CENA.filter(c => cont[c] && !(c==='REM'||c==='LEM')).forEach(c => box.append(
+    el('button',{class:'chip so t'+c[1], 'aria-pressed':String(cenaF===c), title:cenaTit(c), onclick:()=>{ cenaF = cenaF===c ? '' : c; desenhar(); }}, cenaNome(c).split(':')[0], el('span',{class:'n'}, String(cont[c])))));
+  return box;
+}
+
+
+// ---------- Aba Cenas: todas as músicas por tipo de cena, para ouvir e corrigir ----------
+const NOVAS = new Set(['esau-lobo','eze-koyaa','jael-traust','hil-agnikai','vir-zoltraak','vir-dragonsmasher','vir-heart','vir-victory','vir-protectors','vir-pirate','vir-testdrive','ban-imperial','ban-dream','ban-beast','ban-terminator','ban-duel','ban-brothers','ban-time','ban-onelast','ban-nowfree','ban-baldmountain','ban-supermarine','ban-moldau','ban-hebrides','ban-arabesque','ban-romanticflight','ban-laputa','ban-psycho','ban-polymorphia','ban-chevaliers','ban-finlandia','ban-gymnopedie','ban-bolero']);
+let cenSoNovas = false, cenAbertas = new Set(['RAM']);
+function desenharCenas(){
+  const raiz = document.getElementById('cenas'); raiz.replaceChildren();
+  const porCena = {}; const semCl = [];
+  E.grupos.forEach(g => g.faixas.forEach(f => { if (cenSoNovas && !NOVAS.has(f.id)) return; const c = clDe(f); if (!c) { semCl.push([g,f]); return; } (porCena[c] = porCena[c] || []).push([g,f]); }));
+  raiz.append(el('div',{class:'cen-topo'},
+    el('p',{}, 'As músicas de todos os personagens, separadas pelo tipo de cena (método do vídeo: ', el('b',{},'ritmo'), ' rápido = urgência, lento = concentração; ', el('b',{},'tom'), ' grave = o desafio é mais forte, agudo = os jogadores brilham, médio = calma, extremos = horror; ', el('b',{},'compasso'), ' marcado = esforço físico, fluido = drama). A classificação foi feita sem ouvir: ouça e corrija no seletor de cada música.'),
+    el('div',{class:'cen-bts'},
+      el('label',{class:'lin'}, el('input',{type:'checkbox', id:'cenNovas', checked:cenSoNovas, onchange:ev=>{ cenSoNovas = ev.target.checked; desenhar(); }}), 'Só as músicas novas'),
+      el('button',{class:'peq', onclick:()=>{ ORDEM_CENA.forEach(c => cenAbertas.add(c)); desenhar(); }},'Abrir todas'),
+      el('button',{class:'peq', onclick:()=>{ cenAbertas.clear(); desenhar(); }},'Fechar todas'))));
+  const opcoes = ORDEM_CENA.filter(c => !(c==='REM'||c==='LEM'));
+  const linha = (g, f, lista) => el('div',{class:'cen-lin'+(f.usar?'':' fora')+(tocando===f?' tocando':'')},
+    el('button',{class:'ouvir'+(tocando===f?' tocando':''), onclick:()=>tocar(f,600,{fila:lista.map(x=>x[1])})}, tocando===f ? 'Parar' : '▶ Ouvir'),
+    el('div',{class:'cen-tx'},
+      el('div',{class:'t'}, NOVAS.has(f.id) ? el('span',{class:'novo'},'NOVA') : null, f.nome),
+      el('div',{class:'m'}, el('b',{}, g.nome.split(' — ')[0]), ' · ', f.momento || PAPEIS[f.papel])),
+    el('label',{class:'cen-usar', title:'Marcar para aparecer na Sessão'}, el('input',{type:'checkbox', id:'cu-'+f.id, checked:f.usar, onchange:ev=>{ f.usar = ev.target.checked; salvar(); desenhar(); }}), 'Usar'),
+    (()=>{ const s = el('select',{id:'cc-'+f.id, 'aria-label':'Tipo de cena de '+f.nome, onchange:ev=>{ f.cl = ev.target.value; cenAbertas.add(f.cl); salvar(); desenhar(); }});
+      opcoes.forEach(c => s.append(el('option',{value:c, selected:clDe(f)===c}, cenaNome(c).split(':')[0]+' ('+cenaTit(c)+')'))); return s; })());
+  for (const c of opcoes) {
+    const lista = porCena[c] || []; const aberta = cenAbertas.has(c);
+    const sec = el('section',{class:'cen-sec t'+c[1]},
+      el('button',{class:'cen-cab', 'aria-expanded':String(aberta), onclick:()=>{ aberta ? cenAbertas.delete(c) : cenAbertas.add(c); desenhar(); }},
+        el('span',{class:'nm'}, cenaNome(c)), el('span',{class:'ax'}, cenaTit(c)), el('span',{class:'n'}, lista.length ? String(lista.length) : 'nenhuma')));
+    if (aberta) sec.append(lista.length ? el('div',{class:'cen-lista'}, ...lista.map(([g,f]) => linha(g,f,lista)))
+      : el('p',{class:'vazio'}, 'Nenhuma música deste tipo ainda.'));
+    raiz.append(sec);
+  }
+  if (semCl.length) raiz.append(el('section',{class:'cen-sec'}, el('div',{class:'cen-cab'}, el('span',{class:'nm'},'Sem classificação'), el('span',{class:'n'}, String(semCl.length))),
+    el('div',{class:'cen-lista'}, ...semCl.map(([g,f]) => linha(g,f,semCl)))));
+}
+
 // ---------- Modo Seleção ----------
 function mover(lista, i, d){ const j = i+d; if (j<0 || j>=lista.length) return; [lista[i], lista[j]] = [lista[j], lista[i]]; salvar(); desenhar(); }
 function cartaoFaixa(g, f, i){
@@ -1135,7 +1265,7 @@ function cartaoFaixa(g, f, i){
   const custom = idDoLink(f.link), v = videoDe(f);
   return el('div',{class:'faixa'+(f.usar?'':' fora')},
     el('input',{type:'checkbox', class:'usar', id:'u-'+f.id, checked:f.usar, onchange:mud('usar',x=>x,true), 'aria-label':'Usar '+f.nome}),
-    el('div',{}, el('div',{class:'nome'}, f.st ? el('span',{class:'st', title:'Sugestão'},'★') : null, f.nome), el('div',{class:'momento'}, f.momento),
+    el('div',{}, el('div',{class:'nome'}, f.st ? el('span',{class:'st', title:'Sugestão'},'★') : null, f.nome), el('div',{class:'momento'}, f.momento), chipCena(f),
       el('div',{class:'estado'+(estados[f.id]?' ruim':'')}, estados[f.id] || (custom ? 'Usando o seu link.' : f.videos.length ? 'Gravação '+(f.grav%f.videos.length+1)+' de '+f.videos.length+'.' : 'Sem vídeo.'), ' ',
         v ? el('a',{href:'https://www.youtube.com/watch?v='+v, target:'_blank', rel:'noopener'},'Abrir no YouTube') : null)),
     el('button',{class:'ouvir'+(tocando===f?' tocando':''), onclick:()=>tocar(f,600,{fila:g.faixas})}, tocando===f ? 'Parar' : 'Ouvir'),
@@ -1145,7 +1275,10 @@ function cartaoFaixa(g, f, i){
       el('label',{class:'c'},'Ou cole um link do YouTube', el('input',{type:'text', id:'l-'+f.id, value:f.link, placeholder:'https://youtu.be/…', onchange:mud('link',x=>x,true)})),
       el('label',{class:'c'},'Início (s)', el('input',{type:'number', id:'i-'+f.id, min:0, value:f.inicio, onchange:mud('inicio',Number)})),
       el('label',{class:'c'},'Volume', el('input',{type:'range', id:'v-'+f.id, min:0, max:100, value:f.vol, oninput:mud('vol',Number)})),
-      el('label',{class:'lin'}, el('input',{type:'checkbox', id:'r-'+f.id, checked:f.repetir, onchange:mud('repetir')}), 'Repetir')),
+      el('label',{class:'lin'}, el('input',{type:'checkbox', id:'r-'+f.id, checked:f.repetir, onchange:mud('repetir')}), 'Repetir'),
+      (()=>{ const c = clDe(f) || 'LMF'; const muda = pos => ev => { const a = (clDe(f)||'LMF').split(''); a[pos] = ev.target.value; f.cl = a.join(''); salvar(); desenhar(); };
+        const s = (pos, ops, rot) => { const x = el('select',{id:'cl'+pos+'-'+f.id, onchange:muda(pos), 'aria-label':rot}); Object.entries(ops).forEach(([v,t]) => x.append(el('option',{value:v, selected:c[pos]===v},t))); return el('label',{class:'c'}, rot, x); };
+        return el('div',{class:'cl-sel'}, s(0, CL_RIT, 'Ritmo'), s(1, CL_TOM, 'Tom'), s(2, CL_COM, 'Compasso')); })()),
     el('details',{class:'editar', open:!!editando[f.id], ontoggle:ev=>{ editando[f.id] = ev.target.open; }}, el('summary',{},'Editar, mover ou remover'),
       el('div',{class:'ctrl'},
         el('label',{class:'c'},'Nome', el('input',{type:'text', class:'largo', id:'n-'+f.id, value:f.nome, onchange:mud('nome',x=>x.trim()||f.nome,true)})),
@@ -1157,6 +1290,14 @@ function cartaoFaixa(g, f, i){
 }
 function desenharSelecao(){
   const raiz = document.getElementById('selecao'); raiz.replaceChildren();
+  raiz.append(filtroCenas());
+  if (cenaF) {
+    raiz.append(el('p',{class:'cena-exp'}, el('b',{}, cenaNome(cenaF)), ' — ', cenaTit(cenaF)));
+    E.grupos.forEach(g2 => { const fs = g2.faixas.map((f,i) => [f,i]).filter(([f]) => clDe(f) === cenaF); if (!fs.length) return;
+      raiz.append(el('h3',{class:'cena-grupo'}, g2.nome));
+      fs.forEach(([f,i]) => raiz.append(cartaoFaixa(g2,f,i))); });
+    return;
+  }
   const gi = E.grupos.findIndex(x => x.id === atual), g = E.grupos[gi];
   if (!g) { raiz.append(el('p',{class:'vazio'},'Nenhum personagem. Toque em “＋ Personagem” para criar um.')); }
   else {
@@ -2347,7 +2488,7 @@ function desenharSessao(){
     const grade = el('div',{class:'grade'});
     for (const f of esc) { atalhos.push(f); const n = atalhos.length;
       grade.append(el('button',{class:'cena'+(tocando===f?' tocando':''), onclick:ev=>tocar(f, ev.shiftKey ? 0 : null, {fila:atalhos}), title:'Shift + clique: entra sem transição'},
-        g.img ? el('img',{class:'mini', src:g.img, alt:''}) : null, el('span',{class:'papel'}, PAPEIS[f.papel]), el('span',{class:'t'}, f.nome), el('span',{class:'m'}, f.momento), el('span',{class:'tecla'}, n<=9 ? 'Tecla '+n : ''))); }
+        g.img ? el('img',{class:'mini', src:g.img, alt:''}) : null, el('span',{class:'papel'}, PAPEIS[f.papel]), el('span',{class:'t'}, f.nome), el('span',{class:'m'}, f.momento, clDe(f) ? el('span',{class:'cena-s'}, ' · '+cenaNome(clDe(f)).split(':')[0]) : null), el('span',{class:'tecla'}, n<=9 ? 'Tecla '+n : ''))); }
     raiz.append(grade);
   }
 }
@@ -2363,7 +2504,7 @@ function desenhar(esc){
 }
 function desenhar0(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
+  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cen'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -2446,12 +2587,13 @@ $('btSil').onclick = () => parar(0);
 $('btVid').onclick = ev => { const p = $('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
 let trava = null;
 function aba(qual){ modo = qual; document.body.dataset.aba = qual;
-  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
+  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['cen','cenas','abaCen'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
   if (qual === 'mes') rotRolar = true;
   if (qual!=='sel' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga
   desenhar(); salvaUI(); }
 $('abaSel').onclick = () => aba('sel');
 $('abaTri').onclick = () => aba('tri');
+$('abaCen').onclick = () => aba('cen');
 $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
 $('abaAj').onclick = () => aba('aj');
