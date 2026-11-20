@@ -444,15 +444,29 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 
 /* ===== Desktop / notebook (prioridade): duas colunas, ações em grade ===== */
 .cc-cat{margin:14px 0 0;font:600 13px/1 var(--texto);color:var(--apagado);letter-spacing:.02em;padding-bottom:6px;border-bottom:1px solid var(--linha)}
+body[data-aba="mes"] #painelMestre > :is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"]){display:none}
+body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"])){display:none}
+.tks{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px;touch-action:none;user-select:none;-webkit-user-select:none}
+.tk{position:relative;display:flex;align-items:center;gap:6px;min-height:48px;padding:4px 6px 4px 10px;border-radius:12px;border:1px solid var(--linha);background:var(--painel,#1c1712);cursor:grab;touch-action:none}
+.tk.jog{border-color:#6fb6e8aa}.tk.inim{border-color:#e0685aaa}
+.tk.vez{background:#3a2c10;border-color:var(--ouro);box-shadow:0 0 0 2px var(--ouro) inset}
+.tk .tk-p{font-size:11px;color:var(--apagado);min-width:1.1em;text-align:center}
+.tk .tk-n{font-weight:700;white-space:nowrap}
+.tk .tk-i{width:3.2em;min-height:34px;text-align:center;padding:2px}
+.tk button{min-height:34px;min-width:34px;padding:0;border-radius:8px;line-height:1}
+.tk .tk-x{color:var(--apagado);background:transparent;border-color:transparent}
+.tk.arrasta{z-index:20;opacity:.92;cursor:grabbing;box-shadow:0 12px 26px -6px #000;transition:none;pointer-events:auto}
+.tks.arrastando .tk:not(.arrasta){transition:box-shadow .1s}
+.tk.alvo-a{box-shadow:-5px 0 0 0 var(--ouro)}.tk.alvo-d{box-shadow:5px 0 0 0 var(--ouro)}
+.tks-dica{margin:2px 0 8px}
+.i-qj{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}.i-qj .jq{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;border:1px solid var(--linha);border-radius:12px}.i-qj .jq .q{width:4.2em}
+.subaj{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}.subaj[hidden]{display:none}
+.subaj .chip[aria-selected="true"]{background:var(--ouro);color:var(--sobre);border-color:var(--ouro)}
+.aj-atalhos,.aj-combate{margin:0 0 18px}.aj-atalhos .lin2{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.aj-atalhos a.btn-at{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:10px;background:var(--ouro);color:var(--sobre);font-weight:700;text-decoration:none}
 @media (min-width:1000px){
   body[data-aba="mes"] header, body[data-aba="mes"] main, body[data-aba="cmb"] header, body[data-aba="cmb"] main{max-width:1760px}
   body[data-aba="mes"] #painelMestre > [data-p]:not([data-p="inm"]), body[data-aba="cmb"] #painelMestre > [data-p]:not([data-p="inm"]){max-width:1000px}
-  body[data-aba="mes"] #painelMestre > :is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"]){display:none}
-  body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"])){display:none}
-  .subaj{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}.subaj[hidden]{display:none}
-  .subaj .chip[aria-selected="true"]{background:var(--ouro);color:var(--sobre);border-color:var(--ouro)}
-  .aj-atalhos,.aj-combate{margin:0 0 18px}.aj-atalhos .lin2{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-  .aj-atalhos a.btn-at{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:10px;background:var(--ouro);color:var(--sobre);font-weight:700;text-decoration:none}
   .dk-sub,[data-p="inm"] > .greca{display:none}
   .dk{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start;margin-top:8px}
   .dk-rail{position:sticky;top:8px;max-height:calc(100svh - var(--barra-h,70px) - 24px);overflow:auto;padding-right:6px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}
@@ -498,7 +512,6 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 
 /* ---- rodada 1 da revisão ---- */
 @media (min-width:1000px){
-  #faixaTurno{display:none!important}
   #toast{left:50%;right:auto;transform:translateX(-50%);bottom:calc(var(--barra-h,0px) + 14px)}
   .dk{grid-template-columns:clamp(250px,21vw,300px) minmax(0,1fr)}
   .dk-rail .lin2{flex-wrap:nowrap}.dk-rail .lin2 button{flex:1 1 auto;padding-inline:8px;font-size:13px}
@@ -1079,7 +1092,7 @@ const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel,
   usar:!!f.st, grav:0, link:'', inicio:0, vol:100, repetir:f.papel==='combate'});
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:'',
-  ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:[{id:'j1',n:'Pedro',pv:'',nota:'',falou:false},{id:'j2',n:'Victor',pv:'',nota:'',falou:false},{id:'j3',n:'Jogador 3',pv:'',nota:'',falou:false},{id:'j4',n:'Jogador 4',pv:'',nota:'',falou:false}],
+  ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:['Pedro','Victor','Wesley','Xande','Higor'].map((n, k) => ({id:'j' + (k+1), n, pv:'', nota:'', falou:false})),
   voto:{s:0,n:0}, inm:{v:2, sel:'esau', todos:false, tag:'', tipo:'', sem:false, uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:'', pvLuta:{}, lutaSel:{}, lend:{}, nh:{}, amb:{}, pres:null, f2:false, f2man:false, elLonge:false, fatorPV:65, fatorDano:100, auto:true, nJog:4, vt:false}, loops:{}, falas:{}, teste:{}, durTotal:270, inicioMesa:0, derrota:false});
 function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m.inm && E.m.inm.v !== 2); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = []; if (!E.m.inm.fav || typeof E.m.inm.fav !== 'object') E.m.inm.fav = {}; if (!Array.isArray(E.m.inm.av)) E.m.inm.av = []; ['pvLuta','lutaSel','lend','nh','amb'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; });
   { const s = E.m.inm; if (inmVelho) { s.v = 2; s.uso = {}; s.rec = {}; s.fav = {}; s.ult = []; s.pvLuta = {}; s.lend = {}; s.nh = {}; s.amb = {}; s.pres = null; s.f2 = false; s.f2man = false; }   // fichas novas: ids de ações novos, estado antigo das cartas é descartado
@@ -1088,6 +1101,9 @@ function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m
     m.ini = m.ini.filter(c => c && typeof c === 'object');   // estado velho ou corrompido: linhas inválidas saem, números viram números
     m.ini.forEach(c => { c.n = String(c.n ?? '?'); c.ini = Number.isFinite(+c.ini) ? +c.ini : 0; c.pv = Number.isFinite(+c.pv) ? +c.pv : 0; if (c.max != null && !Number.isFinite(+c.max)) c.max = c.pv; if (c.cs && !Array.isArray(c.cs)) c.cs = []; });
     m.rodada = Number.isFinite(+m.rodada) && +m.rodada >= 1 ? Math.floor(+m.rodada) : 1; m.turno = Number.isInteger(m.turno) && m.turno >= 0 && m.turno < m.ini.length ? m.turno : 0; }
+  { const NJ = ['Pedro','Victor','Wesley','Xande','Higor'], m = E.m;   // elenco fixo de jogadores (ficha antiga: "Jogador 3/4" viram Wesley/Xande)
+    m.jog.forEach(j => { const t = /^Jogador ([34])$/.exec(j.n || ''); if (t) { j.n = NJ[+t[1] - 1]; m.ini.forEach(c => { if (c.jid === j.id) c.n = j.n; }); } });
+    NJ.forEach((n, k) => { if (!m.jog.some(j => (j.n || '').trim().toLowerCase() === n.toLowerCase())) m.jog.push({id:'j' + (k+1) + Math.random().toString(36).slice(2,5), n, pv:'', nota:'', falou:false}); }); }
   E.m.jog.forEach((j, k) => { if (!j.id) j.id = 'j' + (k+1) + Math.random().toString(36).slice(2,5); if (typeof j.pv === 'undefined') j.pv = ''; });
   E.m.ini.forEach(c => { if (!c.id) c.id = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); });
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
@@ -1774,32 +1790,79 @@ function linhaIni(c, i){
       quick(1), quick(5)),
     bd.length ? el('div',{class:'i-r l3'}, ...bd) : null, pk);
 }
+// ---- iniciativa em fichas arrastáveis (mouse e toque) ----
+let arr = null;
+function moveFicha(c, ate){   // põe a ficha c na posição "ate" (índice final) e acerta o número para a ordem continuar coerente
+  const m = E.m, at = m.ini[m.turno], de = m.ini.indexOf(c); if (de < 0 || de === ate) return;
+  desf('Mover ' + c.n + ' na iniciativa', () => {
+    m.ini.splice(de, 1); m.ini.splice(Math.max(0, Math.min(ate, m.ini.length)), 0, c);
+    const k = m.ini.indexOf(c), ant = m.ini[k - 1], dep = m.ini[k + 1];
+    if (ant && dep) c.ini = ant.ini >= dep.ini ? ant.ini : dep.ini; else if (ant) c.ini = Math.min(c.ini, ant.ini); else if (dep) c.ini = Math.max(c.ini, dep.ini);
+    m.turno = Math.max(0, m.ini.indexOf(at));
+  }, ['ini','inm']);
+}
+function fichaIni(c, i, vez){
+  const inim = ehInim(c), t = el('div',{class:'tk' + (vez ? ' vez' : '') + (inim ? ' inim' : c.j ? ' jog' : ''), 'data-c':c.id, title:'Arraste para mudar a ordem'},
+    el('span',{class:'tk-p', 'aria-hidden':'true'}, String(i + 1)),
+    el('span',{class:'tk-n'}, c.n),
+    el('input',{type:'number', inputmode:'numeric', class:'tk-i', value:c.ini, title:'Iniciativa', 'aria-label':'Iniciativa de ' + c.n, 'data-keep':'tki:' + c.id, onchange:ev => { c.ini = +ev.target.value || 0; salvar(); }}),
+    el('button',{class:'tk-v', type:'button', title:'Passar a vez para ' + c.n, 'aria-label':'Passar a vez para ' + c.n, onclick:() => { const m = E.m, k = m.ini.indexOf(c); if (k === m.turno) return; desf('Vez de ' + c.n, () => { m.turno = k; limpaRol(); condAberta = null; inicioTurno(); focoTurno(); }, ['ini','inm']); }}, '▶'),
+    el('button',{class:'tk-x', type:'button', 'aria-label':'Tirar ' + c.n + ' da iniciativa', title:'Tirar da iniciativa', onclick:() => { const m = E.m; desf('Remover ' + c.n, () => { const k = m.ini.indexOf(c); m.ini.splice(k,1); if (m.turno > k || m.turno >= m.ini.length) m.turno = Math.max(0, Math.min(m.turno - (m.turno > k ? 1 : 0), m.ini.length - 1)); }, ['ini','inm']); }}, '×'));
+  t.addEventListener('pointerdown', ev => {
+    if (ev.button > 0 || ev.target.closest('input,button')) return;
+    arr = {c, el:t, x0:ev.clientX, y0:ev.clientY, on:false, id:ev.pointerId};
+    try { t.setPointerCapture(ev.pointerId); } catch(e){}
+  });
+  t.addEventListener('pointermove', ev => {
+    if (!arr || arr.el !== t) return;
+    if (!arr.on) { if (Math.hypot(ev.clientX - arr.x0, ev.clientY - arr.y0) < 8) return; arr.on = true; t.classList.add('arrasta'); t.parentNode.classList.add('arrastando'); }
+    ev.preventDefault();
+    t.style.transform = 'translate(' + (ev.clientX - arr.x0) + 'px,' + (ev.clientY - arr.y0) + 'px)';
+    const fs = [...t.parentNode.querySelectorAll('.tk')].filter(x => x !== t); fs.forEach(x => x.classList.remove('alvo-a', 'alvo-d'));
+    let best = null, bd = 1e9; fs.forEach(x => { const r = x.getBoundingClientRect(), d = Math.hypot(ev.clientX - (r.left + r.width / 2), ev.clientY - (r.top + r.height / 2)); if (d < bd) { bd = d; best = x; } });
+    arr.alvo = null;
+    if (best) { const r = best.getBoundingClientRect(), antes = ev.clientY < r.top + r.height * .3 || (ev.clientY <= r.bottom && ev.clientX < r.left + r.width / 2); best.classList.add(antes ? 'alvo-a' : 'alvo-d'); arr.alvo = {id:best.dataset.c, antes}; }
+  });
+  const fim = ev => {
+    if (!arr || arr.el !== t) return; const a = arr; arr = null;
+    t.style.transform = ''; t.classList.remove('arrasta'); t.parentNode && t.parentNode.classList.remove('arrastando'); t.parentNode && t.parentNode.querySelectorAll('.alvo-a,.alvo-d').forEach(x => x.classList.remove('alvo-a','alvo-d'));
+    if (!a.on || ev.type === 'pointercancel' || !a.alvo) return;
+    const m = E.m, o = m.ini.find(x => x.id === a.alvo.id); if (!o) return;
+    let k = m.ini.indexOf(o) + (a.alvo.antes ? 0 : 1); if (m.ini.indexOf(a.c) < k) k--;
+    moveFicha(a.c, k);
+  };
+  t.addEventListener('pointerup', fim); t.addEventListener('pointercancel', fim);
+  return t;
+}
 function painelIni(){
   const m = E.m;
   m.ini.forEach(c => { if (!c.id) c.id = uid('c'); });
-  const nome = el('input',{id:'ini_n', placeholder:'Nome', class:'n', list:'ini_sug', 'aria-label':'Nome', 'data-keep':'add_n', oninput:ev => { ev.target.classList.remove('inv'); delete ev.target.dataset.jid; }}), q = el('input',{id:'ini_i', type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa', 'data-keep':'add_i'}), pv = el('input',{id:'ini_p', type:'number', inputmode:'numeric', placeholder:'PV', class:'q', 'aria-label':'PV', 'data-keep':'add_p', oninput:ev => ev.target.classList.remove('inv')});
+  const nome = el('input',{id:'ini_n', placeholder:'Nome (inimigo, Tobias…)', class:'n', list:'ini_sug', 'aria-label':'Nome', 'data-keep':'add_n', oninput:ev => { ev.target.classList.remove('inv'); }}), q = el('input',{id:'ini_i', type:'number', inputmode:'numeric', placeholder:'Inic.', class:'q', 'aria-label':'Iniciativa', 'data-keep':'add_i'}), pv = el('input',{id:'ini_p', type:'number', inputmode:'numeric', placeholder:'PV', class:'q', 'aria-label':'PV', 'data-keep':'add_p', oninput:ev => ev.target.classList.remove('inv')});
   const jogFora = m.jog.filter(j => j.n.trim() && !m.ini.some(c => c.jid === j.id || (c.j && !c.jid && c.n.toLowerCase() === j.n.trim().toLowerCase())));
   const adiciona = () => { const n = nome.value.trim(), v = Math.floor(+pv.value);
     nome.classList.toggle('inv', !n); pv.classList.toggle('inv', !(v > 0));
     if (!n) { nome.focus(); toast('Digite o nome.'); return; }
     if (!(v > 0)) { pv.focus(); toast('Digite o PV (1 ou mais).'); return; }
-    const jg = m.jog.find(j => j.id === nome.dataset.jid) || m.jog.find(j => j.n.trim().toLowerCase() === n.toLowerCase()); if (jg) jg.pv = v;
-    const ii = +q.value || 0; nome.value = ''; pv.value = ''; q.value = ''; delete nome.dataset.jid;
-    desf('Adicionar ' + n, () => m.ini.push(novaLinha({n, ini:ii, pv:v, max:v, j:1, jid:jg ? jg.id : undefined})), ['ini','inm','jog']); };
-  const chips = jogFora.length ? el('div',{class:'i-qj'}, el('span',{class:'inm-rot'}, 'Jogadores:'),
-    ...jogFora.map(j => el('button',{class:'peq', 'aria-label':'Pôr ' + j.n + ' na iniciativa', onclick:() => { nome.value = j.n; nome.dataset.jid = j.id; nome.classList.remove('inv'); pv.value = j.pv || ''; (j.pv ? q : pv).focus(); }}, '＋ ' + j.n)),
-    jogFora.length > 1 ? el('button',{class:'peq', onclick:() => { const f = jogFora.filter(j => !(Math.floor(+j.pv) > 0));
-      if (f.length) { nome.value = f[0].n; nome.dataset.jid = f[0].id; pv.classList.add('inv'); pv.focus(); toast('Falta o PV de ' + f.map(x => x.n).join(', ') + '. Digite aqui ou em Jogadores e votação; fica lembrado.'); return; }
-      desf('Jogadores na iniciativa', () => jogFora.forEach(j => m.ini.push(novaLinha({n:j.n, ini:0, pv:Math.floor(+j.pv), max:Math.floor(+j.pv), j:1, jid:j.id}))), ['ini','inm']); }}, '＋ Todos') : null) : null;
-  return caixa('ini','Iniciativa e PV',
+    const ii = +q.value || 0; nome.value = ''; pv.value = ''; q.value = '';
+    desf('Adicionar ' + n, () => { m.ini.push(novaLinha({n, ini:ii, pv:v, max:v, j:1})); if (ii) ordena(); }, ['ini','inm']); };
+  const ordena = () => { const at = m.ini[m.turno]; m.ini.sort((a,b) => b.ini - a.ini); m.turno = Math.max(0, m.ini.indexOf(at)); };
+  const poeJog = (j, inp) => { const v = inp.value.trim(); if (v === '' || !Number.isFinite(+v)) { inp.classList.add('inv'); inp.focus(); return; }
+    desf(j.n + ' na iniciativa', () => { m.ini.push(novaLinha({n:j.n, ini:+v, pv:1, max:1, j:1, jid:j.id})); ordena(); }, ['ini','inm']); };
+  const chips = jogFora.length ? el('div',{class:'i-qj'}, el('span',{class:'inm-rot'}, 'Jogadores (digite o que tiraram):'),
+    ...jogFora.map(j => { const inp = el('input',{type:'number', inputmode:'numeric', class:'q', placeholder:'Inic.', 'aria-label':'Iniciativa de ' + j.n, 'data-keep':'jq:' + j.id, oninput:ev => ev.target.classList.remove('inv'), onkeydown:ev => { if (ev.key === 'Enter') { ev.preventDefault(); poeJog(j, ev.target); } }});
+      return el('div',{class:'jq'}, el('b',{}, j.n), inp, el('button',{class:'peq', 'aria-label':'Pôr ' + j.n + ' na iniciativa', onclick:() => poeJog(j, inp)}, '＋')); })) : null;
+  const naoJog = m.ini.map((c, i) => [c, i]).filter(([c]) => !c.j);   // jogadores não têm PV na ficha: só aparecem como ficha
+  return caixa('ini','Iniciativa',
     el('datalist',{id:'ini_sug'}, ...['Tobias', 'Rafaela', 'Akari', 'Thorian'].map(n => el('option',{value:n}))),
-    m.ini.length ? el('div',{class:'inis'}, ...m.ini.map(linhaIni)) : el('p',{class:'sub'},'Ninguém na ordem ainda. Os PV são os que você digitar: nenhuma ficha é alterada. Para pôr os inimigos de uma vez, use “Iniciar luta” em Inimigos e ações.'),
+    m.ini.length ? el('div',{class:'tks', role:'list', 'aria-label':'Ordem de iniciativa (arraste para trocar)'}, ...m.ini.map((c, i) => fichaIni(c, i, m.turno === i))) : el('p',{class:'sub'},'Ninguém na ordem ainda. Digite a iniciativa de cada jogador abaixo e depois use “Iniciar luta” em Inimigos e ações: os inimigos entram no meio da ordem.'),
+    m.ini.length ? el('p',{class:'sub tks-dica'}, 'Arraste uma ficha para mudar a ordem, a qualquer hora. ▶ passa a vez para ela.') : null,
     chips,
     el('div',{class:'i-add'}, nome, q, pv, el('button',{onclick:adiciona}, 'Adicionar')),
     el('div',{class:'lin2'},
-      el('button',{class:'peq', onclick:mudar(() => { const at = m.ini[m.turno]; m.ini.sort((a,b) => b.ini - a.ini); m.turno = Math.max(0, m.ini.indexOf(at)); })}, 'Ordenar por iniciativa'),
+      el('button',{class:'peq', onclick:mudar(ordena)}, 'Ordenar por número'),
       el('div',{class:'vezbar'}, el('button',{disabled:!m.ini.length, 'aria-label':'Turno anterior', onclick:antTurno}, ico('esq')), el('button',{disabled:!m.ini.length, onclick:proxTurno}, 'Próximo turno', ico('dir'))),
-      el('button',{class:'peq perigo', onclick:ev => confirmar(ev.target, () => desf('Limpar iniciativa', () => { m.ini = []; m.turno = 0; condAberta = null; }, ['ini','inm']))}, 'Limpar')));
+      el('button',{class:'peq perigo', onclick:ev => confirmar(ev.target, () => desf('Limpar iniciativa', () => { m.ini = []; m.turno = 0; condAberta = null; }, ['ini','inm']))}, 'Limpar')),
+    naoJog.length ? el('div',{class:'inis'}, ...naoJog.map(([c, i]) => linhaIni(c, i))) : null);
 }
 // ---------- Inimigos e ações (referência do Mestre; não altera nenhuma ficha) ----------
 const TAGS = {dano:['espada','Dano','#e0685a'], area:['area','Dano em área','#ee9a5c'], cura:['cura','Cura','#6fcf8f'], movimento:['seta','Movimentação','#6fb6e8'],
@@ -2112,7 +2175,7 @@ function irParaVez(){   // rola até o bloco do inimigo da vez (aba Mestre)
 let pillMax = 0;
 function atualizaFaixa(){
   const f = document.getElementById('faixaTurno'), m = E.m; if (!f) return;
-  const on = m && m.ini && m.ini.length && (modo === 'mes' || modo === 'cmb' || modo === 'ses'); f.hidden = !on; if (!on) { pillMax = 0; document.documentElement.style.setProperty('--pill-h', '0px'); return; }
+  const on = m && m.ini && m.ini.length && true; f.hidden = !on; if (!on) { pillMax = 0; document.documentElement.style.setProperty('--pill-h', '0px'); return; }
   const c = m.ini[m.turno] || m.ini[0], bd0 = badgesCond(c); if (c.pv <= 0) bd0.unshift(el('span',{class:'cb cd'}, 'caído')); const bd = bd0.length > 3 ? [...bd0.slice(0,3), el('span',{class:'cb tx'}, '+' + (bd0.length - 3))] : bd0;
   const podeDes = pilhaDes.length && Date.now() - ultDes < 15000; f.classList.toggle('cd', !!podeDes);   // com Desfazer na pílula, o “Vez de” sai para o nome caber
   f.replaceChildren(el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),

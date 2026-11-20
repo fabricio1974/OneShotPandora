@@ -127,3 +127,6 @@ Aba **Ajustes** no app (e no combate): 3 layouts e 5 paletas por layout, com tro
 
 ## Abas (reorganização)
 Cabeçalho: **Imagens**, **Mestre** (visão geral da noite: roteiro, gatilhos, notas, mapa e apoio), **Combate** (iniciativa e PV, inimigos e ações, Tobias e Rafaela, fim da noite; o player de baixo continua tocando em todas as abas) e **Ajustes**. Dentro de Ajustes há as seções Geral, Seleção, Triagem, Cenas e Sessão. Em Ajustes ficam também os atalhos para o site das cartas e o do mapa e a **Dificuldade dos inimigos**: PV em % da ficha e dano em % (100, 75, 50 ou outro valor; vale para os totais de dano rolados nos cartões).
+
+## Iniciativa em fichas
+Jogadores fixos: Pedro, Victor, Wesley, Xande e Higor (sem PV: só o número que tiraram). Na aba Combate, digite a iniciativa de cada um e Enter; depois "Iniciar luta" põe os inimigos no meio da ordem. As fichas são arrastáveis (mouse e toque) a qualquer hora; ▶ passa a vez para a ficha. A pílula "Vez de ... Próximo" fica na tela em todas as abas (e também no notebook) enquanto houver iniciativa.
