@@ -476,8 +476,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"])){di
 .aj-atalhos a.btn-at{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:10px;background:var(--ouro);color:var(--sobre);font-weight:700;text-decoration:none}
 @media (min-width:1000px){
   body[data-aba="mes"] header, body[data-aba="mes"] main, body[data-aba="cmb"] header, body[data-aba="cmb"] main{max-width:1760px}
-  body[data-aba="mes"] #painelMestre > [data-p]:not([data-p="inm"]){max-width:1000px}
-body[data-aba="cmb"] #painelMestre > [data-p]{max-width:none}
+  body[data-aba="cmb"] #painelMestre > [data-p]{max-width:none}
   .dk-sub,[data-p="inm"] > .greca{display:none}
   .dk{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start;margin-top:8px}
   .dk-rail{position:sticky;top:8px;max-height:calc(100svh - var(--barra-h,70px) - 24px);overflow:auto;padding-right:6px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}
@@ -802,6 +801,44 @@ body[data-aba="cmb"] #painelMestre > [data-p]{max-width:none}
   #barra.compacta #btPrevHide{display:none}
 }
 @media (prefers-reduced-motion:reduce){#barra #btCompacto svg.ic{transition:none}}
+
+/* ===== Harmonia da aba Mestre: um só título, uma só altura de campo, grades iguais ===== */
+#painelMestre > [data-p]:not([data-p="inm"]){max-width:none}
+#painelMestre > [data-p]:not([data-p="inm"]) > h3,#painelMestre > [data-p]:not([data-p="inm"]) > .noite-t{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:600 15px/1.3 var(--texto);letter-spacing:0;text-transform:none;color:var(--marfim)}
+#painelMestre > [data-p]:not([data-p="inm"]) > h3::before{content:"";flex:none;width:7px;height:7px;transform:rotate(45deg);background:var(--ouro)}
+#painelMestre > .cxm > summary{font:600 15px/1.3 var(--texto);color:var(--marfim);min-height:0}
+#painelMestre > .cxm > summary::before{display:inline-block;width:1.1em;color:var(--ouro)}
+#painelMestre > [data-p]{padding-block:18px}
+/* músicas de gatilho: o texto ocupa a linha toda (antes o .q de 4,6em espremia o título) */
+.gat{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:8px}
+.gat button{min-height:56px;padding:8px 14px;align-items:center}
+.gat button > span:first-child{flex:none;width:1.2em;text-align:center}
+.gat button > span:last-child{flex:1;min-width:0}
+.gat button .q,.gat button div.q{width:auto;max-width:none}
+.gat button .t{margin-top:2px}
+/* roteiro em duas colunas em tela larga */
+.rot{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));align-content:start;max-height:560px}
+/* mesma grade em Abates e Elenco de apoio */
+.abates,.apoio{grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.abates > *,.apoio > .ap{height:100%;box-sizing:border-box}
+/* campos: uma altura, uma fonte, o tema escuro */
+#painelMestre :is(input[type=text],input[type=number],input:not([type]),select,textarea){box-sizing:border-box;min-height:40px;font:400 15px/1.35 var(--texto);color:var(--marfim);background:var(--fundo);border:1px solid var(--linha);padding:8px 10px}
+#painelMestre textarea{min-height:88px;resize:vertical;width:100%;font-family:var(--texto)}
+#painelMestre select{appearance:none;-webkit-appearance:none;padding-right:30px;background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23c9a24a' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+#painelMestre :is(input,select,textarea)::placeholder{color:var(--apagado);opacity:.8}
+#painelMestre :is(input,select,textarea):focus-visible{outline:2px solid var(--ouro);outline-offset:1px}
+#painelMestre input[type=checkbox]{appearance:none;-webkit-appearance:none;width:22px;height:22px;flex:none;margin:0;border:1px solid var(--linha);background:var(--fundo);display:inline-grid;place-content:center;cursor:pointer}
+#painelMestre input[type=checkbox]:checked{background:var(--terracota);border-color:var(--terracota)}
+#painelMestre input[type=checkbox]:checked::after{content:"";width:6px;height:11px;border:solid var(--sobre);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+#painelMestre input[type=checkbox]:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+#painelMestre label.lin,#painelMestre .virt{display:flex;align-items:center;gap:10px}
+.virt{display:grid!important;grid-template-columns:9em 12em minmax(0,1fr);gap:8px;margin:0 0 8px}
+.virt b{font-weight:600}
+@media (max-width:640px){.virt{grid-template-columns:1fr 1fr}.virt .c{grid-column:1/-1}.gat{grid-template-columns:1fr}.rot{grid-template-columns:1fr}}
+#painelMestre .lp{display:block;margin:0 0 12px}#painelMestre .lp b{display:block;margin:0 0 4px}
+#painelMestre .lp.atual b{color:var(--ouro)}
+/* botões de ambiente e dados: mesma largura mínima */
+#painelMestre .seg button,#painelMestre .lin2 button{min-width:44px}
 </style>
 <link rel="stylesheet" href="visual.css">
 <link rel="stylesheet" href="mesa.css?v=13">
@@ -2714,7 +2751,7 @@ const MP = {
   ini:{fn:painelIni, t:'Iniciativa e PV'}, inm:{fn:painelInimigos, t:'Inimigos e ações'}, apo:{fn:painelApoioEstado, t:'Tobias e Rafaela'}, fim:{fn:painelFim, t:'Fim da noite · vitória ou derrota'},
   anja:{fn:painelAnja, t:'Oferta da anja · virtudes invertidas'}, loops:{fn:painelLoops, t:'Registro das voltas'}, jog:{fn:painelJog, t:'Jogadores e votação'}, falas:{fn:painelFalas, t:'Falas e anotações dos personagens'},
   rit:{fn:painelRitmo, t:'Ritmo da noite'}, dados:{fn:painelDados, t:'Dados'}, aud:{fn:painelAudio, t:'Clima e som'}, elenco:{fn:elencoApoio}};
-const ORD_P = ['palco','rot','gat','esp','noite','ab','notas','ini','inm','anja','loops','jog','falas','rit','dados','aud','elenco'];
+const ORD_P = ['palco','rot','gat','esp','noite','ab','notas','ini','inm','anja','jog','elenco','loops','falas','rit','dados','aud'];
 const FULL = ['palco','rot','gat','esp','noite','ab','ini','inm','anja','aud'];   // o que um redesenho geral refaz (campos de texto próprios não são tocados)
 const DEP = {palco:['palco'], rot:['rot','palco','gat'], gat:['gat','palco','rot'], esp:['esp','palco'], noite:['noite','inm','ini'], ab:['ab','noite'], notas:[], ini:['ini','inm'], inm:['inm','ini'],
   anja:['anja'], loops:[], jog:['jog','anja','ini'], falas:['falas'], rit:['rit'], dados:['dados'], aud:['aud'], elenco:[]};
