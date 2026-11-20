@@ -120,3 +120,7 @@ Aba **Ajustes** no app (e no combate): 3 layouts e 5 paletas por layout, com tro
 - Ícones no estilo do YouTube Music: aleatório, anterior, −10 s, pausar, +10 s, próxima, repetir (desligado → lista → só esta). À direita: voltar à anterior, volume, voz, baixar aos poucos, silêncio, lista, vídeos e recolher (seta).
 - **Lista de músicas** (ícone de fila, tecla Q): mostra a ordem em que toca, deixa pular para uma música, subir, descer ou tirar da fila, e carregar a lista de combate de qualquer inimigo. Teclas: S aleatório, T repetir.
 - **Ao começar a luta** (aba Mestre), toca a lista de combate dos inimigos escolhidos (as músicas de papel Combate marcadas na Seleção), segue sozinha para a próxima e repete a lista. Dá para desligar na própria lista.
+
+## Tablet: paisagens deitadas e escolha do inimigo (deslizar)
+- **Paisagens deitadas**: com o tablet em pé, imagens largas (paisagens e mapas) giram 90° e ocupam a tela toda. Liga/desliga em "Paisagens deitadas"; "Girar: horário/anti-horário" troca o lado. Com o tablet deitado, nada gira.
+- **Deslizar (aba Imagens)**: "＋ deslizar" em qualquer imagem a põe na lista; a ordem se ajusta na seção "Escolha do inimigo". "Mostrar no tablet" abre o carrossel: os jogadores deslizam e, no topo, uma faixa semitransparente tem uma bolinha por imagem. O notebook vê em qual imagem o tablet está, e pode mover o foco (‹ Anterior / Próxima ›). "Mostrar o nome" escreve o nome embaixo. O carrossel não é trocado pela música; saia com "Sair do deslizar".

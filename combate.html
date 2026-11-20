@@ -672,6 +672,16 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .im-card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:#000}
 .im-card span{font-size:13px;line-height:1.25;overflow-wrap:anywhere}
 .im-x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:#000b;color:#fff;display:flex;align-items:center;justify-content:center;font-style:normal}
+.im-car{position:absolute;top:4px;left:4px;padding:3px 8px;border-radius:999px;background:#000b;color:#fff;font:600 12px/1.3 system-ui,sans-serif;font-style:normal;cursor:pointer;border:1px solid transparent}
+.im-car.on{background:var(--terracota,#c8672f);color:#1a0d04}
+.im-car:focus-visible{outline:2px solid var(--ouro,#e0b24a)}
+.cr-lista{display:flex;gap:10px;overflow-x:auto;padding:4px 0 10px}
+.cr-it{flex:none;width:132px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;background:#17110d;border:1px solid var(--linha,#3a2e24);border-radius:10px;padding:6px}
+.cr-it img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:#000}
+.cr-it span{flex-basis:100%;font-size:12.5px;line-height:1.25;overflow-wrap:anywhere}
+.cr-b{width:34px;height:30px;min-height:0;padding:0;line-height:1}
+.im-foco{margin-top:10px;font-weight:600;color:var(--ouro,#e0b24a)}
+.im-car-sec .im-bts{margin-top:4px}
 .im-add{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}.im-add input{flex:1 1 220px;min-width:0}
 
 /* ===== Player de baixo (estilo YouTube Music, com a greca) ===== */
@@ -2711,16 +2721,36 @@ function ligaTablet(){
   if (TAB.ponte || !window.Ponte) return;
   TAB.codigo = codigoTablet();
   TAB.ponte = Ponte.abrir(TAB.codigo, m => {
+    if (m.t === 'foco') { TAB.foco = {i:m.i, n:m.n}; TAB.vivo = Date.now(); focoTablet(); statusTablet(); return; }
     if (m.t !== 'oi' && m.t !== 'vivo') return;
-    TAB.vivo = Date.now(); if (m.t === 'oi') { TAB.enviado = null; enviaTablet(srcTela()); }
+    TAB.vivo = Date.now(); if (m.t === 'oi') { TAB.enviado = null; if (TAB.car) enviaCarrossel(TAB.foco ? TAB.foco.i : 0); else enviaTablet(srcTela()); }
     statusTablet(); },
     st => { TAB.estado = st; statusTablet(); });
   setInterval(statusTablet, 5000);
 }
+const giraOpc = () => ({g:E.deitar !== false ? 1 : 0, s:E.sentido === -90 ? -90 : 90});   // paisagens deitadas quando o tablet está em pé
 function enviaTablet(src){
-  if (!TAB.ponte || src === TAB.enviado) return;
-  TAB.enviado = src; TAB.ponte.enviar(src ? {t:'img', u:src} : {t:'preto'}).then(ok => { if (!ok) { TAB.enviado = null; TAB.falha = true; } else TAB.falha = false; statusTablet(); });
+  if (!TAB.ponte) return;
+  if (TAB.car && !telaPreta) return;                      // o deslizar de inimigos fica na tela até o Mestre sair dele
+  if (telaPreta) TAB.car = false;
+  const o = giraOpc(), chave = src + '|' + o.g + '|' + o.s; if (chave === TAB.enviado) return;
+  TAB.enviado = chave; TAB.ponte.enviar(src ? {t:'img', u:src, g:o.g, s:o.s} : {t:'preto'}).then(ok => { if (!ok) { TAB.enviado = null; TAB.falha = true; } else TAB.falha = false; statusTablet(); });
 }
+// ---- escolha do inimigo: o tablet desliza entre as imagens, com as bolinhas no topo ----
+const CAR_PADRAO = ['img/esau.jpg','img/jael.jpg','img/ezequiel.jpg','img/hildegarda.jpg','img/elizabeth.jpg','img/ozymandias.jpg'];
+const carLista = () => Array.isArray(E.car) ? E.car : CAR_PADRAO.slice();
+const nomeImg = u => { const t = [...IMG_PERS, ...IMG_ESTRADA, ...IMG_VIN, ...imgExtras().map(x => [x.u, x.n || 'Minha imagem'])].find(x => x[0] === u); return t ? t[1].replace(/^\d+ · /, '') : u.split('/').pop(); };
+function enviaCarrossel(i = 0){
+  if (!TAB.ponte) { ligaTablet(); }
+  const l = carLista(); if (!l.length) { aviso('Escolha antes as imagens do deslizar (botão “＋ deslizar” em cada imagem).'); return; }
+  const o = giraOpc(); TAB.car = true; telaPreta = false; TAB.foco = {i, n:l.length};
+  TAB.ponte && TAB.ponte.enviar({t:'car', it:l.map(u => ({u, n:E.carNome ? nomeImg(u) : ''})), i, nm:E.carNome ? 1 : 0, g:o.g, s:o.s}).then(ok => { TAB.falha = !ok; statusTablet(); });
+  focoTablet(); marcaImagem(); }
+function sairCarrossel(){ TAB.car = false; TAB.enviado = null; TAB.foco = null; enviaTablet(srcTela()); focoTablet(); marcaImagem(); }
+function moveCarrossel(d){ if (!TAB.car || !TAB.ponte) return; const n = carLista().length, i = Math.min(n - 1, Math.max(0, ((TAB.foco && TAB.foco.i) || 0) + d)); TAB.foco = {i, n}; TAB.ponte.enviar({t:'foco', i, n}); focoTablet(); }
+function focoTablet(){ document.querySelectorAll('.im-foco').forEach(b => { const l = carLista();
+  b.textContent = TAB.car && TAB.foco ? 'No tablet: ' + (nomeImg(l[TAB.foco.i]) || '—') + ' (' + (TAB.foco.i + 1) + ' de ' + l.length + ')' : 'O deslizar não está no tablet.'; }); }
+function mudaCar(fn){ const l = carLista().slice(); fn(l); E.car = l; salvar(); if (TAB.car) enviaCarrossel(Math.min((TAB.foco && TAB.foco.i) || 0, l.length - 1)); desenharImagens(); }
 function statusTablet(){
   const vivo = TAB.vivo && Date.now() - TAB.vivo < 70000, txt = vivo ? 'Tablet conectado' : TAB.falha ? 'Não consegui enviar (sem internet?)' : TAB.estado === 'on' ? 'Aguardando o tablet…' : 'Conectando ao canal…';
   document.querySelectorAll('.im-st').forEach(b => { b.dataset.s = vivo ? 'ok' : TAB.falha ? 'ruim' : TAB.estado === 'on' ? 'espera' : 'ruim'; b.textContent = txt; });
@@ -2740,7 +2770,7 @@ function painelTablet(){
 function desenharAjTablet(){
   const r = document.getElementById('ajTablet'); if (!r) return;
   r.replaceChildren(el('h2',{}, 'Tablet (tela dos jogadores)'), el('p',{class:'sub'}, 'Mostra no tablet as imagens escolhidas na aba Imagens. O tablet precisa de internet.'), painelTablet()); statusTablet(); }
-function mostrarImagem(u){ imgManual = u; telaPreta = false; atualizarTela(); marcaImagem(); }
+function mostrarImagem(u){ imgManual = u; telaPreta = false; if (TAB.car) sairCarrossel(); atualizarTela(); marcaImagem(); }
 function marcaImagem(){ document.querySelectorAll('#imagens .im-card').forEach(c => c.setAttribute('aria-pressed', imgManual !== null && !telaPreta && c.dataset.u === imgManual ? 'true' : 'false'));
   const a = document.getElementById('imgSegue'); if (a) a.setAttribute('aria-pressed', imgManual === null && !telaPreta ? 'true' : 'false');
   const p = document.getElementById('imgPreto'); if (p) p.setAttribute('aria-pressed', telaPreta ? 'true' : 'false'); }
@@ -2749,10 +2779,30 @@ const IMG_ESTRADA = [['mapa/map.jpg','Mapa: A Estrada para Maré-Alta'],...['Vil
 const IMG_VIN = [['chronos','Chronos'],['criados','Criados'],['demonio','O demônio'],['esau','Esaú'],['ezequiel','Ezequiel'],['hildegarda','Hildegarda'],['jael','Jael'],['ozymandias','Ozymandias']].map(([k, n]) => ['img/cartas/vin_' + k + '.jpg', n]);
 const imgExtras = () => { try { return JSON.parse(localStorage.getItem('otl-img-extra') || '[]').filter(x => x && x.u); } catch(e){ return []; } };
 const salvaExtras = l => { try { localStorage.setItem('otl-img-extra', JSON.stringify(l)); } catch(e){} };
+function secCarrossel(){
+  const l = carLista(), chip = (u, k) => el('div',{class:'cr-it'}, el('img',{src:u, alt:''}), el('span',{}, (k + 1) + ' · ' + nomeImg(u)),
+    el('button',{type:'button', class:'cr-b', title:'Mover para antes', 'aria-label':'Mover para antes: ' + nomeImg(u), disabled:k === 0, onclick:() => mudaCar(x => { [x[k - 1], x[k]] = [x[k], x[k - 1]]; })}, '‹'),
+    el('button',{type:'button', class:'cr-b', title:'Mover para depois', 'aria-label':'Mover para depois: ' + nomeImg(u), disabled:k === l.length - 1, onclick:() => mudaCar(x => { [x[k + 1], x[k]] = [x[k], x[k + 1]]; })}, '›'),
+    el('button',{type:'button', class:'cr-b', title:'Tirar do deslizar', 'aria-label':'Tirar do deslizar: ' + nomeImg(u), onclick:() => mudaCar(x => { x.splice(k, 1); })}, '×'));
+  return el('section',{class:'im-sec im-car-sec'}, el('h3',{}, 'Escolha do inimigo (deslizar no tablet)'),
+    el('p',{class:'sub'}, 'Os jogadores deslizam para o lado e veem os inimigos; no topo, uma faixa semitransparente com uma bolinha por imagem mostra onde estão. Escolha as imagens com “＋ deslizar” em qualquer imagem abaixo e ajuste a ordem aqui.'),
+    el('div',{class:'cr-lista'}, ...(l.length ? l.map(chip) : [el('p',{class:'sub'}, 'Nenhuma imagem escolhida.')])),
+    el('div',{class:'im-bts'},
+      el('button',{class:'peq pri', type:'button', onclick:() => enviaCarrossel(0)}, TAB.car ? 'Mostrar de novo no tablet' : 'Mostrar no tablet'),
+      el('button',{class:'peq', type:'button', onclick:() => moveCarrossel(-1)}, '‹ Anterior'), el('button',{class:'peq', type:'button', onclick:() => moveCarrossel(1)}, 'Próxima ›'),
+      el('button',{class:'peq', type:'button', 'aria-pressed':String(!!E.carNome), title:'Escreve o nome do inimigo embaixo da imagem', onclick:() => { E.carNome = !E.carNome; salvar(); if (TAB.car) enviaCarrossel((TAB.foco && TAB.foco.i) || 0); desenharImagens(); }}, 'Mostrar o nome'),
+      el('button',{class:'peq', type:'button', onclick:sairCarrossel}, 'Sair do deslizar'),
+      el('button',{class:'peq', type:'button', title:'Volta à lista padrão: Esaú, Jael, Ezequiel, Hildegarda, Elizabeth e Ozymandias', onclick:() => { E.car = null; salvar(); desenharImagens(); }}, 'Lista padrão')),
+    el('div',{class:'im-foco', role:'status'}));
+}
 function desenharImagens(){
   const raiz = document.getElementById('imagens'), cod = TAB.codigo || codigoTablet(), link = URL_TELA + '#' + cod;
+  const lc = carLista();
   const card = ([u, n, th], rm) => el('button',{class:'im-card', type:'button', 'data-u':u, 'aria-pressed':'false', onclick:() => mostrarImagem(u)},
-    el('img',{src:th || u, alt:''}), el('span',{}, n), rm ? el('i',{class:'im-x', title:'Tirar da lista', onclick:ev => { ev.stopPropagation(); salvaExtras(imgExtras().filter(x => x.u !== u)); desenharImagens(); }}, '×') : null);
+    el('img',{src:th || u, alt:''}), el('span',{}, n),
+    el('i',{class:'im-car' + (lc.includes(u) ? ' on' : ''), role:'button', tabindex:'0', title:lc.includes(u) ? 'Tirar do deslizar' : 'Pôr no deslizar de inimigos', 'aria-label':(lc.includes(u) ? 'Tirar do deslizar: ' : 'Pôr no deslizar: ') + n,
+      onclick:ev => { ev.stopPropagation(); mudaCar(l => { const k = l.indexOf(u); if (k >= 0) l.splice(k, 1); else l.push(u); }); },
+      onkeydown:ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ev.stopPropagation(); ev.target.click(); } }}, lc.includes(u) ? '✓ ' + (lc.indexOf(u) + 1) : '＋ deslizar'), rm ? el('i',{class:'im-x', title:'Tirar da lista', onclick:ev => { ev.stopPropagation(); salvaExtras(imgExtras().filter(x => x.u !== u)); desenharImagens(); }}, '×') : null);
   const sec = (t, l, rm) => el('section',{class:'im-sec'}, el('h3',{}, t), el('div',{class:'im-grade'}, ...l.map(x => card(x, rm))));
   const extras = imgExtras().map(x => [x.u, x.n || 'Minha imagem']);
   const campoU = el('input',{type:'url', id:'imgU', placeholder:'https://…  (link direto de uma imagem)', 'aria-label':'Link da imagem'}), campoN = el('input',{type:'text', id:'imgN', placeholder:'nome (opcional)', 'aria-label':'Nome'});
@@ -2761,14 +2811,17 @@ function desenharImagens(){
       painelTablet(),
       el('div',{class:'im-ctl'},
         el('button',{id:'imgPreto', class:'peq', type:'button', 'aria-pressed':'false', onclick:() => { telaPreta = !telaPreta; atualizarTela(); marcaImagem(); }}, 'Tela preta'),
-        el('button',{id:'imgSegue', class:'peq', type:'button', 'aria-pressed':'false', title:'A tela volta a mostrar a arte do personagem cuja música está tocando', onclick:() => { imgManual = null; telaPreta = false; atualizarTela(); marcaImagem(); }}, 'Acompanhar a música'),
+        el('button',{id:'imgGira', class:'peq', type:'button', 'aria-pressed':String(E.deitar !== false), title:'Quando o tablet está em pé, as imagens largas (paisagens e mapas) giram e ocupam a tela inteira', onclick:() => { E.deitar = E.deitar === false; salvar(); TAB.enviado = null; if (TAB.car) enviaCarrossel((TAB.foco && TAB.foco.i) || 0); else enviaTablet(srcTela()); desenharImagens(); }}, 'Paisagens deitadas'),
+        el('button',{class:'peq', type:'button', title:'Troca o lado para onde a imagem gira. Use se ela aparecer de cabeça para baixo', onclick:() => { E.sentido = E.sentido === -90 ? 90 : -90; salvar(); TAB.enviado = null; if (TAB.car) enviaCarrossel((TAB.foco && TAB.foco.i) || 0); else enviaTablet(srcTela()); desenharImagens(); }}, E.sentido === -90 ? 'Girar: ↺ anti-horário' : 'Girar: ↻ horário'),
+        el('button',{id:'imgSegue', class:'peq', type:'button', 'aria-pressed':'false', title:'A tela volta a mostrar a arte do personagem cuja música está tocando', onclick:() => { imgManual = null; telaPreta = false; if (TAB.car) sairCarrossel(); atualizarTela(); marcaImagem(); }}, 'Acompanhar a música'),
         el('p',{class:'sub'}, 'Vale para o tablet e para a janela “Tela dos jogadores”. Toque numa imagem para mostrá-la; “Tela preta” esconde tudo.'))),
+    secCarrossel(),
     sec('Personagens', IMG_PERS), sec('A Estrada para Maré-Alta', IMG_ESTRADA), sec('Vinhetas das cartas', IMG_VIN),
     el('section',{class:'im-sec'}, el('h3',{}, 'Minhas imagens'),
       el('p',{class:'sub'}, 'Cole o link direto de uma imagem (por exemplo, um mapa já hospedado). O tablet precisa conseguir abrir esse link.'),
       el('div',{class:'im-add'}, campoU, campoN, el('button',{class:'peq', type:'button', onclick:() => { const u = campoU.value.trim(); if (!/^https?:\/\//i.test(u)) { aviso('Cole um link que comece com https://'); return; } salvaExtras([...imgExtras(), {u, n:campoN.value.trim()}]); desenharImagens(); }}, 'Adicionar')),
       extras.length ? el('div',{class:'im-grade'}, ...extras.map(x => card(x, true))) : null));
-  marcaImagem(); statusTablet();
+  marcaImagem(); statusTablet(); focoTablet();
 }
 function abrirTela(){
   if (telaViva()) { telaJ.focus(); atualizarTela(); return; }

@@ -10,6 +10,17 @@
 html,body{margin:0;height:100%;background:#000;overflow:hidden;color:var(--texto);font:16px/1.4 system-ui,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
 #im{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .6s}
 #im.vis{opacity:1}
+.gira{right:auto!important;bottom:auto!important;left:50%!important;top:50%!important;width:100vh!important;height:100vw!important;width:100dvh!important;height:100dvw!important;transform:translate(-50%,-50%) rotate(var(--s,90deg))}
+#car{position:fixed;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#000;overscroll-behavior:contain;touch-action:pan-x}
+#car::-webkit-scrollbar{display:none}
+#car[hidden]{display:none}
+.sl{flex:none;width:100vw;height:100%;position:relative;scroll-snap-align:center;scroll-snap-stop:always}
+.sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.sl .nome{position:absolute;left:0;right:0;bottom:max(18px,env(safe-area-inset-bottom));text-align:center;font:italic 600 clamp(18px,4vmin,34px)/1.2 Georgia,serif;color:#f1e2c0;text-shadow:0 2px 10px #000,0 0 3px #000}
+#bar{position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;padding:9px 20px;border-radius:999px;background:rgba(10,8,6,.38);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);z-index:5}
+#bar[hidden]{display:none}
+#bar i{display:block;width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:transparent;transition:transform .25s,background .25s,border-color .25s;cursor:pointer}
+#bar i.on{background:var(--ouro);border-color:var(--ouro);transform:scale(1.3)}
 #cx{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;background:#000}
 #cx[hidden]{display:none}
 #cx h1{font:600 22px/1.2 Georgia,serif;margin:0;color:var(--ouro);letter-spacing:.04em}
@@ -23,6 +34,8 @@ button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px
 </head>
 <body>
 <img id="im" alt="">
+<div id="car" hidden></div>
+<div id="bar" hidden></div>
 <div id="pt" title="conexão"></div>
 <div id="cx">
   <h1>Tela dos jogadores</h1>
@@ -37,18 +50,55 @@ button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px
   var im = document.getElementById('im'), cx = document.getElementById('cx'), cod = document.getElementById('cod'), pt = document.getElementById('pt'), msg = document.getElementById('msg');
   var ponte = null, atual = '', trava = null, bat = 0;
   function lerCodigo(){ var h = Ponte.limpa(location.hash.slice(1)); if (h) return h; try { return Ponte.limpa(localStorage.getItem('otl-sala-tablet')); } catch(e){ return ''; } }
-  function mostra(u){
-    u = u || '';
-    if (u === atual) return; atual = u;
+  var car = document.getElementById('car'), bar = document.getElementById('bar'), modoCar = false, prog = false, nSl = 0, focoAtual = -1, tFoco = 0;
+  function giraImg(el){
+    var deitar = el.dataset.g === '1' && el.naturalWidth > el.naturalHeight && innerHeight > innerWidth;
+    el.classList.toggle('gira', deitar); el.style.setProperty('--s', (el.dataset.s === '-90' ? -90 : 90) + 'deg');
+  }
+  function giraTudo(){ giraImg(im); car.querySelectorAll('img').forEach(giraImg); }
+  addEventListener('resize', giraTudo); addEventListener('orientationchange', function(){ setTimeout(giraTudo, 200); });
+  function saiCar(){ modoCar = false; car.hidden = true; bar.hidden = true; car.replaceChildren(); nSl = 0; focoAtual = -1; }
+  function mostra(u, g, sent){
+    u = u || ''; saiCar();
+    var chave = u + '|' + g + '|' + sent;
+    if (chave === atual) return; atual = chave;
     if (!u) { im.classList.remove('vis'); return; }
     var url = /^https?:/i.test(u) ? u : new URL(u, location.href).href;
     var pre = new Image();
-    pre.onload = function(){ if (atual !== u) return; im.classList.remove('vis'); setTimeout(function(){ if (atual !== u) return; im.src = url; im.classList.add('vis'); }, 350); };
-    pre.onerror = function(){ if (atual === u) im.classList.remove('vis'); };
+    pre.onload = function(){ if (atual !== chave) return; im.classList.remove('vis'); setTimeout(function(){ if (atual !== chave) return;
+      im.dataset.g = g ? '1' : '0'; im.dataset.s = String(sent); im.onload = function(){ giraImg(im); im.classList.add('vis'); }; im.src = url; if (im.complete && im.naturalWidth) { giraImg(im); im.classList.add('vis'); } }, 350); };
+    pre.onerror = function(){ if (atual === chave) im.classList.remove('vis'); };
     pre.src = url;
   }
+  function foca(i, aviso){
+    if (i < 0 || i >= nSl) return;
+    prog = !!aviso; car.scrollTo({left: i * car.clientWidth, behavior: aviso ? 'smooth' : 'auto'});
+    marca(i); if (aviso) setTimeout(function(){ prog = false; }, 700);
+  }
+  function marca(i){ focoAtual = i; Array.prototype.forEach.call(bar.children, function(d, k){ d.classList.toggle('on', k === i); }); }
+  function mostraCar(m){
+    atual = ''; im.classList.remove('vis'); saiCar(); modoCar = true;
+    var it = Array.isArray(m.it) ? m.it : [];
+    it.forEach(function(x, k){
+      var sl = document.createElement('div'); sl.className = 'sl'; var e = document.createElement('img'); e.alt = '';
+      e.dataset.g = m.g ? '1' : '0'; e.dataset.s = String(m.s); e.onload = function(){ giraImg(e); };
+      e.src = /^https?:/i.test(x.u) ? x.u : new URL(x.u, location.href).href; sl.append(e);
+      if (m.nm && x.n) { var n = document.createElement('div'); n.className = 'nome'; n.textContent = x.n; sl.append(n); }
+      car.append(sl);
+      var d = document.createElement('i'); d.onclick = function(){ foca(k, true); anuncia(k); }; bar.append(d); });
+    nSl = it.length; bar.hidden = nSl < 2; car.hidden = false;
+    foca(Math.min(Math.max(+m.i || 0, 0), nSl - 1), false); anuncia(focoAtual);
+  }
+  function anuncia(i){ if (ponte) ponte.enviar({t:'foco', i: i, n: nSl}); }
+  car.addEventListener('scroll', function(){
+    clearTimeout(tFoco); tFoco = setTimeout(function(){
+      var i = Math.round(car.scrollLeft / Math.max(1, car.clientWidth)); if (i === focoAtual) return; marca(i); if (!prog) anuncia(i); }, 140);
+  }, {passive:true});
   function recebe(m){
-    if (m.t === 'img') mostra(m.u); else if (m.t === 'preto' || m.t === 'limpa') mostra('');
+    if (m.t === 'img') mostra(m.u, m.g, m.s === -90 ? -90 : 90);
+    else if (m.t === 'preto' || m.t === 'limpa') mostra('', 0, 90);
+    else if (m.t === 'car') mostraCar(m);
+    else if (m.t === 'foco' && modoCar) foca(+m.i, true);
   }
   function conecta(c){
     c = Ponte.limpa(c); if (!c) return false;
