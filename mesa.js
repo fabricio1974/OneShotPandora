@@ -594,13 +594,11 @@
     var aj = document.getElementById('ajustes'); if (!aj || aj.querySelector('.mx-aj')) return;
     var dic = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.dicas = ev.target.checked ? 1 : 0; gravar(); aplicar(); }}), ' Mostrar as dicas em amarelo (lembretes de regra nas fichas dos inimigos)']);
     dic.firstChild.checked = !!S.dicas;
-    var foc = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.foco = ev.target.checked ? 1 : 0; gravar(); aplicar(); }}), ' Durante a luta, esconder tudo que não é da luta na aba Mestre']);
-    foc.firstChild.checked = !!S.foco;
     var ret = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.retos = ev.target.checked ? 1 : 0; gravar(); aplicar(); }}), ' Cantos retos (visual mais seco, sem cartões arredondados)']);
     ret.firstChild.checked = !!S.retos;
     var rol = h('label', {class:'mx-lin'}, [h('input', {type:'checkbox', onchange:function(ev){ S.rolar = ev.target.checked ? 1 : 0; gravar(); }}), ' Rolar os dados de dano (padrão: usar o dano médio da ficha)']);
     rol.firstChild.checked = !!S.rolar;
-    aj.append(h('div', {class:'mx-aj'}, [h('h2', {}, ['Mesa do Mestre']), dic, foc, ret, rol,
+    aj.append(h('div', {class:'mx-aj'}, [h('h2', {}, ['Mesa do Mestre']), dic, ret, rol,
       h('h3', {}, ['Sons gerados']), h('p', {class:'sub'}, ['Salva todos os sons e fundos já gerados neste navegador em um arquivo (MP3), para guardar no repositório.']), (function(){ var st = h('p', {class:'sub'}, []); return h('div', {}, [h('button', {class:'peq', onclick:function(){ exportarSons(st); }}, ['Exportar os sons']), st]); })(),
       h('h3', {}, ['Zerar']), h('p', {class:'sub'}, ['As músicas escolhidas e a aparência não mudam.']),
       h('div', {class:'lin2'}, [dois('Zerar a luta (iniciativa, PV, rodada, usos)', zerarLuta), dois('Zerar a noite inteira (volta 1, abates, notas, tudo do Mestre)', zerarNoite, 'perigo')])]));

@@ -445,8 +445,14 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 /* ===== Desktop / notebook (prioridade): duas colunas, ações em grade ===== */
 .cc-cat{margin:14px 0 0;font:600 13px/1 var(--texto);color:var(--apagado);letter-spacing:.02em;padding-bottom:6px;border-bottom:1px solid var(--linha)}
 @media (min-width:1000px){
-  body[data-aba="mes"] header, body[data-aba="mes"] main{max-width:1760px}
-  body[data-aba="mes"] #painelMestre > [data-p]:not([data-p="inm"]){max-width:1000px}
+  body[data-aba="mes"] header, body[data-aba="mes"] main, body[data-aba="cmb"] header, body[data-aba="cmb"] main{max-width:1760px}
+  body[data-aba="mes"] #painelMestre > [data-p]:not([data-p="inm"]), body[data-aba="cmb"] #painelMestre > [data-p]:not([data-p="inm"]){max-width:1000px}
+  body[data-aba="mes"] #painelMestre > :is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"]){display:none}
+  body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"])){display:none}
+  .subaj{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}.subaj[hidden]{display:none}
+  .subaj .chip[aria-selected="true"]{background:var(--ouro);color:var(--sobre);border-color:var(--ouro)}
+  .aj-atalhos,.aj-combate{margin:0 0 18px}.aj-atalhos .lin2{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .aj-atalhos a.btn-at{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:10px;background:var(--ouro);color:var(--sobre);font-weight:700;text-decoration:none}
   .dk-sub,[data-p="inm"] > .greca{display:none}
   .dk{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start;margin-top:8px}
   .dk-rail{position:sticky;top:8px;max-height:calc(100svh - var(--barra-h,70px) - 24px);overflow:auto;padding-right:6px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}
@@ -773,26 +779,30 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 @media (prefers-reduced-motion:reduce){#barra #btCompacto svg.ic{transition:none}}
 </style>
 <link rel="stylesheet" href="visual.css">
-<link rel="stylesheet" href="mesa.css?v=10">
+<link rel="stylesheet" href="mesa.css?v=11">
 </head>
 <body>
 <header>
   <h1>Trilha do Cordeiro</h1>
   <div class="abas" role="tablist">
-    <button role="tab" id="abaSel" aria-selected="true">Seleção</button>
-    <button role="tab" id="abaTri" aria-selected="false">Triagem</button>
-    <button role="tab" id="abaCen" aria-selected="false">Cenas</button>
     <button role="tab" id="abaImg" aria-selected="false">Imagens</button>
-    <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
     <button role="tab" id="abaMes" aria-selected="false">Mestre</button>
+    <button role="tab" id="abaCmb" aria-selected="false">Combate</button>
     <button role="tab" id="abaAj" aria-selected="false">Ajustes</button>
   </div>
   <button id="btLetra" class="peq" aria-pressed="false" title="Aumenta as letras e os botões">Letra grande</button>
 </header>
 <main>
   <div id="avisos"></div>
+  <nav class="subaj" id="subAj" aria-label="Seções de Ajustes" hidden>
+    <button class="chip" id="abaAjG" aria-selected="false">Geral</button>
+    <button class="chip" id="abaSel" aria-selected="false">Seleção</button>
+    <button class="chip" id="abaTri" aria-selected="false">Triagem</button>
+    <button class="chip" id="abaCen" aria-selected="false">Cenas</button>
+    <button class="chip" id="abaSes" aria-selected="false">Sessão</button>
+  </nav>
   <nav class="elenco" id="elenco" aria-label="Personagens"></nav>
-  <section id="selecao"></section>
+  <section id="selecao" hidden></section>
   <section id="triagem" hidden></section>
   <section id="cenas" hidden></section>
   <section id="imagens" hidden></section>
@@ -1070,10 +1080,10 @@ const novaFaixa = f => ({id:f.id, nome:f.nome, momento:f.momento, papel:f.papel,
 const novoGrupo = g => ({id:g.id, nome:g.nome, sub:g.sub||'', img:IMG_PADRAO[g.id]||'', faixas:g.faixas.map(novaFaixa)});
 const M0 = () => ({volta:1, rodada:1, petalas:6, abates:{}, anja:true, alt:{}, notas:'',
   ap:{tobias:{pv:'',cond:''}, rafaela:{pv:'',cond:'',fora:false}}, ini:[], turno:0, virt:{}, jog:[{id:'j1',n:'Pedro',pv:'',nota:'',falou:false},{id:'j2',n:'Victor',pv:'',nota:'',falou:false},{id:'j3',n:'Jogador 3',pv:'',nota:'',falou:false},{id:'j4',n:'Jogador 4',pv:'',nota:'',falou:false}],
-  voto:{s:0,n:0}, inm:{v:2, sel:'esau', todos:false, tag:'', tipo:'', sem:false, uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:'', pvLuta:{}, lutaSel:{}, lend:{}, nh:{}, amb:{}, pres:null, f2:false, f2man:false, elLonge:false, fatorPV:65, auto:true, nJog:4, vt:false}, loops:{}, falas:{}, teste:{}, durTotal:270, inicioMesa:0, derrota:false});
+  voto:{s:0,n:0}, inm:{v:2, sel:'esau', todos:false, tag:'', tipo:'', sem:false, uso:{}, rec:{}, ult:[], fav:{}, disp:false, av:[], alvo:'', pvLuta:{}, lutaSel:{}, lend:{}, nh:{}, amb:{}, pres:null, f2:false, f2man:false, elLonge:false, fatorPV:65, fatorDano:100, auto:true, nJog:4, vt:false}, loops:{}, falas:{}, teste:{}, durTotal:270, inicioMesa:0, derrota:false});
 function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m.inm && E.m.inm.v !== 2); E.m.inm = Object.assign(M0().inm, E.m.inm||{}); ['uso','rec'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; }); if (!Array.isArray(E.m.inm.ult)) E.m.inm.ult = []; if (!E.m.inm.fav || typeof E.m.inm.fav !== 'object') E.m.inm.fav = {}; if (!Array.isArray(E.m.inm.av)) E.m.inm.av = []; ['pvLuta','lutaSel','lend','nh','amb'].forEach(c => { if (!E.m.inm[c] || typeof E.m.inm[c] !== 'object') E.m.inm[c] = {}; });
   { const s = E.m.inm; if (inmVelho) { s.v = 2; s.uso = {}; s.rec = {}; s.fav = {}; s.ult = []; s.pvLuta = {}; s.lend = {}; s.nh = {}; s.amb = {}; s.pres = null; s.f2 = false; s.f2man = false; }   // fichas novas: ids de ações novos, estado antigo das cartas é descartado
-    if (!['acao','bonus','recarga','passiva','reacao','lend','amb'].includes(s.tipo)) s.tipo = ''; if (typeof s.sem !== 'boolean') s.sem = false; s.f2 = !!s.f2; s.f2man = !!s.f2man; if (s['raq' + 'Longe']) s.elLonge = true; delete s['raq' + 'Longe']; s.elLonge = !!s.elLonge; if (!(+s.fatorPV >= 10 && +s.fatorPV <= 200)) s.fatorPV = 65; s.auto = s.auto !== false; if (s.nJog !== 3 && s.nJog !== 4) s.nJog = 4; s.vt = !!s.vt; if (!s.pres || !Array.isArray(s.pres.d)) s.pres = null; }
+    if (!['acao','bonus','recarga','passiva','reacao','lend','amb'].includes(s.tipo)) s.tipo = ''; if (typeof s.sem !== 'boolean') s.sem = false; s.f2 = !!s.f2; s.f2man = !!s.f2man; if (s['raq' + 'Longe']) s.elLonge = true; delete s['raq' + 'Longe']; s.elLonge = !!s.elLonge; if (!(+s.fatorPV >= 10 && +s.fatorPV <= 200)) s.fatorPV = 65; if (!(+s.fatorDano >= 10 && +s.fatorDano <= 200)) s.fatorDano = 100; s.auto = s.auto !== false; if (s.nJog !== 3 && s.nJog !== 4) s.nJog = 4; s.vt = !!s.vt; if (!s.pres || !Array.isArray(s.pres.d)) s.pres = null; }
   { const m = E.m; if (!Array.isArray(m.jog)) m.jog = []; m.jog = m.jog.filter(j => j && typeof j === 'object'); if (!Array.isArray(m.ini)) m.ini = [];
     m.ini = m.ini.filter(c => c && typeof c === 'object');   // estado velho ou corrompido: linhas inválidas saem, números viram números
     m.ini.forEach(c => { c.n = String(c.n ?? '?'); c.ini = Number.isFinite(+c.ini) ? +c.ini : 0; c.pv = Number.isFinite(+c.pv) ? +c.pv : 0; if (c.max != null && !Number.isFinite(+c.max)) c.max = c.pv; if (c.cs && !Array.isArray(c.cs)) c.cs = []; });
@@ -1551,7 +1561,7 @@ function proxVolta(){
   desf(proxVoltaTxt(), () => { m.petalas = Math.max(0, m.petalas - 1); if (m.volta < 6) m.volta++; m.rodada = 1; m.turno = 0;
     m.ini = m.ini.filter(c => !ehInim(c)); m.ini.forEach(c => { c.cs = []; c.cond = ''; });
     ['volta','luta','turno','rodada'].forEach(inmZerar); inmNovaVolta(); s.ult = []; s.av = []; s.alvo = ''; limpaRol(); condAberta = null; lutaAberta = false; cron = {ini:null, acum:0}; avisoNoite = ''; }, ['noite','ini','inm','ab','fim']);
-  if (modo === 'mes') { const n = document.querySelector('#painelMestre [data-p="noite"]'); if (n) n.scrollIntoView({block:'nearest'}); }
+  if (modo === 'mes' || modo === 'cmb') { const n = document.querySelector('#painelMestre [data-p="noite"]'); if (n) n.scrollIntoView({block:'nearest'}); }
 }
 function noiteParts(q){
   const m = E.m, mud = fn => () => { fn(); avisoNoite = ''; salvar(); desenhar(); };
@@ -1967,6 +1977,9 @@ const inmAcao = (i, id) => i.acoes.find(a => a.id === id);
 const efe = (i, a) => { const r = a.ref && inmAcao(i, a.ref); return {atk:a.atk || (r && r.atk) || null, cd:a.cd || (r && r.cd) || null, teste:a.teste || (r && r.teste) || null, dano:a.dano || (r && r.dano) || null, via:r || null}; };
 const inmUso = a => { const x = /^(\d+)\/(luta|volta|turno|rodada|dia)$/.exec(a.uso || ''); if (!x) return null; let n = +x[1]; if (a.nVolta && E.m.volta >= a.nVolta[0]) n = a.nVolta[1]; return {n, por:x[2]}; };
 const rolInm = {}, rolAt = {}, rolTip = {}; let inmSL = 0;
+const fatorDano = () => { const f = +E.m.inm.fatorDano; return f >= 10 && f <= 200 ? f : 100; };   // % do dano dos inimigos (ajuste da mesa)
+const fdan = t => fatorDano() === 100 ? t : Math.max(0, Math.round(t * fatorDano() / 100));
+const nDan = () => fatorDano() === 100 ? '' : ' [dano a ' + fatorDano() + '%]';
 const fatorPV = () => { const f = +E.m.inm.fatorPV; return f >= 10 && f <= 200 ? f : 65; };   // Formato A: PV sugerido = ficha × fator (a ficha original não muda)
 const FPV = {"1,1,3":100,"1,2,3":85,"1,3,3":95,"1,4,3":95,"1,5,3":110,"1,6,3":50,"2,1,3":100,"2,2,3":95,"2,3,3":90,"2,4,3":80,"2,5,3":95,"2,6,3":40,"3,1,3":100,"3,2,3":75,"3,3,3":70,"3,4,3":80,"3,5,3":95,"3,6,3":40,"4,1,3":100,"4,2,3":75,"4,3,3":60,"4,4,3":50,"4,5,3":40,"4,6,3":25,"5,1,3":100,"5,2,3":70,"5,3,3":35,"5,4,3":35,"5,5,3":35,"5,6,3":25,"1,1,4":100,"1,2,4":105,"1,3,4":130,"1,4,4":150,"1,5,4":145,"1,6,4":100,"2,1,4":100,"2,2,4":115,"2,3,4":140,"2,4,4":125,"2,5,4":155,"2,6,4":85,"3,1,4":100,"3,2,4":90,"3,3,4":105,"3,4,4":120,"3,5,4":125,"3,6,4":70,"4,1,4":100,"4,2,4":95,"4,3,4":105,"4,4,4":105,"4,5,4":80,"4,6,4":25,"5,1,4":100,"5,2,4":70,"5,3,4":60,"5,4,4":60,"5,5,4":65,"5,6,4":40};   // simulação v7: "luta,volta,jogadores" -> % do PV da ficha (2 cartas por jogador por volta)
 const LUTA_DE = {esau:1, ezequiel:2, jael:3, hildegarda:4, anjo:4, elodie:5, ozy:5};
@@ -2092,14 +2105,14 @@ function passo(dir){
   const c = m.ini[m.turno]; vibra(); anuncia('Vez de ' + c.n + '. Rodada ' + m.rodada + '.' + (c.pv <= 0 && !ehInim(c) ? ' Caído: salvaguarda contra a morte.' : ''));
 }
 function irParaVez(){   // rola até o bloco do inimigo da vez (aba Mestre)
-  if (modo !== 'mes') return; const m = E.m, c = m.ini[m.turno], i = c && inmDeLinha(c); if (!i) return;
+  if (modo !== 'mes' && modo !== 'cmb') return; const m = E.m, c = m.ini[m.turno], i = c && inmDeLinha(c); if (!i) return;
   if (!abertas.has('inm')) { abertas.add('inm'); desenharPainel('inm'); }
   const bl = document.querySelector('#painelMestre .inm-bl[data-e="' + i.id + '"]'); if (bl) bl.scrollIntoView({block:'start', behavior:matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth'});
 }
 let pillMax = 0;
 function atualizaFaixa(){
   const f = document.getElementById('faixaTurno'), m = E.m; if (!f) return;
-  const on = m && m.ini && m.ini.length && (modo === 'mes' || modo === 'ses'); f.hidden = !on; if (!on) { pillMax = 0; document.documentElement.style.setProperty('--pill-h', '0px'); return; }
+  const on = m && m.ini && m.ini.length && (modo === 'mes' || modo === 'cmb' || modo === 'ses'); f.hidden = !on; if (!on) { pillMax = 0; document.documentElement.style.setProperty('--pill-h', '0px'); return; }
   const c = m.ini[m.turno] || m.ini[0], bd0 = badgesCond(c); if (c.pv <= 0) bd0.unshift(el('span',{class:'cb cd'}, 'caído')); const bd = bd0.length > 3 ? [...bd0.slice(0,3), el('span',{class:'cb tx'}, '+' + (bd0.length - 3))] : bd0;
   const podeDes = pilhaDes.length && Date.now() - ultDes < 15000; f.classList.toggle('cd', !!podeDes);   // com Desfazer na pílula, o “Vez de” sai para o nome caber
   f.replaceChildren(el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
@@ -2177,10 +2190,10 @@ function rolarMulti(i, mu){   // sequência de ataques da ficha: d20 + bônus e 
   let total = 0;
   const linhas = mu.seq.map((id, n) => { const b = inmAcao(i, id), ef = efe(i, b), p = [];
     let crit = false; if (ef.atk) { if (usaMedia()) p.push('ataque +' + ef.atk.b); else { const ra = rolarAtk(ef.atk.b, ef.atk.crit); p.push(ra.txt); crit = ra.n === 20; } }
-    (ef.dano || []).filter(d => d.k === 'd').forEach(d => { const ex = crit ? dobraE(d.e) : d.e, r = usaMedia() ? {t:mediaX(ex)} : rolarX(ex); total += r.t; p.push((usaMedia() ? 'dano médio ' : fmtE(ex) + ' ') + d.t + ' = ' + r.t + (usaMedia() ? ' (' + fmtE(ex) + ')' : '') + (crit ? ' (crítico: dados dobrados)' : '')); });
+    (ef.dano || []).filter(d => d.k === 'd').forEach(d => { const ex = crit ? dobraE(d.e) : d.e, r = usaMedia() ? {t:mediaX(ex)} : rolarX(ex); r.t = fdan(r.t); total += r.t; p.push((usaMedia() ? 'dano médio ' : fmtE(ex) + ' ') + d.t + ' = ' + r.t + (usaMedia() ? ' (' + fmtE(ex) + ')' : '') + (crit ? ' (crítico: dados dobrados)' : '')); });
     if (ef.cd) p.push(ef.cd.map(c => c[0] + ' CD ' + c[1]).join(', '));
     return (n + 1) + ') ' + b.nome + ': ' + p.join(' · '); });
-  return 'TOTAL se todos acertarem: ' + total + ' de dano\n' + linhas.join('\n');
+  return 'TOTAL se todos acertarem: ' + total + ' de dano' + nDan() + '\n' + linhas.join('\n');
 }
 const escCard = k => () => E.m.inm.disp ? ['inm'] : ['c:' + k];
 function cartaAcao(i, a, pref){
@@ -2224,13 +2237,13 @@ function cartaAcao(i, a, pref){
   if (i.id === 'ozy' && a.id === 'resistencia-lendaria') lin.append(el('button',{class:'peq', 'aria-label':'Um jogador usou Resistência Lendária: o Ozymandias recupera uma (Avareza)', onclick:() => desf('Avareza: recupera 1 Resistência', () => { s.uso[k] = Math.max(0, usado - 1); }, ['c:' + k])}, 'Avareza: recuperar 1'));
   if (ef.atk) lin.append(el('button',{class:'inm-atk','data-i':i.id,'data-a':a.id, 'aria-label':'Rolar ataque de ' + a.nome + ' com bônus +' + ef.atk.b, onclick:() => { const r = rolarAtk(ef.atk.b, ef.atk.crit); rolAt[k] = r.txt; if (r.n === 20) rolCrit[k] = 1; else delete rolCrit[k]; desenhar(['c:' + k]); }}, 'Ataque +' + ef.atk.b));
   (a.multi || []).forEach(mu => lin.append(el('button',{class:'inm-atk','data-i':i.id,'data-a':a.id, onclick:() => { rolInm[k] = rolarMulti(i, mu); rolTot[k] = +rolInm[k].match(/: (\d+) de dano/)[1]; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; desenhar(['c:' + k]); }}, ico('dado'), mu.lab)));
-  (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = usaMedia() && !/^\d+$/.test(d.e) ? {t:mediaX(d.e), txt:'Dano médio ' + mediaX(d.e) + ' (' + fmtE(d.e) + ')'} : rolarX(d.e); rolInm[k] = r.txt + ' ' + d.t; rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; delete rolCrit[k]; if (d.k === 'd') { const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; } desenhar(['c:' + k]); }},
+  (ef.dano || []).forEach(d => lin.append(el('button',{class:'inm-dado', onclick:() => { const r = usaMedia() && !/^\d+$/.test(d.e) ? {t:mediaX(d.e), txt:'Dano médio ' + mediaX(d.e) + ' (' + fmtE(d.e) + ')'} : rolarX(d.e); if (d.k === 'd') r.t = fdan(r.t); rolInm[k] = r.txt + ' ' + d.t + (d.k === 'd' ? nDan() + (nDan() ? ' = ' + r.t : '') : ''); rolTot[k] = r.t; rolTip[k] = d.k; delete rolAp[k]; delete rolCrit[k]; if (d.k === 'd') { const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; } desenhar(['c:' + k]); }},
     ico('dado'), (d.k === 'c' ? 'Curar ' : '') + (usaMedia() && !/^\d+$/.test(d.e) ? mediaX(d.e) + ' (' + fmtE(d.e) + ') ' : fmtE(d.e) + ' ') + d.t)));
   const comps = (ef.dano || []).filter(d => d.k === 'd');
-  if (comps.length > 1) lin.append(el('button',{class:'inm-dado inm-total', 'aria-label':'Rolar o dano completo de ' + a.nome + ' de uma vez', onclick:() => { let tot = 0; const ps = comps.map(d => { const r = rolarX(d.e); tot += r.t; return r.txt + ' ' + d.t; });
-    rolInm[k] = 'DANO TOTAL = ' + tot + '\n' + ps.join('\n'); rolTot[k] = tot; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; desenhar(['c:' + k]); }}, ico('dado'), 'Dano total'));
-  if (rolCrit[k] && (ef.dano || []).some(d => d.k === 'd')) lin.append(el('button',{class:'inm-dado inm-crit', 'aria-label':'Dano crítico: rola os dados de dano dobrados', onclick:() => { let tot = 0; const ps = ef.dano.filter(d => d.k === 'd').map(d => { const r = rolarX(dobraE(d.e)); tot += r.t; return r.txt + ' ' + d.t; });
-    rolInm[k] = 'CRÍTICO (dados dobrados) = ' + tot + '\n' + ps.join('\n'); rolTot[k] = tot; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; desenhar(['c:' + k]); }}, ico('dado'), 'Dano crítico (dados dobrados)'));
+  if (comps.length > 1) lin.append(el('button',{class:'inm-dado inm-total', 'aria-label':'Rolar o dano completo de ' + a.nome + ' de uma vez', onclick:() => { let tot = 0; const ps = comps.map(d => { const r = rolarX(d.e); tot += r.t; return r.txt + ' ' + d.t; }); tot = fdan(tot);
+    rolInm[k] = 'DANO TOTAL = ' + tot + nDan() + '\n' + ps.join('\n'); rolTot[k] = tot; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; desenhar(['c:' + k]); }}, ico('dado'), 'Dano total'));
+  if (rolCrit[k] && (ef.dano || []).some(d => d.k === 'd')) lin.append(el('button',{class:'inm-dado inm-crit', 'aria-label':'Dano crítico: rola os dados de dano dobrados', onclick:() => { let tot = 0; const ps = ef.dano.filter(d => d.k === 'd').map(d => { const r = rolarX(dobraE(d.e)); tot += r.t; return r.txt + ' ' + d.t; }); tot = fdan(tot);
+    rolInm[k] = 'CRÍTICO (dados dobrados) = ' + tot + nDan() + '\n' + ps.join('\n'); rolTot[k] = tot; rolTip[k] = 'd'; delete rolAp[k]; delete rolCrit[k]; const t = linhaPorId(s.alvo); if (t && ehInim(t)) s.alvo = ''; desenhar(['c:' + k]); }}, ico('dado'), 'Dano crítico (dados dobrados)'));
   // --- versão condensada (experimental): miniatura + linha de números + regra recolhida ---
   const alc = (a.txt.match(/alcance ([\d.,\/]+ m)/) || [])[1];
   const resumo = el('div',{class:'cc-res'},
@@ -2679,13 +2692,13 @@ function infere(){   // qual painel da aba Mestre recebeu o toque: só ele (e qu
 }
 function desenhar(esc){
   if (typeof esc === 'function') esc = esc();
-  const y0 = window.scrollY, ids = modo === 'mes' ? (esc === 'tudo' ? null : esc || infere()) : null;
+  const y0 = window.scrollY, ids = (modo === 'mes' || modo === 'cmb') ? (esc === 'tudo' ? null : esc || infere()) : null;
   if (ids) { desenharMestre(ids); atualizaFaixa(); } else desenhar0();
   if (Math.abs(window.scrollY - y0) > 2) window.scrollTo(0, y0);
 }
 function desenhar0(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cen' || modo==='img'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='img') desenharImagens(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
+  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cmb' || modo==='cen' || modo==='img' || modo==='aj'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='img') desenharImagens(); else if (modo==='mes' || modo==='cmb') desenharMestre(); else if (modo==='aj') desenharAjCombate(); else desenharSessao(); atualizaFaixa(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -2766,6 +2779,18 @@ function painelTablet(){
           el('button',{class:'peq', type:'button', onclick:() => { TAB.enviado = null; enviaTablet(srcTela()); }}, 'Reenviar a imagem'),
           el('button',{class:'peq', type:'button', onclick:() => { try { localStorage.removeItem('otl-sala'); } catch(e){} if (TAB.ponte) TAB.ponte.fechar(); TAB.ponte = null; TAB.vivo = 0; TAB.codigo = ''; ligaTablet(); desenharImagens(); desenharAjTablet(); }}, 'Gerar outro código')),
         el('div',{class:'im-st', role:'status'}));
+}
+function desenharAjCombate(){
+  const r = document.getElementById('ajCombate'); if (!r) return;
+  const s = E.m.inm, ativo = x => fatorDano() === x;
+  const campo = el('input',{type:'number', class:'q', min:'10', max:'200', step:'5', inputmode:'numeric', value:fatorDano(), 'aria-label':'Dano dos inimigos, em porcento da ficha',
+    onchange:ev => { const x = Math.round(+ev.target.value); s.fatorDano = x >= 10 && x <= 200 ? x : 100; salvar(); desenharAjCombate(); desenhar(['inm']); }});
+  const pre = x => el('button',{class:'peq', 'aria-pressed':String(ativo(x)), onclick:() => { s.fatorDano = x; salvar(); desenharAjCombate(); }}, x + '%');
+  r.replaceChildren(el('h2',{}, 'Dificuldade dos inimigos'), el('p',{class:'sub'}, 'Vale para as lutas desta noite. A ficha original não muda.'),
+    fatorUI(),
+    el('div',{class:'inm-nh fpv', role:'group', 'aria-label':'Dano dos inimigos'}, el('b',{}, 'Dano dos inimigos'),
+      el('div',{class:'inm-lin'}, pre(100), pre(75), pre(50), el('label',{}, 'Outro ', campo, ' % do dano da ficha')),
+      el('span',{class:'inm-av agora'}, fatorDano() === 100 ? 'Dano normal, como está na ficha.' : 'Os totais de dano rolados nos cartões saem a ' + fatorDano() + '% (arredondado). Os dados mostrados continuam os da ficha.')));
 }
 function desenharAjTablet(){
   const r = document.getElementById('ajTablet'); if (!r) return;
@@ -2920,22 +2945,32 @@ $('btFila').onclick = () => alternarFila();
 $('btSil').onclick = () => parar(0);
 $('btVid').onclick = () => { const p = $('players'), mini = p.classList.toggle('mini'); $('btVid').setAttribute('aria-pressed', String(!mini)); $('btVid').title = mini ? 'Mostrar os vídeos, para pular um anúncio' : 'Esconder os vídeos'; };
 let trava = null;
+const GRUPO_AJ = ['aj','sel','tri','cen','ses'];
 function aba(qual){ modo = qual; document.body.dataset.aba = qual;
-  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['cen','cenas','abaCen'],['img','imagens','abaImg'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
-  if (qual === 'mes') rotRolar = true;
+  for (const [k, sec] of [['sel','selecao'],['tri','triagem'],['cen','cenas'],['img','imagens'],['ses','sessao'],['mes','painelMestre'],['cmb','painelMestre'],['aj','ajustes']]) $(sec).hidden = qual!==k && !(sec === 'painelMestre' && (qual === 'mes' || qual === 'cmb'));
+  for (const [k, bt] of [['img','abaImg'],['mes','abaMes'],['cmb','abaCmb'],['sel','abaSel'],['tri','abaTri'],['cen','abaCen'],['ses','abaSes'],['aj','abaAjG']]) $(bt).setAttribute('aria-selected', qual===k);
+  $('abaAj').setAttribute('aria-selected', GRUPO_AJ.includes(qual)); $('subAj').hidden = !GRUPO_AJ.includes(qual);
+  if (qual === 'mes' || qual === 'cmb') rotRolar = true;
+  if (qual === 'cmb') { let v = null; try { v = localStorage.getItem('otl-cmb-aberto'); } catch(e){} if (!v) { abertas.add('inm'); try { localStorage.setItem('otl-cmb-aberto','1'); } catch(e){} } }
   if (qual === 'img' || qual === 'aj') ligaTablet();
   if (qual === 'aj') desenharAjTablet();
   if (qual!=='sel' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga
   desenhar(); salvaUI(); }
 $('abaSel').onclick = () => aba('sel');
+$('abaCmb').onclick = () => aba('cmb');
+$('abaAjG').onclick = () => aba('aj');
 $('abaTri').onclick = () => aba('tri');
 $('abaCen').onclick = () => aba('cen');
 $('abaImg').onclick = () => aba('img');
 $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
-$('abaAj').onclick = () => aba('aj');
+$('abaAj').onclick = () => aba(GRUPO_AJ.includes(modo) ? modo : 'aj');
 if (window.OTL) OTL.ui($('ajustes'));
-{ const d = document.createElement('div'); d.id = 'ajTablet'; d.className = 'aj-tablet'; $('ajustes').prepend(d); }
+{ const d = document.createElement('div'); d.id = 'ajTablet'; d.className = 'aj-tablet'; $('ajustes').prepend(d);
+  const c = document.createElement('div'); c.id = 'ajCombate'; c.className = 'aj-combate'; $('ajustes').prepend(c);
+  const t = document.createElement('div'); t.className = 'aj-atalhos';
+  t.append(el('h2',{}, 'Atalhos'), el('div',{class:'lin2'}, el('a',{class:'btn-at', href:'cartas.html', target:'_blank', rel:'noopener'}, 'Site das cartas'), el('a',{class:'btn-at', href:'mapa/index.html', target:'_blank', rel:'noopener'}, 'Site do mapa')));
+  $('ajustes').prepend(t); }
 let vozIni = 0;
 document.addEventListener('keyup', ev => { if (ev.key.toLowerCase() === 'v' && !/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) && vozIni && Date.now()-vozIni > 600) alternarVoz(false); vozIni = 0; });
 /* ---- efeitos sonoros dos cliques (sintetizados com Web Audio: sem arquivos, sem licença) ---- */
@@ -2982,9 +3017,9 @@ document.addEventListener('keydown', ev => {
   const k = ev.key.toLowerCase();
   if (k === ' ' && ev.target.tagName === 'BUTTON') return;
   if (k === 'escape') { parar(0); ambParar(); }
-  else if (k === 'enter' && modo === 'mes' && document.querySelector('.dk') && ev.target === document.body && E.m.ini.length) proxTurno();
-  else if (k === '0' && modo === 'mes' && document.querySelector('.dk')) { E.m.inm.todos = true; desenhar(['inm']); }
-  else if (/^[1-9]$/.test(k) && modo === 'mes' && INIMIGOS[+k - 1] && document.querySelector('.dk')) { E.m.inm.todos = false; E.m.inm.sel = INIMIGOS[+k - 1].id; desenhar(['inm']); }
+  else if (k === 'enter' && (modo === 'mes' || modo === 'cmb') && document.querySelector('.dk') && ev.target === document.body && E.m.ini.length) proxTurno();
+  else if (k === '0' && (modo === 'mes' || modo === 'cmb') && document.querySelector('.dk')) { E.m.inm.todos = true; desenhar(['inm']); }
+  else if (/^[1-9]$/.test(k) && (modo === 'mes' || modo === 'cmb') && INIMIGOS[+k - 1] && document.querySelector('.dk')) { E.m.inm.todos = false; E.m.inm.sel = INIMIGOS[+k - 1].id; desenhar(['inm']); }
   else if (k === 'b') parar(E.fadeSaida*1000);
   else if (k === 'v') { if (!ev.repeat) { if (voz) { vozIni = 0; alternarVoz(false); } else { vozIni = Date.now(); alternarVoz(true); } } }
   else if (k === 'r') retomar();
@@ -3009,7 +3044,7 @@ document.addEventListener('keydown', ev => {
   const aplica = c => { b.classList.toggle('compacta', c); bt.setAttribute('aria-pressed', String(c)); bt.setAttribute('aria-label', c ? 'Expandir player' : 'Recolher player'); bt.title = c ? 'Expandir player: mostra anterior, próxima, ±10 s, repetir e vídeos' : 'Deixa o player pequeno para não cobrir o conteúdo'; alt(); };
   let c0 = innerWidth < 900; try { const v = localStorage.getItem(K); if (v !== null) c0 = v === '1'; } catch(e){}   // celular: começa recolhido, a menos que a pessoa tenha escolhido
   aplica(c0);
-  bt.onclick = () => { const c = !b.classList.contains('compacta'); aplica(c); try { localStorage.setItem(K, c ? '1' : '0'); } catch(e){} if (modo === 'mes') desenhar(); };
+  bt.onclick = () => { const c = !b.classList.contains('compacta'); aplica(c); try { localStorage.setItem(K, c ? '1' : '0'); } catch(e){} if (modo === 'mes' || modo === 'cmb') desenhar(); };
   if (window.ResizeObserver) new ResizeObserver(alt).observe(b); addEventListener('resize', alt); alt(); })();
 (function(){ const bt = document.getElementById('btLetra'), K = 'trilha-letra-grande';
   const aplica = g => { document.body.classList.toggle('lg', g); bt.setAttribute('aria-pressed', String(g)); bt.textContent = g ? 'Letra normal' : 'Letra grande'; };
@@ -3034,12 +3069,12 @@ let uiRest = null; try { uiRest = JSON.parse(localStorage.getItem(KU) || 'null')
 if (uiRest && typeof uiRest === 'object') {
   if (Array.isArray(uiRest.ab)) { abertas.clear(); uiRest.ab.forEach(x => abertas.add(String(x))); }
   if (uiRest.ses) atualSes = uiRest.ses; if (uiRest.falaDe) falaDe = uiRest.falaDe; if (uiRest.gatilhoDe) gatilhoDe = uiRest.gatilhoDe;
-  if (uiRest.modo === 'ses' || uiRest.modo === 'mes') aba(uiRest.modo);
+  if (['ses','mes','cmb','aj','img','cen','tri','sel'].includes(uiRest.modo)) aba(uiRest.modo); else aba('mes');
 }
-desenhar();
+if (!uiRest || typeof uiRest !== 'object') aba('mes'); else desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
 <script src="ponte.js?v=1"></script>
-<script src="mesa.js?v=14"></script>
+<script src="mesa.js?v=15"></script>
 </body>
 </html>
