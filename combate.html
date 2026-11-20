@@ -90,19 +90,6 @@ textarea{width:100%;height:90px;margin:10px 0;font:12px/1.4 ui-monospace,Consola
 .vazio{color:var(--apagado);padding:14px 0}
 /* Barra */
 .barra{position:fixed;left:0;right:0;bottom:0;background:#120e0b;border-top:1px solid var(--terracota2);padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:5}
-.barra .in{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
-.agora{flex:1 1 240px;min-width:0;display:flex;gap:12px;align-items:center}
-.agora .rosto{width:44px;height:44px}
-.agora .tx{min-width:0}
-.agora .rot{font:400 11px/1 var(--titulo);letter-spacing:.14em;color:var(--apagado)}
-.agora .tit{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.agora .tempo{font-size:12px;color:var(--apagado);font-variant-numeric:tabular-nums}
-.barra .vol{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--apagado)}
-.barra .vol input{width:140px}
-.transp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.transp #btPausa{min-width:104px;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
-.linhaPos{flex:1 1 100%;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--apagado);font-variant-numeric:tabular-nums}
-.linhaPos input{flex:1;width:auto;min-width:0}
 .players{display:flex;gap:8px}
 /* Triagem */
 .tri-cfg{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin:18px 0}
@@ -180,8 +167,6 @@ textarea.notas{height:120px;font:14px/1.45 var(--texto)}
 .gat button .q{font-weight:600}
 .gat button .t{color:var(--apagado);font-size:12px}
 
-#btVoz[aria-pressed="true"]{background:var(--ouro);border-color:var(--ouro);color:var(--sobre);font-weight:600}
-#btRep[aria-pressed="true"]{border-color:var(--terracota);color:var(--terracota)}
 
 .cxm>summary{cursor:pointer;font-weight:600;font-size:15px;list-style:none}.cxm>summary::-webkit-details-marker{display:none}.cxm>summary::before{content:'▸ ';color:var(--ouro)}.cxm[open]>summary::before{content:'▾ '}.cxm[open]>summary{margin-bottom:10px}
 .ini2{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px;border:1px solid var(--linha);border-radius:8px;margin-bottom:6px}.ini2.vez{border-color:var(--ouro);box-shadow:0 0 0 1px var(--ouro)}.ini2.caiu{opacity:.5}
@@ -247,7 +232,6 @@ html{scroll-padding-bottom:calc(var(--barra-h,360px) + 80px)}
 #faixaTurno{position:fixed;right:10px;bottom:calc(var(--barra-h,0px) + 10px);z-index:6;max-width:calc(100vw - 20px);display:flex;gap:10px;align-items:center;padding:4px 4px 4px 12px;border-radius:999px;background:#2a2410;border:1px solid var(--ouro);box-shadow:0 2px 10px #000a;font-size:13px}
 #faixaTurno[hidden]{display:none}#faixaTurno .ft-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#faixaTurno .ft-r{color:var(--apagado);white-space:nowrap}
 #faixaTurno button{min-height:44px;border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600;white-space:nowrap}
-.barra.compacta .linhaPos,.barra.compacta #btVolta,.barra.compacta #btRep,.barra.compacta #btVid,.barra.compacta #btAnt,.barra.compacta #btProx,.barra.compacta #btMenos,.barra.compacta #btMais,.barra.compacta .x{display:none}
 #btCompacto{min-height:40px}
 .inm-filtros{margin-top:8px}.inm-filtros summary{min-height:40px;display:flex;align-items:center;font-size:13px;color:#d8cbb4;cursor:pointer}
 /* Rodada 3: desfazer, iniciar luta, condições, acessibilidade */
@@ -323,15 +307,6 @@ body.lg .inm-cd,body.lg .inm-sem,body.lg .inm-fl,body.lg .inm-nh,body.lg .inm-pr
 html{scroll-padding-bottom:calc(var(--barra-h,360px) + var(--pill-h,0px) + 84px)}
 .inm-card,.i-pk,.ini2{scroll-margin-bottom:calc(var(--barra-h,360px) + var(--pill-h,0px) + 84px)}
 .inm-bl{scroll-margin-top:64px}
-.barra.compacta .in{gap:6px 8px}
-.barra.compacta{padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
-.barra.compacta .agora{flex:1 1 140px;order:1}
-.barra.compacta .agora .rosto{width:38px;height:38px}
-.barra.compacta .vol{order:2;flex:0 0 120px}.barra.compacta .vol .x2{display:none}.barra.compacta .vol input{width:120px;min-height:40px}
-.barra.compacta .transp{display:contents}
-.barra.compacta #btPausa{order:3;min-width:0;flex:1 1 auto}.barra.compacta #btVoz{order:4;flex:1 1 auto}.barra.compacta #btBaixar{order:5;flex:1 1 auto}.barra.compacta #btSil{order:6;flex:1 1 auto}.barra.compacta .in>button,.barra.compacta .transp button{font-size:14px;padding-inline:6px;white-space:nowrap}.barra.compacta #btCompacto{order:7;flex:0 0 44px;padding-inline:0}
-.barra.compacta button{min-height:40px;padding:6px 8px}
-#btVoz[aria-pressed="true"]{background:var(--ouro);border-color:var(--ouro);color:var(--sobre);font-weight:700}
 #toast{left:10px;right:auto;margin:0;max-width:min(330px,calc(100vw - 20px));font-size:13px;padding:2px 2px 2px 10px;gap:8px;border-radius:10px;bottom:calc(var(--barra-h,0px) + var(--pill-h,0px) + 14px);justify-content:flex-start}
 #toast span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #toast button{min-height:40px;min-width:40px;padding:4px 10px}
@@ -421,12 +396,6 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .inm-aba[aria-selected="true"]{background:none;color:var(--terracota);border-color:var(--terracota)}
 .barra{background:var(--fundo);border-top:0;position:fixed;box-shadow:0 -16px 14px -6px var(--fundo)}
 .barra::before{content:"";position:absolute;left:0;right:0;top:-14px;height:12px;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11H3V2H12V8H7V5' fill='none' stroke='%23dd8440' stroke-width='1.2'/%3E%3C/svg%3E") repeat-x center;opacity:.55;pointer-events:none}
-.barra #btPausa,.barra.compacta #btPausa{border-radius:999px;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:700}
-.barra .agora .tit{font:600 16px/1.2 var(--titulo)}
-.barra.compacta .in>button,.barra.compacta .transp button{border-color:transparent;background:none;color:var(--marfim)}
-.barra.compacta #btPausa{color:var(--sobre);background:var(--terracota)}
-.barra.compacta #btSil{color:#ff9c8e}
-#btVoz[aria-pressed="true"],.barra.compacta #btVoz[aria-pressed="true"]{background:none;color:var(--terracota);border-color:var(--terracota)}
 .palco{border:0;background:none;padding:8px 0;gap:20px;align-items:flex-end}
 .palco .arte{width:168px;height:224px;border-radius:84px 84px 6px 6px;border:2px solid var(--terracota);padding:5px;background:#000;object-position:top;color:var(--terracota2)}
 .palco div.arte .ic{width:48px;height:48px;margin:0}
@@ -515,8 +484,6 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   .inm-bl > details.inm-sec > :not(summary){margin:0;min-width:0}
   .inm-bl > details.inm-sec > p,.inm-bl > details.inm-sec > .inm-uso{grid-column:1/-1}
   /* player: uma única faixa baixa */
-  .barra.compacta .in{flex-wrap:nowrap;align-items:center;gap:10px}
-  .barra.compacta .linhaPos{display:none}
 }
 @media (min-width:1700px){
   .dk{grid-template-columns:320px minmax(0,1fr)}
@@ -705,6 +672,94 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .im-card span{font-size:13px;line-height:1.25;overflow-wrap:anywhere}
 .im-x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:#000b;color:#fff;display:flex;align-items:center;justify-content:center;font-style:normal}
 .im-add{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}.im-add input{flex:1 1 220px;min-width:0}
+
+/* ===== Player de baixo (estilo YouTube Music, com a greca) ===== */
+#barra .in{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:minmax(170px,.55fr) auto minmax(0,1.45fr);grid-template-areas:"pos pos pos" "ag tr fe";gap:4px 18px;align-items:center}
+#barra .linhaPos{grid-area:pos;display:flex;gap:10px;align-items:center;font-size:12px;color:var(--apagado);font-variant-numeric:tabular-nums}
+#barra .linhaPos input{flex:1;min-width:0;width:auto}
+#barra .agora{grid-area:ag;min-width:0;display:flex;gap:12px;align-items:center}
+#barra .agora .rosto{width:48px;height:48px;flex:none}
+#barra .agora .tx{min-width:0}
+#barra .agora .tit{font:600 16px/1.2 var(--titulo);color:var(--marfim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#barra .agora .rot{font:400 12px/1.3 var(--titulo);letter-spacing:.06em;color:var(--apagado);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#barra .agora .tempo{font-size:11px;color:var(--ouro);min-height:14px}
+#barra .transp{grid-area:tr;display:flex;gap:2px;align-items:center;justify-content:center}
+#barra .ferr{grid-area:fe;display:flex;gap:0;align-items:center;justify-content:flex-end;flex-wrap:wrap;min-width:0}
+#barra button.ic{position:relative;flex:none;width:40px;height:40px;min-height:0;padding:0;border:1px solid transparent;border-radius:50%;background:none;color:var(--marfim);display:inline-flex;align-items:center;justify-content:center}
+#barra button.ic:hover:not(:disabled){background:color-mix(in srgb,var(--terracota) 20%,transparent);border-color:transparent}
+#barra button.ic:disabled{opacity:.35;cursor:default}
+#barra svg.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#barra svg.ic .f{fill:currentColor}
+#barra svg.ic .tx{fill:currentColor;stroke:none;font:700 8px/1 system-ui,sans-serif}
+#barra button.ic[aria-pressed=true]{color:var(--terracota)}
+#barra button.ic[aria-pressed=true]::after{content:"";position:absolute;bottom:3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:currentColor}
+#barra #btPausa.grande{width:52px;height:52px;margin:0 6px;background:var(--terracota);border-color:var(--terracota);color:var(--sobre);box-shadow:0 0 0 3px color-mix(in srgb,var(--terracota) 28%,transparent)}
+#barra #btPausa.grande:hover:not(:disabled){background:var(--terracota2)}
+#barra #btPausa svg.ic{width:26px;height:26px}
+#barra #btPausa .i-toca{display:none}#barra #btPausa[data-p=continuar] .i-pausa{display:none}#barra #btPausa[data-p=continuar] .i-toca{display:block}
+#barra #btRep .um{display:none}#barra #btRep[data-m=one] .um{display:block}
+#barra #btSil{color:#ff9c8e}#barra #btSil:hover:not(:disabled){background:#4a1c16}
+#barra #btCompacto[aria-pressed=true]{color:var(--marfim)}#barra #btCompacto[aria-pressed=true]::after{display:none}
+#barra #btVoz[aria-pressed=true]{color:var(--sobre);background:var(--ouro)}#barra #btVoz[aria-pressed=true]::after{display:none}
+#barra #btCompacto svg.ic{transition:transform .2s}
+#barra:not(.compacta) #btCompacto svg.ic{transform:rotate(180deg)}
+#barra .vol{display:flex;align-items:center;gap:2px;color:var(--apagado)}
+#barra .vol svg.ic{width:20px;height:20px;margin-left:6px}
+#barra .vol input{width:84px}
+#barra input[type=range]{-webkit-appearance:none;appearance:none;height:22px;background:none;accent-color:var(--terracota);--p:0%}
+#barra input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--terracota) var(--p),color-mix(in srgb,var(--marfim) 22%,transparent) var(--p))}
+#barra input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:color-mix(in srgb,var(--marfim) 22%,transparent)}
+#barra input[type=range]::-moz-range-progress{height:4px;border-radius:2px;background:var(--terracota)}
+#barra input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--ouro);border:2px solid var(--fundo)}
+#barra input[type=range]::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:var(--ouro);border:2px solid var(--fundo)}
+/* recolhido: só o essencial */
+#barra.compacta{padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+#barra.compacta .agora .rosto{width:38px;height:38px}
+#barra.compacta .agora .rot,#barra.compacta .agora .tempo,#barra.compacta #btAleat,#barra.compacta #btMenos,#barra.compacta #btMais,#barra.compacta #btRep,#barra.compacta #btVolta,#barra.compacta .vol,#barra.compacta #btVid,#barra.compacta .linhaPos span{display:none}
+#barra.compacta .linhaPos{height:10px}
+#barra.compacta #btPausa.grande{width:44px;height:44px}
+/* lista de músicas */
+#filaPainel{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(var(--barra-h,90px) + 22px);width:min(440px,calc(100vw - 24px));max-height:min(64vh,560px);display:flex;flex-direction:column;background:var(--painel);border:1px solid var(--terracota2);border-radius:12px;box-shadow:0 18px 40px -10px #000c;z-index:7;overflow:hidden}
+#filaPainel[hidden]{display:none}
+#filaPainel::before{content:"";flex:none;height:12px;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11H3V2H12V8H7V5' fill='none' stroke='%23dd8440' stroke-width='1.2'/%3E%3C/svg%3E") repeat-x center;opacity:.6;margin-top:4px}
+.fp-cab{flex:none;display:flex;align-items:center;gap:8px;padding:8px 14px 6px}
+.fp-cab h3{margin:0;flex:1;min-width:0;font:600 17px/1.2 var(--titulo);color:var(--marfim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fp-cab small{display:block;font:400 12px/1.3 system-ui,sans-serif;color:var(--apagado)}
+.fp-cab button.ic,.fp-sel button.ic{position:relative;width:36px;height:36px;min-height:0;padding:0;border:1px solid transparent;border-radius:50%;background:none;color:var(--marfim);display:inline-flex;align-items:center;justify-content:center}
+.fp-cab button.ic svg,.fp-sel button.ic svg,.fp-it .fp-b svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fp-cab button.ic[aria-pressed=true]{color:var(--terracota)}
+.fp-cab .f,.fp-it .f{fill:currentColor}
+.fp-sel{flex:none;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:2px 14px 8px;border-bottom:1px solid var(--linha)}
+.fp-sel .peq{padding:4px 10px;border-radius:999px}
+.fp-sel label{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--apagado);flex-basis:100%;padding-top:4px}
+.fp-lista{flex:1;min-height:0;overflow:auto;margin:0;padding:4px 6px 8px;list-style:none}
+.fp-it{display:flex;align-items:center;gap:4px;border-radius:8px;padding:2px 2px 2px 8px}
+.fp-it:hover{background:color-mix(in srgb,var(--terracota) 12%,transparent)}
+.fp-it.atual{background:color-mix(in srgb,var(--terracota) 24%,transparent)}
+.fp-it .fp-n svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-linecap:round}
+.fp-it .fp-n{flex:none;width:22px;text-align:center;font-size:12px;color:var(--apagado);font-variant-numeric:tabular-nums}
+.fp-it.atual .fp-n{color:var(--ouro)}
+.fp-it .fp-go{flex:1;min-width:0;text-align:left;border:0;background:none;padding:8px 4px;color:var(--marfim);border-radius:6px}
+.fp-it .fp-go b{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fp-it .fp-go span{display:block;font-size:12px;color:var(--apagado);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fp-it .fp-b{flex:none;width:30px;height:30px;min-height:0;padding:0;border:0;background:none;color:var(--apagado);display:inline-flex;align-items:center;justify-content:center;border-radius:50%;opacity:.0}
+.fp-it:hover .fp-b,.fp-it:focus-within .fp-b,.fp-it.atual .fp-b{opacity:1}
+.fp-it .fp-b:hover{color:var(--marfim);background:#ffffff14}
+.fp-vazia{padding:18px 16px;color:var(--apagado);font-size:14px}
+@media (max-width:900px){
+  #barra .in{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"pos pos" "ag tr" "fe fe"}
+  #barra .ferr{justify-content:center}
+  #barra.compacta .in{grid-template-areas:"pos pos" "ag tr" "fe fe"}
+  #barra #btMenos,#barra #btMais{display:none}
+  #barra.compacta .ferr button.ic{width:38px;height:38px}
+}
+@media (max-width:560px){
+  #barra .in{grid-template-columns:1fr;grid-template-areas:"pos" "ag" "tr" "fe"}
+  #barra .vol input{width:80px}
+  #barra.compacta .in{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"pos pos" "ag tr" "fe fe"}
+  #barra.compacta #btPrevHide{display:none}
+}
+@media (prefers-reduced-motion:reduce){#barra #btCompacto svg.ic{transition:none}}
 </style>
 <link rel="stylesheet" href="visual.css">
 <link rel="stylesheet" href="mesa.css?v=10">
@@ -736,32 +791,37 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 </main>
 
 <div class="barra" id="barra"><div class="in">
+  <div class="linhaPos"><span id="tAgora">0:00</span><input type="range" id="pos" min="0" max="1000" value="0" aria-label="Posição na música"><span id="tTotal">0:00</span></div>
   <div class="agora">
     <span id="agoraRosto"></span>
     <div class="tx">
-      <div class="rot" id="agoraRot">Tocando agora</div>
       <div class="tit" id="agoraTit">Silêncio</div>
+      <div class="rot" id="agoraRot">Tocando agora</div>
       <div class="tempo" id="agoraTempo">&nbsp;</div>
     </div>
   </div>
   <div class="transp">
-    <button id="btAnt" class="peq" title="Tecla P">Anterior</button>
-    <button id="btMenos" class="peq" title="Seta para a esquerda">−10 s</button>
-    <button id="btPausa" title="Barra de espaço">Pausar</button>
-    <button id="btMais" class="peq" title="Seta para a direita">+10 s</button>
-    <button id="btProx" class="peq" title="Tecla N">Próxima</button>
+    <button id="btAleat" class="ic" aria-pressed="false" type="button" title="Aleatório (tecla S)" aria-label="Aleatório"><svg class="ic" aria-pressed="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h3.5c2 0 3.2 1 4.3 3l2.4 4c1.1 2 2.3 3 4.3 3H21M3 17h3.5c1.4 0 2.4-.5 3.2-1.4M21 7h-3.5c-1.4 0-2.4.5-3.2 1.4M18.5 4.5L21 7l-2.5 2.5M18.5 14.5L21 17l-2.5 2.5"/></svg></button>
+    <button id="btAnt" class="ic" type="button" title="Anterior (tecla P)" aria-label="Anterior"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M18 5.5v13L8.5 12z"/><path d="M6 5v14"/></svg></button>
+    <button id="btMenos" class="ic" type="button" title="Voltar 10 segundos (seta esquerda)" aria-label="Voltar 10 segundos"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 108.5-8.5c-2.3 0-4.4.9-6 2.5L3.5 8.5M3.5 3.5v5h5"/><text x="12" y="15.4" text-anchor="middle" class="tx">10</text></svg></button>
+    <button id="btPausa" class="ic grande" type="button" data-p="pausar" title="Pausar / continuar (barra de espaço)" aria-label="Pausar"><svg class="ic i-pausa" viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg><svg class="ic i-toca" viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M8 5.5v13l11-6.5z"/></svg></button>
+    <button id="btMais" class="ic" type="button" title="Avançar 10 segundos (seta direita)" aria-label="Avançar 10 segundos"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 12A8.5 8.5 0 1112 3.5c2.3 0 4.4.9 6 2.5l2.5 2.5M20.5 3.5v5h-5"/><text x="12" y="15.4" text-anchor="middle" class="tx">10</text></svg></button>
+    <button id="btProx" class="ic" type="button" title="Próxima (tecla N)" aria-label="Próxima"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M6 5.5v13L15.5 12z"/><path d="M18 5v14"/></svg></button>
+    <button id="btRep" class="ic" type="button" data-m="off" aria-pressed="false" title="Repetir: desligado → a lista → só esta música (tecla T)" aria-label="Repetir"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3.5L20.5 7 17 10.5M3.5 11V9.5A2.5 2.5 0 016 7h14.5M7 20.5L3.5 17 7 13.5M20.5 13v1.5A2.5 2.5 0 0118 17H3.5"/><path class="um" d="M11 10.5l1.5-1v6"/></svg></button>
   </div>
-  <div class="linhaPos"><span id="tAgora">0:00</span><input type="range" id="pos" min="0" max="1000" value="0" aria-label="Posição na música"><span id="tTotal">0:00</span></div>
-  <label class="vol"><span class="x2">Volume geral</span> <input type="range" id="mestre" min="0" max="100" value="80" aria-label="Volume geral"></label>
-  <button id="btVoz" aria-pressed="false" title="Tecla V: abaixa a música enquanto você fala (segure ou toque)">Voz</button>
-  <button id="btVolta" class="peq" title="Tecla R: volta à música anterior, de onde parou">Voltar à anterior</button>
-  <button id="btRep" class="peq" title="Tecla T">Repetir</button>
-  <button id="btBaixar" title="Tecla B">Baixar<span class="x"> aos poucos</span></button>
-  <button id="btSil" class="perigo" title="Tecla Esc">Silêncio</button>
-  <button id="btVid" title="Mostra os vídeos, para pular um anúncio">Mostrar vídeos</button>
-  <button id="btCompacto" aria-pressed="false" title="Deixa o player pequeno para não cobrir o conteúdo">Recolher player</button>
+  <div class="ferr">
+    <button id="btVolta" class="ic" type="button" title="Voltar à música anterior, de onde parou (tecla R)" aria-label="Voltar à música anterior, de onde parou"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h9.5a6.5 6.5 0 010 13H10"/></svg></button>
+    <label class="vol" title="Volume geral"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M4 9.5v5h3.5L12.5 19V5L7.5 9.5z"/><path d="M15.5 9a4 4 0 010 6M18.3 6.3a8 8 0 010 11.4"/></svg><input type="range" id="mestre" min="0" max="100" value="80" aria-label="Volume geral"></label>
+    <button id="btVoz" class="ic" type="button" aria-pressed="false" title="Voz: abaixa a música enquanto você fala (tecla V; segure ou toque)" aria-label="Voz"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg></button>
+    <button id="btBaixar" class="ic" type="button" title="Baixar aos poucos (tecla B)" aria-label="Baixar aos poucos"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6l6 6.5 4-4L21 17M15 17h6v-6"/></svg></button>
+    <button id="btSil" class="ic perigo" type="button" title="Silêncio (tecla Esc)" aria-label="Silêncio"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect class="f" x="6.5" y="6.5" width="11" height="11" rx="2"/></svg></button>
+    <button id="btFila" class="ic" type="button" aria-pressed="false" aria-controls="filaPainel" title="Lista de músicas e fila" aria-label="Lista de músicas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6h11M3.5 11h11M3.5 16h6"/><circle class="f" cx="16.5" cy="17.5" r="2.6"/><path d="M19 17.5V7l3-1"/></svg></button>
+    <button id="btVid" class="ic" type="button" title="Mostrar os vídeos, para pular um anúncio" aria-label="Mostrar os vídeos, para pular um anúncio"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="12.5" height="12" rx="2"/><path class="f" d="M15.5 10.5l5.5-3v9l-5.5-3z"/></svg></button>
+    <button id="btCompacto" class="ic" type="button" aria-pressed="false" title="Recolher o player" aria-label="Recolher player"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14.5l6-6 6 6"/></svg></button>
+  </div>
   <div class="players mini" id="players"><div class="cx"><div id="p0"></div></div><div class="cx"><div id="p1"></div></div><div class="cx"><div id="p2"></div></div></div>
 </div></div>
+<div id="filaPainel" role="dialog" aria-label="Lista de músicas" hidden></div>
 <div id="faixaTurno" hidden></div>
 <div id="toast" hidden></div>
 <div id="vezLive" class="sr" role="status" aria-live="polite"></div>
@@ -781,6 +841,17 @@ const PADRAO = [
   F('esau-yuve','The HU — “Yuve Yuve Yu”','Combate alternativo','combate',0,['v4xZUr0BEfE','KpqERx0nyw0','1Gtn1RPXdsg','HqVjBiuRg0c']),
   F('esau-helvegen','Wardruna — “Helvegen”','A flecha que mata a Rafaela (volta 1)','momento',0,['DD65K4VR6Lw','n90SVmnomdM','Fjm93-0ssFo','CuWPsx6U8rU']),
   F('esau-lobo','Heitor Pereira — tema da Morte, o Lobo (Gato de Botas 2)','O assobio: quando o Esaú surge do nada ou a morte se aproxima','momento',0,['oFWjOD0duuA','dVbyQkn6GWg','QnkE47Kmvv4']),
+  F('esau-ancientcall','Tengger Cavalry — “Ancient Call”','Combate: canto difônico e cavalgada metal, a caçada a galope','combate',0,['4-D3wYNR8DM']),
+  F('esau-dancewolf','Tengger Cavalry — “Dance With the Wolf”','Combate: o lobo dança com a presa','combate',0,['4s741gfV79k']),
+  F('esau-warhorse','Tengger Cavalry — “War Horse”','Combate: carga a cavalo, ritmo de galope','combate',0,['icPhDK3PTqc','7bDjksBW6pI']),
+  F('esau-wisdomeyes','Nine Treasures — “Wisdom Eyes”','Combate: folk mongol veloz, alaúde e tambor','combate',0,['rAQsFN64rEQ','1B8LzXNQH1w']),
+  F('esau-blackthunder','The HU — “Black Thunder”','Combate: o trovão da estepe, mais rápido que Wolf Totem','combate',0,['3aguZjkVLaE','KYsmMLvmAQo']),
+  F('esau-tapir','James Horner — “Tapir Hunt” (Apocalypto)','Caçada: ele persegue os jogadores pela mata','combate',0,['DnTGWHeldyo']),
+  F('esau-promentory','Trevor Jones — “Promentory” (O Último dos Moicanos)','Perseguição e duelo final: cordas e tambor sem trégua','combate',0,['9tjdswqGGVg','EaGTRm4s4rI']),
+  F('esau-bloodbag','Junkie XL — “Blood Bag” (Mad Max)','Combate brutal, tambores de guerra','combate',0,['8OeMbWq0xKo','IbovwHryovE']),
+  F('esau-wenja','Jason Graves — “Save the Wenja” (Far Cry Primal)','Combate tribal da idade da pedra, percussão crua','combate',0,['AYF279CciCw']),
+  F('esau-maidjan','Heilung — “In Maidjan”','Combate ritual, tambor e grito, mais lento e pesado','combate',0,['xPCcEHao8Nw','kmWTZ3KfnXE']),
+  F('esau-kala','Danheim — “Kala”','Combate: tambores nórdicos em marcha','combate',0,['fwRDom8n5Rc']),
  ]},
  { id:'ezequiel', nome:'Ezequiel — o vidente', sub:'Órgão de tubos.', faixas:[
   F('eze-apparition','Messiaen — “Apparition de l’église éternelle”','Entrada: lenta, esmagadora, cresce até o insuportável','entrada',1,['NPpS5QxqGT0','-kPQC4ET9yk','U55l83hRplE','wMgtq-2mLvg']),
@@ -791,6 +862,16 @@ const PADRAO = [
   F('eze-dieu','Messiaen — “Dieu parmi nous”','Quando ele percebe que já viveu aquilo (a partir da volta 2)','momento',0,['1wZnq7S3LPg','cMlYI2hCd-Y','Mg9qeDZnVW4','1oRSr6t0n7M']),
   F('eze-annum','Arvo Pärt — “Annum per annum”','Entrada alternativa, fria e meditativa','entrada',0,['HyO9Qt4QNQM','13ODUyBxIRg','xb78DY2UMHE','Wf7Wln0tQA8']),
   F('eze-koyaa','Philip Glass — “Koyaanisqatsi”','Presságio: o órgão repetindo o mesmo destino enquanto ele lê o futuro','momento',0,['YvmyEY9N4j4','rBID6WwPUUA']),
+  F('eze-boellmann','Boëllmann — “Toccata” (Suíte Gótica)','Combate: órgão sombrio e implacável do início ao fim','combate',0,['VacF-ppEp5w','co63dD9ez4A']),
+  F('eze-widor','Widor — “Toccata” (Sinfonia nº 5 para órgão)','Combate: o órgão em turbilhão, sem pausa','combate',0,['0YhYfgmRNoA','jtj300j129k']),
+  F('eze-vierne','Vierne — Sinfonia nº 1, Finale (órgão)','Combate: marcha triunfal e furiosa no órgão','combate',0,['1S3b5tfrDFA','5yDFNZXx944']),
+  F('eze-beet5','Beethoven — Sinfonia nº 5, 1º movimento','Combate: o destino bate à porta (ele já viu este final)','combate',0,['SSypujlLlNI','n3EiRynr1Us']),
+  F('eze-erlkonig','Schubert/Liszt — “Erlkönig” (piano)','Combate: galope sem fôlego, a morte que ele previu chegando','combate',0,['4_BmRekeJ8A','O4pC2Cc_hAo']),
+  F('eze-moonlight3','Beethoven — Sonata “Ao Luar”, 3º movimento (Presto agitato)','Combate: piano em fúria contínua','combate',0,['zucBfXpCA6s','BV7RkEL6oRc']),
+  F('eze-revolucionario','Chopin — Estudo “Revolucionário” (Op. 10 nº 12)','Combate curto e violento (2 min e meio)','combate',0,['g1uLrHq9TDg','7VWHBHeNrg4']),
+  F('eze-ventoinverno','Chopin — Estudo “Vento de Inverno” (Op. 25 nº 11)','Combate: tempestade no piano, sem trégua','combate',0,['gZjdAWgjLx8','pHlqEvAwdVc']),
+  F('eze-inverno','Vivaldi — “Inverno”, 1º movimento (As Quatro Estações)','Combate: cordas cortantes, gelo e urgência','combate',0,['e2wBXUEz_sQ','UWg5ugyMjIc']),
+  F('eze-macabre','Saint-Saëns — “Dança Macabra”','Combate: a morte toca violino (tem um trecho mais calmo no meio)','combate',0,['71fZhMXlGT4','YyknBTm_YyM']),
  ]},
  { id:'jael', nome:'Jael — a força bruta', sub:'Taikô e tambores de guerra.', faixas:[
   F('jael-odaiko','Kodo — “O-Daiko”','Combate: o grande tambor','combate',1,['3cqOTcW-upA','QiFS6if581A','C7HL5wYqAbU','uTJQV2-WRts']),
@@ -811,6 +892,16 @@ const PADRAO = [
   F('hil-columba','“Columba aspexit”','Quando ela morre de vez','momento',0,['puAOTgq3Wkc','ULzsbJPCXuE','p5EtfnhD8_g','e1czFcmmkUg']),
   F('hil-ordo','“Ordo Virtutum”','Reserva para o final: as Virtudes lutando por uma alma','momento',0,['zUMlhtoGTzY','WBGgRSPyUFQ','yq7Gm7eKY0I','38bHeVw_nAA']),
   F('hil-agnikai','Jeremy Zuckerman — “The Last Agni Kai” (Avatar)','Combate quando a luta vira drama: ela luta pela família, não para vencer','combate',0,['JONpdQyvl88']),
+  F('hil-friede','Yuki Kitamura — “Sister Friede” (Dark Souls III)','Combate: a freira que luta com uma calma terrível; começa contida e explode','combate',0,['Ic2KJjSZumw']),
+  F('hil-ludwig','“Ludwig, the Holy Blade” (Bloodborne)','Combate: fé e lâmina, coro sagrado e cordas em fúria','combate',0,['NjzF3XWrDdA','ALbVEmzY5S4']),
+  F('hil-aldrich','Motoi Sakuraba — “Aldrich, Devourer of Gods” (Dark Souls III)','Combate: a fé que virou ameaça, coro grave','combate',0,['yCEEVbqS-K8','oq-RYe9ov18']),
+  F('hil-malenia','Yuki Kitamura — “Malenia, Blade of Miquella” (Elden Ring)','Combate como lamento: soprano e cordas, ela luta chorando','combate',0,['W3SWV8tvu18']),
+  F('hil-rennala','Yuki Kitamura — “Rennala, Queen of the Full Moon” (Elden Ring)','Combate solene e mágico, coro feminino: a cura como arma','combate',0,['mKOpTUezXeM','-hA2wpC9PNE']),
+  F('hil-gwyn','Motoi Sakuraba — “Gwyn, Lord of Cinder” (Dark Souls)','Combate que é drama: quando ela pede perdão no meio da luta (piano triste)','combate',0,['3bqLGebDRIY','Nvv9w-UPuSY']),
+  F('hil-ebrietas','“Ebrietas, Daughter of the Cosmos” (Bloodborne)','Rodada 3, o Anjo desce: o sagrado vira terror','momento',0,['D136DTaMCx8','3sr349qR9s8']),
+  F('hil-radiance','Christopher Larkin — “The Radiance” (Hollow Knight)','Fase do Anjo: luz que fere, coro agudo e urgente','combate',0,['SkD5Ceo8KAo','FEdX6fQkxTM']),
+  F('hil-archangel','Two Steps From Hell — “Archangel”','Combate épico com coro, para a virada dos jogadores','combate',0,['dJ-QLl5qjLg']),
+  F('hil-fortuna','Carl Orff — “O Fortuna” (Carmina Burana)','Combate épico com coro (conhecida demais: pode virar piada)','combate',0,['GXFSK0ogeg4','EJC-_j3SnXk']),
  ]},
  { id:'demonio', nome:'O “demônio”', sub:'O sagrado que soa aterrorizante.', faixas:[
   F('dem-lux','Ligeti — “Lux Aeterna”','Quando ele desce: um coro santo e assustador','entrada',0,['j2cRjiC4ODI','vxLzzF2_nJA','CXULsghOD4o','YM3jPUK278I']),
@@ -819,10 +910,23 @@ const PADRAO = [
   F('dem-heptapod','Jóhann Jóhannsson — “Heptapod B” (A Chegada)','Entrada: vozes que não parecem humanas','entrada',0,['KzaqrQuwr1k','1cAKKKpnGoU','ndasBUpI9WY','g8GcuUnHQb0']),
   F('dem-diesirae','Verdi — Réquiem, “Dies Irae”','Combate épico, se a mesa gostar de exagero','combate',0,['60mRj_9Rybc','oV5UKScdHUU','CUGMZlvrR4c','aVJTQcOMLQw']),
  ]},
- { id:'elodie', nome:'Elizabeth — a pintora', sub:'Luta junto com o Ozymandias (a música dela é a dele). Estas são para os momentos dela.', faixas:[
+ { id:'elodie', nome:'Elizabeth — a pintora', sub:'Luta junto com o Ozymandias. Combates rápidos e frenéticos dela (muitos de Expedition 33, que também gira em torno de uma pintora) e os momentos dramáticos.', faixas:[
   F('raq-gorecki','Górecki — Sinfonia nº 3, 2º movimento','Quando ela se coloca na frente dele e não sai','momento',0,['g5fg8-VWNo0','9NkQsfYI4T0','V-3ND_VSXpE','zY9Z0GLoeM8']),
   F('raq-daylight','Max Richter — “On the Nature of Daylight”','Quando ela morre de vez','momento',0,['InyT9Gyoz_o','b_YHE4Sx-08','tUMc_-Bcunk','GNFuiMZYDpQ']),
   F('raq-barber','Barber — “Adágio para Cordas”','Alternativa para a morte dela','momento',0,['WAoLJ8GbA4Y','KylMqxLzNGo','fmaP17h8jqA','Ai6F1pWxayA']),
+  F('elo-uneviea','Lorien Testard — “Une vie à t’aimer” (Expedition 33)','Combate principal: a luta dela ao lado do Ozymandias, coro e cordas em disparada','combate',0,['oEtmFgonY3E','3kMbTzomh94','2PBH2Jzyczo']),
+  F('elo-unepeindre','Lorien Testard — “Une vie à peindre” (Expedition 33)','Combate final: quando ela pinta o último quadro','combate',0,['iXk35ubUgY8']),
+  F('elo-paintress','Lorien Testard — “Paintress” (Expedition 33)','Combate: a Pintora em toda a sua força, coro solene','combate',0,['XVIVOoeocMY','AFcRM-FCkro']),
+  F('elo-lostvoice','Lorien Testard — “Lost Voice” (Expedition 33)','Combate como drama: ela luta sabendo que vai perder','combate',0,['t-0mhtjEATE','PGiRquV5FmU']),
+  F('elo-forgotten','Lorien Testard — “Forgotten Battlefield” (Expedition 33)','Combate frenético, campo de batalha esquecido','combate',0,['HF11KimKdFo']),
+  F('elo-sirene','Lorien Testard — “Poème d’Amour” (Sirène) (Expedition 33)','Combate elegante e veloz, voz feminina','combate',0,['Mo8OvFEdxGA']),
+  F('elo-breeze','Lorien Testard — “Battling Breeze” (Spring Meadows) (Expedition 33)','Combate rápido e leve, para a virada dos jogadores','combate',0,['fIMY_3rwFzQ']),
+  F('elo-getup','Lorien Testard — “Get Up! For Lumière!” (Expedition 33)','Combate: levante e lute de novo','combate',0,['anD2aeIrMOs']),
+  F('elo-drafts','Lorien Testard — “Our Drafts Unite” (Expedition 33)','Combate em grupo, energia crescente','combate',0,['STNAvpNtGF0']),
+  F('elo-worldmap','Lorien Testard — tema de batalha do mapa-múndi (Expedition 33)','Combate rápido de uso geral','combate',0,['FsofBSMZZgY']),
+  F('elo-verso','Lorien Testard — “Verso” (Expedition 33)','Combate com tom trágico e heroico','combate',0,['FpYzRZKu5tw']),
+  F('elo-rivers','Lyn — “Rivers in the Desert” (Persona 5)','Combate frenético, voz e baixo pulsante: o duelo final dela','combate',0,['lvuHvXsZPrk','XD-OFP-0H5g']),
+  F('elo-kaine','MONACA — “Kainé / Salvation” (NieR)','Combate desesperado e veloz, coro e cordas','combate',0,['FP4duz43t_A','Gibu0sJQwkM']),
  ]},
  { id:'ozy', nome:'Ozymandias — o líder', sub:'Holst e música cósmica.', faixas:[
   F('ozy-saturno','Holst — “Saturno, o Portador da Velhice”','Entrada e primeira fala','entrada',1,['USGZ-yCc4f8','_x7yg_HnUK8','gyrkt4iFMPA','mU04EScW4rM']),
@@ -832,6 +936,16 @@ const PADRAO = [
   F('ozy-zaratustra','Richard Strauss — “Assim Falou Zaratustra” (abertura)','Fase 2: a virada — os jogadores percebem que podem vencer','momento',0,['dK-QO3v41a0','SLuW-GBaJ8k','YrosMLXK7mo','6mmuNxYLxTs']),
   F('ozy-atmospheres','Ligeti — “Atmosphères”','Quando ele lembra das voltas (a partir da volta 4)','momento',0,['jUaPwTL5vL8','E-bemE-bCXQ','zDP3DJYFqEA','STFREC64OvA']),
   F('ozy-mountains','Hans Zimmer — “Mountains” (Interstellar)','Combate alternativo: tempo e gravidade','combate',0,['OtOd3Aa-xqg','wAf-UE0g2bk','hXFqaVlL7pA','arNkB9vxS3Q']),
+  F('ozy-shosta10','Shostakovich — Sinfonia nº 10, 2º movimento','Combate frenético: o tirano em fúria (o retrato de um ditador)','combate',0,['C2T97GsY0nI','bCypb--lv1M']),
+  F('ozy-kastchei','Stravinsky — “Dança Infernal do Rei Kastchei” (O Pássaro de Fogo)','Combate: o rei maldito e sua dança infernal','combate',0,['jmRU6cJeVDs','Mtdq0SQTtYs']),
+  F('ozy-sacrificial','Stravinsky — “Dança Sacrificial” (A Sagração da Primavera)','Combate brutal e caótico, o rei exige sacrifício','combate',0,['KzVDpdKgLS4']),
+  F('ozy-nevsky','Prokofiev — “A Batalha no Gelo” (Alexandre Nevsky)','Combate de exército contra exército, coro e metais','combate',0,['uOmathIK2_M','kaHtoaTQsNw']),
+  F('ozy-confutatis','Mozart — Réquiem, “Confutatis”','Combate: condenação, coro masculino furioso','combate',0,['Vl2kOqy_Uc4','T8GZ_W5XjW0']),
+  F('ozy-dvorak9','Dvořák — Sinfonia nº 9, 4º movimento','Combate imponente, metais em ataque','combate',0,['jVDofBFtvwA','RCct_tSQ8WY']),
+  F('ozy-beet9','Beethoven — Sinfonia nº 9, 2º movimento (Scherzo)','Combate implacável, tímpanos martelando','combate',0,['iwIvS4yIThU']),
+  F('ozy-valkyries','Wagner — “A Cavalgada das Valquírias”','Fase 2: o rei em glória (conhecida demais, use com cuidado)','combate',0,['GGU1P6lBW6Q','ww51QgjMJC0']),
+  F('ozy-sabre','Khachaturian — “Dança do Sabre”','Combate frenético e veloz, golpes em sequência','combate',0,['mUQHGpxrz-8','Xh3RW9aqmq4']),
+  F('ozy-summer','Vivaldi — “Verão”, Presto (As Quatro Estações)','Combate: a tempestade de cordas, quando ele perde a paciência','combate',0,['Nx5c_JZIM6M','W44PFMXuy_Q']),
  ]},
  { id:'akari', nome:'Akari e Thorian', sub:'A espada e o dragão: ela chega para confrontar o Ozymandias.', faixas:[
   F('aka-dragon','Dragon Rider (música épica de dragão)','Entrada: a Akari chega montada no Thorian','entrada',0,['Hxh0Lv-krHc','UXPd9vr4pf4','NdaSbiQhFBE']),
@@ -1045,6 +1159,7 @@ const rosto = (g, cls='rosto') => g && g.img ? el('img',{class:cls, src:g.img, a
 // O volume é controlado só por esta página (vol[i]); o player é sempre "desmutado" quando começa a tocar.
 let P = [null,null], pronto = [false,false], ativo = 0, emP = [null,null], fades = [null,null], vol = [0,0], espera = [null,null];
 let tocando = null, fila = [], tri = null, triFim = '';
+let ord = [], plAuto = false, plNome = '';      // ord: ordem em que a lista toca (embaralhada se o aleatório estiver ligado); plAuto: segue sozinha para a próxima
 const falhou = {}, estados = {};
 let voz = false; const hist = [];                            // voz: música abaixada enquanto o Mestre fala; hist: faixas anteriores, para retomar
 const alvoDe = f => Math.round(f.vol * E.mestre / 100 * (voz ? E.vozNivel/100 : 1) * (0.6 + 0.1*((E.intens||5)-1)));
@@ -1062,7 +1177,8 @@ function tocar(f, ms, op={}){
   if (tocando === f && !op.forcar) { parar(1200); return; }
   ms = ms ?? E.cruzar*1000;
   if (tocando && tocando !== f && !tri && !op.retomar) { let t = 0; try { t = P[ativo].getCurrentTime(); } catch(e){} hist.push({f:tocando, t}); if (hist.length > 12) hist.shift(); }
-  if (op.fila) fila = op.fila;
+  if (op.fila) { fila = op.fila; plAuto = !!op.lista; plNome = op.nome || ''; montaOrdem(f); }
+  else if (!ord.includes(f)) { fila = [f]; plAuto = false; plNome = ''; montaOrdem(f); }
   const novo = 1-ativo, velho = ativo;
   if (emP[velho]) { emP[velho] = null; espera[velho] = null; fade(velho, 0, ms, () => { try { P[velho].pauseVideo(); } catch(e){} }); }
   emP[novo] = f; tocando = f; ativo = novo; delete estados[f.id]; falhou[f.id] = 0;
@@ -1087,7 +1203,7 @@ function aoMudar(i, ev){
     fade(i, alvoDe(f), w.ms); }
   if (ev.data === 0) {
     if (tri && tocando === f) triIr(1);
-    else if (f.repetir) { P[i].seekTo(+f.inicio||0, true); P[i].playVideo(); }
+    else if (tocando === f && modoRep() === 'one') { P[i].seekTo(+f.inicio||0, true); P[i].playVideo(); }
     else if (tocando === f && !vizinha(1, true)) { emP[i] = null; tocando = null; marcar(); }
   }
 }
@@ -1111,7 +1227,7 @@ window.onYouTubeIframeAPIReady = () => { [0,1,2].forEach(i => { P[i] = new YT.Pl
 let msgBarra = {t:'', ate:0};
 const dizer = t => { msgBarra = {t, ate:Date.now()+2200}; };
 function alternarVoz(ligar){
-  voz = ligar ?? !voz; $('btVoz').setAttribute('aria-pressed', String(voz)); $('btVoz').textContent = voz ? 'Voz ligada' : 'Voz';
+  voz = ligar ?? !voz; $('btVoz').setAttribute('aria-pressed', String(voz)); $('btVoz').title = voz ? 'Voz ligada: a música está abaixada (tecla V)' : 'Voz: abaixa a música enquanto você fala (tecla V; segure ou toque)';
   if (tocando && pronto[ativo] && !espera[ativo]) fade(ativo, alvoDe(tocando), 350);
   ambAplicar();
 }
@@ -1120,7 +1236,14 @@ function retomar(){
     if (h.f !== tocando && todas().includes(h.f)) { tocar(h.f, null, {forcar:true, inicio:h.t, retomar:true}); dizer('Voltou para ' + h.f.nome); return; } }
   dizer('Não há música anterior para retomar.');
 }
-function alternarRepetir(){ if (!tocando) return; tocando.repetir = !tocando.repetir; salvar(); dizer(tocando.repetir ? 'Repetir ligado' : 'Repetir desligado'); desenhar(); }
+function modoRep(){ const r = E.repMod; if (r === 'off' || r === 'all' || r === 'one') return r === 'all' && !plAuto ? 'off' : r;
+  return plAuto ? 'all' : (tocando && tocando.repetir ? 'one' : 'off'); }
+function alternarRepetir(){ const a = modoRep(), p = plAuto ? {off:'all', all:'one', one:'off'} : {off:'one', all:'one', one:'off'};
+  E.repMod = p[a]; salvar(); dizer(E.repMod === 'one' ? 'Repetindo só esta música' : E.repMod === 'all' ? 'Repetindo a lista' : 'Repetir desligado'); desenhar(['palco']); }
+function embaralha(l, primeiro){ for (let i = l.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [l[i], l[j]] = [l[j], l[i]]; }
+  if (primeiro) { const k = l.indexOf(primeiro); if (k > 0) { l.splice(k, 1); l.unshift(primeiro); } } return l; }
+function montaOrdem(atual){ ord = fila.slice(); if (E.aleat && ord.length > 1) embaralha(ord, atual); }
+function alternarAleat(){ E.aleat = !E.aleat; salvar(); montaOrdem(tocando); dizer(E.aleat ? 'Ordem aleatória' : 'Ordem da lista'); if (!$('filaPainel').hidden) desenharFila(); }
 function ajustarFaixa(d){ if (!tocando) return; tocando.vol = Math.max(5, Math.min(100, (+tocando.vol||100) + d)); salvar();
   if (!espera[ativo]) { clearInterval(fades[ativo]); fades[ativo] = null; vol[ativo] = alvoDe(tocando); aplicarVol(ativo); }
   dizer('Volume desta música: ' + tocando.vol + '%'); }
@@ -1129,13 +1252,32 @@ function ajustarFaixa(d){ if (!tocando) return; tocando.vol = Math.max(5, Math.m
 const estadoP = () => { try { return P[ativo].getPlayerState(); } catch(e){ return -1; } };
 function pausar(){ if (!tocando) return; try { if (estadoP() === 2) P[ativo].playVideo(); else P[ativo].pauseVideo(); } catch(e){} }
 function saltar(seg){ if (!tocando) return; try { P[ativo].seekTo(Math.max(0, P[ativo].getCurrentTime()+seg), true); } catch(e){} }
-function vizinha(d, auto){                                    // faixa anterior ou próxima da lista de onde a música foi tocada
+const tocavel = f => todas().includes(f) && !!videoDe(f);
+function vizinha(d, auto){                                    // faixa anterior ou próxima da lista; auto = a música acabou
   if (tri) { triIr(d); return true; }
-  if (auto && modo !== 'ses') return false;                   // só a Sessão segue sozinha para a próxima
-  const n = fila[fila.indexOf(tocando)+d]; if (!n || !todas().includes(n)) return false;
-  if (auto) return false;
-  tocar(n, null, {forcar:true}); return true;
+  if (auto && !plAuto) return false;                          // só as listas (luta, "Tocar a lista") seguem sozinhas
+  const i = ord.indexOf(tocando); if (i < 0) return false;
+  if (d < 0 && !auto) { let t = 0; try { t = P[ativo].getCurrentTime(); } catch(e){} if (t > 4 || i === 0 && modoRep() !== 'all') { try { P[ativo].seekTo(+tocando.inicio||0, true); } catch(e){} return true; } }
+  let j = i;
+  for (let k = 0; k < ord.length; k++) {
+    j += d;
+    if (j >= ord.length || j < 0) {
+      if (!(plAuto && modoRep() === 'all')) return false;
+      if (j >= ord.length && E.aleat && ord.length > 1) { embaralha(ord); if (ord[0] === tocando) ord.push(ord.shift()); }
+      j = j < 0 ? ord.length - 1 : 0; }
+    if (tocavel(ord[j])) { tocar(ord[j], null, {forcar:true}); return true; } }
+  return false;
 }
+function listaDoGrupo(gid, papel = 'combate'){ const g = E.grupos.find(x => x.id === gid); return g ? g.faixas.filter(f => f.usar && f.papel === papel && videoDe(f)) : []; }
+function tocarLista(lista, nome){
+  if (!lista.length) { aviso('Nenhuma música de ' + (nome || 'combate') + ' marcada. Marque na aba Seleção as que devem tocar.'); return false; }
+  const f = E.aleat && lista.length > 1 ? lista[Math.floor(Math.random() * lista.length)] : lista[0];
+  tocar(f, null, {fila:lista.slice(), lista:true, nome, forcar:true}); return true; }
+const GRUPO_DE_INIMIGO = id => id === 'anjo' ? 'demonio' : id;
+function musicaDaLuta(ids){
+  if (E.musicaLuta === false) return;
+  const gs = [...new Set(ids.map(GRUPO_DE_INIMIGO))], l = gs.flatMap(g => listaDoGrupo(g)), nomes = gs.map(g => (E.grupos.find(x => x.id === g) || {nome:g}).nome.split(' — ')[0]).join(' e ');
+  if (l.length) tocarLista(l, nomes + ' · combate'); else aviso('Nenhuma música de combate marcada para ' + nomes + '. Marque na aba Seleção.'); }
 
 // ---------- Triagem: toca um trecho do meio de cada música, para decidir quais ficam ----------
 function triLista(){ const esc = E.triEsc||'todos', q = E.triQuais||'todas';
@@ -1223,7 +1365,7 @@ document.getElementById('arqImg').onchange = ev => {
 // ---------- Tipo de cena (método do vídeo: ritmo × tom × compasso) ----------
 // Ritmo: R rápido (urgência) / L lento (concentração). Tom: G grave (o desafio é mais forte), M médio (calma),
 // A agudo (os jogadores brilham), E extremos (grave e agudo juntos: horror). Compasso: M marcado (esforço físico) / F fluido (drama).
-const CL = {'esau-kongurei':'LGF','esau-60horses':'LMM','esau-alash':'LMF','esau-kaakhem':'RGM','esau-wolftotem':'RGM','esau-yuve':'RGM','esau-helvegen':'LGF','esau-lobo':'LEF','eze-apparition':'LGF','eze-volumina':'LEF','eze-passacaglia':'LGM','eze-tocata':'RGM','eze-caution':'RAM','eze-dieu':'RAM','eze-annum':'LMF','eze-koyaa':'LGM','jael-odaiko':'LGM','jael-yatai':'RGM','jael-monochrome':'LMM','jael-yamato':'RGM','jael-krigsgaldr':'LGM','jael-battle':'RGM','jael-traust':'LGM','hil-ovis':'LAF','hil-spiritus':'LAF','hil-angeli':'LAF','hil-ave':'LAF','hil-ignis':'LAF','hil-virtus':'LAF','hil-columba':'LAF','hil-ordo':'LAF','hil-agnikai':'LGF','dem-lux':'LEF','dem-kyrie':'LEF','dem-trenodia':'REF','dem-heptapod':'LEF','dem-diesirae':'RGM','raq-gorecki':'LGF','raq-daylight':'LGF','raq-barber':'LGF','ozy-saturno':'LGM','ozy-marte':'RGM','ozy-urano':'RGM','ozy-netuno':'LAF','ozy-zaratustra':'LAM','ozy-atmospheres':'LEF','ozy-mountains':'LGM','aka-dragon':'RAM','mom-spiegel':'LMF','mom-alina':'LAF','mom-departure':'LMF','mom-stabat':'LGF','mom-dido':'LGM','mom-lacrimosa':'LGM','mom-miserere':'LAF','via-frieren-journey':'RMM','via-frieren-time':'LMF','via-konosuba-town':'RMM','via-konosuba-chiisana':'RMM','via-konosuba-sleeps':'LMF','via-totoro':'LMF','via-kiki':'RMM','via-spirited':'LMF','via-howl':'LMM','via-kikujiro':'RMM','via-porco':'LMF','via-laputa':'LMF','via-windrises':'LMF','via-shire':'RMM','via-spice':'LMF','via-flyingwitch':'LMF','via-kino':'LMF','via-natsume':'LMF','via-violet':'LMF','via-yokohama':'LMF','via-girlslast':'LMF','via-mipha':'LMF','via-mushishi':'LMF','vir-zoltraak':'RAM','vir-dragonsmasher':'RAM','vir-heart':'RAM','vir-victory':'RAM','vir-protectors':'RAM','vir-pirate':'RAM','vir-testdrive':'RAF','ban-imperial':'LGM','ban-dream':'LGM','ban-beast':'LGM','ban-terminator':'RGM','ban-duel':'RGM','ban-brothers':'RGM','ban-time':'LAM','ban-onelast':'LAM','ban-nowfree':'LAF','ban-baldmountain':'RGF','ban-supermarine':'RGF','ban-moldau':'RMF','ban-hebrides':'RMF','ban-arabesque':'RMF','ban-romanticflight':'RAF','ban-laputa':'RAF','ban-psycho':'REF','ban-polymorphia':'REF','ban-chevaliers':'LAM','ban-finlandia':'LAM','ban-gymnopedie':'LMM','ban-bolero':'LMM'};
+const CL = {'esau-kongurei':'LGF','esau-60horses':'LMM','esau-alash':'LMF','esau-kaakhem':'RGM','esau-wolftotem':'RGM','esau-yuve':'RGM','esau-helvegen':'LGF','esau-lobo':'LEF','eze-apparition':'LGF','eze-volumina':'LEF','eze-passacaglia':'LGM','eze-tocata':'RGM','eze-caution':'RAM','eze-dieu':'RAM','eze-annum':'LMF','eze-koyaa':'LGM','jael-odaiko':'LGM','jael-yatai':'RGM','jael-monochrome':'LMM','jael-yamato':'RGM','jael-krigsgaldr':'LGM','jael-battle':'RGM','jael-traust':'LGM','hil-ovis':'LAF','hil-spiritus':'LAF','hil-angeli':'LAF','hil-ave':'LAF','hil-ignis':'LAF','hil-virtus':'LAF','hil-columba':'LAF','hil-ordo':'LAF','hil-agnikai':'LGF','dem-lux':'LEF','dem-kyrie':'LEF','dem-trenodia':'REF','dem-heptapod':'LEF','dem-diesirae':'RGM','raq-gorecki':'LGF','raq-daylight':'LGF','raq-barber':'LGF','ozy-saturno':'LGM','ozy-marte':'RGM','ozy-urano':'RGM','ozy-netuno':'LAF','ozy-zaratustra':'LAM','ozy-atmospheres':'LEF','ozy-mountains':'LGM','aka-dragon':'RAM','mom-spiegel':'LMF','mom-alina':'LAF','mom-departure':'LMF','mom-stabat':'LGF','mom-dido':'LGM','mom-lacrimosa':'LGM','mom-miserere':'LAF','via-frieren-journey':'RMM','via-frieren-time':'LMF','via-konosuba-town':'RMM','via-konosuba-chiisana':'RMM','via-konosuba-sleeps':'LMF','via-totoro':'LMF','via-kiki':'RMM','via-spirited':'LMF','via-howl':'LMM','via-kikujiro':'RMM','via-porco':'LMF','via-laputa':'LMF','via-windrises':'LMF','via-shire':'RMM','via-spice':'LMF','via-flyingwitch':'LMF','via-kino':'LMF','via-natsume':'LMF','via-violet':'LMF','via-yokohama':'LMF','via-girlslast':'LMF','via-mipha':'LMF','via-mushishi':'LMF','vir-zoltraak':'RAM','vir-dragonsmasher':'RAM','vir-heart':'RAM','vir-victory':'RAM','vir-protectors':'RAM','vir-pirate':'RAM','vir-testdrive':'RAF','ban-imperial':'LGM','ban-dream':'LGM','ban-beast':'LGM','ban-terminator':'RGM','ban-duel':'RGM','ban-brothers':'RGM','ban-time':'LAM','ban-onelast':'LAM','ban-nowfree':'LAF','ban-baldmountain':'RGF','ban-supermarine':'RGF','ban-moldau':'RMF','ban-hebrides':'RMF','ban-arabesque':'RMF','ban-romanticflight':'RAF','ban-laputa':'RAF','ban-psycho':'REF','ban-polymorphia':'REF','ban-chevaliers':'LAM','ban-finlandia':'LAM','ban-gymnopedie':'LMM','ban-bolero':'LMM','hil-friede':'RGM','hil-ludwig':'RGM','hil-aldrich':'RGM','hil-malenia':'RGF','hil-rennala':'RAF','hil-gwyn':'LGF','hil-ebrietas':'LEF','hil-radiance':'RAM','hil-archangel':'RAM','hil-fortuna':'RGM','elo-uneviea':'RGM','elo-unepeindre':'RGM','elo-paintress':'RGM','elo-lostvoice':'RGF','elo-forgotten':'RGM','elo-sirene':'RAM','elo-breeze':'RAM','elo-getup':'RAM','elo-drafts':'RAM','elo-worldmap':'RGM','elo-verso':'RGM','elo-rivers':'RGM','elo-kaine':'RGF','esau-ancientcall':'RGM','esau-dancewolf':'RGM','esau-warhorse':'RGM','esau-wisdomeyes':'RGM','esau-blackthunder':'RGM','esau-tapir':'RGM','esau-promentory':'RGM','esau-bloodbag':'RGM','esau-wenja':'RGM','esau-maidjan':'LGM','esau-kala':'LGM','ozy-shosta10':'RGM','ozy-kastchei':'RGM','ozy-sacrificial':'RGM','ozy-nevsky':'RGM','ozy-confutatis':'RGM','ozy-dvorak9':'RGM','ozy-beet9':'RGM','ozy-valkyries':'RGM','ozy-sabre':'RAM','ozy-summer':'RGF','eze-boellmann':'RGM','eze-widor':'RGM','eze-vierne':'RGM','eze-beet5':'RGM','eze-erlkonig':'RGF','eze-moonlight3':'RGF','eze-revolucionario':'RGF','eze-ventoinverno':'RGF','eze-inverno':'RGM','eze-macabre':'RGM'};
 const CL_RIT = {R:'Rápido', L:'Lento'}, CL_TOM = {G:'Grave', M:'Médio', A:'Agudo', E:'Extremos'}, CL_COM = {M:'Marcado', F:'Fluido'};
 const CENAS = {
  RGM:'Ameaça física: vocês estão perdendo', RGF:'Pânico e fuga', LGM:'Imponência: o chefe chega', LGF:'Pavor, luto e drama sombrio',
@@ -1248,7 +1390,7 @@ function filtroCenas(){
 
 
 // ---------- Aba Cenas: todas as músicas por tipo de cena, para ouvir e corrigir ----------
-const NOVAS = new Set(['esau-lobo','eze-koyaa','jael-traust','hil-agnikai','vir-zoltraak','vir-dragonsmasher','vir-heart','vir-victory','vir-protectors','vir-pirate','vir-testdrive','ban-imperial','ban-dream','ban-beast','ban-terminator','ban-duel','ban-brothers','ban-time','ban-onelast','ban-nowfree','ban-baldmountain','ban-supermarine','ban-moldau','ban-hebrides','ban-arabesque','ban-romanticflight','ban-laputa','ban-psycho','ban-polymorphia','ban-chevaliers','ban-finlandia','ban-gymnopedie','ban-bolero']);
+const NOVAS = new Set(['esau-lobo','eze-koyaa','jael-traust','hil-agnikai','vir-zoltraak','vir-dragonsmasher','vir-heart','vir-victory','vir-protectors','vir-pirate','vir-testdrive','ban-imperial','ban-dream','ban-beast','ban-terminator','ban-duel','ban-brothers','ban-time','ban-onelast','ban-nowfree','ban-baldmountain','ban-supermarine','ban-moldau','ban-hebrides','ban-arabesque','ban-romanticflight','ban-laputa','ban-psycho','ban-polymorphia','ban-chevaliers','ban-finlandia','ban-gymnopedie','ban-bolero','hil-friede','hil-ludwig','hil-aldrich','hil-malenia','hil-rennala','hil-gwyn','hil-ebrietas','hil-radiance','hil-archangel','hil-fortuna','elo-uneviea','elo-unepeindre','elo-paintress','elo-lostvoice','elo-forgotten','elo-sirene','elo-breeze','elo-getup','elo-drafts','elo-worldmap','elo-verso','elo-rivers','elo-kaine','esau-ancientcall','esau-dancewolf','esau-warhorse','esau-wisdomeyes','esau-blackthunder','esau-tapir','esau-promentory','esau-bloodbag','esau-wenja','esau-maidjan','esau-kala','ozy-shosta10','ozy-kastchei','ozy-sacrificial','ozy-nevsky','ozy-confutatis','ozy-dvorak9','ozy-beet9','ozy-valkyries','ozy-sabre','ozy-summer','eze-boellmann','eze-widor','eze-vierne','eze-beet5','eze-erlkonig','eze-moonlight3','eze-revolucionario','eze-ventoinverno','eze-inverno','eze-macabre']);
 let cenSoNovas = false, cenAbertas = new Set(['RAM']);
 function desenharCenas(){
   const raiz = document.getElementById('cenas'); raiz.replaceChildren();
@@ -1436,7 +1578,7 @@ function noiteParts(q){
           el('div',{class:'bts'},
             morto ? el('button',{class:'peq', onclick:mud(()=>{ delete m.abates[a.id]; })}, 'Desfazer') : el('button',{class:'peq perigo', onclick:()=>abater(a)}, 'Abater'),
             fe && !morto ? el('button',{class:'peq', onclick:()=>tocar(fe, null, {fila:[fe]})}, '♪ Entrada') : null,
-            fc && !morto ? el('button',{class:'peq', onclick:()=>tocar(fc, null, {fila:[fc]})}, '♪ Combate') : null))); })),
+            fc && !morto ? el('button',{class:'peq', onclick:()=>tocarLista(listaDoGrupo(a.g), a.nome + ' · combate')}, '♪ Combate') : null))); })),
     nAb === ABATES.length ? el('div',{class:'fim'}, el('b',{},'Todos abatidos.'), el('p',{class:'sub', style:'margin:6px 0 10px'},'Os jogadores se tornam os Quatro Cavaleiros. Rafaela é devorada, a menos que tenha sido teletransportada antes de morrer. Contar a revelação fora do jogo.'),
       el('button',{onclick:()=>{ const f = todas().find(x => x.id === 'mom-miserere'); if (f) tocar(f, 1500, {fila:[f]}); }}, '♪ Música da revelação')) : null);
   const notas = q !== 'notas' ? null : el('div',{class:'painel'}, el('h3',{},'Notas rápidas'),
@@ -2117,6 +2259,7 @@ function iniciarLuta(escolhidos){
     if (sem.length) s.av.push('Defina a iniciativa de ' + sem.join(', ') + ' e toque em “Ordenar por iniciativa”.');
     const c = m.ini[0]; vibra(); anuncia('Luta iniciada. Vez de ' + c.n + '.');
   }, ['ini','inm']);
+  musicaDaLuta(escolhidos.map(x => x.i.id));
   irParaVez();
 }
 function fatorUI(){   // PV dos inimigos: automático pela tabela (volta × nº de jogadores) ou manual
@@ -2536,7 +2679,7 @@ function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
   document.getElementById('agoraRosto').replaceChildren(...(g && g.img ? [rosto(g)] : []));
-  atualizarTela(); document.querySelectorAll('.sil').forEach(b => { b.disabled = !tocando; }); desenhar(['palco','rot','gat','esp']); }
+  atualizarTela(); document.querySelectorAll('.sil').forEach(b => { b.disabled = !tocando; }); if (!document.getElementById('filaPainel').hidden) desenharFila(); desenhar(['palco','rot','gat','esp']); }
 
 
 // ---------- Tela dos jogadores (segunda janela) e Folha do Mestre (impressão) ----------
@@ -2641,21 +2784,56 @@ function folhaMestre(){
   w.document.close();
 }
 
+// ---------- Lista de músicas (A seguir) ----------
+const IC_ = {
+  aleat:'<path d="M3 7h3.5c2 0 3.2 1 4.3 3l2.4 4c1.1 2 2.3 3 4.3 3H21M3 17h3.5c1.4 0 2.4-.5 3.2-1.4M21 7h-3.5c-1.4 0-2.4.5-3.2 1.4M18.5 4.5L21 7l-2.5 2.5M18.5 14.5L21 17l-2.5 2.5"/>',
+  rep:'<path d="M17 3.5L20.5 7 17 10.5M3.5 11V9.5A2.5 2.5 0 016 7h14.5M7 20.5L3.5 17 7 13.5M20.5 13v1.5A2.5 2.5 0 0118 17H3.5"/>',
+  um:'<path d="M17 3.5L20.5 7 17 10.5M3.5 11V9.5A2.5 2.5 0 016 7h14.5M7 20.5L3.5 17 7 13.5M20.5 13v1.5A2.5 2.5 0 0118 17H3.5"/><path d="M11 10.5l1.5-1v6"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>', cima:'<path d="M6 14.5l6-6 6 6"/>', baixo:'<path d="M6 9.5l6 6 6-6"/>',
+  tocando:'<path class="f" d="M5 14v6M10 5v15M15 10v10M20 7v13" stroke-width="2.4"/>'};
+const svgI = k => { const e = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); e.setAttribute('viewBox', '0 0 24 24'); e.setAttribute('aria-hidden', 'true'); e.innerHTML = IC_[k]; return e; };
+function alternarFila(abrir){
+  const p = $('filaPainel'), a = abrir ?? p.hidden; p.hidden = !a; $('btFila').setAttribute('aria-pressed', String(a)); if (a) desenharFila(); }
+function desenharFila(){
+  const p = $('filaPainel'), nomeGr = g => g.nome.split(' — ')[0];
+  const rep = modoRep(), btn = (k, t, on, fn) => { const b = el('button',{class:'ic', type:'button', title:t, 'aria-label':t, 'aria-pressed':on ? 'true' : 'false', onclick:fn}); b.append(svgI(k)); return b; };
+  const cab = el('div',{class:'fp-cab'}, el('h3',{}, 'A seguir', el('small',{}, ord.length ? (plNome || 'Música avulsa') + ' · ' + ord.length + (ord.length > 1 ? ' músicas' : ' música') : 'Nada na fila')),
+    btn('aleat', E.aleat ? 'Aleatório ligado' : 'Aleatório', !!E.aleat, () => { alternarAleat(); }),
+    btn(rep === 'one' ? 'um' : 'rep', rep === 'one' ? 'Repetindo só esta música' : rep === 'all' ? 'Repetindo a lista' : 'Repetir desligado', rep !== 'off', () => { alternarRepetir(); desenharFila(); }),
+    btn('x', 'Fechar a lista', false, () => alternarFila(false)));
+  const gruposComLista = E.grupos.map(g => [g, listaDoGrupo(g.id)]).filter(x => x[1].length);
+  const sel = el('div',{class:'fp-sel'}, ...gruposComLista.map(([g, l]) => el('button',{class:'peq', type:'button', title:'Toca as ' + l.length + ' músicas de combate marcadas de ' + nomeGr(g), onclick:() => tocarLista(l, nomeGr(g) + ' · combate')}, nomeGr(g) + ' · ' + l.length)),
+    el('label',{}, el('input',{type:'checkbox', checked:E.musicaLuta !== false, onchange:ev => { E.musicaLuta = ev.target.checked; salvar(); }}), 'Tocar a lista do inimigo ao começar a luta'));
+  const ul = el('ul',{class:'fp-lista'});
+  if (!ord.length) ul.append(el('li',{class:'fp-vazia'}, 'Escolha um inimigo acima para tocar as músicas de combate que você marcou, ou toque qualquer música.'));
+  ord.forEach((f, i) => { const atual = f === tocando, g = grupoDe(f);
+    const b = (k, t, fn, off) => { const x = el('button',{class:'fp-b', type:'button', title:t, 'aria-label':t, disabled:!!off, onclick:ev => { ev.stopPropagation(); fn(); }}); x.append(svgI(k)); return x; };
+    const move = d => { const j = i + d; if (j < 0 || j >= ord.length) return; [ord[i], ord[j]] = [ord[j], ord[i]]; desenharFila(); };
+    const tira = () => { ord.splice(i, 1); fila = fila.filter(x => x !== f); desenharFila(); };
+    const n = el('span',{class:'fp-n'}); if (atual) n.append(svgI('tocando')); else n.textContent = String(i + 1);
+    ul.append(el('li',{class:'fp-it' + (atual ? ' atual' : '')}, n,
+      el('button',{class:'fp-go', type:'button', onclick:() => tocar(f, null, {forcar:true})}, el('b',{}, f.nome), el('span',{}, (g ? nomeGr(g) + ' · ' : '') + (PAPEIS[f.papel] || '') + (f.momento ? ' · ' + f.momento : ''))),
+      b('cima', 'Subir na fila', () => move(-1), i === 0), b('baixo', 'Descer na fila', () => move(1), i === ord.length - 1), b('x', 'Tirar da fila', tira, atual))); });
+  p.replaceChildren(cab, sel, ul); const at = ul.querySelector('.atual'); if (at && at.scrollIntoView) at.scrollIntoView({block:'nearest'}); }
+document.addEventListener('pointerdown', ev => { const p = $('filaPainel'); if (p && !p.hidden && !ev.target.closest('#filaPainel,#btFila')) alternarFila(false); });
+
 // ---------- Barra, abas e teclado ----------
 const fmt = s => isFinite(s) && s >= 0 ? Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0') : '0:00';
 const $ = id => document.getElementById(id);
 let arrastando = false;
 setInterval(() => {
   const st = tocando && pronto[ativo] ? estadoP() : -1;
-  { const tx = st === 2 ? 'Continuar' : 'Pausar'; if ($('btPausa').textContent !== tx) $('btPausa').textContent = tx; }
-  $('btVolta').disabled = !hist.length; $('btRep').disabled = !tocando; $('btRep').setAttribute('aria-pressed', String(!!(tocando && tocando.repetir)));
+  { const p = !tocando || st === 2 ? 'continuar' : 'pausar', bp = $('btPausa'); if (bp.dataset.p !== p) { bp.dataset.p = p; bp.setAttribute('aria-label', p === 'continuar' ? 'Continuar' : 'Pausar'); } }
+  { const m = modoRep(), r = $('btRep'); if (r.dataset.m !== m) { r.dataset.m = m; r.setAttribute('aria-pressed', String(m !== 'off')); r.setAttribute('aria-label', m === 'one' ? 'Repetir: só esta música' : m === 'all' ? 'Repetir: a lista' : 'Repetir: desligado'); }
+    $('btAleat').setAttribute('aria-pressed', String(!!E.aleat)); }
+  $('btVolta').disabled = !hist.length; $('btSil').disabled = !tocando;
   for (const b of ['btPausa','btMenos','btMais']) $(b).disabled = !tocando;
-  $('btAnt').disabled = !(tri ? tri.pos > 0 : tocando && fila.indexOf(tocando) > 0);
-  $('btProx').disabled = !(tri ? true : tocando && fila.indexOf(tocando) >= 0 && fila.indexOf(tocando) < fila.length-1);
-  if (!tocando || !pronto[ativo]) { $('agoraTempo').innerHTML = '&nbsp;'; $('tAgora').textContent = $('tTotal').textContent = '0:00'; if (!arrastando) $('pos').value = 0; return; }
+  { const i = ord.indexOf(tocando), nx = plAuto && modoRep() === 'all' && ord.length > 1;
+    $('btAnt').disabled = !(tri ? tri.pos > 0 : tocando); $('btProx').disabled = !(tri ? true : tocando && i >= 0 && (i < ord.length - 1 || nx)); $('btAleat').disabled = ord.length < 2; }
+  if (!tocando || !pronto[ativo]) { $('agoraTempo').innerHTML = '&nbsp;'; $('tAgora').textContent = $('tTotal').textContent = '0:00'; if (!arrastando) { $('pos').value = 0; $('pos').style.setProperty('--p', '0%'); } return; }
   let t = 0, d = 0; try { t = P[ativo].getCurrentTime(); d = P[ativo].getDuration(); } catch(e){}
-  { const a = fmt(t), b2 = fmt(d); if ($('tAgora').textContent !== a) $('tAgora').textContent = a; if ($('tTotal').textContent !== b2) $('tTotal').textContent = b2; } if (!arrastando && d) $('pos').value = Math.round(1000*t/d);
-  $('agoraTempo').textContent = msgBarra.ate > Date.now() ? msgBarra.t : st === 2 ? 'Em pausa' : st === 3 || espera[ativo] ? 'Carregando…' : (tocando.repetir && !tri ? 'Repetindo' : '\u00a0') + (voz ? ' · voz ligada' : '');
+  { const a = fmt(t), b2 = fmt(d); if ($('tAgora').textContent !== a) $('tAgora').textContent = a; if ($('tTotal').textContent !== b2) $('tTotal').textContent = b2; } if (!arrastando && d) { $('pos').value = Math.round(1000*t/d); $('pos').style.setProperty('--p', (t/d*100) + '%'); }
+  $('agoraTempo').textContent = msgBarra.ate > Date.now() ? msgBarra.t : st === 2 ? 'Em pausa' : st === 3 || espera[ativo] ? 'Carregando…' : (!tri && modoRep() === 'one' ? 'Repetindo esta música' : '\u00a0') + (voz ? ' · voz ligada' : '');
   // se o YouTube abrir mudo ou com outro volume, corrige
   if (st === 1 && !fades[ativo] && !espera[ativo]) { try { if (P[ativo].isMuted() || Math.abs(P[ativo].getVolume() - alvoDe(tocando)) > 2) { vol[ativo] = alvoDe(tocando); aplicarVol(ativo); } } catch(e){} }
   if (tri) { if (st === 1) tri.ms += 500;
@@ -2663,10 +2841,11 @@ setInterval(() => {
     if (r && !estados[tocando.id]) r.textContent = st === 1 ? 'Passa para a próxima em ' + fmt(resta) : st === 2 ? 'Em pausa' : 'Carregando…';
     if (tri.ms >= (E.previa||120)*1000) triIr(1); }
 }, 500);
-const m = $('mestre'); m.value = E.mestre;
-m.oninput = () => { E.mestre = +m.value; salvar(); if (tocando && !espera[ativo]) { clearInterval(fades[ativo]); fades[ativo] = null; vol[ativo] = alvoDe(tocando); aplicarVol(ativo); } };
+const m = $('mestre'); m.value = E.mestre; m.style.setProperty('--p', m.value + '%');
+m.oninput = () => { m.style.setProperty('--p', m.value + '%'); E.mestre = +m.value; salvar(); if (tocando && !espera[ativo]) { clearInterval(fades[ativo]); fades[ativo] = null; vol[ativo] = alvoDe(tocando); aplicarVol(ativo); } };
 const pos = $('pos');
 pos.addEventListener('pointerdown', () => { arrastando = true; });
+pos.addEventListener('input', () => pos.style.setProperty('--p', pos.value / 10 + '%'));
 pos.addEventListener('change', () => { arrastando = false; if (!tocando) return; try { P[ativo].seekTo(P[ativo].getDuration()*pos.value/1000, true); } catch(e){} });
 $('btPausa').onclick = pausar;
 $('btMenos').onclick = () => saltar(-10);
@@ -2677,8 +2856,10 @@ $('btBaixar').onclick = () => parar(E.fadeSaida*1000);
 $('btVoz').onclick = () => alternarVoz();
 $('btVolta').onclick = retomar;
 $('btRep').onclick = alternarRepetir;
+$('btAleat').onclick = alternarAleat;
+$('btFila').onclick = () => alternarFila();
 $('btSil').onclick = () => parar(0);
-$('btVid').onclick = ev => { const p = $('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
+$('btVid').onclick = () => { const p = $('players'), mini = p.classList.toggle('mini'); $('btVid').setAttribute('aria-pressed', String(!mini)); $('btVid').title = mini ? 'Mostrar os vídeos, para pular um anúncio' : 'Esconder os vídeos'; };
 let trava = null;
 function aba(qual){ modo = qual; document.body.dataset.aba = qual;
   for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['cen','cenas','abaCen'],['img','imagens','abaImg'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
@@ -2747,6 +2928,8 @@ document.addEventListener('keydown', ev => {
   else if (k === 'v') { if (!ev.repeat) { if (voz) { vozIni = 0; alternarVoz(false); } else { vozIni = Date.now(); alternarVoz(true); } } }
   else if (k === 'r') retomar();
   else if (k === 't') alternarRepetir();
+  else if (k === 's' && !tri) alternarAleat();
+  else if (k === 'q') alternarFila();
   else if (k === '-') ajustarFaixa(-5);
   else if (k === '=' || k === '+') ajustarFaixa(5);
   else if (k === ' ') { ev.preventDefault(); pausar(); }
@@ -2762,8 +2945,8 @@ document.addEventListener('keydown', ev => {
 });
 (function(){ const b = document.getElementById('barra'), bt = document.getElementById('btCompacto'); const K = 'trilha-barra-compacta';
   const alt = () => document.documentElement.style.setProperty('--barra-h', b.offsetHeight + 'px');
-  const aplica = c => { b.classList.toggle('compacta', c); bt.setAttribute('aria-pressed', String(c)); bt.textContent = c ? '▲' : 'Recolher player'; bt.setAttribute('aria-label', c ? 'Expandir player' : 'Recolher player'); bt.title = c ? 'Expandir player: mostra anterior, próxima, ±10 s, repetir e vídeos' : 'Deixa o player pequeno para não cobrir o conteúdo'; alt(); };
-  let c0 = true; try { const v = localStorage.getItem(K); if (v !== null) c0 = v === '1'; } catch(e){}   // celular: começa recolhido, a menos que a pessoa tenha escolhido
+  const aplica = c => { b.classList.toggle('compacta', c); bt.setAttribute('aria-pressed', String(c)); bt.setAttribute('aria-label', c ? 'Expandir player' : 'Recolher player'); bt.title = c ? 'Expandir player: mostra anterior, próxima, ±10 s, repetir e vídeos' : 'Deixa o player pequeno para não cobrir o conteúdo'; alt(); };
+  let c0 = innerWidth < 900; try { const v = localStorage.getItem(K); if (v !== null) c0 = v === '1'; } catch(e){}   // celular: começa recolhido, a menos que a pessoa tenha escolhido
   aplica(c0);
   bt.onclick = () => { const c = !b.classList.contains('compacta'); aplica(c); try { localStorage.setItem(K, c ? '1' : '0'); } catch(e){} if (modo === 'mes') desenhar(); };
   if (window.ResizeObserver) new ResizeObserver(alt).observe(b); addEventListener('resize', alt); alt(); })();

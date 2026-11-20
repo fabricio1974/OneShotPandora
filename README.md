@@ -115,3 +115,8 @@ Aba **Ajustes** no app (e no combate): 3 layouts e 5 paletas por layout, com tro
 - Tocar numa imagem a mostra no tablet e na janela "Tela dos jogadores". **Tela preta** esconde; **Acompanhar a música** volta a mostrar a arte do personagem cuja música toca.
 - Sem servidor próprio: `ponte.js` usa o canal público ntfy.sh (só viaja o caminho da imagem) e BroadcastChannel quando as duas páginas estão no mesmo navegador. Precisa de internet nos dois aparelhos.
 - "Minhas imagens": cole o link direto de uma imagem para adicioná-la à lista.
+
+## Player de baixo (combate.html)
+- Ícones no estilo do YouTube Music: aleatório, anterior, −10 s, pausar, +10 s, próxima, repetir (desligado → lista → só esta). À direita: voltar à anterior, volume, voz, baixar aos poucos, silêncio, lista, vídeos e recolher (seta).
+- **Lista de músicas** (ícone de fila, tecla Q): mostra a ordem em que toca, deixa pular para uma música, subir, descer ou tirar da fila, e carregar a lista de combate de qualquer inimigo. Teclas: S aleatório, T repetir.
+- **Ao começar a luta** (aba Mestre), toca a lista de combate dos inimigos escolhidos (as músicas de papel Combate marcadas na Seleção), segue sozinha para a próxima e repete a lista. Dá para desligar na própria lista.
