@@ -330,13 +330,6 @@ function painelFrases(){
 function desReg(){
   const sec = (t, ...itens) => el('div', {class:'reg'}, el('h2', {}, t), el('ul', {}, ...itens.map(x => { const li = el('li'); li.innerHTML = x; return li; })));
   $('sReg').replaceChildren(
-    sec('As voltas',
-      'O lírio branco tem <b>6 pétalas</b>: são <b>6 voltas</b>. Nas voltas 1 a 5, o portador arranca uma pétala para voltar. No começo da volta 6, a última pétala cai sozinha.',
-      '<b>Se as voltas acabarem sem vitória, vocês perdem.</b>',
-      'O portador escolhe para que momento volta: qualquer momento depois de ter recebido a flor.',
-      'A família já cerca o grupo desde o início. Fugir só muda o lugar da emboscada. <b>Só a Porta Dimensional atravessa o cerco.</b>',
-      'A cada volta: descanso longo, vocês lembram de tudo, continuam cavaleiros com tudo o que já ganharam e puxam cartas novas.',
-      'Cada luta tem um <b>limite de rodadas</b>. Quando ele acaba, a tinta fecha a cena e vocês voltam.'),
     sec('As cartas',
       'A partir da volta 2, a cada volta cada jogador puxa <b>2 cartas</b>. O grupo <b>distribui como quiser</b>: um pode ficar com várias e outro com nenhuma.',
       'As cartas ficam com vocês nas voltas seguintes.',
@@ -347,17 +340,7 @@ function desReg(){
       'Cada carta que você tem dá <b>+6 PV máximos</b> e <b>+4 de dano fixo, uma vez por turno</b>, no primeiro acerto ou dano do turno.',
       'Não dobra em crítico e não vale em reações.',
       'Exemplo: com 6 cartas, +36 PV e +24 de dano fixo uma vez por turno.',
-      'Cartas de Abate não contam para o Eco.'),
-    sec('Tinta branca',
-      'Cartas marcadas com <b>TINTA</b> têm um efeito extra de tinta.',
-      'Quando o grupo usar <b>3 cartas de Tinta na mesma volta</b>, o mundo perde mais uma coisa: ela fica branca.'),
-    sec('Cartas de Abate',
-      'Quem dá o golpe final num Bellacord morto <b>de vez</b> recebe a Carta de Abate dele.',
-      'Elas ficam fora dos baralhos, levam a marca <b>VI</b> e formam uma frase própria.'),
-    sec('Pedaços de frase',
-      'Cada carta traz, em itálico, um pedaço de frase. As cartas de uma mesma origem formam juntas uma frase.',
-      'As cartas não dizem a ordem dos pedaços. Use <b>＋ Montar frases</b>, na aba Mesa, para tentar descobrir.',
-      'Nem todas as cartas saem do baralho, então algumas frases vão ficar com buracos.'));
+      'Cartas de Abate não contam para o Eco.'));
 }
 
 const ABAS = [['mesa','Mesa','sMesa'], ['maos','Minha mão','sMaos'], ['cav','Cavaleiros','sCav'], ['reg','Regras','sReg']];
