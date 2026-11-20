@@ -448,6 +448,8 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .cc-cat{margin:14px 0 0;font:600 13px/1 var(--texto);color:var(--apagado);letter-spacing:.02em;padding-bottom:6px;border-bottom:1px solid var(--linha)}
 body[data-aba="mes"] #painelMestre > :is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"]){display:none}
 body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"])){display:none}
+.ft-g{flex:none;align-self:stretch;display:flex;align-items:center;padding:0 8px 0 4px;margin-left:-2px;color:var(--apagado);font-size:18px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+#faixaTurno.movendo{cursor:grabbing;box-shadow:0 10px 26px -4px #000}#faixaTurno.movendo .ft-g{cursor:grabbing;color:var(--ouro)}
 .tks{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px;touch-action:none;user-select:none;-webkit-user-select:none}
 .tk{position:relative;display:flex;align-items:center;gap:6px;min-height:48px;padding:4px 6px 4px 10px;border-radius:12px;border:1px solid var(--linha);background:var(--painel,#1c1712);cursor:grab;touch-action:none}
 .tk.jog{border-color:#6fb6e8aa}.tk.inim{border-color:#e0685aaa}
@@ -2182,10 +2184,39 @@ function atualizaFaixa(){
   const on = m && m.ini && m.ini.length && true; f.hidden = !on; if (!on) { pillMax = 0; document.documentElement.style.setProperty('--pill-h', '0px'); return; }
   const c = m.ini[m.turno] || m.ini[0], bd0 = badgesCond(c); if (c.pv <= 0) bd0.unshift(el('span',{class:'cb cd'}, 'caído')); const bd = bd0.length > 3 ? [...bd0.slice(0,3), el('span',{class:'cb tx'}, '+' + (bd0.length - 3))] : bd0;
   const podeDes = pilhaDes.length && Date.now() - ultDes < 15000; f.classList.toggle('cd', !!podeDes);   // com Desfazer na pílula, o “Vez de” sai para o nome caber
-  f.replaceChildren(el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
+  f.replaceChildren(el('span',{class:'ft-g', title:'Arraste para mover a pílula (toque duas vezes para voltar ao canto)', 'aria-label':'Mover a pílula do turno'}, '⠿'), el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
     ...(bd.length ? [el('div',{class:'ft-c'}, ...bd)] : []));
-  pillMax = Math.max(pillMax, f.offsetHeight); document.documentElement.style.setProperty('--pill-h', pillMax + 'px');
+  pillMax = Math.max(pillMax, f.offsetHeight); document.documentElement.style.setProperty('--pill-h', pillMax + 'px'); pilPos();
 }
+// pílula do turno móvel: arraste pelo ⠿ e ela fica onde você soltar (guardado neste navegador)
+const PIL_K = 'otl-pilula';
+function pilPos(v){
+  const f = document.getElementById('faixaTurno'); if (!f || f.hidden) return;
+  if (v === undefined) { try { v = JSON.parse(localStorage.getItem(PIL_K) || 'null'); } catch(e){ v = null; } }
+  if (!v || !isFinite(v.x) || !isFinite(v.y)) { f.style.left = f.style.top = ''; f.style.right = f.style.bottom = ''; return; }
+  const w = f.offsetWidth, h = f.offsetHeight, mx = Math.max(0, innerWidth - w), my = Math.max(0, innerHeight - h);
+  f.style.right = f.style.bottom = 'auto'; f.style.left = Math.round(Math.min(1, Math.max(0, v.x)) * mx) + 'px'; f.style.top = Math.round(Math.min(1, Math.max(0, v.y)) * my) + 'px';
+}
+(() => {
+  const f = document.getElementById('faixaTurno'); if (!f) return; let d = null;
+  f.addEventListener('pointerdown', ev => {
+    const g = ev.target.closest('.ft-g'); if (!g || ev.button > 0) return; ev.preventDefault();
+    const r = f.getBoundingClientRect(); d = {dx:ev.clientX - r.left, dy:ev.clientY - r.top, id:ev.pointerId, x0:ev.clientX, y0:ev.clientY, parado:true};
+    try { f.setPointerCapture(ev.pointerId); } catch(e){} f.classList.add('movendo');
+  });
+  f.addEventListener('pointermove', ev => {
+    if (!d || ev.pointerId !== d.id) return; ev.preventDefault(); if (d.parado && Math.hypot(ev.clientX - d.x0, ev.clientY - d.y0) < 6) return; d.parado = false;
+    const w = f.offsetWidth, h = f.offsetHeight, mx = Math.max(1, innerWidth - w), my = Math.max(1, innerHeight - h);
+    pilPos({x:(ev.clientX - d.dx) / mx, y:(ev.clientY - d.dy) / my});
+  });
+  let tap = 0;
+  const fim = ev => { if (!d) return; const parado = d.parado; d = null;
+    if (parado) { const t = Date.now(); if (t - tap < 450) { tap = 0; f.classList.remove('movendo'); try { localStorage.removeItem(PIL_K); } catch(e){} pilPos(null); return; } tap = t; }
+ f.classList.remove('movendo'); const r = f.getBoundingClientRect(), mx = Math.max(1, innerWidth - r.width), my = Math.max(1, innerHeight - r.height);
+    try { localStorage.setItem(PIL_K, JSON.stringify({x:r.left / mx, y:r.top / my})); } catch(e){} };
+  f.addEventListener('pointerup', fim); f.addEventListener('pointercancel', fim);
+  addEventListener('resize', () => pilPos());
+})();
 const escTurno = () => { const m = E.m, s = m.inm, a = m.ini[m.turno], r0 = m.rodada, sel0 = s.sel, td0 = s.todos;
   return () => { const b = m.ini[m.turno]; if (!(a && b && m.ini.includes(a))) return ['ini','inm'];
     // vez de um jogador, mesma rodada e mesmo inimigo em foco: as duas linhas, a barra da vez e os avisos; senão, as duas linhas + o painel do inimigo
