@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[experimental] Trilha do Cordeiro</title>
 <script src="visual.js"></script>
-<script>try{var m=JSON.parse(localStorage.getItem('otl_mesa')||'{}');document.documentElement.setAttribute('data-cantos',m.retos===0?'0':'1')}catch(e){document.documentElement.setAttribute('data-cantos','1')}</script>
+<script>(function(){var r='1';try{var o=JSON.parse(localStorage.getItem('otl_mesa')||'{}');if(o.retos===0)r='0'}catch(e){}document.documentElement.setAttribute('data-cantos',r)})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
 <style>
