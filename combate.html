@@ -512,7 +512,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[dat
 
 /* ---- rodada 1 da revisão ---- */
 @media (min-width:1000px){
-  #toast{left:50%;right:auto;transform:translateX(-50%);bottom:calc(var(--barra-h,0px) + 14px)}
+  #toast{left:50%;right:auto;transform:translateX(-50%);bottom:calc(var(--barra-h,0px) + var(--pill-h,0px) + 22px)}
   .dk{grid-template-columns:clamp(250px,21vw,300px) minmax(0,1fr)}
   .dk-rail .lin2{flex-wrap:nowrap}.dk-rail .lin2 button{flex:1 1 auto;padding-inline:8px;font-size:13px}
   .dk-rail .inm-luta-bt{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:700}
@@ -605,7 +605,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[dat
   .inm-bl,.inm-bl > details.inm-sec[open]{align-items:start}
   .inm-card.cc .cc-regra{margin-top:0}
   .dk-rail .inm-vez{order:-3}.dk-rail > .lin2:first-child{order:-2}
-  #toast{left:auto;right:16px;transform:none;top:auto;bottom:calc(var(--barra-h,74px) + 16px)}
+  #toast{left:auto;right:16px;transform:none;top:auto;bottom:calc(var(--barra-h,74px) + var(--pill-h,0px) + 24px)}
   .inm-total{background:#5a2a14;border-color:var(--terracota);color:#ffe1c4;font-weight:700}
   /* cabeçalho: ficha e faixas (Não Hoje / Fase) na mesma linha */
   .inm-hd{grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 12px}
