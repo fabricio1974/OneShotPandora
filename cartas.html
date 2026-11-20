@@ -165,6 +165,22 @@ button:active,.chip:active{filter:brightness(1.3);transform:scale(.97)}
 .titc .bola{position:static;width:18px;height:18px;box-shadow:0 0 0 2px hsl(var(--h) 75% 58%)}
 .mo .acao{display:flex;justify-content:center;padding:8px;background:#120d0a;border-bottom:1px solid var(--linha)}
 .mo .acao button{min-height:46px;font-weight:700;background:var(--terra);border-color:var(--terra);color:#1a0c04;padding:6px 22px}
+.fx-bar{display:flex;justify-content:flex-end;margin:-4px 0 8px}
+.fx-mais{min-height:36px;padding:4px 12px;font-size:14px;border-radius:999px;border-color:var(--terra)}
+.fx{border:1px solid var(--linha);border-radius:12px;padding:12px;margin-bottom:14px;background:var(--painel)}
+.fx-lin{border:1px dashed var(--linha);border-radius:10px;padding:8px;margin:8px 0;cursor:pointer}
+.fx-lin.sel{border-style:solid;border-color:var(--terra)}
+.fx-cab{display:flex;gap:8px;align-items:center;margin-bottom:6px}.fx-cab button{margin-left:auto}
+.fx-sel{font-size:12px;color:var(--terra2)}
+.fx-l,.fx-soltas{display:flex;flex-wrap:wrap;gap:6px}
+.fx-chip{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 6px;background:var(--creme);color:var(--tinta);border-radius:8px;padding:6px 8px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;max-width:100%}
+.fx-chip.ab{background:#e9d9b0}
+.fx-chip small{font:12px Inter,system-ui,sans-serif;color:#6b5240;font-style:normal}
+.fx-bts{display:inline-flex;gap:2px}.fx-bts button{min-height:30px;padding:0 8px;font-size:13px;background:#eadfca;color:var(--tinta);border-color:#c9b79a}
+.fx-b{background:none;border:0;padding:0;min-height:0}
+.fx-ler{margin:8px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:19px;color:var(--terra2)}
+.reg{border:1px solid var(--linha);border-radius:12px;padding:12px 14px;margin-bottom:12px;background:var(--painel)}
+.reg ul{margin:8px 0 0;padding-left:20px}.reg li{margin:6px 0}
 </style>
 <script>window.OTL_CARTAS=1</script><script src="visual.js"></script>
 </head>
@@ -176,6 +192,7 @@ button:active,.chip:active{filter:brightness(1.3);transform:scale(.97)}
 <section id="sMesa"></section>
 <section id="sMaos" hidden></section>
 <section id="sCav" hidden></section>
+<section id="sReg" hidden></section>
 <div class="leg" id="leg"></div>
 <div class="reiniciar"><button class="peq perigo" id="zera" type="button">Desvirar tudo e recomeçar</button></div>
 </main>
@@ -256,6 +273,8 @@ function desMesa(){
   const chips = [['todas','Todas', LISTA.length], ...ORDEM_DECK.map(k => [k, NOMES_DECK[k], LISTA.filter(c => deck(c) === k).length])];
   const lista = LISTA.filter(c => S.deck === 'todas' || deck(c) === S.deck);
   $('sMesa').replaceChildren(
+    el('div', {class:'fx-bar'}, el('button', {type:'button', class:'fx-mais', 'aria-expanded':String(!!S.fxOn), onclick:() => { S.fxOn = !S.fxOn; salvar(); desMesa(); }}, S.fxOn ? '✕ Fechar frases' : '＋ Montar frases')),
+    S.fxOn ? painelFrases() : null,
     el('div', {class:'chips', role:'group', 'aria-label':'Baralho'}, ...chips.map(([k, t, n]) => el('button', {class:'chip', 'aria-pressed':String(S.deck === k), onclick:() => { S.deck = k; salvar(); desMesa(); }}, t, el('small', {}, n)))),
     el('div', {class:'grade'}, ...lista.map(c => slot(c))),
     el('p', {class:'dica'}, 'Toque numa carta para virar e escolher o dono. A bolinha mostra de quem é.'));
@@ -273,13 +292,81 @@ function desMaos(){
     corpo,
     mostra.length ? el('p', {class:'dica'}, 'Toque numa carta para ampliar, dar zoom e passar de uma para outra.') : null);
 }
-const ABAS = [['mesa','Mesa','sMesa'], ['maos','Minha mão','sMaos'], ['cav','Cavaleiros','sCav']];
+
+/* ---- Montar frases (plus da aba Mesa) ---- */
+function fxEstado(){
+  if (!S.fx || !Array.isArray(S.fx.l)) S.fx = {l:[[]], sel:0};
+  const vistas = new Set(reveladas().map(c => c.c));
+  S.fx.l = S.fx.l.map(l => l.filter(c => vistas.has(c)));          // carta desvirada sai da frase
+  if (!S.fx.l.length) S.fx.l = [[]];
+  if (S.fx.sel >= S.fx.l.length) S.fx.sel = S.fx.l.length - 1;
+  return S.fx;
+}
+function painelFrases(){
+  const F = fxEstado(), usadas = new Set(F.l.flat());
+  const soltas = reveladas().filter(c => c.f && !usadas.has(c.c));
+  const orig = c => origemJogador(c).replace(/^d[eo] /, '');
+  const mexe = fn => () => { fn(); salvar(); desMesa(); };
+  const chip = (c, extra) => el('span', {class:'fx-chip' + (c.c.startsWith('AB') ? ' ab' : '')}, el('span', {class:'fx-t'}, c.f), el('small', {}, orig(c)), extra || null);
+  const linhas = F.l.map((l, i) => el('div', {class:'fx-lin' + (F.sel === i ? ' sel' : ''), onclick:ev => { if (ev.target.closest('button')) return; F.sel = i; salvar(); desMesa(); }},
+    el('div', {class:'fx-cab'}, el('b', {}, 'Frase ' + (i + 1)), F.sel === i ? el('span', {class:'fx-sel'}, 'recebendo') : null,
+      el('button', {type:'button', class:'peq', 'aria-label':'Apagar frase ' + (i + 1), onclick:mexe(() => { F.l.splice(i, 1); })}, 'Apagar')),
+    l.length ? el('div', {class:'fx-l'}, ...l.map((cod, k) => { const c = porCod(cod); return chip(c, el('span', {class:'fx-bts'},
+        el('button', {type:'button', 'aria-label':'Mover para trás', disabled:k === 0, onclick:mexe(() => { [l[k-1], l[k]] = [l[k], l[k-1]]; })}, '◀'),
+        el('button', {type:'button', 'aria-label':'Mover para frente', disabled:k === l.length - 1, onclick:mexe(() => { [l[k+1], l[k]] = [l[k], l[k+1]]; })}, '▶'),
+        el('button', {type:'button', 'aria-label':'Tirar da frase', onclick:mexe(() => { l.splice(k, 1); })}, '✕'))); }))
+      : el('p', {class:'dica'}, 'Toque nos pedaços abaixo para colocá-los aqui.'),
+    l.length ? el('p', {class:'fx-ler'}, l.map(cod => porCod(cod).f).join(' ')) : null));
+  return el('div', {class:'fx'},
+    el('p', {class:'dica'}, 'Cada carta traz um pedaço de frase. As cartas de uma mesma origem formam uma frase, mas não dizem a ordem. Escolha a frase que recebe, toque nos pedaços e mude a ordem com ◀ ▶.'),
+    ...linhas,
+    el('button', {type:'button', class:'peq', onclick:mexe(() => { F.l.push([]); F.sel = F.l.length - 1; })}, '＋ Nova frase'),
+    el('h3', {}, 'Pedaços soltos'),
+    soltas.length ? el('div', {class:'fx-soltas'}, ...soltas.map(c => el('button', {type:'button', class:'fx-b', onclick:mexe(() => { F.l[F.sel].push(c.c); })}, chip(c))))
+      : el('p', {class:'dica'}, reveladas().length ? 'Todos os pedaços já estão em alguma frase.' : 'Vire cartas na mesa para ver os pedaços.'));
+}
+
+/* ---- Regras gerais ---- */
+function desReg(){
+  const sec = (t, ...itens) => el('div', {class:'reg'}, el('h2', {}, t), el('ul', {}, ...itens.map(x => { const li = el('li'); li.innerHTML = x; return li; })));
+  $('sReg').replaceChildren(
+    sec('As voltas',
+      'O lírio branco tem <b>6 pétalas</b>: são <b>6 voltas</b>. Nas voltas 1 a 5, o portador arranca uma pétala para voltar. No começo da volta 6, a última pétala cai sozinha.',
+      '<b>Se as voltas acabarem sem vitória, vocês perdem.</b>',
+      'O portador escolhe para que momento volta: qualquer momento depois de ter recebido a flor.',
+      'A família já cerca o grupo desde o início. Fugir só muda o lugar da emboscada. <b>Só a Porta Dimensional atravessa o cerco.</b>',
+      'A cada volta: descanso longo, vocês lembram de tudo, continuam cavaleiros com tudo o que já ganharam e puxam cartas novas.',
+      'Cada luta tem um <b>limite de rodadas</b>. Quando ele acaba, a tinta fecha a cena e vocês voltam.'),
+    sec('As cartas',
+      'A partir da volta 2, a cada volta cada jogador puxa <b>2 cartas</b>. O grupo <b>distribui como quiser</b>: um pode ficar com várias e outro com nenhuma.',
+      'As cartas ficam com vocês nas voltas seguintes.',
+      '<b>Por luta:</b> recarrega no começo de cada luta. <b>Por volta:</b> recarrega quando uma pétala é arrancada. <b>Recarga 5–6:</b> depois de usar, role 1d6 no início dos seus turnos; a carta volta com 5 ou 6.',
+      '<b>CD do cavaleiro:</b> 15, ou a do seu personagem se for maior. <b>Ataque do cavaleiro:</b> +7, ou o do seu personagem se for maior.',
+      '<b>Limite de dados:</b> nenhum efeito rola mais de 6 dados.'),
+    sec('Eco da Fome',
+      'Cada carta que você tem dá <b>+6 PV máximos</b> e <b>+4 de dano fixo, uma vez por turno</b>, no primeiro acerto ou dano do turno.',
+      'Não dobra em crítico e não vale em reações.',
+      'Exemplo: com 6 cartas, +36 PV e +24 de dano fixo uma vez por turno.',
+      'Cartas de Abate não contam para o Eco.'),
+    sec('Tinta branca',
+      'Cartas marcadas com <b>TINTA</b> têm um efeito extra de tinta.',
+      'Quando o grupo usar <b>3 cartas de Tinta na mesma volta</b>, o mundo perde mais uma coisa: ela fica branca.'),
+    sec('Cartas de Abate',
+      'Quem dá o golpe final num Bellacord morto <b>de vez</b> recebe a Carta de Abate dele.',
+      'Elas ficam fora dos baralhos, levam a marca <b>VI</b> e formam uma frase própria.'),
+    sec('Pedaços de frase',
+      'Cada carta traz, em itálico, um pedaço de frase. As cartas de uma mesma origem formam juntas uma frase.',
+      'As cartas não dizem a ordem dos pedaços. Use <b>＋ Montar frases</b>, na aba Mesa, para tentar descobrir.',
+      'Nem todas as cartas saem do baralho, então algumas frases vão ficar com buracos.'));
+}
+
+const ABAS = [['mesa','Mesa','sMesa'], ['maos','Minha mão','sMaos'], ['cav','Cavaleiros','sCav'], ['reg','Regras','sReg']];
 function pinta(){
   $('cont').replaceChildren(el('b', {}, reveladas().length), ' de ' + LISTA.length + ' viradas');
   $('abas').replaceChildren(...ABAS.map(([k, t]) => el('button', {'aria-pressed':String(S.aba === k), onclick:() => { S.aba = k; salvar(); pinta(); window.scrollTo(0, 0); }}, t)));
   for (const [k, , id] of ABAS) $(id).hidden = S.aba !== k;
   legenda();
-  if (S.aba === 'mesa') desMesa(); else if (S.aba === 'maos') desMaos(); else desCav();
+  if (S.aba === 'mesa') desMesa(); else if (S.aba === 'maos') desMaos(); else if (S.aba === 'reg') desReg(); else desCav();
 }
 
 /* ---- janela: virar e escolher o dono (Mesa) ---- */
