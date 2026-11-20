@@ -839,6 +839,22 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"])){di
 #painelMestre .lp.atual b{color:var(--ouro)}
 /* botões de ambiente e dados: mesma largura mínima */
 #painelMestre .seg button,#painelMestre .lin2 button{min-width:44px}
+
+/* ---- Sons dos personagens (seção grande dentro de Ajustes) ---- */
+.btn-sons{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;margin-top:10px;padding:14px 18px;text-align:left;border:1px solid var(--ouro);background:color-mix(in srgb,var(--ouro) 10%,var(--painel,#1a1612))}
+.btn-sons b{font-size:16px}.btn-sons span{font-size:13px;color:var(--apagado)}
+#sons{max-width:none}
+#sons .dm-top{padding:4px 0 10px;border:0}#sons .dm-top b{font-size:20px}
+#sons .dm-corpo{overflow:visible;padding:0;gap:14px}
+#sons .dm-quem{gap:8px}#sons .dm-quem button{min-height:38px;padding:6px 14px;font-size:14px}
+#sons .dm-sec>summary{font-size:16px;padding:12px 0;text-align:left;justify-content:flex-start}
+#sons .sub,#sons .dm-nota{text-align:left}
+#sons .dm-corpo.grande .dm-sec > div:not(.dm-efs):not(.dm-voz){display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:0 28px}
+#sons .en-lin{padding:12px 0}
+#sons .en-lin textarea.en-t{width:100%;min-height:76px;font:inherit;font-size:14px;line-height:1.4;resize:vertical;padding:8px 10px;color:var(--texto);background:var(--fundo);border:1px solid var(--linha)}
+#sons .en-lin input.dur{width:70px;min-height:36px}
+#sons .dm-efs button{min-height:36px;font-size:13.5px;padding:6px 12px}
+@media (max-width:640px){#sons .dm-corpo.grande .dm-sec > div:not(.dm-efs):not(.dm-voz){grid-template-columns:1fr}}
 </style>
 <link rel="stylesheet" href="visual.css">
 <link rel="stylesheet" href="mesa.css?v=13">
@@ -862,6 +878,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"])){di
     <button class="chip" id="abaTri" aria-selected="false">Triagem</button>
     <button class="chip" id="abaCen" aria-selected="false">Cenas</button>
     <button class="chip" id="abaSes" aria-selected="false">Sessão</button>
+    <button class="chip" id="abaSon" aria-selected="false">Sons</button>
   </nav>
   <nav class="elenco" id="elenco" aria-label="Personagens"></nav>
   <section id="selecao" hidden></section>
@@ -869,6 +886,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"])){di
   <section id="cenas" hidden></section>
   <section id="imagens" hidden></section>
   <section id="sessao" hidden></section>
+  <section id="sons" hidden></section>
   <section id="painelMestre" hidden></section>
   <section id="ajustes" hidden></section>
 </main>
@@ -2847,7 +2865,7 @@ function desenhar(esc){
 }
 function desenhar0(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cmb' || modo==='cen' || modo==='img' || modo==='aj'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='img') desenharImagens(); else if (modo==='mes' || modo==='cmb') desenharMestre(); else if (modo==='aj') desenharAjCombate(); else desenharSessao(); atualizaFaixa(); }
+  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cmb' || modo==='cen' || modo==='img' || modo==='aj' || modo==='son'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='img') desenharImagens(); else if (modo==='mes' || modo==='cmb') desenharMestre(); else if (modo==='aj') desenharAjCombate(); else if (modo==='son') { /* o editor de sons se desenha sozinho */ } else desenharSessao(); atualizaFaixa(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -3094,11 +3112,12 @@ $('btFila').onclick = () => alternarFila();
 $('btSil').onclick = () => parar(0);
 $('btVid').onclick = () => { const p = $('players'), mini = p.classList.toggle('mini'); $('btVid').setAttribute('aria-pressed', String(!mini)); $('btVid').title = mini ? 'Mostrar os vídeos, para pular um anúncio' : 'Esconder os vídeos'; };
 let trava = null;
-const GRUPO_AJ = ['aj','sel','tri','cen','ses'];
+const GRUPO_AJ = ['aj','sel','tri','cen','ses','son'];
 function aba(qual){ modo = qual; document.body.dataset.aba = qual;
-  for (const [k, sec] of [['sel','selecao'],['tri','triagem'],['cen','cenas'],['img','imagens'],['ses','sessao'],['mes','painelMestre'],['cmb','painelMestre'],['aj','ajustes']]) $(sec).hidden = qual!==k && !(sec === 'painelMestre' && (qual === 'mes' || qual === 'cmb'));
-  for (const [k, bt] of [['img','abaImg'],['mes','abaMes'],['cmb','abaCmb'],['sel','abaSel'],['tri','abaTri'],['cen','abaCen'],['ses','abaSes'],['aj','abaAjG']]) $(bt).setAttribute('aria-selected', qual===k);
+  for (const [k, sec] of [['sel','selecao'],['tri','triagem'],['cen','cenas'],['img','imagens'],['ses','sessao'],['mes','painelMestre'],['cmb','painelMestre'],['aj','ajustes'],['son','sons']]) $(sec).hidden = qual!==k && !(sec === 'painelMestre' && (qual === 'mes' || qual === 'cmb'));
+  for (const [k, bt] of [['img','abaImg'],['mes','abaMes'],['cmb','abaCmb'],['sel','abaSel'],['tri','abaTri'],['cen','abaCen'],['ses','abaSes'],['aj','abaAjG'],['son','abaSon']]) $(bt).setAttribute('aria-selected', qual===k);
   $('abaAj').setAttribute('aria-selected', GRUPO_AJ.includes(qual)); $('subAj').hidden = !GRUPO_AJ.includes(qual);
+  if (window.OTLSONS) { if (qual === 'son') OTLSONS.abrir($('sons')); else OTLSONS.fechar(); }
   if (qual === 'mes' || qual === 'cmb') rotRolar = true;
   if (qual === 'cmb') { let v = null; try { v = localStorage.getItem('otl-cmb-aberto'); } catch(e){} if (!v) { abertas.add('inm'); try { localStorage.setItem('otl-cmb-aberto','1'); } catch(e){} } }
   if (qual === 'img' || qual === 'aj') ligaTablet();
@@ -3112,13 +3131,15 @@ $('abaTri').onclick = () => aba('tri');
 $('abaCen').onclick = () => aba('cen');
 $('abaImg').onclick = () => aba('img');
 $('abaSes').onclick = () => aba('ses');
+$('abaSon').onclick = () => aba('son');
 $('abaMes').onclick = () => aba('mes');
 $('abaAj').onclick = () => aba(GRUPO_AJ.includes(modo) ? modo : 'aj');
 if (window.OTL) OTL.ui($('ajustes'));
 { const d = document.createElement('div'); d.id = 'ajTablet'; d.className = 'aj-tablet'; $('ajustes').prepend(d);
   const c = document.createElement('div'); c.id = 'ajCombate'; c.className = 'aj-combate'; $('ajustes').prepend(c);
   const t = document.createElement('div'); t.className = 'aj-atalhos';
-  t.append(el('h2',{}, 'Atalhos'), el('div',{class:'lin2'}, el('a',{class:'btn-at', href:'cartas.html', target:'_blank', rel:'noopener'}, 'Site das cartas'), el('a',{class:'btn-at', href:'mapa/index.html', target:'_blank', rel:'noopener'}, 'Site do mapa')));
+  t.append(el('h2',{}, 'Atalhos'), el('div',{class:'lin2'}, el('a',{class:'btn-at', href:'cartas.html', target:'_blank', rel:'noopener'}, 'Site das cartas'), el('a',{class:'btn-at', href:'mapa/index.html', target:'_blank', rel:'noopener'}, 'Site do mapa')),
+    el('button',{class:'btn-sons', onclick:() => aba('son')}, el('b',{}, 'Editar os sons dos personagens'), el('span',{}, 'Efeitos, fundos, falas e vozes de cada personagem: ouvir, reescrever o prompt e gerar de novo.')));
   $('ajustes').prepend(t); }
 let vozIni = 0;
 document.addEventListener('keyup', ev => { if (ev.key.toLowerCase() === 'v' && !/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) && vozIni && Date.now()-vozIni > 600) alternarVoz(false); vozIni = 0; });
@@ -3224,6 +3245,6 @@ if (!uiRest || typeof uiRest !== 'object') aba('mes'); else desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
 <script src="ponte.js?v=1"></script>
-<script src="mesa.js?v=15"></script>
+<script src="mesa.js?v=17"></script>
 </body>
 </html>

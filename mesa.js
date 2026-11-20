@@ -409,7 +409,7 @@
   var ENG = {on:false, alvo:''};
   function linhaSom(id){
     var p = pDe(id), tem = !!GEN[chG(id)], loop = ehCam(id);
-    var t = h('input', {type:'text', value:p.t, 'aria-label':'Descrição do som ' + (EFN[id] || CAN[id]), onchange:function(ev){ (CFG.p[id] = CFG.p[id] || {}).t = ev.target.value; cfgGravar(); }});
+    var t = h('textarea', {rows:'3', class:'en-t', 'aria-label':'Descrição do som ' + (EFN[id] || CAN[id]), onchange:function(ev){ (CFG.p[id] = CFG.p[id] || {}).t = ev.target.value; cfgGravar(); }}, [p.t]);
     var d = h('input', {type:'number', min:'1', max:'30', value:String(p.d), class:'dur', 'aria-label':'Duração em segundos', onchange:function(ev){ (CFG.p[id] = CFG.p[id] || {}).d = +ev.target.value; cfgGravar(); }});
     return h('div', {class:'en-lin'}, [h('div', {class:'en-n'}, [h('b', {}, [EFN[id] || CAN[id]]), h('span', {class:'sub'}, [tem ? ' · gerado' : ' · sintético'])]), t,
       h('div', {class:'dm-efs'}, [d, h('span', {class:'sub'}, ['s']),
@@ -471,12 +471,13 @@
         h('button', {class:'peq', onclick:function(){ if (!VZ.chave) { VZ.msg = 'Cole a chave primeiro.'; engRender(); return; } fila(DIAL.map(function(d){ return function(){ return gerarFalaUma(d[0], d[1]); }; }), 'Diálogo'); }}, ['Gerar as vozes do diálogo'])])]));
   }
   function engRender(){
-    if (!ENG.on) return;
+    if (!ENG.on) return; var raiz = ENG.host || dir, grande = !!ENG.host;
     var nc = noCombate(), alvo = ENG.alvo || nc.atual || 'esau', c = CAT[alvo];
     var sel = h('select', {'aria-label':'Editar os sons de', onchange:function(ev){ ENG.alvo = ev.target.value; engRender(); }}, Object.keys(CAT).map(function(id){ var o = h('option', {value:id}, [CAT[id].nome]); if (id === alvo) o.selected = true; return o; }));
-    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Editar sons']), h('button', {class:'peq', onclick:function(){ ENG.on = false; assin = ''; desenhar2(true); }}, ['Voltar'])]);
+    var topo = h('div', {class:'dm-top'}, [h('b', {}, [grande ? 'Sons dos personagens' : 'Editar sons']), grande ? null : h('button', {class:'peq', onclick:function(){ ENG.on = false; assin = ''; desenhar2(true); }}, ['Voltar'])]);
     var tarefasAlvo = c.ef.concat(c.ca).map(function(id){ return function(){ return gerarSom(id); }; }).concat(frDe(alvo).map(function(x){ return function(){ return gerarFalaUma(alvo, ft(x)); }; }));
-    var corpo = [h('div', {class:'dm-onde'}, [sel]),
+    var chips = h('div', {class:'dm-chips dm-quem'}, Object.keys(CAT).map(function(id){ return h('button', {class:'peq', 'aria-pressed':String(id === alvo), onclick:function(){ ENG.alvo = id; engRender(); }}, [CAT[id].nome]); }));
+    var corpo = [h('div', {class:'dm-onde'}, [grande ? chips : sel]),
       secao('Chave e voz', vozUI(null), !VZ.vozes.length),
       h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ if (VZ.voz) fila(tarefasAlvo, 'Tudo de ' + c.nome); else { VZ.msg = 'Carregue as vozes primeiro.'; engRender(); } }}, ['Gerar tudo de ' + c.nome])]),
       secao('Voz de ' + c.nome, vozPersonagemUI(alvo), false),
@@ -484,13 +485,15 @@
       secao('Efeitos', h('div', {}, c.ef.map(linhaSom)), true), secao('Sons de fundo', h('div', {}, c.ca.map(linhaSom)), true),
       secao('Falas', h('div', {}, frDe(alvo).map(function(x, i){ return linhaFala(alvo, i); }).concat([h('button', {class:'peq', onclick:function(){ var l = frDe(alvo).slice(); l.push(['', '']); CFG.fr[alvo] = l; cfgGravar(); engRender(); }}, ['+ nova fala'])])), true),
       VZ.msg ? h('p', {class:'sub dm-nota', role:'status'}, [VZ.msg]) : null];
-    var rol = dir.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
-    var abertos = {}; Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ abertos[d.firstChild.textContent] = d.open; });
-    dir.textContent = ''; dir.append(topo, h('div', {class:'dm-corpo en'}, corpo.filter(Boolean)));
-    Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ var k = d.firstChild.textContent; if (k in abertos) d.open = abertos[k]; });
-    var n = dir.querySelector('.dm-corpo'); if (n) n.scrollTop = st;
+    var rol = raiz.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
+    var abertos = {}; Array.prototype.forEach.call(raiz.querySelectorAll('details.dm-sec'), function(d){ abertos[d.firstChild.textContent] = d.open; });
+    raiz.textContent = ''; raiz.append(topo, h('div', {class:'dm-corpo en' + (grande ? ' grande' : '')}, corpo.filter(Boolean)));
+    Array.prototype.forEach.call(raiz.querySelectorAll('details.dm-sec'), function(d){ var k = d.firstChild.textContent; if (k in abertos) d.open = abertos[k]; });
+    var n = raiz.querySelector('.dm-corpo'); if (n) n.scrollTop = st;
   }
 
+  window.OTLSONS = {abrir:function(host){ ENG.host = host; ENG.on = true; if (!ENG.alvo) ENG.alvo = noCombate().atual || 'esau'; engRender(); },
+    fechar:function(){ if (!ENG.host) return; ENG.host.textContent = ''; ENG.host = null; ENG.on = false; assin = ''; try { desenhar2(true); } catch (e) {} }};
   function desenhar2(forcar){
     if (ENG.on) { if (forcar) engRender(); return; }
     var nc = noCombate(), playing = (typeof tocando !== 'undefined' && tocando) ? tocando.id : '';
@@ -498,7 +501,7 @@
     if (!forcar && assinatura === assin && dir.firstChild) return; assin = assinatura;
     // ao trocar de inimigo, as músicas da aba Seleção e da Sessão passam para o grupo dele
     if (nc.atual && nc.atual !== ultimo) { ultimo = nc.atual; var g0 = grupoDe(nc.atual); if (g0) { try { atual = g0.id; atualSes = g0.id; } catch (e) {} } }
-    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Sons']), h('button', {class:'peq', 'aria-label':'Editar sons', title:'Editar e gerar sons e falas', onclick:function(){ ENG.on = true; ENG.alvo = nc.atual || ''; engRender(); }}, ['⚙']), h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
+    var topo = h('div', {class:'dm-top'}, [h('b', {}, ['Sons']), h('button', {class:'peq', 'aria-label':'Editar sons', title:'Editar e gerar sons e falas', onclick:function(){ ENG.host = null; ENG.on = true; ENG.alvo = nc.atual || ''; engRender(); }}, ['⚙']), h('button', {class:'peq', 'aria-label':'Recolher o painel de sons', onclick:function(){ S.dir = 0; gravar(); aplicar(); }}, ['»'])]);
     var vol = h('label', {class:'dm-vol'}, [h('span', {}, ['Volume']), h('input', {type:'range', min:'0', max:'100', value:String(S.vol), 'aria-label':'Volume dos sons sintetizados', oninput:function(ev){ AU.mestre(+ev.target.value); }, onchange:gravar}),
       h('button', {class:'peq perigo', onclick:function(){ AU.tudo(); desenhar2(true); }}, ['Parar sons'])]);
     var corpo = [h('label', {class:'dm-onde'}, [h('span', {}, ['Personagem ']), h('select', {'aria-label':'Ver sons de', onchange:function(ev){ S.fix = ev.target.value; gravar(); desenhar2(true); }}, [h('option', {value:''}, ['(automático)'])].concat(Object.keys(CAT).map(function(k){ var o = h('option', {value:k}, [CAT[k].nome]); if (k === S.fix) o.selected = true; return o; })))])];
