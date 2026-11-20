@@ -653,6 +653,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 @media (max-width:560px){.cen-lin{grid-template-columns:auto 1fr}.cen-usar{grid-column:2}}
 /* aba Imagens (tela do tablet) */
 #imagens{padding:4px 2px 40px}
+.aj-tablet{margin:0 0 22px;max-width:860px}.aj-tablet h2{margin:0 0 6px;font:600 20px/1.2 var(--titulo)}.aj-tablet .im-tab{flex:none;width:100%}
 .im-topo{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0 6px}
 .im-tab,.im-ctl{background:var(--painel,#1d1712);border:1px solid var(--linha,#3a2e24);border-radius:12px;padding:12px 14px;flex:1 1 320px;min-width:0}
 .im-tab p,.im-ctl p{margin:4px 0 8px;color:var(--apagado,#a89a85)}
@@ -2721,11 +2722,24 @@ function enviaTablet(src){
   TAB.enviado = src; TAB.ponte.enviar(src ? {t:'img', u:src} : {t:'preto'}).then(ok => { if (!ok) { TAB.enviado = null; TAB.falha = true; } else TAB.falha = false; statusTablet(); });
 }
 function statusTablet(){
-  const b = document.getElementById('tabSt'); if (!b) return;
-  const vivo = TAB.vivo && Date.now() - TAB.vivo < 70000;
-  b.dataset.s = vivo ? 'ok' : TAB.falha ? 'ruim' : TAB.estado === 'on' ? 'espera' : 'ruim';
-  b.textContent = vivo ? 'Tablet conectado' : TAB.falha ? 'Não consegui enviar (sem internet?)' : TAB.estado === 'on' ? 'Aguardando o tablet…' : 'Conectando ao canal…';
+  const vivo = TAB.vivo && Date.now() - TAB.vivo < 70000, txt = vivo ? 'Tablet conectado' : TAB.falha ? 'Não consegui enviar (sem internet?)' : TAB.estado === 'on' ? 'Aguardando o tablet…' : 'Conectando ao canal…';
+  document.querySelectorAll('.im-st').forEach(b => { b.dataset.s = vivo ? 'ok' : TAB.falha ? 'ruim' : TAB.estado === 'on' ? 'espera' : 'ruim'; b.textContent = txt; });
 }
+function painelTablet(){
+  const cod = TAB.codigo || codigoTablet(), link = URL_TELA + '#' + cod;
+  return el('div',{class:'im-tab'},
+        el('b',{}, 'Tablet'),
+        el('p',{}, 'No tablet, abra o endereço abaixo e digite o código (ou abra o link completo):'),
+        el('div',{class:'im-end'}, el('code',{}, URL_TELA.replace('https://','')), el('span',{class:'im-cod', title:'código da sala'}, cod)),
+        el('div',{class:'im-bts'},
+          el('button',{class:'peq', type:'button', onclick:() => { try { navigator.clipboard.writeText(link).then(() => aviso('Link copiado. Mande para o tablet (WhatsApp, e-mail…).')); } catch(e){ aviso(link); } }}, 'Copiar o link'),
+          el('button',{class:'peq', type:'button', onclick:() => { TAB.enviado = null; enviaTablet(srcTela()); }}, 'Reenviar a imagem'),
+          el('button',{class:'peq', type:'button', onclick:() => { try { localStorage.removeItem('otl-sala'); } catch(e){} if (TAB.ponte) TAB.ponte.fechar(); TAB.ponte = null; TAB.vivo = 0; TAB.codigo = ''; ligaTablet(); desenharImagens(); desenharAjTablet(); }}, 'Gerar outro código')),
+        el('div',{class:'im-st', role:'status'}));
+}
+function desenharAjTablet(){
+  const r = document.getElementById('ajTablet'); if (!r) return;
+  r.replaceChildren(el('h2',{}, 'Tablet (tela dos jogadores)'), el('p',{class:'sub'}, 'Mostra no tablet as imagens escolhidas na aba Imagens. O tablet precisa de internet.'), painelTablet()); statusTablet(); }
 function mostrarImagem(u){ imgManual = u; telaPreta = false; atualizarTela(); marcaImagem(); }
 function marcaImagem(){ document.querySelectorAll('#imagens .im-card').forEach(c => c.setAttribute('aria-pressed', imgManual !== null && !telaPreta && c.dataset.u === imgManual ? 'true' : 'false'));
   const a = document.getElementById('imgSegue'); if (a) a.setAttribute('aria-pressed', imgManual === null && !telaPreta ? 'true' : 'false');
@@ -2744,15 +2758,7 @@ function desenharImagens(){
   const campoU = el('input',{type:'url', id:'imgU', placeholder:'https://…  (link direto de uma imagem)', 'aria-label':'Link da imagem'}), campoN = el('input',{type:'text', id:'imgN', placeholder:'nome (opcional)', 'aria-label':'Nome'});
   raiz.replaceChildren(
     el('div',{class:'im-topo'},
-      el('div',{class:'im-tab'},
-        el('b',{}, 'Tablet'),
-        el('p',{}, 'No tablet, abra o endereço abaixo e digite o código (ou abra o link completo):'),
-        el('div',{class:'im-end'}, el('code',{}, URL_TELA.replace('https://','')), el('span',{class:'im-cod', title:'código da sala'}, cod)),
-        el('div',{class:'im-bts'},
-          el('button',{class:'peq', type:'button', onclick:() => { try { navigator.clipboard.writeText(link).then(() => aviso('Link copiado. Mande para o tablet (WhatsApp, e-mail…).')); } catch(e){ aviso(link); } }}, 'Copiar o link'),
-          el('button',{class:'peq', type:'button', onclick:() => { TAB.enviado = null; enviaTablet(srcTela()); }}, 'Reenviar a imagem'),
-          el('button',{class:'peq', type:'button', onclick:() => { try { localStorage.removeItem('otl-sala'); } catch(e){} if (TAB.ponte) TAB.ponte.fechar(); TAB.ponte = null; TAB.vivo = 0; TAB.codigo = ''; ligaTablet(); desenharImagens(); }}, 'Gerar outro código')),
-        el('div',{id:'tabSt', class:'im-st', role:'status'})),
+      painelTablet(),
       el('div',{class:'im-ctl'},
         el('button',{id:'imgPreto', class:'peq', type:'button', 'aria-pressed':'false', onclick:() => { telaPreta = !telaPreta; atualizarTela(); marcaImagem(); }}, 'Tela preta'),
         el('button',{id:'imgSegue', class:'peq', type:'button', 'aria-pressed':'false', title:'A tela volta a mostrar a arte do personagem cuja música está tocando', onclick:() => { imgManual = null; telaPreta = false; atualizarTela(); marcaImagem(); }}, 'Acompanhar a música'),
@@ -2864,7 +2870,8 @@ let trava = null;
 function aba(qual){ modo = qual; document.body.dataset.aba = qual;
   for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['cen','cenas','abaCen'],['img','imagens','abaImg'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
   if (qual === 'mes') rotRolar = true;
-  if (qual === 'img') ligaTablet();
+  if (qual === 'img' || qual === 'aj') ligaTablet();
+  if (qual === 'aj') desenharAjTablet();
   if (qual!=='sel' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga
   desenhar(); salvaUI(); }
 $('abaSel').onclick = () => aba('sel');
@@ -2875,6 +2882,7 @@ $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
 $('abaAj').onclick = () => aba('aj');
 if (window.OTL) OTL.ui($('ajustes'));
+{ const d = document.createElement('div'); d.id = 'ajTablet'; d.className = 'aj-tablet'; $('ajustes').prepend(d); }
 let vozIni = 0;
 document.addEventListener('keyup', ev => { if (ev.key.toLowerCase() === 'v' && !/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName) && vozIni && Date.now()-vozIni > 600) alternarVoz(false); vozIni = 0; });
 /* ---- efeitos sonoros dos cliques (sintetizados com Web Audio: sem arquivos, sem licença) ---- */
