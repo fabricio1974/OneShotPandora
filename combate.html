@@ -446,11 +446,14 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 
 /* ===== Desktop / notebook (prioridade): duas colunas, ações em grade ===== */
 .cc-cat{margin:14px 0 0;font:600 13px/1 var(--texto);color:var(--apagado);letter-spacing:.02em;padding-bottom:6px;border-bottom:1px solid var(--linha)}
-body[data-aba="mes"] #painelMestre > :is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"]){display:none}
-body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"])){display:none}
+body[data-aba="mes"] #painelMestre > :is([data-p="ini"],[data-p="inm"]){display:none}
+body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"])){display:none}
 .ft-g{flex:none;align-self:stretch;display:flex;align-items:center;padding:0 8px 0 4px;margin-left:-2px;color:var(--apagado);font-size:18px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 #faixaTurno.movendo{cursor:grabbing;box-shadow:0 10px 26px -4px #000}#faixaTurno.movendo .ft-g{cursor:grabbing;color:var(--ouro)}
 .volta-lin{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:2px 0 10px}.volta-lin .seg{display:flex;gap:4px}.volta-lin .seg button{min-width:40px;min-height:40px;padding:0}.volta-lin .seg button[aria-pressed=true]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:700}.volta-rod{color:var(--apagado);font-size:14px}
+.ft-m{flex:none;min-width:34px;min-height:34px;padding:0;font-size:18px;line-height:1;background:transparent;border-color:transparent;color:var(--apagado)}
+#faixaTurno.mini{padding:0;gap:0;width:48px;height:48px;border-radius:50%!important;justify-content:center;flex-wrap:nowrap}
+#faixaTurno.mini .ft-bola{width:100%;height:100%;margin:0;padding:0;justify-content:center;font:700 15px/1 var(--texto);color:var(--ouro);cursor:pointer}
 .tks{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px;touch-action:none;user-select:none;-webkit-user-select:none}
 .tk{position:relative;display:flex;align-items:center;gap:6px;min-height:48px;padding:4px 6px 4px 10px;border-radius:12px;border:1px solid var(--linha);background:var(--painel,#1c1712);cursor:grab;touch-action:none}
 .tk.jog{border-color:#6fb6e8aa}.tk.inim{border-color:#e0685aaa}
@@ -473,7 +476,8 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[dat
 .aj-atalhos a.btn-at{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:10px;background:var(--ouro);color:var(--sobre);font-weight:700;text-decoration:none}
 @media (min-width:1000px){
   body[data-aba="mes"] header, body[data-aba="mes"] main, body[data-aba="cmb"] header, body[data-aba="cmb"] main{max-width:1760px}
-  body[data-aba="mes"] #painelMestre > [data-p]:not([data-p="inm"]), body[data-aba="cmb"] #painelMestre > [data-p]:not([data-p="inm"]){max-width:1000px}
+  body[data-aba="mes"] #painelMestre > [data-p]:not([data-p="inm"]){max-width:1000px}
+body[data-aba="cmb"] #painelMestre > [data-p]{max-width:none}
   .dk-sub,[data-p="inm"] > .greca{display:none}
   .dk{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start;margin-top:8px}
   .dk-rail{position:sticky;top:8px;max-height:calc(100svh - var(--barra-h,70px) - 24px);overflow:auto;padding-right:6px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}
@@ -2184,17 +2188,21 @@ function irParaVez(){   // rola até o bloco do inimigo da vez (aba Mestre)
   const bl = document.querySelector('#painelMestre .inm-bl[data-e="' + i.id + '"]'); if (bl) bl.scrollIntoView({block:'start', behavior:matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth'});
 }
 let pillMax = 0;
+let pilMin = false; try { pilMin = localStorage.getItem('otl-pilula-min') === '1'; } catch(e){}
 function atualizaFaixa(){
   const f = document.getElementById('faixaTurno'), m = E.m; if (!f) return;
   const on = m && m.ini && m.ini.length && true; f.hidden = !on; if (!on) { pillMax = 0; document.documentElement.style.setProperty('--pill-h', '0px'); return; }
   const c = m.ini[m.turno] || m.ini[0], bd0 = badgesCond(c); if (c.pv <= 0) bd0.unshift(el('span',{class:'cb cd'}, 'caído')); const bd = bd0.length > 3 ? [...bd0.slice(0,3), el('span',{class:'cb tx'}, '+' + (bd0.length - 3))] : bd0;
   const podeDes = pilhaDes.length && Date.now() - ultDes < 15000; f.classList.toggle('cd', !!podeDes);   // com Desfazer na pílula, o “Vez de” sai para o nome caber
-  f.replaceChildren(el('span',{class:'ft-g', title:'Arraste para mover a pílula (toque duas vezes para voltar ao canto)', 'aria-label':'Mover a pílula do turno'}, '⠿'), el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Volta ' + m.volta + ' · Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
+  f.classList.toggle('mini', pilMin);
+  if (pilMin) { const nm = (c.n || '?').trim(); f.replaceChildren(el('span',{class:'ft-g ft-bola', title:'Toque para abrir o controle de turno · arraste para mover', 'aria-label':'Abrir controle de turno. Vez de ' + c.n}, nm.slice(0, 2))); pillMax = 0; document.documentElement.style.setProperty('--pill-h', '48px'); pilPos(); return; }
+  f.replaceChildren(el('span',{class:'ft-g', title:'Arraste para mover a pílula (toque duas vezes para voltar ao canto)', 'aria-label':'Mover a pílula do turno'}, '⠿'), el('button',{class:'ft-m', type:'button', title:'Minimizar em uma bolinha', 'aria-label':'Minimizar o controle de turno', onclick:() => pilMini(true)}, '–'), el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Volta ' + m.volta + ' · Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
     ...(bd.length ? [el('div',{class:'ft-c'}, ...bd)] : []));
   pillMax = Math.max(pillMax, f.offsetHeight); document.documentElement.style.setProperty('--pill-h', pillMax + 'px'); pilPos();
 }
 // pílula do turno móvel: arraste pelo ⠿ e ela fica onde você soltar (guardado neste navegador)
 const PIL_K = 'otl-pilula';
+function pilMini(v){ pilMin = !!v; try { localStorage.setItem('otl-pilula-min', pilMin ? '1' : '0'); } catch(e){} atualizaFaixa(); }
 function pilPos(v){
   const f = document.getElementById('faixaTurno'); if (!f || f.hidden) return;
   if (v === undefined) { try { v = JSON.parse(localStorage.getItem(PIL_K) || 'null'); } catch(e){ v = null; } }
@@ -2216,6 +2224,7 @@ function pilPos(v){
   });
   let tap = 0;
   const fim = ev => { if (!d) return; const parado = d.parado; d = null;
+    if (parado && pilMin) { f.classList.remove('movendo'); pilMini(false); return; }
     if (parado) { const t = Date.now(); if (t - tap < 450) { tap = 0; f.classList.remove('movendo'); try { localStorage.removeItem(PIL_K); } catch(e){} pilPos(null); return; } tap = t; }
  f.classList.remove('movendo'); const r = f.getBoundingClientRect(), mx = Math.max(1, innerWidth - r.width), my = Math.max(1, innerHeight - r.height);
     try { localStorage.setItem(PIL_K, JSON.stringify({x:r.left / mx, y:r.top / my})); } catch(e){} };
@@ -2705,10 +2714,10 @@ const MP = {
   ini:{fn:painelIni, t:'Iniciativa e PV'}, inm:{fn:painelInimigos, t:'Inimigos e ações'}, apo:{fn:painelApoioEstado, t:'Tobias e Rafaela'}, fim:{fn:painelFim, t:'Fim da noite · vitória ou derrota'},
   anja:{fn:painelAnja, t:'Oferta da anja · virtudes invertidas'}, loops:{fn:painelLoops, t:'Registro das voltas'}, jog:{fn:painelJog, t:'Jogadores e votação'}, falas:{fn:painelFalas, t:'Falas e anotações dos personagens'},
   rit:{fn:painelRitmo, t:'Ritmo da noite'}, dados:{fn:painelDados, t:'Dados'}, aud:{fn:painelAudio, t:'Clima e som'}, elenco:{fn:elencoApoio}};
-const ORD_P = ['palco','rot','gat','esp','noite','ab','notas','ini','inm','apo','fim','anja','loops','jog','falas','rit','dados','aud','elenco'];
-const FULL = ['palco','rot','gat','esp','noite','ab','ini','inm','fim','anja','aud'];   // o que um redesenho geral refaz (campos de texto próprios não são tocados)
-const DEP = {palco:['palco'], rot:['rot','palco','gat'], gat:['gat','palco','rot'], esp:['esp','palco'], noite:['noite','inm','ini','fim'], ab:['ab','noite','fim'], notas:[], ini:['ini','inm'], inm:['inm','ini'],
-  apo:['apo','fim'], fim:['fim'], anja:['anja'], loops:[], jog:['jog','anja','ini'], falas:['falas'], rit:['rit'], dados:['dados'], aud:['aud'], elenco:[]};
+const ORD_P = ['palco','rot','gat','esp','noite','ab','notas','ini','inm','anja','loops','jog','falas','rit','dados','aud','elenco'];
+const FULL = ['palco','rot','gat','esp','noite','ab','ini','inm','anja','aud'];   // o que um redesenho geral refaz (campos de texto próprios não são tocados)
+const DEP = {palco:['palco'], rot:['rot','palco','gat'], gat:['gat','palco','rot'], esp:['esp','palco'], noite:['noite','inm','ini'], ab:['ab','noite'], notas:[], ini:['ini','inm'], inm:['inm','ini'],
+  anja:['anja'], loops:[], jog:['jog','anja','ini'], falas:['falas'], rit:['rit'], dados:['dados'], aud:['aud'], elenco:[]};
 function posRot(novo, st){
   const l = novo.querySelector('#rotLista'); if (!l) return;
   if (rotRolar) { const a = l.querySelector('.pas.atual'); if (a) l.scrollTop = Math.max(0, a.getBoundingClientRect().top - l.getBoundingClientRect().top + l.scrollTop - (l.clientHeight - a.offsetHeight) / 2); rotRolar = false; }
