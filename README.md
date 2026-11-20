@@ -109,3 +109,9 @@ Aba **Ajustes** no app (e no combate): 3 layouts e 5 paletas por layout, com tro
 - **Painel** (menu lateral em telas largas; botões no celular): Grafite, Meia-noite, Carmim, Brasa, Floresta.
 - **Cartaz** (cartões arredondados, abas em cápsula, barra de música flutuante): Ametista, Brasa, Carmim, Pergaminho, Grafite.
 `visual.js` guarda as paletas e monta a aba; `visual.css` tem os layouts. As cartas (`cartas.html`) seguem só as paletas escuras. O padrão continua sendo Palco + Brasa. Se `visual.js` não carregar, o site abre com o visual de antes.
+
+## Tablet e aba Imagens
+- `combate.html` → aba **Imagens**: mostra um código de 6 letras. No tablet, abra `tela.html` (https://fabricio1974.github.io/OneShotPandora/tela.html), digite o código e toque em *Conectar*. O tablet fica em tela cheia, sem apagar.
+- Tocar numa imagem a mostra no tablet e na janela "Tela dos jogadores". **Tela preta** esconde; **Acompanhar a música** volta a mostrar a arte do personagem cuja música toca.
+- Sem servidor próprio: `ponte.js` usa o canal público ntfy.sh (só viaja o caminho da imagem) e BroadcastChannel quando as duas páginas estão no mesmo navegador. Precisa de internet nos dois aparelhos.
+- "Minhas imagens": cole o link direto de uma imagem para adicioná-la à lista.

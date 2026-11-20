@@ -766,6 +766,10 @@ function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m
   E.m.ini.forEach(c => { if (!c.id) c.id = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); });
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
   if (typeof E.rpos !== 'number') E.rpos = -1;
+  if (!E.nomeEliz) { E.nomeEliz = 1;                          // o que já estava salvo neste aparelho com o nome antigo (Élodie) passa a Elizabeth
+    const tr = o => { if (!o || typeof o !== 'object') return; for (const k of Object.keys(o)) { const v = o[k];
+      if (typeof v === 'string') { const n = v.replace(/[ÉE]l[óo]die/g, 'Elizabeth'); if (n !== v) o[k] = n; } else tr(v); } };
+    tr(E); }
   if (E.fmtA !== 1) {   // Formato A: Raquel virou Elizabeth, 270 min, roteiro de 5 lutas (migra o que já estava salvo, sem apagar o resto)
     E.fmtA = 1; const m = E.m, s = m.inm;
     if (m.durTotal === 240) m.durTotal = 270;

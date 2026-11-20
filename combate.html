@@ -684,6 +684,27 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 .cen-usar{display:flex;gap:4px;align-items:center;font-size:13px}
 .novo{font-size:10px;letter-spacing:.06em;padding:1px 6px;border-radius:4px;background:var(--ouro);color:#1a1612;margin-right:6px;vertical-align:2px}
 @media (max-width:560px){.cen-lin{grid-template-columns:auto 1fr}.cen-usar{grid-column:2}}
+/* aba Imagens (tela do tablet) */
+#imagens{padding:4px 2px 40px}
+.im-topo{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0 6px}
+.im-tab,.im-ctl{background:var(--painel,#1d1712);border:1px solid var(--linha,#3a2e24);border-radius:12px;padding:12px 14px;flex:1 1 320px;min-width:0}
+.im-tab p,.im-ctl p{margin:4px 0 8px;color:var(--apagado,#a89a85)}
+.im-end{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:8px}
+.im-end code{background:#120d09;border-radius:8px;padding:6px 10px;overflow-wrap:anywhere}
+.im-cod{font:700 22px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.18em;background:#120d09;border:1px solid var(--terracota,#c8672f);border-radius:8px;padding:6px 12px;color:var(--ouro,#e0b24a)}
+.im-bts{display:flex;flex-wrap:wrap;gap:8px}
+.im-st{margin-top:10px;font-weight:600}
+.im-st::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;background:#7a2a1c}
+.im-st[data-s=ok]::before{background:#3d8a4a}.im-st[data-s=espera]::before{background:#c9a02f}
+.im-ctl{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}.im-ctl .sub{flex-basis:100%}
+.im-ctl button[aria-pressed=true],#imagens .im-card[aria-pressed=true]{border-color:var(--ouro,#e0b24a);box-shadow:0 0 0 2px color-mix(in srgb,var(--ouro,#e0b24a) 45%,transparent)}
+.im-sec h3{margin:20px 0 8px;font-size:15px;color:var(--ouro,#e0b24a)}
+.im-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.im-card{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px;background:#17110d;border:1px solid var(--linha,#3a2e24);border-radius:10px;color:inherit;cursor:pointer;text-align:left;min-width:0}
+.im-card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:#000}
+.im-card span{font-size:13px;line-height:1.25;overflow-wrap:anywhere}
+.im-x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:#000b;color:#fff;display:flex;align-items:center;justify-content:center;font-style:normal}
+.im-add{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}.im-add input{flex:1 1 220px;min-width:0}
 </style>
 <link rel="stylesheet" href="visual.css">
 <link rel="stylesheet" href="mesa.css?v=10">
@@ -695,6 +716,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
     <button role="tab" id="abaSel" aria-selected="true">Seleção</button>
     <button role="tab" id="abaTri" aria-selected="false">Triagem</button>
     <button role="tab" id="abaCen" aria-selected="false">Cenas</button>
+    <button role="tab" id="abaImg" aria-selected="false">Imagens</button>
     <button role="tab" id="abaSes" aria-selected="false">Sessão</button>
     <button role="tab" id="abaMes" aria-selected="false">Mestre</button>
     <button role="tab" id="abaAj" aria-selected="false">Ajustes</button>
@@ -707,6 +729,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
   <section id="selecao"></section>
   <section id="triagem" hidden></section>
   <section id="cenas" hidden></section>
+  <section id="imagens" hidden></section>
   <section id="sessao" hidden></section>
   <section id="painelMestre" hidden></section>
   <section id="ajustes" hidden></section>
@@ -934,6 +957,10 @@ function garantir(){ E.m = Object.assign(M0(), E.m||{}); const inmVelho = !!(E.m
   E.m.ini.forEach(c => { if (!c.id) c.id = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); });
   if (!Array.isArray(E.roteiro)) E.roteiro = ROTEIRO_PADRAO.map((x,i) => Object.assign({id:'r'+i}, x));
   if (typeof E.rpos !== 'number') E.rpos = -1;
+  if (!E.nomeEliz) { E.nomeEliz = 1;                          // o que já estava salvo neste aparelho com o nome antigo (Élodie) passa a Elizabeth
+    const tr = o => { if (!o || typeof o !== 'object') return; for (const k of Object.keys(o)) { const v = o[k];
+      if (typeof v === 'string') { const n = v.replace(/[ÉE]l[óo]die/g, 'Elizabeth'); if (n !== v) o[k] = n; } else tr(v); } };
+    tr(E); }
   if (E.fmtA !== 1) {   // Formato A: Raquel virou Elizabeth, 270 min, roteiro de 5 lutas (migra o que já estava salvo, sem apagar o resto)
     E.fmtA = 1; const m = E.m, s = m.inm;
     if (m.durTotal === 240) m.durTotal = 270;
@@ -2504,7 +2531,7 @@ function desenhar(esc){
 }
 function desenhar0(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cen'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
+  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cen' || modo==='img'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='img') desenharImagens(); else if (modo==='mes') desenharMestre(); else desenharSessao(); atualizaFaixa(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -2515,17 +2542,84 @@ function marcar(){ const g = tocando && grupoDe(tocando);
 // ---------- Tela dos jogadores (segunda janela) e Folha do Mestre (impressão) ----------
 let telaJ = null, telaPreta = false;
 const telaViva = () => telaJ && !telaJ.closed;
+let imgManual = null;                 // null: a tela acompanha a música; texto: imagem escolhida na aba Imagens ('' = nada)
+function srcTela(){
+  const g = tocando && grupoDe(tocando), alt = g && ALT_PADRAO[g.id] && E.m.alt[g.id];
+  return telaPreta ? '' : imgManual !== null ? imgManual : ((alt ? ALT_PADRAO[g.id] : (g && g.img)) || '');
+}
 function atualizarTela(){
+  enviaTablet(srcTela());
   if (!telaViva()) return;
   try {
-    const g = tocando && grupoDe(tocando), alt = g && ALT_PADRAO[g.id] && E.m.alt[g.id];
-    const src = telaPreta ? '' : (alt ? ALT_PADRAO[g.id] : (g && g.img)) || '';
+    const src = srcTela();
     const d = telaJ.document, im = d.getElementById('im'), nm = d.getElementById('nm');
     if (!im) return;
     if (src) { const u = new URL(src, location.href).href; if (im.dataset.u !== u) { im.style.opacity = 0; setTimeout(() => { im.src = u; im.dataset.u = u; im.style.opacity = 1; }, 450); } }
     else { im.style.opacity = 0; im.dataset.u = ''; }
     nm.style.opacity = 0;                      // sem legenda: o nome do personagem pode entregar a surpresa
   } catch(e){}
+}
+// ---------- Tablet (tela.html em outro aparelho) e aba Imagens ----------
+const URL_TELA = 'https://fabricio1974.github.io/OneShotPandora/tela.html';
+const TAB = {codigo:'', ponte:null, estado:'', vivo:0, enviado:null};
+function codigoTablet(){ try { let c = localStorage.getItem('otl-sala'); if (!c) { c = Ponte.novoCodigo(); localStorage.setItem('otl-sala', c); } return c; } catch(e){ return TAB.codigo || Ponte.novoCodigo(); } }
+function ligaTablet(){
+  if (TAB.ponte || !window.Ponte) return;
+  TAB.codigo = codigoTablet();
+  TAB.ponte = Ponte.abrir(TAB.codigo, m => {
+    if (m.t !== 'oi' && m.t !== 'vivo') return;
+    TAB.vivo = Date.now(); if (m.t === 'oi') { TAB.enviado = null; enviaTablet(srcTela()); }
+    statusTablet(); },
+    st => { TAB.estado = st; statusTablet(); });
+  setInterval(statusTablet, 5000);
+}
+function enviaTablet(src){
+  if (!TAB.ponte || src === TAB.enviado) return;
+  TAB.enviado = src; TAB.ponte.enviar(src ? {t:'img', u:src} : {t:'preto'}).then(ok => { if (!ok) { TAB.enviado = null; TAB.falha = true; } else TAB.falha = false; statusTablet(); });
+}
+function statusTablet(){
+  const b = document.getElementById('tabSt'); if (!b) return;
+  const vivo = TAB.vivo && Date.now() - TAB.vivo < 70000;
+  b.dataset.s = vivo ? 'ok' : TAB.falha ? 'ruim' : TAB.estado === 'on' ? 'espera' : 'ruim';
+  b.textContent = vivo ? 'Tablet conectado' : TAB.falha ? 'Não consegui enviar (sem internet?)' : TAB.estado === 'on' ? 'Aguardando o tablet…' : 'Conectando ao canal…';
+}
+function mostrarImagem(u){ imgManual = u; telaPreta = false; atualizarTela(); marcaImagem(); }
+function marcaImagem(){ document.querySelectorAll('#imagens .im-card').forEach(c => c.setAttribute('aria-pressed', imgManual !== null && !telaPreta && c.dataset.u === imgManual ? 'true' : 'false'));
+  const a = document.getElementById('imgSegue'); if (a) a.setAttribute('aria-pressed', imgManual === null && !telaPreta ? 'true' : 'false');
+  const p = document.getElementById('imgPreto'); if (p) p.setAttribute('aria-pressed', telaPreta ? 'true' : 'false'); }
+const IMG_PERS = [['img/akari.jpg','Akari'],['img/thorian.jpg','Thorian'],['img/tobias.jpg','Tobias'],['img/rafaela.jpg','Rafaela'],['img/esau.jpg','Esaú'],['img/esau_acena.jpg','Esaú (acenando)'],['img/jael.jpg','Jael'],['img/ezequiel.jpg','Ezequiel'],['img/hildegarda.jpg','Hildegarda'],['img/elizabeth.jpg','Elizabeth'],['img/ozymandias.jpg','Ozymandias'],['img/anja.jpg','Anja'],['img/diabo.jpg','O Anjo']];
+const IMG_ESTRADA = [['mapa/map.jpg','Mapa: A Estrada para Maré-Alta'],...['Vila dos Heróis','Bosque dos Gigantes','Campo dos Monólitos','Lagos do Arco-Íris','Cascatas do Urso de Pedra','Grande Catarata','Vertigem das Cataratas','Queda Luminosa','Viaduto do Vale Rosa','Os Deuses de Pedra','Anel dos Peregrinos','Lago Espelho','Marésia e as Falésias Brancas'].map((n, i) => { const k = String(i + 1).padStart(2, '0'); return ['mapa/img/' + k + '.jpg', (i + 1) + ' · ' + n, 'mapa/img/t/' + k + '.jpg']; })];
+const IMG_VIN = [['chronos','Chronos'],['criados','Criados'],['demonio','O demônio'],['esau','Esaú'],['ezequiel','Ezequiel'],['hildegarda','Hildegarda'],['jael','Jael'],['ozymandias','Ozymandias']].map(([k, n]) => ['img/cartas/vin_' + k + '.jpg', n]);
+const imgExtras = () => { try { return JSON.parse(localStorage.getItem('otl-img-extra') || '[]').filter(x => x && x.u); } catch(e){ return []; } };
+const salvaExtras = l => { try { localStorage.setItem('otl-img-extra', JSON.stringify(l)); } catch(e){} };
+function desenharImagens(){
+  const raiz = document.getElementById('imagens'), cod = TAB.codigo || codigoTablet(), link = URL_TELA + '#' + cod;
+  const card = ([u, n, th], rm) => el('button',{class:'im-card', type:'button', 'data-u':u, 'aria-pressed':'false', onclick:() => mostrarImagem(u)},
+    el('img',{src:th || u, alt:''}), el('span',{}, n), rm ? el('i',{class:'im-x', title:'Tirar da lista', onclick:ev => { ev.stopPropagation(); salvaExtras(imgExtras().filter(x => x.u !== u)); desenharImagens(); }}, '×') : null);
+  const sec = (t, l, rm) => el('section',{class:'im-sec'}, el('h3',{}, t), el('div',{class:'im-grade'}, ...l.map(x => card(x, rm))));
+  const extras = imgExtras().map(x => [x.u, x.n || 'Minha imagem']);
+  const campoU = el('input',{type:'url', id:'imgU', placeholder:'https://…  (link direto de uma imagem)', 'aria-label':'Link da imagem'}), campoN = el('input',{type:'text', id:'imgN', placeholder:'nome (opcional)', 'aria-label':'Nome'});
+  raiz.replaceChildren(
+    el('div',{class:'im-topo'},
+      el('div',{class:'im-tab'},
+        el('b',{}, 'Tablet'),
+        el('p',{}, 'No tablet, abra o endereço abaixo e digite o código (ou abra o link completo):'),
+        el('div',{class:'im-end'}, el('code',{}, URL_TELA.replace('https://','')), el('span',{class:'im-cod', title:'código da sala'}, cod)),
+        el('div',{class:'im-bts'},
+          el('button',{class:'peq', type:'button', onclick:() => { try { navigator.clipboard.writeText(link).then(() => aviso('Link copiado. Mande para o tablet (WhatsApp, e-mail…).')); } catch(e){ aviso(link); } }}, 'Copiar o link'),
+          el('button',{class:'peq', type:'button', onclick:() => { TAB.enviado = null; enviaTablet(srcTela()); }}, 'Reenviar a imagem'),
+          el('button',{class:'peq', type:'button', onclick:() => { try { localStorage.removeItem('otl-sala'); } catch(e){} if (TAB.ponte) TAB.ponte.fechar(); TAB.ponte = null; TAB.vivo = 0; TAB.codigo = ''; ligaTablet(); desenharImagens(); }}, 'Gerar outro código')),
+        el('div',{id:'tabSt', class:'im-st', role:'status'})),
+      el('div',{class:'im-ctl'},
+        el('button',{id:'imgPreto', class:'peq', type:'button', 'aria-pressed':'false', onclick:() => { telaPreta = !telaPreta; atualizarTela(); marcaImagem(); }}, 'Tela preta'),
+        el('button',{id:'imgSegue', class:'peq', type:'button', 'aria-pressed':'false', title:'A tela volta a mostrar a arte do personagem cuja música está tocando', onclick:() => { imgManual = null; telaPreta = false; atualizarTela(); marcaImagem(); }}, 'Acompanhar a música'),
+        el('p',{class:'sub'}, 'Vale para o tablet e para a janela “Tela dos jogadores”. Toque numa imagem para mostrá-la; “Tela preta” esconde tudo.'))),
+    sec('Personagens', IMG_PERS), sec('A Estrada para Maré-Alta', IMG_ESTRADA), sec('Vinhetas das cartas', IMG_VIN),
+    el('section',{class:'im-sec'}, el('h3',{}, 'Minhas imagens'),
+      el('p',{class:'sub'}, 'Cole o link direto de uma imagem (por exemplo, um mapa já hospedado). O tablet precisa conseguir abrir esse link.'),
+      el('div',{class:'im-add'}, campoU, campoN, el('button',{class:'peq', type:'button', onclick:() => { const u = campoU.value.trim(); if (!/^https?:\/\//i.test(u)) { aviso('Cole um link que comece com https://'); return; } salvaExtras([...imgExtras(), {u, n:campoN.value.trim()}]); desenharImagens(); }}, 'Adicionar')),
+      extras.length ? el('div',{class:'im-grade'}, ...extras.map(x => card(x, true))) : null));
+  marcaImagem(); statusTablet();
 }
 function abrirTela(){
   if (telaViva()) { telaJ.focus(); atualizarTela(); return; }
@@ -2587,13 +2681,15 @@ $('btSil').onclick = () => parar(0);
 $('btVid').onclick = ev => { const p = $('players'); p.classList.toggle('mini'); ev.target.textContent = p.classList.contains('mini') ? 'Mostrar vídeos' : 'Esconder vídeos'; };
 let trava = null;
 function aba(qual){ modo = qual; document.body.dataset.aba = qual;
-  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['cen','cenas','abaCen'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
+  for (const [k, sec, bt] of [['sel','selecao','abaSel'],['tri','triagem','abaTri'],['cen','cenas','abaCen'],['img','imagens','abaImg'],['ses','sessao','abaSes'],['mes','painelMestre','abaMes'],['aj','ajustes','abaAj']]) { $(sec).hidden = qual!==k; $(bt).setAttribute('aria-selected', qual===k); }
   if (qual === 'mes') rotRolar = true;
+  if (qual === 'img') ligaTablet();
   if (qual!=='sel' && navigator.wakeLock && !trava) navigator.wakeLock.request('screen').then(w => { trava = w; w.onrelease = () => { trava = null; }; }).catch(()=>{});   // a tela não apaga
   desenhar(); salvaUI(); }
 $('abaSel').onclick = () => aba('sel');
 $('abaTri').onclick = () => aba('tri');
 $('abaCen').onclick = () => aba('cen');
+$('abaImg').onclick = () => aba('img');
 $('abaSes').onclick = () => aba('ses');
 $('abaMes').onclick = () => aba('mes');
 $('abaAj').onclick = () => aba('aj');
@@ -2699,6 +2795,7 @@ if (uiRest && typeof uiRest === 'object') {
 desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
+<script src="ponte.js?v=1"></script>
 <script src="mesa.js?v=14"></script>
 </body>
 </html>

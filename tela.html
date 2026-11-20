@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Tela dos jogadores</title>
+<style>
+:root{--ouro:#e0b24a;--texto:#efe6d6;--apagado:#a89a85}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;color:var(--texto);font:16px/1.4 system-ui,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none}
+#im{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .6s}
+#im.vis{opacity:1}
+#cx{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;background:#000}
+#cx[hidden]{display:none}
+#cx h1{font:600 22px/1.2 Georgia,serif;margin:0;color:var(--ouro);letter-spacing:.04em}
+#cx p{margin:0;color:var(--apagado);max-width:34em}
+#cod{font:700 34px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.2em;text-transform:lowercase;width:7em;text-align:center;background:#16110d;color:var(--texto);border:1px solid #3a2e24;border-radius:10px;padding:12px 8px}
+button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px;padding:13px 26px;font-weight:700;min-height:48px}
+#pt{position:fixed;right:12px;bottom:12px;width:10px;height:10px;border-radius:50%;background:#7a2a1c;opacity:.55;transition:opacity 2s .5s,background .3s}
+#pt.on{background:#3d8a4a}
+#pt.quieto{opacity:0}
+</style>
+</head>
+<body>
+<img id="im" alt="">
+<div id="pt" title="conexão"></div>
+<div id="cx">
+  <h1>Tela dos jogadores</h1>
+  <p id="msg">Digite o código que aparece na aba Imagens do notebook.</p>
+  <input id="cod" maxlength="6" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Código">
+  <button id="ok">Conectar e abrir em tela cheia</button>
+</div>
+<script src="ponte.js?v=1"></script>
+<script>
+(function(){
+  'use strict';
+  var im = document.getElementById('im'), cx = document.getElementById('cx'), cod = document.getElementById('cod'), pt = document.getElementById('pt'), msg = document.getElementById('msg');
+  var ponte = null, atual = '', trava = null, bat = 0;
+  function lerCodigo(){ var h = Ponte.limpa(location.hash.slice(1)); if (h) return h; try { return Ponte.limpa(localStorage.getItem('otl-sala-tablet')); } catch(e){ return ''; } }
+  function mostra(u){
+    u = u || '';
+    if (u === atual) return; atual = u;
+    if (!u) { im.classList.remove('vis'); return; }
+    var url = /^https?:/i.test(u) ? u : new URL(u, location.href).href;
+    var pre = new Image();
+    pre.onload = function(){ if (atual !== u) return; im.classList.remove('vis'); setTimeout(function(){ if (atual !== u) return; im.src = url; im.classList.add('vis'); }, 350); };
+    pre.onerror = function(){ if (atual === u) im.classList.remove('vis'); };
+    pre.src = url;
+  }
+  function recebe(m){
+    if (m.t === 'img') mostra(m.u); else if (m.t === 'preto' || m.t === 'limpa') mostra('');
+  }
+  function conecta(c){
+    c = Ponte.limpa(c); if (!c) return false;
+    try { localStorage.setItem('otl-sala-tablet', c); } catch(e){}
+    if (ponte) ponte.fechar();
+    ponte = Ponte.abrir(c, recebe, function(st){ pt.className = st === 'on' ? 'on' : ''; if (st === 'on') { ponte.enviar({t:'oi'}); } });
+    ponte.enviar({t:'oi'});
+    clearInterval(bat); bat = setInterval(function(){ if (ponte) ponte.enviar({t:'vivo'}); }, 25000);
+    return true;
+  }
+  function entra(){
+    var c = Ponte.limpa(cod.value); if (!c) { cod.focus(); return; }
+    conecta(c); cx.hidden = true;
+    try { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function(){}); } catch(e){}
+    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function(w){ trava = w; }).catch(function(){}); } catch(e){}
+    setTimeout(function(){ pt.classList.add('quieto'); }, 6000);
+  }
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState !== 'visible') return;
+    if (cx.hidden && navigator.wakeLock) navigator.wakeLock.request('screen').then(function(w){ trava = w; }).catch(function(){});
+    if (ponte) ponte.enviar({t:'oi'});
+  });
+  document.addEventListener('dblclick', function(){ document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(function(){}); });
+  document.addEventListener('click', function(){ if (!cx.hidden) return; pt.classList.remove('quieto'); setTimeout(function(){ pt.classList.add('quieto'); }, 3000); });
+  document.getElementById('ok').onclick = entra;
+  cod.addEventListener('keydown', function(e){ if (e.key === 'Enter') entra(); });
+  var c0 = lerCodigo(); if (c0) { cod.value = c0; msg.textContent = 'Toque para abrir em tela cheia. O aparelho não vai apagar a tela.'; }
+})();
+</script>
+</body>
+</html>
