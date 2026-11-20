@@ -450,6 +450,7 @@ body[data-aba="mes"] #painelMestre > :is([data-p="ini"],[data-p="inm"],[data-p="
 body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[data-p="apo"],[data-p="fim"])){display:none}
 .ft-g{flex:none;align-self:stretch;display:flex;align-items:center;padding:0 8px 0 4px;margin-left:-2px;color:var(--apagado);font-size:18px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 #faixaTurno.movendo{cursor:grabbing;box-shadow:0 10px 26px -4px #000}#faixaTurno.movendo .ft-g{cursor:grabbing;color:var(--ouro)}
+.volta-lin{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:2px 0 10px}.volta-lin .seg{display:flex;gap:4px}.volta-lin .seg button{min-width:40px;min-height:40px;padding:0}.volta-lin .seg button[aria-pressed=true]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:700}.volta-rod{color:var(--apagado);font-size:14px}
 .tks{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px;touch-action:none;user-select:none;-webkit-user-select:none}
 .tk{position:relative;display:flex;align-items:center;gap:6px;min-height:48px;padding:4px 6px 4px 10px;border-radius:12px;border:1px solid var(--linha);background:var(--painel,#1c1712);cursor:grab;touch-action:none}
 .tk.jog{border-color:#6fb6e8aa}.tk.inim{border-color:#e0685aaa}
@@ -1860,7 +1861,10 @@ function painelIni(){
       return el('div',{class:'jq'}, el('b',{}, j.n), inp, el('button',{class:'peq', 'aria-label':'Pôr ' + j.n + ' na iniciativa', onclick:() => poeJog(j, inp)}, '＋')); })) : null;
   const naoJog = m.ini.map((c, i) => [c, i]).filter(([c]) => !c.j);   // jogadores não têm PV na ficha: só aparecem como ficha
   return caixa('ini','Iniciativa',
-    el('datalist',{id:'ini_sug'}, ...['Tobias', 'Rafaela', 'Akari', 'Thorian'].map(n => el('option',{value:n}))),
+    el('div',{class:'volta-lin', role:'group', 'aria-label':'Volta em que estamos'}, el('b',{}, 'Volta'),
+      el('div',{class:'seg'}, ...[1,2,3,4,5,6].map(n => el('button',{type:'button', 'aria-label':'Volta ' + n, 'aria-pressed':String(m.volta === n), onclick:mudar(() => { if (m.volta === n) return; m.volta = n; m.rodada = 1; inmNovaVolta(); cron = {ini:null, acum:0}; })}, String(n)))),
+      el('span',{class:'volta-rod'}, 'Rodada ' + m.rodada)),
+        el('datalist',{id:'ini_sug'}, ...['Tobias', 'Rafaela', 'Akari', 'Thorian'].map(n => el('option',{value:n}))),
     m.ini.length ? el('div',{class:'tks', role:'list', 'aria-label':'Ordem de iniciativa (arraste para trocar)'}, ...m.ini.map((c, i) => fichaIni(c, i, m.turno === i))) : el('p',{class:'sub'},'Ninguém na ordem ainda. Digite a iniciativa de cada jogador abaixo e depois use “Iniciar luta” em Inimigos e ações: os inimigos entram no meio da ordem.'),
     m.ini.length ? el('p',{class:'sub tks-dica'}, 'Arraste uma ficha para mudar a ordem, a qualquer hora. ▶ passa a vez para ela.') : null,
     chips,
@@ -2185,7 +2189,7 @@ function atualizaFaixa(){
   const on = m && m.ini && m.ini.length && true; f.hidden = !on; if (!on) { pillMax = 0; document.documentElement.style.setProperty('--pill-h', '0px'); return; }
   const c = m.ini[m.turno] || m.ini[0], bd0 = badgesCond(c); if (c.pv <= 0) bd0.unshift(el('span',{class:'cb cd'}, 'caído')); const bd = bd0.length > 3 ? [...bd0.slice(0,3), el('span',{class:'cb tx'}, '+' + (bd0.length - 3))] : bd0;
   const podeDes = pilhaDes.length && Date.now() - ultDes < 15000; f.classList.toggle('cd', !!podeDes);   // com Desfazer na pílula, o “Vez de” sai para o nome caber
-  f.replaceChildren(el('span',{class:'ft-g', title:'Arraste para mover a pílula (toque duas vezes para voltar ao canto)', 'aria-label':'Mover a pílula do turno'}, '⠿'), el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
+  f.replaceChildren(el('span',{class:'ft-g', title:'Arraste para mover a pílula (toque duas vezes para voltar ao canto)', 'aria-label':'Mover a pílula do turno'}, '⠿'), el('div',{class:'ft-l'}, el('button',{class:'ft-b', onclick:antTurno, 'aria-label':'Turno anterior'}, ico('esq')), el('span',{class:'ft-t'}, el('span',{class:'vz'}, 'Vez de '), el('b',{}, c.n)), el('span',{class:'ft-r'}, 'Volta ' + m.volta + ' · Rod. ' + m.rodada), el('button',{onclick:proxTurno, 'aria-label':'Próximo turno'}, el('span',{class:'px'}, 'Próximo '), ico('dir')), ...(podeDes ? [el('button',{class:'ft-b ft-u', onclick:desfazer, 'aria-label':'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot, title:'Desfazer: ' + pilhaDes[pilhaDes.length-1].rot}, '↶')] : [])),
     ...(bd.length ? [el('div',{class:'ft-c'}, ...bd)] : []));
   pillMax = Math.max(pillMax, f.offsetHeight); document.documentElement.style.setProperty('--pill-h', pillMax + 'px'); pilPos();
 }
