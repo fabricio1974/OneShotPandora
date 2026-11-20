@@ -97,7 +97,7 @@ html:not([data-dicas="1"]) .dica{display:none}
 .inm-abas,.elenco{scrollbar-width:none}.inm-abas::-webkit-scrollbar,.elenco::-webkit-scrollbar{display:none}
 
 /* cantos retos (liga e desliga em Ajustes) */
-html[data-cantos="1"] :where(button,select,textarea,input:not([type=range]):not([type=checkbox]):not([type=radio]),details,.painel,.pers,.faixa,.cena,.inm-card,.inm-aba,.inm-vez,.inm-nota,.inm-ap,.inm-nh,.inm-pres,.inm-faixa,.chip,.inm-av,.inm-f,.inm-ord .o,.aj-lay,.aj-pal,.aj-mini,.dm-m,.nm-it,#navMestre,#dirMesa,.dm-bloco,.aviso,.barra,.cc-th,.lat-aba,.inm-ult,.inm-tipo,.inm-tag,.inm-cd,.inm-sem,.inm-dado,.inm-atk,.inm-usar){border-radius:2px!important}
+html[data-cantos="1"] :where(button,select,textarea,input:not([type=range]):not([type=checkbox]):not([type=radio]),details,.painel,.pers,.faixa,.cena,.inm-card,.inm-aba,.inm-vez,.inm-nota,.inm-ap,.inm-nh,.inm-pres,.inm-faixa,.chip,.inm-av,.inm-f,.inm-ord .o,.aj-lay,.aj-pal,.aj-mini,.dm-m,.nm-it,#navMestre,#dirMesa,.dm-bloco,.aviso,.barra,.cc-th,.lat-aba,.inm-ult,.inm-tipo,.inm-tag,.inm-cd,.inm-sem,.inm-dado,.inm-atk,.inm-usar,.tk,.jq,#faixaTurno,.subaj .chip,#toast){border-radius:2px!important}
 html[data-cantos="1"] .barra{border-radius:0!important}
 html[data-cantos="1"] .inm-abas .inm-aba{border-radius:2px!important}
 

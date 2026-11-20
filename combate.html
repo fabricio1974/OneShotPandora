@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[experimental] Trilha do Cordeiro</title>
 <script src="visual.js"></script>
+<script>try{var m=JSON.parse(localStorage.getItem('otl_mesa')||'{}');document.documentElement.setAttribute('data-cantos',m.retos===0?'0':'1')}catch(e){document.documentElement.setAttribute('data-cantos','1')}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
 <style>
@@ -795,7 +796,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[dat
 @media (prefers-reduced-motion:reduce){#barra #btCompacto svg.ic{transition:none}}
 </style>
 <link rel="stylesheet" href="visual.css">
-<link rel="stylesheet" href="mesa.css?v=11">
+<link rel="stylesheet" href="mesa.css?v=12">
 </head>
 <body>
 <header>
