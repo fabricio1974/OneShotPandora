@@ -27,6 +27,10 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;color:var(--texto
 #cx p{margin:0;color:var(--apagado);max-width:34em}
 #cod{font:700 34px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.2em;text-transform:lowercase;width:7em;text-align:center;background:#16110d;color:var(--texto);border:1px solid #3a2e24;border-radius:10px;padding:12px 8px}
 button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px;padding:13px 26px;font-weight:700;min-height:48px}
+#rodar{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));z-index:6;width:52px;height:52px;min-height:0;padding:0;border-radius:50%;background:rgba(10,8,6,.45);color:#f1e2c0;border:1px solid rgba(255,255,255,.22);display:grid;place-items:center;opacity:.45;transition:opacity .3s;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#rodar:active,#rodar:hover{opacity:1}
+#rodar svg{width:26px;height:26px}
+.gira2{transform:rotate(180deg)}
 #pt{position:fixed;right:12px;bottom:12px;width:10px;height:10px;border-radius:50%;background:#7a2a1c;opacity:.55;transition:opacity 2s .5s,background .3s}
 #pt.on{background:#3d8a4a}
 #pt.quieto{opacity:0}
@@ -36,6 +40,7 @@ button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px
 <img id="im" alt="">
 <div id="car" hidden></div>
 <div id="bar" hidden></div>
+<button id="rodar" type="button" aria-label="Girar a imagem" title="Girar a imagem 90°"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg></button>
 <div id="pt" title="conexão"></div>
 <div id="cx">
   <h1>Tela dos jogadores</h1>
@@ -51,10 +56,20 @@ button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px
   var ponte = null, atual = '', trava = null, bat = 0;
   function lerCodigo(){ var h = Ponte.limpa(location.hash.slice(1)); if (h) return h; try { return Ponte.limpa(localStorage.getItem('otl-sala-tablet')); } catch(e){ return ''; } }
   var car = document.getElementById('car'), bar = document.getElementById('bar'), modoCar = false, prog = false, nSl = 0, focoAtual = -1, tFoco = 0;
+  var ROT = {};   // giro extra escolhido no botão, por imagem (0, 90, 180, 270)
   function giraImg(el){
     var deitar = el.dataset.g === '1' && el.naturalWidth > el.naturalHeight && innerHeight > innerWidth;
-    el.classList.toggle('gira', deitar); el.style.setProperty('--s', (el.dataset.s === '-90' ? -90 : 90) + 'deg');
+    var t = ((deitar ? (el.dataset.s === '-90' ? -90 : 90) : 0) + (ROT[el.src] || 0)) % 360; if (t < 0) t += 360;
+    el.classList.toggle('gira', t % 180 !== 0); el.classList.toggle('gira2', t === 180); el.style.setProperty('--s', t + 'deg');
   }
+  function rodar(){
+    var el = modoCar ? (car.children[focoAtual] && car.children[focoAtual].querySelector('img')) : (im.classList.contains('vis') ? im : null);
+    if (!el || !el.src) return;
+    ROT[el.src] = ((ROT[el.src] || 0) + 90) % 360; giraImg(el);
+  }
+  var bRodar = document.getElementById('rodar');
+  bRodar.addEventListener('click', function(e){ e.stopPropagation(); rodar(); });
+  bRodar.addEventListener('dblclick', function(e){ e.stopPropagation(); });
   function giraTudo(){ giraImg(im); car.querySelectorAll('img').forEach(giraImg); }
   addEventListener('resize', giraTudo); addEventListener('orientationchange', function(){ setTimeout(giraTudo, 200); });
   function saiCar(){ modoCar = false; car.hidden = true; bar.hidden = true; car.replaceChildren(); nSl = 0; focoAtual = -1; }
