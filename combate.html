@@ -1300,8 +1300,30 @@ function parar(ms=0){
     emP[i] = null; }
   tocando = null; tri = null; marcar();
 }
+// ---------- Sem silêncio: a trilha só para quando você manda (pausar, parar ou baixar) ----------
+const semSilencio = () => E.semSil !== false;
+let errSeq = 0;                                                // erros seguidos: evita rodar sem parar quando está sem internet
+function continuaDepois(f, erro){                              // a música acabou ou falhou e não há "próxima" na lista
+  if (!semSilencio() || tri) return false;
+  if (vizinha(1, true)) return true;
+  if (plAuto && ord.length > 1) { const outras = ord.filter(x => x !== f && tocavel(x)); if (E.aleat) embaralha(ord); const p = ord.find(x => x !== f && tocavel(x)) || outras[0]; if (p) { tocar(p, null, {forcar:true}); return true; } }
+  const g = E.grupos.find(x => x.faixas.includes(f)), lista = g ? g.faixas.filter(tocavel) : [];
+  if (lista.length > 1) { const k = lista.indexOf(f), p = lista[(k + 1) % lista.length]; tocar(p, null, {forcar:true, fila:lista, lista:true, nome:g.nome}); return true; }
+  if (!erro && tocavel(f)) { tocar(f, null, {forcar:true}); return true; }   // única música: repete
+  return false;
+}
+setInterval(() => {                                            // vigia: retoma o que parou sem você pedir
+  if (!tocando || tri || !pronto[ativo] || espera[ativo] || emP[ativo] !== tocando) return;
+  const st = estadoP();
+  if (st === 1) { errSeq = 0; return; }
+  if (st === 2 && !euPausei && semSilencio() && !document.hidden) { try { P[ativo].playVideo(); } catch(e){} }   // o navegador ou o YouTube pausou sozinho
+  if (st === 2 && !euPausei && semSilencio() && document.hidden) { try { P[ativo].playVideo(); } catch(e){} }
+  else if (st === 0 && semSilencio() && tocando === emP[ativo] && modoRep() !== 'one') { const f = tocando; if (!continuaDepois(f)) { /* nada a tocar */ } }
+  else if ((st === 5 || st === -1) && semSilencio()) { try { P[ativo].playVideo(); } catch(e){} }
+}, 3000);
 function aoMudar(i, ev){
   const f = emP[i]; if (!f) return;
+  if (ev.data === 1) { errSeq = 0; if (i === ativo) euPausei = false; }
   if (ev.data === 1 && espera[i]) { const w = espera[i]; espera[i] = null;
     if (w.meio) { let d = 0; try { d = P[i].getDuration(); } catch(e){}
       if (d > 30) P[i].seekTo(Math.max(0, d/2 - (E.previa||120)/2), true); }   // a prévia fica centrada no meio da música
@@ -1309,7 +1331,7 @@ function aoMudar(i, ev){
   if (ev.data === 0) {
     if (tri && tocando === f) triIr(1);
     else if (tocando === f && modoRep() === 'one') { P[i].seekTo(+f.inicio||0, true); P[i].playVideo(); }
-    else if (tocando === f && !vizinha(1, true)) { emP[i] = null; tocando = null; marcar(); }
+    else if (tocando === f && !vizinha(1, true) && !continuaDepois(f)) { emP[i] = null; tocando = null; marcar(); }
   }
 }
 function aoErro(i, ev){
@@ -1319,7 +1341,7 @@ function aoErro(i, ev){
   if (!idDoLink(f.link) && falhou[f.id] < f.videos.length) {      // esta gravação não toca fora do YouTube: tenta a próxima
     f.grav = (f.grav+1) % f.videos.length; salvar();
     P[i].loadVideoById({videoId:videoDe(f), startSeconds:espera[i] && espera[i].meio ? 0 : (+f.inicio||0)}); desenhar();
-  } else { estados[f.id] = 'Nenhuma gravação tocou aqui. Cole outro link do YouTube.'; if (tri) triIr(1); else parar(); }
+  } else { estados[f.id] = 'Nenhuma gravação tocou aqui. Cole outro link do YouTube.'; if (tri) triIr(1); else if (++errSeq <= 6 && continuaDepois(f, true)) { desenhar(); } else parar(); }
 }
 window.onYouTubeIframeAPIReady = () => { [0,1,2].forEach(i => { P[i] = new YT.Player('p'+i, { width:'100%', height:'100%',
   playerVars:{playsinline:1, rel:0, controls:1, origin:location.origin},
@@ -1355,7 +1377,8 @@ function ajustarFaixa(d){ if (!tocando) return; tocando.vol = Math.max(5, Math.m
 
 // ---------- Transporte: pausar, avançar e trocar de faixa ----------
 const estadoP = () => { try { return P[ativo].getPlayerState(); } catch(e){ return -1; } };
-function pausar(){ if (!tocando) return; try { if (estadoP() === 2) P[ativo].playVideo(); else P[ativo].pauseVideo(); } catch(e){} }
+let euPausei = false;                                          // só a pausa pedida por você deixa a trilha parada
+function pausar(){ if (!tocando) return; try { if (estadoP() === 2) { euPausei = false; P[ativo].playVideo(); } else { euPausei = true; P[ativo].pauseVideo(); } } catch(e){} }
 function saltar(seg){ if (!tocando) return; try { P[ativo].seekTo(Math.max(0, P[ativo].getCurrentTime()+seg), true); } catch(e){} }
 const tocavel = f => todas().includes(f) && !!videoDe(f);
 function vizinha(d, auto){                                    // faixa anterior ou próxima da lista; auto = a música acabou
@@ -1605,6 +1628,7 @@ function desenharSelecao(){
   raiz.append(el('details',{class:'cx'}, el('summary',{},'Ajustes e cópia das escolhas'),
     el('div',{class:'lin2'}, el('label',{class:'c'},'Transição entre músicas (s)', el('input',{type:'number', id:'cruzar', min:0, max:10, step:.5, value:E.cruzar, onchange:ev=>{ E.cruzar = Math.max(0, +ev.target.value||0); salvar(); }})),
       el('label',{class:'c'},'Música durante a voz (%)', el('input',{type:'number', id:'vozNivel', min:0, max:100, step:5, value:E.vozNivel, onchange:ev=>{ E.vozNivel = Math.max(0, Math.min(100, +ev.target.value||0)); salvar(); }})),
+      el('label',{class:'c ck'}, el('input',{type:'checkbox', id:'semSil', checked:semSilencio(), onchange:ev=>{ E.semSil = ev.target.checked; salvar(); }}), ' Nunca deixar em silêncio: a música segue sozinha para a próxima; só pausar ou parar silencia'),
       el('label',{class:'c'},'Tempo de “Baixar aos poucos” (s)', el('input',{type:'number', id:'fadeSaida', min:1, max:20, step:1, value:E.fadeSaida, onchange:ev=>{ E.fadeSaida = Math.max(1, Math.min(20, +ev.target.value||4)); salvar(); }}))),
     el('p',{class:'sub', style:'margin-top:14px'},'As escolhas e imagens ficam salvas só neste navegador. Para usar em outro aparelho, baixe o arquivo aqui e carregue lá.'),
     el('div',{class:'lin2'},
