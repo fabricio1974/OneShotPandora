@@ -359,10 +359,11 @@
     katana:['Samurai katana drawn from its scabbard with a sharp metallic ring, then a swift slash', 2], passos:['Heavy determined footsteps on dry dirt and gravel', 3], dragao:['Enormous ancient dragon roar, deep and resonant, long echo over mountains', 5], asas:['Giant dragon wings flapping slowly with powerful gusts of wind', 4], fogoSopro:['Dragon fire breath roaring, intense flames whoosh', 4],
     floresta:['Night forest ambience with crickets and soft wind, seamless loop', 20]
   };
-  var CFG = {p:{}, fr:{}, voz:{}};
-  try { var cj = JSON.parse(localStorage.getItem(CFGK) || 'null'); if (cj && typeof cj === 'object') { CFG.p = cj.p || {}; CFG.fr = cj.fr || {}; CFG.voz = cj.voz || {}; } } catch (e) {}
+  var CFG = {p:{}, fr:{}, voz:{}, rm:{}};
+  try { var cj = JSON.parse(localStorage.getItem(CFGK) || 'null'); if (cj && typeof cj === 'object') { CFG.p = cj.p || {}; CFG.fr = cj.fr || {}; CFG.voz = cj.voz || {}; CFG.rm = cj.rm || {}; } } catch (e) {}
   function cfgGravar(){ try { localStorage.setItem(CFGK, JSON.stringify(CFG)); } catch (e) {} }
   function pDe(id){ var d = PDEF[id] || ['', 3], c = CFG.p[id] || {}; return {t:c.t != null ? c.t : d[0], d:c.d != null ? c.d : d[1]}; }
+  function vis(l){ return l.filter(function(id){ return !CFG.rm[id]; }); }
   function frDe(id){ return CFG.fr[id] || CAT[id].fr; }
 
   /* sons novos e prompts vêm de tools/prompts_audio.json (um arquivo só, revisado): sobrescreve a lista de efeitos e fundos de cada personagem */
@@ -384,8 +385,8 @@
     PRONTO.falas = m.falas || {}; if (ENG.on) engRender(); }).catch(function(){}); } catch (e) {}
   var _ef = AU.efeito, _li = AU.liga, _ni = AU.nivel, _de = AU.desliga, _vi = AU.viva, _tu = AU.tudo, _ms = AU.mestre;
   var SIN = {katana:'flecha', passos:'tambor', dragao:'rosnado', asas:'chifre', fogoSopro:'trovao'};
-  AU.efeito = function(id){ var u = GEN['fx|' + id]; if (!u) return _ef(SIN[id] || id); var a = new Audio(u); a.volume = volG(); a.play().catch(function(){ _ef(SIN[id] || id); }); };
-  AU.liga = function(id, nv){ var u = GEN['cam|' + id]; if (!u) return _li(id, nv); if (LOOPS[id]) return; var a = new Audio(u); a.loop = true; a.volume = Math.min(1, nv * volG() * 1.6); LOOPS[id] = a; a.play().catch(function(){}); };
+  AU.efeito = function(id){ if (CFG.rm[id]) return; var u = GEN['fx|' + id]; if (!u) return _ef(SIN[id] || id); var a = new Audio(u); a.volume = volG(); a.play().catch(function(){ _ef(SIN[id] || id); }); };
+  AU.liga = function(id, nv){ if (CFG.rm[id]) return; var u = GEN['cam|' + id]; if (!u) return _li(id, nv); if (LOOPS[id]) return; var a = new Audio(u); a.loop = true; a.volume = Math.min(1, nv * volG() * 1.6); LOOPS[id] = a; a.play().catch(function(){}); };
   AU.nivel = function(id, nv){ if (LOOPS[id]) LOOPS[id].volume = Math.min(1, nv * volG() * 1.6); else _ni(id, nv); };
   AU.desliga = function(id){ var a = LOOPS[id]; if (a) { delete LOOPS[id]; a.pause(); } else _de(id); };
   AU.viva = function(id){ return !!LOOPS[id] || _vi(id); };
@@ -415,7 +416,8 @@
       h('div', {class:'dm-efs'}, [d, h('span', {class:'sub'}, ['s']),
         h('button', {class:'peq', onclick:function(){ if (loop) { if (AU.viva(id)) AU.desliga(id); else AU.liga(id, .5); engRender(); } else AU.efeito(id); }}, [loop ? (AU.viva(id) ? '■' : '▶') : '▶']),
         h('button', {class:'peq', onclick:function(){ fila([function(){ return gerarSom(id); }], EFN[id] || CAN[id]); }}, [tem ? 'Gerar de novo' : 'Gerar']),
-        tem ? h('button', {class:'peq perigo', onclick:function(){ apagarSom(id).then(engRender); }}, ['Usar sintético']) : null])]);
+        tem ? h('button', {class:'peq', title:'Apaga o som gerado e volta ao som sintético simples', onclick:function(){ apagarSom(id).then(engRender); }}, ['Usar sintético']) : null,
+        h('button', {class:'peq perigo', title:'Tira este som da lista (dá para restaurar em Removidos)', onclick:function(){ if (loop && AU.viva(id)) AU.desliga(id); CFG.rm[id] = 1; cfgGravar(); assin = ''; engRender(); }}, ['Remover'])])]);
   }
   function linhaFala(id, i){
     var lista = frDe(id), x = lista[i], t = ft(x), tr = typeof x === 'string' ? '' : x[1];
@@ -475,14 +477,15 @@
     var nc = noCombate(), alvo = ENG.alvo || nc.atual || 'esau', c = CAT[alvo];
     var sel = h('select', {'aria-label':'Editar os sons de', onchange:function(ev){ ENG.alvo = ev.target.value; engRender(); }}, Object.keys(CAT).map(function(id){ var o = h('option', {value:id}, [CAT[id].nome]); if (id === alvo) o.selected = true; return o; }));
     var topo = h('div', {class:'dm-top'}, [h('b', {}, [grande ? 'Sons dos personagens' : 'Editar sons']), grande ? null : h('button', {class:'peq', onclick:function(){ ENG.on = false; assin = ''; desenhar2(true); }}, ['Voltar'])]);
-    var tarefasAlvo = c.ef.concat(c.ca).map(function(id){ return function(){ return gerarSom(id); }; }).concat(frDe(alvo).map(function(x){ return function(){ return gerarFalaUma(alvo, ft(x)); }; }));
+    var tarefasAlvo = vis(c.ef.concat(c.ca)).map(function(id){ return function(){ return gerarSom(id); }; }).concat(frDe(alvo).map(function(x){ return function(){ return gerarFalaUma(alvo, ft(x)); }; }));
     var chips = h('div', {class:'dm-chips dm-quem'}, Object.keys(CAT).map(function(id){ return h('button', {class:'peq', 'aria-pressed':String(id === alvo), onclick:function(){ ENG.alvo = id; engRender(); }}, [CAT[id].nome]); }));
     var corpo = [h('div', {class:'dm-onde'}, [grande ? chips : sel]),
       secao('Chave e voz', vozUI(null), !VZ.vozes.length),
       h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ if (VZ.voz) fila(tarefasAlvo, 'Tudo de ' + c.nome); else { VZ.msg = 'Carregue as vozes primeiro.'; engRender(); } }}, ['Gerar tudo de ' + c.nome])]),
       secao('Voz de ' + c.nome, vozPersonagemUI(alvo), false),
       (alvo === 'akari' || alvo === 'ozy') ? secao('Diálogo Akari × Ozymandias', dialogoUI(), false) : null,
-      secao('Efeitos', h('div', {}, c.ef.map(linhaSom)), true), secao('Sons de fundo', h('div', {}, c.ca.map(linhaSom)), true),
+      secao('Efeitos', h('div', {}, vis(c.ef).map(linhaSom)), true), secao('Sons de fundo', h('div', {}, vis(c.ca).map(linhaSom)), true),
+      (function(){ var rm = c.ef.concat(c.ca).filter(function(id){ return CFG.rm[id]; }); return rm.length ? secao('Removidos (' + rm.length + ')', h('div', {}, rm.map(function(id){ return h('div', {class:'en-lin en-rm'}, [h('div', {class:'en-n'}, [h('b', {}, [EFN[id] || CAN[id]]), h('span', {class:'sub'}, [' · fora da lista'])]), h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ delete CFG.rm[id]; cfgGravar(); assin = ''; engRender(); }}, ['Restaurar'])])]); })), false) : null; })(),
       secao('Falas', h('div', {}, frDe(alvo).map(function(x, i){ return linhaFala(alvo, i); }).concat([h('button', {class:'peq', onclick:function(){ var l = frDe(alvo).slice(); l.push(['', '']); CFG.fr[alvo] = l; cfgGravar(); engRender(); }}, ['+ nova fala'])])), true),
       VZ.msg ? h('p', {class:'sub dm-nota', role:'status'}, [VZ.msg]) : null];
     var rol = raiz.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
@@ -509,11 +512,11 @@
       var c = CAT[nc.atual];
       corpo.push(h('div', {class:'dm-onde'}, [h('b', {}, [c.nome])]));
       corpo.push(secao('Músicas de ' + c.nome, musicasUI(nc.atual), true));
-      corpo.push(secao('Efeitos', efeitosUI(c.ef), true));
-      corpo.push(secao('Som de fundo', h('div', {class:'dm-cams'}, c.ca.map(camadaUI)), true));
+      corpo.push(secao('Efeitos', efeitosUI(vis(c.ef)), true));
+      corpo.push(secao('Som de fundo', h('div', {class:'dm-cams'}, vis(c.ca).map(camadaUI)), true));
       if (frDe(nc.atual).length) corpo.push(secao(c.vz ? 'Gritos e falas' : 'Frases em latim', frasesUI(frDe(nc.atual), !!c.vz, nc.atual), true));
     } else corpo.push(h('p', {class:'sub dm-nota'}, ['Abra a ficha de um inimigo (ou ponha um na iniciativa) e os sons e as músicas dele aparecem aqui.']));
-    if (!nc.atual) corpo.push(secao('Sons gerais', h('div', {}, [efeitosUI(GERAL.ef), h('div', {class:'dm-sub'}, ['Fundo']), h('div', {class:'dm-cams'}, GERAL.ca.map(camadaUI))]), true));
+    if (!nc.atual) corpo.push(secao('Sons gerais', h('div', {}, [efeitosUI(vis(GERAL.ef)), h('div', {class:'dm-sub'}, ['Fundo']), h('div', {class:'dm-cams'}, vis(GERAL.ca).map(camadaUI))]), true));
     var rol = dir.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
     var abertos = {}; Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ abertos[d.firstChild.textContent] = d.open; });
     dir.textContent = ''; dir.append(topo, vol, h('div', {class:'dm-corpo'}, corpo.filter(Boolean)));
