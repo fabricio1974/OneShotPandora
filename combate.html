@@ -1262,7 +1262,24 @@ const rosto = (g, cls='rosto') => g && g.img ? el('img',{class:cls, src:g.img, a
 
 // ---------- Players do YouTube: dois, para cruzar uma música na outra ----------
 // O volume é controlado só por esta página (vol[i]); o player é sempre "desmutado" quando começa a tocar.
-let P = [null,null], pronto = [false,false], ativo = 0, emP = [null,null], fades = [null,null], vol = [0,0], espera = [null,null];
+/* P[i] é um intermediário: toca no player local desta aba ou, no modo online, no player da aba de transmissão (tela.html?online), que é a que o Meet compartilha. */
+const LP = [null,null,null], LPr = [false,false,false];
+const REM = {bc:null, ts:0, yt:[false,false,false], som:false, st:[-1,-1,-1], tm:[0,0,0], du:[0,0,0], volc:[100,100,100], vivo:false, em:false};
+const remVivo = () => !!REM.ts && Date.now() - REM.ts < 6000 && REM.yt.some(Boolean);
+const usaRem = () => E.online === true && REM.vivo;
+const REMG = {getPlayerState:'st', getCurrentTime:'tm', getDuration:'du', getVolume:'volc'};
+const mkP = i => new Proxy({}, {get:(_, m) => (...a) => {
+  if (usaRem()) {
+    if (REMG[m]) return REM[REMG[m]][i];
+    if (m === 'isMuted') return false;
+    if (m === 'setVolume') REM.volc[i] = a[0];
+    try { REM.bc.postMessage({t:'yt', i, m, a}); } catch(e){}
+    return;
+  }
+  const p = LP[i]; if (!p || !LPr[i]) throw new Error('sem player');
+  return p[m](...a);
+}});
+let P = [mkP(0), mkP(1), mkP(2)], pronto = [false,false,false], ativo = 0, emP = [null,null], fades = [null,null], vol = [0,0], espera = [null,null];
 let tocando = null, fila = [], tri = null, triFim = '';
 let ord = [], plAuto = false, plNome = '';      // ord: ordem em que a lista toca (embaralhada se o aleatório estiver ligado); plAuto: segue sozinha para a próxima
 const falhou = {}, estados = {};
@@ -1343,9 +1360,9 @@ function aoErro(i, ev){
     P[i].loadVideoById({videoId:videoDe(f), startSeconds:espera[i] && espera[i].meio ? 0 : (+f.inicio||0)}); desenhar();
   } else { estados[f.id] = 'Nenhuma gravação tocou aqui. Cole outro link do YouTube.'; if (tri) triIr(1); else if (++errSeq <= 6 && continuaDepois(f, true)) { desenhar(); } else parar(); }
 }
-window.onYouTubeIframeAPIReady = () => { [0,1,2].forEach(i => { P[i] = new YT.Player('p'+i, { width:'100%', height:'100%',
+window.onYouTubeIframeAPIReady = () => { [0,1,2].forEach(i => { LP[i] = new YT.Player('p'+i, { width:'100%', height:'100%',
   playerVars:{playsinline:1, rel:0, controls:1, origin:location.origin},
-  events:{ onReady:()=>{ pronto[i]=true; }, onStateChange:ev=>i===2 ? aoMudarAmb(ev) : aoMudar(i,ev), onError:ev=>i===2 ? aoErroAmb(ev) : aoErro(i,ev) } }); }); };
+  events:{ onReady:()=>{ LPr[i]=true; syncPronto(); }, onStateChange:ev=>i===2 ? aoMudarAmb(ev) : aoMudar(i,ev), onError:ev=>i===2 ? aoErroAmb(ev) : aoErro(i,ev) } }); }); };
 (function(){ const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
   s.onerror = () => aviso('Não consegui carregar o player do YouTube. Confira a internet.'); document.head.append(s); })();
 
@@ -2929,6 +2946,42 @@ function atualizarTela(){
     nm.style.opacity = 0;                      // sem legenda: o nome do personagem pode entregar a surpresa
   } catch(e){}
 }
+
+// ---------- Modo online: o som vai para a aba de transmissão (tela.html?online), compartilhada no Meet ----------
+function syncPronto(){ for (let i = 0; i < 3; i++) pronto[i] = usaRem() ? !!REM.yt[i] : !!LPr[i]; }
+function remPausaLado(remoto){ for (let i = 0; i < 3; i++) { try { if (remoto) REM.bc.postMessage({t:'yt', i, m:'pauseVideo', a:[]}); else if (LPr[i]) LP[i].pauseVideo(); } catch(e){} } }
+function remAtualiza(){
+  const v = remVivo(), antes = usaRem(); REM.vivo = v; const agora = usaRem();
+  if (antes !== agora) {      // trocou de lado: para o som do lado antigo e pede para tocar de novo
+    remPausaLado(antes); try { AU.tudo(); } catch(e){} try { ambAtivo = null; } catch(e){}
+    emP[0] = emP[1] = null; espera[0] = espera[1] = null; if (tocando) { tocando = null; tri = null; marcar(); }
+    syncPronto(); aviso(agora ? 'Transmissão conectada: a música e os sons agora tocam na aba de transmissão. Toque a música de novo.' : 'Transmissão desconectada: o som voltou para esta aba. Toque a música de novo.');
+  } else syncPronto();
+  remStatus();
+}
+function remStatus(){
+  const ok = E.online === true && REM.vivo, txt = E.online !== true ? 'Modo online desligado.' : ok ? (REM.som ? 'Transmissão conectada e com o som liberado.' : 'Transmissão conectada. Falta clicar em “Liberar o som” na aba dela.') : 'Aguardando a aba de transmissão…';
+  document.querySelectorAll('.rem-st').forEach(b => { b.dataset.s = ok && REM.som ? 'ok' : ok ? 'espera' : 'ruim'; b.textContent = txt; });
+}
+let pubUlt = '';
+function pubEnviar(forca){
+  if (!REM.bc || E.online !== true) return;
+  const m = E.m || {}, ini = (m.ini || []).map((c, i) => ({n:c.n, i:ehInim(c) ? 1 : 0, a:i === m.turno ? 1 : 0})), np = E.pubMusica && tocando ? tocando.nome : '';
+  const msg = {t:'pub', volta:m.volta, rod:m.rodada, ini, np}, s = JSON.stringify(msg); if (s === pubUlt && !forca) return; pubUlt = s;
+  try { REM.bc.postMessage(msg); } catch(e){}
+}
+(function(){
+  try { REM.bc = new BroadcastChannel('otl-som'); } catch(e){ return; }
+  REM.bc.onmessage = ev => { const m = ev.data; if (!m) return;
+    if (m.t === 'pronto') { const novo = !REM.vivo; REM.ts = Date.now(); REM.yt = m.yt || REM.yt; REM.som = !!m.som; if (novo || true) remAtualiza(); if (E.online === true && novo) { pubEnviar(true); } return; }
+    if (m.t === 'tel') { REM.ts = Date.now(); REM.st = m.st; REM.tm = m.tm; REM.du = m.du; return; }
+    if (!usaRem()) return;
+    if (m.t === 'ev') { if (m.i === 2) aoMudarAmb({data:m.data}); else aoMudar(m.i, {data:m.data}); }
+    else if (m.t === 'err') { if (m.i === 2) aoErroAmb({data:m.data}); else aoErro(m.i, {data:m.data}); } };
+  setInterval(() => { remAtualiza(); pubEnviar(false); }, 1000);
+  try { REM.bc.postMessage({t:'oi'}); } catch(e){}
+  window.OTLREM = {on: usaRem, au: (m, a) => { try { REM.bc.postMessage({t:'au', m, a}); } catch(e){} }};
+})();
 // ---------- Tablet (tela.html em outro aparelho) e aba Imagens ----------
 const URL_TELA = 'https://fabricio1974.github.io/OneShotPandora/tela.html';
 const TAB = {codigo:'', ponte:null, estado:'', vivo:0, enviado:null};
@@ -2997,7 +3050,16 @@ function desenharAjCombate(){
 }
 function desenharAjTablet(){
   const r = document.getElementById('ajTablet'); if (!r) return;
-  r.replaceChildren(el('h2',{}, 'Tablet (tela dos jogadores)'), el('p',{class:'sub'}, 'Mostra no tablet as imagens escolhidas na aba Imagens. O tablet precisa de internet.'), painelTablet()); statusTablet(); }
+  r.replaceChildren(el('h2',{}, 'Tablet (tela dos jogadores)'), el('p',{class:'sub'}, 'Mostra no tablet as imagens escolhidas na aba Imagens. O tablet precisa de internet.'), painelTablet(), painelOnline()); statusTablet(); remStatus(); }
+function painelOnline(){
+  return el('div',{class:'im-tab'},
+    el('b',{}, 'Mesa online (Meet + Roll20)'),
+    el('p',{class:'sub'}, 'Abra a aba de transmissão e compartilhe só ela no Meet, com “Compartilhar áudio da guia”. Ela mostra a imagem, a ordem da iniciativa (só nomes) e toca a música e os sons. Esta aba continua só sua. Use fones.'),
+    el('label',{class:'lin2'}, el('input',{type:'checkbox', checked:E.online === true, onchange:ev => { E.online = ev.target.checked; salvar(); remAtualiza(); pubEnviar(true); }}), ' Tocar a música e os sons na aba de transmissão'),
+    el('label',{class:'lin2'}, el('input',{type:'checkbox', checked:E.pubMusica === true, onchange:ev => { E.pubMusica = ev.target.checked; salvar(); pubEnviar(true); }}), ' Mostrar o nome da música tocando na transmissão'),
+    el('div',{class:'im-bts'}, el('button',{class:'peq', type:'button', onclick:() => { ligaTablet(); const w = window.open('tela.html?online#' + (TAB.codigo || codigoTablet()), 'otl-transmissao'); if (!w) aviso('O navegador bloqueou a nova aba. Permita pop-ups deste site.'); }}, 'Abrir aba de transmissão')),
+    el('div',{class:'im-st rem-st', role:'status'}));
+}
 const ARV_NOMES = {};
 function abrirArvore(){
   let o = document.getElementById('arvOv');
@@ -3302,6 +3364,7 @@ if (!uiRest || typeof uiRest !== 'object') aba('mes'); else desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
 <script src="ponte.js?v=1"></script>
-<script src="mesa.js?v=21"></script>
+<script src="au.js?v=1"></script>
+<script src="mesa.js?v=23"></script>
 </body>
 </html>

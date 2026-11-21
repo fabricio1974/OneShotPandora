@@ -133,3 +133,10 @@ Jogadores fixos: Pedro, Victor, Wesley, Xande e Higor (sem PV: só o número que
 
 ## Ambiente (aba Mestre e Combate)
 Painel **Ambiente · chuva, vento, raios, animais**: cenários prontos (Tempestade, Noite na floresta, Taverna, Caverna…), fundos em loop com volume próprio e efeitos que tocam sozinhos de tempos em tempos (rara, média, frequente). Os sons ficam em `tools/prompts_audio.json` (dono `clima`) e se geram em **Ajustes › Sons › Ambiente e clima** (precisa da chave da ElevenLabs). Itens tracejados ainda não foram gerados.
+
+## Mesa online (Meet + Roll20)
+1. Em **Ajustes › Tablet**, clique em **Abrir aba de transmissão** (abre `tela.html?online#código`) e marque **Tocar a música e os sons na aba de transmissão**.
+2. Na aba de transmissão, clique **Liberar o som** (o navegador exige um clique).
+3. No Meet (Chrome): **Apresentar agora › Uma guia › a aba de transmissão**, com **Compartilhar áudio da guia** marcado. Use fones.
+4. A aba do Mestre (combate.html) segue privada e controla tudo: música, sons de ambiente e efeitos, imagens e a iniciativa (só nomes, sem PV).
+Se a aba de transmissão fechar, o som volta sozinho para a aba do Mestre. As duas abas precisam estar no mesmo navegador.

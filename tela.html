@@ -34,6 +34,22 @@ button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px
 #pt{position:fixed;right:12px;bottom:12px;width:10px;height:10px;border-radius:50%;background:#7a2a1c;opacity:.55;transition:opacity 2s .5s,background .3s}
 #pt.on{background:#3d8a4a}
 #pt.quieto{opacity:0}
+
+/* ---- modo online: esta aba é compartilhada no Meet (imagem, iniciativa e o som da mesa) ---- */
+body.online #rodar,body.online #pt{display:none}
+#ov-som{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;background:rgba(0,0,0,.92)}
+#ov-som[hidden]{display:none}
+#ov-som h1{font:600 24px/1.2 Georgia,serif;margin:0;color:var(--ouro)}
+#ov-som p{margin:0;color:var(--apagado);max-width:36em}
+#pub{position:fixed;right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));z-index:5;display:none;flex-direction:column;gap:8px;min-width:190px;max-width:min(30vw,320px);padding:12px 14px;border-radius:14px;background:rgba(10,8,6,.62);border:1px solid rgba(224,178,74,.25);backdrop-filter:blur(3px)}
+#pub.vis{display:flex}
+#pubTopo{font:700 clamp(15px,2.2vmin,22px)/1.2 Georgia,serif;color:var(--ouro)}
+#pubIni{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+#pubIni li{padding:5px 10px;border-radius:8px;font:600 clamp(14px,2vmin,20px)/1.2 system-ui,sans-serif;color:#e8dcc6;background:rgba(255,255,255,.06);border-left:4px solid #6f6150}
+#pubIni li.inim{border-left-color:#b9442f}
+#pubIni li.ativo{background:rgba(224,178,74,.22);color:#fff;border-left-color:var(--ouro);transform:translateX(-6px)}
+#pubNp{position:fixed;left:max(14px,env(safe-area-inset-left));bottom:max(14px,env(safe-area-inset-bottom));z-index:5;display:none;padding:7px 14px;border-radius:999px;background:rgba(10,8,6,.55);color:#e8dcc6;font:600 clamp(13px,1.8vmin,18px)/1.2 system-ui,sans-serif}
+#pubNp.vis{display:block}
 </style>
 </head>
 <body>
@@ -48,7 +64,16 @@ button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px
   <input id="cod" maxlength="6" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Código">
   <button id="ok">Conectar e abrir em tela cheia</button>
 </div>
+<div id="ov-som" hidden>
+  <h1>Transmissão da mesa</h1>
+  <p id="ov-msg">Clique uma vez para liberar o som desta aba. Depois, no Meet: Apresentar agora › Uma guia › esta aba, com “Compartilhar áudio da guia” marcado.</p>
+  <button id="ligaSom" type="button">Liberar o som</button>
+</div>
+<div id="pub" aria-live="polite"><div id="pubTopo"></div><ol id="pubIni"></ol></div>
+<div id="pubNp"></div>
+<div id="ytHost" style="position:fixed;left:-9999px;top:0;width:200px;height:200px" aria-hidden="true"><div id="y0"></div><div id="y1"></div><div id="y2"></div></div>
 <script src="ponte.js?v=1"></script>
+<script src="au.js?v=1"></script>
 <script>
 (function(){
   'use strict';
@@ -141,6 +166,73 @@ button{font:inherit;background:#c8672f;color:#1a0d04;border:0;border-radius:10px
   document.getElementById('ok').onclick = entra;
   cod.addEventListener('keydown', function(e){ if (e.key === 'Enter') entra(); });
   var c0 = lerCodigo(); if (c0) { cod.value = c0; msg.textContent = 'Toque para abrir em tela cheia. O aparelho não vai apagar a tela.'; }
+  if (/[?&]online\b/.test(location.search)) { if (c0) { conecta(c0); } cx.hidden = true; }
+})();
+</script>
+<script>
+/* Modo online (tela.html?online#código): esta aba toca a música e os sons da mesa e mostra imagem + iniciativa.
+   A aba do Mestre (combate.html) manda as ordens pelo BroadcastChannel 'otl-som' (só neste navegador, sem internet). */
+(function(){
+  'use strict';
+  if (!/[?&]online\b/.test(location.search)) return;
+  document.body.classList.add('online');
+  var bc = null; try { bc = new BroadcastChannel('otl-som'); } catch(e){ return; }
+  var P = [null, null, null], pronto = [false, false, false], liberado = false;
+  function env(m){ try { bc.postMessage(m); } catch(e){} }
+  var ov = document.getElementById('ov-som'); ov.hidden = false;
+  var S = {vol:70}, AU = OTL_AU(S), GEN = {}, LOOPS = {};
+  var SIN = {katana:'flecha', passos:'tambor', dragao:'rosnado', asas:'chifre', fogoSopro:'trovao'};
+  var volG = function(){ return Math.min(1, S.vol / 100 * 1.15); };
+  var SOM = {
+    efeito: function(id){ var u = GEN['fx|' + id]; if (!u) return AU.efeito(SIN[id] || id); var a = new Audio(u); a.volume = volG(); a.play().catch(function(){ AU.efeito(SIN[id] || id); }); },
+    liga: function(id, nv){ var u = GEN['cam|' + id]; if (!u) return AU.liga(id, nv); if (LOOPS[id]) return; var a = new Audio(u); a.loop = true; a.volume = Math.min(1, nv * volG() * 1.6); LOOPS[id] = a; a.play().catch(function(){}); },
+    nivel: function(id, nv){ if (LOOPS[id]) LOOPS[id].volume = Math.min(1, nv * volG() * 1.6); else AU.nivel(id, nv); },
+    desliga: function(id){ var a = LOOPS[id]; if (a) { delete LOOPS[id]; a.pause(); } else AU.desliga(id); },
+    tudo: function(){ Object.keys(LOOPS).forEach(function(k){ LOOPS[k].pause(); delete LOOPS[k]; }); AU.tudo(); },
+    mestre: function(p){ AU.mestre(+p); Object.keys(LOOPS).forEach(function(k){}); }
+  };
+  /* sons gerados: os que estão no repositório (audio/manifest.json) e os que o Mestre gerou neste navegador (IndexedDB) */
+  function carregaGerados(){
+    try { fetch('audio/manifest.json', {cache:'no-cache'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(m){ if (!m) return;
+      ['fx', 'cam'].forEach(function(t){ Object.keys(m[t] || {}).forEach(function(id){ if (!GEN[t + '|' + id]) GEN[t + '|' + id] = 'audio/' + m[t][id]; }); }); }).catch(function(){}); } catch(e){}
+    try { var r = indexedDB.open('otl_falas', 1); r.onsuccess = function(){ try { var q = r.result.transaction('a').objectStore('a').openCursor(); q.onsuccess = function(){ var c = q.result; if (!c) return;
+      var k = String(c.key); if (/^(fx|cam)\|/.test(k) && !GEN[k]) GEN[k] = URL.createObjectURL(c.value); c.continue(); }; } catch(e){} }; } catch(e){}
+  }
+  carregaGerados(); setInterval(carregaGerados, 20000);
+  /* YouTube */
+  window.onYouTubeIframeAPIReady = function(){ [0, 1, 2].forEach(function(i){ P[i] = new YT.Player('y' + i, {width:'100%', height:'100%', playerVars:{playsinline:1, rel:0, controls:0, origin:location.origin},
+    events:{onReady:function(){ pronto[i] = true; anuncia(); }, onStateChange:function(ev){ env({t:'ev', i:i, data:ev.data}); }, onError:function(ev){ env({t:'err', i:i, data:ev.data}); }}}); }); };
+  var sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; sc.onerror = function(){ document.getElementById('ov-msg').textContent = 'Não consegui carregar o player do YouTube. Confira a internet.'; }; document.head.append(sc);
+  function anuncia(){ env({t:'pronto', yt:pronto.slice(), som:liberado}); }
+  setInterval(anuncia, 2000);
+  setInterval(function(){
+    if (!pronto[0] && !pronto[1] && !pronto[2]) return;
+    var st = [], tm = [], du = [];
+    for (var i = 0; i < 3; i++) { var p = P[i], a = -1, b = 0, d = 0; try { if (p && pronto[i]) { a = p.getPlayerState(); b = p.getCurrentTime(); d = p.getDuration(); } } catch(e){} st.push(a); tm.push(b); du.push(d); }
+    env({t:'tel', st:st, tm:tm, du:du});
+  }, 400);
+  /* liberar o som (um clique) */
+  document.getElementById('ligaSom').onclick = function(){
+    liberado = true; ov.hidden = true; try { AU.efeito('__libera'); } catch(e){}
+    try { var a = new Audio(); a.muted = true; a.play().catch(function(){}); } catch(e){}
+    anuncia();
+  };
+  /* iniciativa e "tocando agora" */
+  var pub = document.getElementById('pub'), pubTopo = document.getElementById('pubTopo'), pubIni = document.getElementById('pubIni'), np = document.getElementById('pubNp');
+  function mostraPub(m){
+    var ini = Array.isArray(m.ini) ? m.ini : [];
+    pub.classList.toggle('vis', ini.length > 0); pubTopo.textContent = ini.length ? 'Volta ' + m.volta + ' · Rodada ' + m.rod : '';
+    pubIni.replaceChildren.apply(pubIni, ini.map(function(x){ var li = document.createElement('li'); li.textContent = x.n; if (x.i) li.classList.add('inim'); if (x.a) li.classList.add('ativo'); return li; }));
+    np.textContent = m.np || ''; np.classList.toggle('vis', !!m.np);
+  }
+  bc.onmessage = function(ev){
+    var m = ev.data; if (!m) return;
+    if (m.t === 'oi') { anuncia(); }
+    else if (m.t === 'yt') { var p = P[m.i]; if (p && pronto[m.i] && typeof p[m.m] === 'function') { try { p[m.m].apply(p, m.a || []); } catch(e){} } }
+    else if (m.t === 'au') { if (SOM[m.m]) { try { SOM[m.m].apply(null, m.a || []); } catch(e){} } }
+    else if (m.t === 'pub') mostraPub(m);
+  };
+  anuncia();
 })();
 </script>
 </body>
