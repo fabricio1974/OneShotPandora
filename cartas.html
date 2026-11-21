@@ -297,11 +297,18 @@ const Nuvem = (() => {
       const r = await fetch(URL_SB + '/rest/v1/mesas?select=estado&id=eq.' + encodeURIComponent(MESA), {headers:H, cache:'no-store'});
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const j = await r.json(), e = (j[0] && j[0].estado) || {};
-      const vazio = !Object.keys(e.v || {}).length && !Object.keys(e.cav || {}).length && !Object.keys(e.o || {}).length;
       if (!pronto) {
         pronto = true;
-        if (vazio && (Object.keys(S.v || {}).length || Object.keys(S.cav || {}).length)) { base = {}; mudou(); }   // a nuvem está vazia: este aparelho leva o que já tinha
-        else aplicaRemoto(e);
+        const FLAG = 'cartas-nuvem-mesclou-' + MESA; let mesclou = false; try { mesclou = !!localStorage.getItem(FLAG); } catch (x) {}
+        if (!mesclou) {   // primeira vez deste aparelho: junta o que ele já tinha (de antes da nuvem) com a mesa online; em conflito, vale a nuvem
+          try { localStorage.setItem(FLAG, '1'); } catch (x) {}
+          const r = {v:Object.assign({}, S.v, e.v), o:Object.assign({}, S.o, e.o), cav:Object.assign({}, S.cav, e.cav), papel:Object.assign({}, S.papel, e.papel)};
+          Object.keys(r.v).forEach(c => { if (!r.v[c]) delete r.v[c]; });
+          base = {v:e.v || {}, o:e.o || {}, cav:e.cav || {}, papel:e.papel || {}, fx:e.fx || null};
+          S.v = r.v; S.o = r.o; S.cav = r.cav; S.papel = r.papel;
+          if (e.fx && Array.isArray(e.fx.l)) { S.fx = S.fx && typeof S.fx === 'object' ? S.fx : {sel:0}; S.fx.l = e.fx.l; }
+          guardaLocal(); redesenha(); mudou();
+        } else aplicaRemoto(e);
       } else aplicaRemoto(e);
       if (!vivo) st('nuvem (atualiza a cada 4 s)', 'esp');
     } catch (e) { st('sem conexão: usando só este aparelho', 'off'); }
