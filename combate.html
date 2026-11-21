@@ -2453,16 +2453,23 @@ function iniciarLuta(escolhidos){
   musicaDaLuta(escolhidos.map(x => x.i.id));
   irParaVez();
 }
+function pvAplicarEmLuta(){
+  desf('PV dos inimigos em luta ajustados', () => { (E.m.ini || []).forEach(l => { const i = inmDeLinha(l); if (!i) return; const novo = pvSug(i), prop = l.max ? Math.min(1, l.pv / l.max) : 1; l.max = novo; l.pv = l.pv > 0 ? Math.max(1, Math.round(novo * prop)) : 0; }); }, ['ini','inm']);
+}
 function fatorUI(){   // PV dos inimigos: automático pela tabela (volta × nº de jogadores) ou manual
   const s = E.m.inm, v = E.m.volta;
   const reset = () => { s.pvLuta = {}; Object.keys(rasc).forEach(k => delete rasc[k]); };
   const bt = (t, ativo, fn) => el('button',{class:'peq', 'aria-pressed':ativo ? 'true' : 'false', onclick:mudar(() => { fn(); reset(); })}, t);
-  const campo = el('input',{type:'number', class:'q', min:'10', max:'200', step:'5', inputmode:'numeric', value:fatorPV(), disabled:s.auto, 'aria-label':'Fator de PV manual, em porcento da ficha',
-    onchange:ev => { const x = Math.round(+ev.target.value); mudar(() => { s.fatorPV = x >= 10 && x <= 200 ? x : 65; reset(); })(); }});
+  const campo = el('input',{type:'number', class:'q', min:'10', max:'200', step:'5', inputmode:'numeric', value:fatorPV(), 'aria-label':'Fator de PV manual, em porcento da ficha',
+    onchange:ev => { const x = Math.round(+ev.target.value); mudar(() => { s.fatorPV = x >= 10 && x <= 200 ? x : 65; s.auto = false; reset(); })(); }});
+  const pre = x => bt(x + '%', !s.auto && fatorPV() === x, () => { s.fatorPV = x; s.auto = false; });
+  const emLuta = (E.m.ini || []).some(l => inmDeLinha(l));
   const teto = 'Teto de ' + tetoRod(v) + ' rodada' + (tetoRod(v) > 1 ? 's' : '') + ' nesta volta.';
   return el('div',{class:'inm-nh fpv', role:'group', 'aria-label':'PV dos inimigos'}, el('b',{}, 'PV dos inimigos'),
     el('div',{class:'inm-lin'}, bt('3 jogadores', s.nJog === 3, () => { s.nJog = 3; }), bt('4 jogadores', s.nJog === 4, () => { s.nJog = 4; }),
-      bt('Automático', s.auto, () => { s.auto = true; }), bt('Manual', !s.auto, () => { s.auto = false; }), el('label',{}, 'Manual ', campo, ' % da ficha')),
+      bt('Automático', s.auto, () => { s.auto = true; })),
+    el('div',{class:'inm-lin'}, el('span',{class:'sub'}, 'Manual:'), ...[50,75,100,125,150].map(pre), el('label',{}, 'Outro ', campo, ' % da ficha')),
+    emLuta ? el('div',{class:'inm-lin'}, el('button',{class:'peq', onclick:pvAplicarEmLuta, title:'Troca o PV máximo de quem já está na iniciativa, mantendo a proporção de vida'}, 'Aplicar aos inimigos que já estão na luta')) : null,
     el('span',{class:'inm-av agora'}, s.auto ? 'Volta ' + v + ', ' + s.nJog + ' jogadores: ' + INIMIGOS.filter(i => i.id !== 'anjo').map(i => i.nome + ' ' + pvSug(i) + ' (' + fatorDe(i) + '%)').join(' · ') + '. ' + teto : 'Manual: PV sugeridos a ' + fatorPV() + '% da ficha. ' + teto));
 }
 function formLuta(){
@@ -2956,11 +2963,11 @@ function desenharAjCombate(){
   const s = E.m.inm, ativo = x => fatorDano() === x;
   const campo = el('input',{type:'number', class:'q', min:'10', max:'200', step:'5', inputmode:'numeric', value:fatorDano(), 'aria-label':'Dano dos inimigos, em porcento da ficha',
     onchange:ev => { const x = Math.round(+ev.target.value); s.fatorDano = x >= 10 && x <= 200 ? x : 100; salvar(); desenharAjCombate(); desenhar(['inm']); }});
-  const pre = x => el('button',{class:'peq', 'aria-pressed':String(ativo(x)), onclick:() => { s.fatorDano = x; salvar(); desenharAjCombate(); }}, x + '%');
+  const pre = x => el('button',{class:'peq', 'aria-pressed':String(ativo(x)), onclick:() => { s.fatorDano = x; salvar(); desenharAjCombate(); desenhar(['inm']); }}, x + '%');
   r.replaceChildren(el('h2',{}, 'Dificuldade dos inimigos'), el('p',{class:'sub'}, 'Vale para as lutas desta noite. A ficha original não muda.'),
     fatorUI(),
     el('div',{class:'inm-nh fpv', role:'group', 'aria-label':'Dano dos inimigos'}, el('b',{}, 'Dano dos inimigos'),
-      el('div',{class:'inm-lin'}, pre(100), pre(75), pre(50), el('label',{}, 'Outro ', campo, ' % do dano da ficha')),
+      el('div',{class:'inm-lin'}, ...[50,75,100,125,150,200].map(pre), el('label',{}, 'Outro ', campo, ' % do dano da ficha')),
       el('span',{class:'inm-av agora'}, fatorDano() === 100 ? 'Dano normal, como está na ficha.' : 'Os totais de dano rolados nos cartões saem a ' + fatorDano() + '% (arredondado). Os dados mostrados continuam os da ficha.')));
 }
 function desenharAjTablet(){
