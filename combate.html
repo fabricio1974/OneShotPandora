@@ -447,7 +447,7 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 /* ===== Desktop / notebook (prioridade): duas colunas, ações em grade ===== */
 .cc-cat{margin:14px 0 0;font:600 13px/1 var(--texto);color:var(--apagado);letter-spacing:.02em;padding-bottom:6px;border-bottom:1px solid var(--linha)}
 body[data-aba="mes"] #painelMestre > :is([data-p="ini"],[data-p="inm"]){display:none}
-body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"])){display:none}
+body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[data-p="amb"])){display:none}
 .ft-g{flex:none;align-self:stretch;display:flex;align-items:center;padding:0 8px 0 4px;margin-left:-2px;color:var(--apagado);font-size:18px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 #faixaTurno.movendo{cursor:grabbing;box-shadow:0 10px 26px -4px #000}#faixaTurno.movendo .ft-g{cursor:grabbing;color:var(--ouro)}
 .volta-lin{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:2px 0 10px}.volta-lin .seg{display:flex;gap:4px}.volta-lin .seg button{min-width:40px;min-height:40px;padding:0}.volta-lin .seg button[aria-pressed=true]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:700}.volta-rod{color:var(--apagado);font-size:14px}
@@ -857,7 +857,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"])){di
 @media (max-width:640px){#sons .dm-corpo.grande .dm-sec > div:not(.dm-efs):not(.dm-voz){grid-template-columns:1fr}}
 </style>
 <link rel="stylesheet" href="visual.css">
-<link rel="stylesheet" href="mesa.css?v=13">
+<link rel="stylesheet" href="mesa.css?v=15">
 </head>
 <body>
 <header>
@@ -1807,7 +1807,7 @@ function rolar(n, modo){
 let dadosH = [];
 
 // ---------- Aba Mestre: painéis de mesa ----------
-const abertas = new Set(['ini','aud']);
+const abertas = new Set(['ini','aud','amb']);
 const caixa = (id, t, ...k) => el('details',{class:'painel cxm', open:abertas.has(id), ontoggle:ev => { ev.target.open ? abertas.add(id) : abertas.delete(id); }}, el('summary',{}, t), ...k);
 const mudar = (fn, esc) => () => { fn(); salvar(); desenhar(typeof esc === 'function' ? esc() : esc); };
 const VIRTUDES = ['Libertação','Paz','Fartura','Vida'];
@@ -2732,6 +2732,10 @@ function painelDados(){
       el('button',{class:'peq', onclick:() => rolar(20,'v')}, 'd20 vant.'), el('button',{class:'peq', onclick:() => rolar(20,'d')}, 'd20 desv.')),
     el('div',{class:'dados'}, ...dadosH.map((t,i) => el('div',{class: i ? 'sub' : 'dnovo'}, t))));
 }
+function painelAmbiente(){
+  const d = el('div',{id:'mixClima'}); if (window.OTLCLIMA) OTLCLIMA.montar(d);
+  return caixa('amb','Ambiente · chuva, vento, raios, animais', el('p',{class:'sub', style:'margin:0 0 10px'},'Ligue fundos e deixe os efeitos tocarem sozinhos. Itens tracejados ainda não foram gerados: toque neles para ir a Ajustes › Sons.'), d);
+}
 function painelAudio(){
   const m = E.m, falhas = Object.entries(m.teste || {}).filter(([,v]) => v === 'falha').map(([id]) => (faixaPorId(id) || {}).nome || id), oks = Object.values(m.teste || {}).filter(v => v === 'ok').length;
   return caixa('aud','Clima e som',
@@ -2768,11 +2772,11 @@ const MP = {
   gat:{fn:painelGatilhos}, esp:{fn:painelEspecial}, noite:{fn:() => noiteParts('noite')}, ab:{fn:() => noiteParts('ab')}, notas:{fn:() => noiteParts('notas')},
   ini:{fn:painelIni, t:'Iniciativa e PV'}, inm:{fn:painelInimigos, t:'Inimigos e ações'}, apo:{fn:painelApoioEstado, t:'Tobias e Rafaela'}, fim:{fn:painelFim, t:'Fim da noite · vitória ou derrota'},
   anja:{fn:painelAnja, t:'Oferta da anja · virtudes invertidas'}, loops:{fn:painelLoops, t:'Registro das voltas'}, jog:{fn:painelJog, t:'Jogadores e votação'}, falas:{fn:painelFalas, t:'Falas e anotações dos personagens'},
-  rit:{fn:painelRitmo, t:'Ritmo da noite'}, dados:{fn:painelDados, t:'Dados'}, aud:{fn:painelAudio, t:'Clima e som'}, elenco:{fn:elencoApoio}};
-const ORD_P = ['palco','rot','gat','esp','noite','ab','notas','ini','inm','anja','jog','elenco','loops','falas','rit','dados','aud'];
+  rit:{fn:painelRitmo, t:'Ritmo da noite'}, dados:{fn:painelDados, t:'Dados'}, amb:{fn:painelAmbiente}, aud:{fn:painelAudio, t:'Clima e som'}, elenco:{fn:elencoApoio}};
+const ORD_P = ['palco','rot','gat','esp','noite','ab','notas','ini','inm','anja','jog','elenco','loops','falas','rit','dados','amb','aud'];
 const FULL = ['palco','rot','gat','esp','noite','ab','ini','inm','anja','aud'];   // o que um redesenho geral refaz (campos de texto próprios não são tocados)
 const DEP = {palco:['palco'], rot:['rot','palco','gat'], gat:['gat','palco','rot'], esp:['esp','palco'], noite:['noite','inm','ini'], ab:['ab','noite'], notas:[], ini:['ini','inm'], inm:['inm','ini'],
-  anja:['anja'], loops:[], jog:['jog','anja','ini'], falas:['falas'], rit:['rit'], dados:['dados'], aud:['aud'], elenco:[]};
+  anja:['anja'], loops:[], jog:['jog','anja','ini'], falas:['falas'], rit:['rit'], dados:['dados'], amb:[], aud:['aud'], elenco:[]};
 function posRot(novo, st){
   const l = novo.querySelector('#rotLista'); if (!l) return;
   if (rotRolar) { const a = l.querySelector('.pas.atual'); if (a) l.scrollTop = Math.max(0, a.getBoundingClientRect().top - l.getBoundingClientRect().top + l.scrollTop - (l.clientHeight - a.offsetHeight) / 2); rotRolar = false; }
@@ -3245,6 +3249,6 @@ if (!uiRest || typeof uiRest !== 'object') aba('mes'); else desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }
 </script>
 <script src="ponte.js?v=1"></script>
-<script src="mesa.js?v=18"></script>
+<script src="mesa.js?v=20"></script>
 </body>
 </html>

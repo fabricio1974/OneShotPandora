@@ -208,6 +208,7 @@
     coroSubida:'Coro de anjos', luz:'Luz sagrada', espada:'Espada flamejante', trombeta:'Trombeta', corrente:'Correntes', flecha:'Flecha', uivo:'Uivo de lobo', assobio:'Assobio do caçador', chifre:'Chifre de guerra', rosnado:'Rosnado', tambor:'Tambor', rufar:'Rufar de tambores', estaca:'Estaca', sussurro:'Sussurros', relogio:'Relógio e sino', orgao:'Órgão grave', katana:'Katana saindo da bainha', passos:'Passos na terra', dragao:'Rugido de dragão', asas:'Asas enormes', fogoSopro:'Sopro de fogo'};
   var CAN = {vento:'Vento', chuva:'Chuva', mar:'Ondas', fogo:'Fogueira', trovoes:'Trovões distantes', grave:'Zumbido grave', cosmos:'Cosmos e gravidade', coro:'Coro (pad)', sinos:'Sinos ao longe', coracao:'Coração batendo', sussurros:'Sussurros', tambores:'Tambores tribais', floresta:'Floresta à noite'};
   var CAT = {
+    clima:{nome:'Ambiente e clima', ef:['trovao','uivo'], ca:['chuva','vento','mar','fogo','floresta','trovoes'], fr:[]},
     ozy:{nome:'Ozymandias', ef:['magia','meteoro','gravidade','orbita','moedas','trovao'], ca:['cosmos','trovoes','vento'], fr:['Memento mori','Sic transit gloria mundi','Omnia mea mecum porto','Tempus rerum imperator']},
     elodie:{nome:'Elizabeth', ef:['pincelada','harpa','vitral','magia'], ca:['mar','vento','sinos'], fr:['Ars longa, vita brevis','Lux et color','Fiat lux']},
     hildegarda:{nome:'Hildegarda', ef:['coroSubida','sino','luz','orgao'], ca:['coro','sinos','grave'], fr:['Spiritus Sanctus vivificans vitam','O vis aeternitatis','O vos angeli','Ave generosa','Kyrie eleison']},
@@ -369,11 +370,11 @@
   /* sons novos e prompts vêm de tools/prompts_audio.json (um arquivo só, revisado): sobrescreve a lista de efeitos e fundos de cada personagem */
   try { fetch('tools/prompts_audio.json', {cache:'no-cache'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (!j || !j.sons) return;
     var lista = {};
-    j.sons.forEach(function(s){ PDEF[s.id] = [s.prompt, s.seg]; if (s.tipo === 'cam') CAN[s.id] = s.nome || s.id; else EFN[s.id] = s.nome || s.id;
+    j.sons.forEach(function(s){ PDEF[s.id] = [s.prompt, s.seg]; if (s.cat) CATG[s.id] = s.cat; if (s.tipo === 'cam') CAN[s.id] = s.nome || s.id; else EFN[s.id] = s.nome || s.id;
       if (s.dono === 'mapa' && !CAT.mapa) CAT.mapa = {nome:'Mapa e lugares', ef:[], ca:[], fr:[]}; var c = CAT[s.dono]; if (!c) return;
       (lista[s.dono] = lista[s.dono] || {ef:[], ca:[]})[s.tipo === 'cam' ? 'ca' : 'ef'].push(s.id); });
-    Object.keys(lista).forEach(function(k){ if (lista[k].ef.length) CAT[k].ef = lista[k].ef; if (lista[k].ca.length) CAT[k].ca = lista[k].ca; });
-    assin = ''; try { desenhar2(true); } catch (e) {} }).catch(function(){}); } catch (e) {}
+    Object.keys(lista).forEach(function(k){ if (k === 'clima') { CAT.clima.ef = CAT.clima.ef.concat(lista[k].ef.filter(function(i){ return CAT.clima.ef.indexOf(i) < 0; })); CAT.clima.ca = CAT.clima.ca.concat(lista[k].ca.filter(function(i){ return CAT.clima.ca.indexOf(i) < 0; })); return; } if (lista[k].ef.length) CAT[k].ef = lista[k].ef; if (lista[k].ca.length) CAT[k].ca = lista[k].ca; });
+    assin = ''; try { desenhar2(true); } catch (e) {} try { mixPinta(); } catch (e) {} }).catch(function(){}); } catch (e) {}
   var GEN = {}, LOOPS = {};     // 'fx|id' / 'cam|id' -> endereço do áudio gerado
   function ehCam(id){ return !!CAN[id]; }
   function chG(id){ return (ehCam(id) ? 'cam|' : 'fx|') + id; }
@@ -382,7 +383,7 @@
   var PRONTO = {falas:{}};
   try { fetch('audio/manifest.json', {cache:'no-cache'}).then(function(r){ return r.ok ? r.json() : null; }).then(function(m){ if (!m) return;
     ['fx','cam'].forEach(function(t){ Object.keys(m[t] || {}).forEach(function(id){ if (!GEN[t + '|' + id]) GEN[t + '|' + id] = 'audio/' + m[t][id]; }); });
-    PRONTO.falas = m.falas || {}; if (ENG.on) engRender(); }).catch(function(){}); } catch (e) {}
+    PRONTO.falas = m.falas || {}; if (ENG.on) engRender(); try { mixPinta(); } catch (e) {} }).catch(function(){}); } catch (e) {}
   var _ef = AU.efeito, _li = AU.liga, _ni = AU.nivel, _de = AU.desliga, _vi = AU.viva, _tu = AU.tudo, _ms = AU.mestre;
   var SIN = {katana:'flecha', passos:'tambor', dragao:'rosnado', asas:'chifre', fogoSopro:'trovao'};
   AU.efeito = function(id){ if (CFG.rm[id]) return; var u = GEN['fx|' + id]; if (!u) return _ef(SIN[id] || id); var a = new Audio(u); a.volume = volG(); a.play().catch(function(){ _ef(SIN[id] || id); }); };
@@ -392,7 +393,8 @@
   AU.viva = function(id){ return !!LOOPS[id] || _vi(id); };
   AU.tudo = function(){ Object.keys(LOOPS).forEach(function(k){ LOOPS[k].pause(); delete LOOPS[k]; }); try { if (tocandoFala) tocandoFala.pause(); } catch (e) {} _tu(); };
   function gerarSom(id){
-    var p = pDe(id), corpo = {text:p.t, prompt_influence:.5, model_id:'eleven_text_to_sound_v3'};
+    var p = pDe(id), corpo = {text:p.t, prompt_influence:ehCam(id) ? .6 : .5, model_id:'eleven_text_to_sound_v3'};
+    if (ehCam(id) && !/clearly audible/.test(corpo.text)) corpo.text += ', recorded close up and clearly audible at full volume';
     if (p.d) corpo.duration_seconds = Math.max(.5, Math.min(30, +p.d)); if (ehCam(id)) corpo.loop = true;
     return eleven('/v1/sound-generation', corpo).then(function(r){ if (!r.ok) return r.text().then(function(t){ throw new Error(r.status + ' ' + t.slice(0, 80)); }); return r.blob(); })
       .then(function(b){ var k = chG(id); if (GEN[k]) URL.revokeObjectURL(GEN[k]); GEN[k] = URL.createObjectURL(b); return bdGravar(k, b); });
@@ -486,7 +488,7 @@
       (alvo === 'akari' || alvo === 'ozy') ? secao('Diálogo Akari × Ozymandias', dialogoUI(), false) : null,
       secao('Efeitos', h('div', {}, vis(c.ef).map(linhaSom)), true), secao('Sons de fundo', h('div', {}, vis(c.ca).map(linhaSom)), true),
       (function(){ var rm = c.ef.concat(c.ca).filter(function(id){ return CFG.rm[id]; }); return rm.length ? secao('Removidos (' + rm.length + ')', h('div', {}, rm.map(function(id){ return h('div', {class:'en-lin en-rm'}, [h('div', {class:'en-n'}, [h('b', {}, [EFN[id] || CAN[id]]), h('span', {class:'sub'}, [' · fora da lista'])]), h('div', {class:'dm-efs'}, [h('button', {class:'peq', onclick:function(){ delete CFG.rm[id]; cfgGravar(); assin = ''; engRender(); }}, ['Restaurar'])])]); })), false) : null; })(),
-      secao('Falas', h('div', {}, frDe(alvo).map(function(x, i){ return linhaFala(alvo, i); }).concat([h('button', {class:'peq', onclick:function(){ var l = frDe(alvo).slice(); l.push(['', '']); CFG.fr[alvo] = l; cfgGravar(); engRender(); }}, ['+ nova fala'])])), true),
+      alvo === 'clima' ? null : secao('Falas', h('div', {}, frDe(alvo).map(function(x, i){ return linhaFala(alvo, i); }).concat([h('button', {class:'peq', onclick:function(){ var l = frDe(alvo).slice(); l.push(['', '']); CFG.fr[alvo] = l; cfgGravar(); engRender(); }}, ['+ nova fala'])])), true),
       VZ.msg ? h('p', {class:'sub dm-nota', role:'status'}, [VZ.msg]) : null];
     var rol = raiz.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
     var abertos = {}; Array.prototype.forEach.call(raiz.querySelectorAll('details.dm-sec'), function(d){ abertos[d.firstChild.textContent] = d.open; });
@@ -494,6 +496,72 @@
     Array.prototype.forEach.call(raiz.querySelectorAll('details.dm-sec'), function(d){ var k = d.firstChild.textContent; if (k in abertos) d.open = abertos[k]; });
     var n = raiz.querySelector('.dm-corpo'); if (n) n.scrollTop = st;
   }
+
+
+  /* ===================== MIXER DE AMBIENTE ===================== */
+  var CATG = {trovao:'Chuva e tempestade', chuva:'Chuva e tempestade', trovoes:'Chuva e tempestade', vento:'Vento', mar:'Água e lugares', fogo:'Animais e natureza', floresta:'Animais e natureza', uivo:'Animais e natureza'};
+  var GRUPOS_CL = ['Chuva e tempestade', 'Vento', 'Água e lugares', 'Animais e natureza', 'Cenário e ação', 'Tensão e perigo'];
+  var AUTO = {}, AUTO_T = {}, AUTO_N = [['desligado', 0, 0], ['rara · 1 a 2 min', 60, 120], ['média · 25 a 60 s', 25, 60], ['frequente · 10 a 25 s', 10, 25]];
+  function autoPara(id){ if (AUTO_T[id]) { clearTimeout(AUTO_T[id]); delete AUTO_T[id]; } }
+  function autoAgenda(id, primeira){ autoPara(id); var n = AUTO[id] | 0; if (!n) return; var a = AUTO_N[n], t = (a[1] + Math.random() * (a[2] - a[1])) * (primeira ? .3 : 1);
+    AUTO_T[id] = setTimeout(function(){ if (!AUTO[id]) return; if (!CFG.rm[id]) AU.efeito(id); autoAgenda(id); }, t * 1000); }
+  function autoDefine(id, n){ AUTO[id] = n; if (n) autoAgenda(id, true); else autoPara(id); }
+  function autoTodos(){ Object.keys(AUTO).forEach(function(id){ AUTO[id] = 0; autoPara(id); }); }
+  var _tu2 = AU.tudo; AU.tudo = function(){ autoTodos(); _tu2(); try { mixPinta(); } catch (e) {} };
+  var PRESETS_CL = [
+    ['Tempestade', {'cl-tempestade':60, 'cl-ventania':30}, {'cl-raio':2, 'cl-trovaoPerto':2}],
+    ['Chuva calma', {'cl-chuvaLeve':55, 'cl-ventoSuave':25}, {'cl-trovaoLonge':1}],
+    ['Noite na floresta', {'cl-grilos':50, 'cl-florestaSombria':35}, {'cl-coruja':1, 'uivo':1}],
+    ['Lobos na neve', {'cl-nevasca':50, 'cl-lobosDistantes':40}, {'cl-matilha':1}],
+    ['Montanha', {'cl-ventoMontanha':55}, {'cl-aguia':1, 'cl-pedras':1}],
+    ['Porto', {'cl-marPorto':55}, {'cl-gaivotas':2, 'cl-sinoLonge':1}],
+    ['Taverna', {'cl-taverna':60, 'fogo':20}, {}],
+    ['Acampamento', {'cl-acampamento':50, 'cl-grilos':25}, {'cl-coruja':1}],
+    ['Caverna', {'cl-caverna':60}, {'cl-morcegos':1, 'cl-pedras':1}],
+    ['Pântano', {'cl-pantano':60}, {'cl-cobra':1, 'cl-enxame':1}],
+    ['Batalha distante', {'cl-batalhaDistante':50, 'cl-ventoSuave':20}, {'cl-corvos':1}],
+    ['Cidade em chamas', {'cl-incendio':55, 'cl-multidao':30}, {'cl-sinoLonge':2}]
+  ];
+  var mixHost = h('div', {class:'mix'}), mixMsg = '';
+  function mixNome(id){ return EFN[id] || CAN[id] || id; }
+  function temSom(id){ return !!GEN[chG(id)] || (ehCam(id) ? !!AU.CA[id] : !!AU.EF[id]); }
+  function irGerar(){ ENG.alvo = 'clima'; if (window.aba) window.aba('son'); }
+  function mixCam(id){
+    var on = AU.viva(id), tem = temSom(id), li = h('div', {class:'mix-cam' + (on ? ' on' : '') + (tem ? '' : ' sem')});
+    li.append(h('button', {class:'peq', 'aria-pressed':String(on), title:tem ? '' : 'Ainda sem som: gere em Ajustes › Sons', onclick:function(){ if (!tem) { irGerar(); return; } if (AU.viva(id)) AU.desliga(id); else AU.liga(id, nivelCam(id) / 100); mixPinta(); }}, [(on ? '● ' : '') + mixNome(id) + (tem ? '' : ' · gerar')]));
+    if (on) li.append(h('input', {type:'range', min:'0', max:'100', value:String(nivelCam(id)), 'aria-label':'Volume de ' + mixNome(id), oninput:function(ev){ S.cam[id] = +ev.target.value; AU.nivel(id, S.cam[id] / 100); }, onchange:gravar}));
+    return li;
+  }
+  function mixEf(id){
+    var tem = temSom(id), n = AUTO[id] | 0, li = h('div', {class:'mix-ef' + (tem ? '' : ' sem') + (n ? ' auto' : '')});
+    li.append(h('button', {class:'peq', title:tem ? 'Toca uma vez' : 'Ainda sem som: gere em Ajustes › Sons', onclick:function(){ if (!tem) { irGerar(); return; } AU.efeito(id); }}, ['▶ ' + mixNome(id) + (tem ? '' : ' · gerar')]));
+    if (tem) li.append(h('select', {class:'mix-auto', 'aria-label':'Repetir sozinho: ' + mixNome(id), title:'Toca sozinho de tempos em tempos', onchange:function(ev){ autoDefine(id, +ev.target.value); mixPinta(); }},
+      AUTO_N.map(function(a, i){ var o = h('option', {value:String(i)}, [i ? '↻ ' + a[0] : '↻ sozinho: não']); if (i === n) o.selected = true; return o; })));
+    return li;
+  }
+  function mixPinta(){
+    var c = CAT.clima, ids = vis(c.ca.concat(c.ef)), grupos = {};
+    ids.forEach(function(id){ var g = CATG[id] || 'Cenário e ação'; (grupos[g] = grupos[g] || []).push(id); });
+    var ligados = Object.keys(AUTO).filter(function(i){ return AUTO[i]; }).length, tocando = c.ca.filter(function(i){ return AU.viva(i); }).length;
+    var topo = h('div', {class:'mix-top'}, [
+      h('div', {class:'mix-pre'}, PRESETS_CL.map(function(p){ return h('button', {class:'peq', title:'Liga um conjunto de fundos e efeitos', onclick:function(){ preset(p); }}, [p[0]]); })),
+      h('div', {class:'dm-efs'}, [h('button', {class:'peq perigo', onclick:function(){ AU.tudo(); mixMsg = ''; mixPinta(); }}, ['Parar tudo']), h('span', {class:'sub'}, [tocando + ' fundo(s) ligado(s)' + (ligados ? ' · ' + ligados + ' efeito(s) sozinho(s)' : '')])]),
+      mixMsg ? h('p', {class:'sub dm-nota', role:'status'}, [mixMsg]) : null]);
+    var corpo = [topo];
+    GRUPOS_CL.concat(Object.keys(grupos).filter(function(g){ return GRUPOS_CL.indexOf(g) < 0; })).forEach(function(g){
+      var l = grupos[g]; if (!l) return; var ca = l.filter(ehCam), ef = l.filter(function(i){ return !ehCam(i); });
+      corpo.push(h('div', {class:'mix-g'}, [h('h4', {}, [g]), ca.length ? h('div', {class:'mix-cams'}, ca.map(mixCam)) : null, ef.length ? h('div', {class:'mix-efs'}, ef.map(mixEf)) : null]));
+    });
+    mixHost.replaceChildren.apply(mixHost, corpo.filter(Boolean));
+  }
+  function preset(p){
+    AU.tudo(); var falta = [];
+    Object.keys(p[1]).forEach(function(id){ if (!CAN[id] || !temSom(id)) { falta.push(mixNome(id)); return; } S.cam[id] = p[1][id]; AU.liga(id, p[1][id] / 100); });
+    Object.keys(p[2]).forEach(function(id){ if (!temSom(id)) { falta.push(mixNome(id)); return; } autoDefine(id, p[2][id]); });
+    gravar(); mixMsg = falta.length ? p[0] + ': faltam sons (' + falta.join(', ') + '). Gere em Ajustes › Sons › Ambiente e clima.' : ''; mixPinta();
+  }
+  window.OTLCLIMA = {montar:function(host){ host.replaceChildren(mixHost); mixPinta(); }};
+  setTimeout(function(){ var d = document.getElementById('mixClima'); if (d) window.OTLCLIMA.montar(d); }, 0);   // o painel já pode ter sido desenhado antes deste script
 
   window.OTLSONS = {abrir:function(host){ ENG.host = host; ENG.on = true; if (!ENG.alvo) ENG.alvo = noCombate().atual || 'esau'; engRender(); },
     fechar:function(){ if (!ENG.host) return; ENG.host.textContent = ''; ENG.host = null; ENG.on = false; assin = ''; try { desenhar2(true); } catch (e) {} }};
@@ -527,7 +595,7 @@
   /* ===================== MENU LATERAL (tópicos do Mestre) ===================== */
   var nav = h('aside', {id:'navMestre', 'aria-label':'Tópicos do Mestre'});
   var abrirNav = h('button', {id:'nmAbrir', class:'lat-aba esq', 'aria-label':'Abrir os tópicos do Mestre', onclick:function(){ S.nav = 1; gravar(); aplicar(); }}, ['Tópicos']);
-  var NOMES = {palco:'Agora tocando', rot:'Roteiro da noite', gat:'Gatilhos', esp:'Cena especial', noite:'A noite (volta e pétalas)', ab:'Abates', notas:'Notas', ini:'Iniciativa e PV', inm:'Inimigos e ações', apo:'Tobias e Rafaela', fim:'Fim da noite', anja:'Oferta da anja', loops:'Registro das voltas', jog:'Jogadores e votação', falas:'Falas e anotações', rit:'Ritmo da noite', dados:'Dados', aud:'Clima e som', elenco:'Elenco de apoio'};
+  var NOMES = {palco:'Agora tocando', rot:'Roteiro da noite', gat:'Gatilhos', esp:'Cena especial', noite:'A noite (volta e pétalas)', ab:'Abates', notas:'Notas', ini:'Iniciativa e PV', inm:'Inimigos e ações', apo:'Tobias e Rafaela', fim:'Fim da noite', anja:'Oferta da anja', loops:'Registro das voltas', jog:'Jogadores e votação', falas:'Falas e anotações', rit:'Ritmo da noite', dados:'Dados', aud:'Clima e som', amb:'Ambiente e clima', elenco:'Elenco de apoio'};
   function titulo(el0, id){ var s = el0.querySelector(':scope > summary'); if (s && s.textContent.trim()) return s.textContent.trim(); var t = el0.querySelector('h3, h2'); return (NOMES[id] || (t && t.textContent.trim()) || id); }
   function irPara(el0){
     if (!el0) return; if (el0.tagName === 'DETAILS' && !el0.open) el0.open = true;

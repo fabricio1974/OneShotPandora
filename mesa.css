@@ -195,3 +195,19 @@ html[data-luta="foco"] .dk-main .inm-abas{display:none!important}
 #dirMesa .dm-sec[open]>summary::before{transform:rotate(90deg)}
 #dirMesa .dm-efs button,#dirMesa .dm-chips button,#dirMesa .dm-cam>button{min-height:var(--ctl-h);padding:0 12px;font-size:13px}
 #dirMesa .dm-onde b{color:var(--marfim)}
+
+/* ---- mixer de ambiente ---- */
+.mix{display:flex;flex-direction:column;gap:16px}
+.mix-pre{display:flex;flex-wrap:wrap;gap:8px}
+.mix-pre button{min-height:38px;padding:6px 14px}
+.mix-top{display:flex;flex-direction:column;gap:10px}
+.mix-g h4{margin:0 0 8px;font:600 14px/1.3 var(--texto);color:var(--marfim)}
+.mix-cams,.mix-efs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.mix-cam{display:flex;align-items:center;gap:8px}.mix-cam.on{flex:1 1 280px;max-width:420px}.mix-cam.on input{flex:1;min-width:80px}
+.mix-cam button[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:var(--sobre);font-weight:600}
+.mix-ef{display:flex;align-items:center;gap:0}.mix-ef .peq{min-height:36px}
+.mix-ef.auto .peq:first-child{border-color:var(--ouro)}
+.mix-auto{min-height:36px;margin-left:-1px;padding:0 8px;font:inherit;font-size:12.5px;color:var(--apagado);background:var(--fundo);border:1px solid var(--linha)}
+.mix-ef.auto .mix-auto{color:var(--ouro);border-color:var(--ouro)}
+.mix .sem button{border-style:dashed;opacity:.65}
+#painelMestre .mix .mix-auto{min-height:36px;height:36px;font:inherit;font-size:12.5px;padding:0 8px;width:auto}

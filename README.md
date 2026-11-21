@@ -130,3 +130,6 @@ Cabeçalho: **Imagens**, **Mestre** (visão geral da noite: roteiro, gatilhos, n
 
 ## Iniciativa em fichas
 Jogadores fixos: Pedro, Victor, Wesley, Xande e Higor (sem PV: só o número que tiraram). Na aba Combate, digite a iniciativa de cada um e Enter; depois "Iniciar luta" põe os inimigos no meio da ordem. As fichas são arrastáveis (mouse e toque) a qualquer hora; ▶ passa a vez para a ficha. A pílula "Vez de ... Próximo" fica na tela em todas as abas (e também no notebook) enquanto houver iniciativa.
+
+## Ambiente (aba Mestre e Combate)
+Painel **Ambiente · chuva, vento, raios, animais**: cenários prontos (Tempestade, Noite na floresta, Taverna, Caverna…), fundos em loop com volume próprio e efeitos que tocam sozinhos de tempos em tempos (rara, média, frequente). Os sons ficam em `tools/prompts_audio.json` (dono `clima`) e se geram em **Ajustes › Sons › Ambiente e clima** (precisa da chave da ElevenLabs). Itens tracejados ainda não foram gerados.
