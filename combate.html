@@ -695,6 +695,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[dat
 .im-st[data-s=ok]::before{background:#3d8a4a}.im-st[data-s=espera]::before{background:#c9a02f}
 .im-ctl{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}.im-ctl .sub{flex-basis:100%}
 .im-ctl button[aria-pressed=true],#imagens .im-card[aria-pressed=true]{border-color:var(--ouro,#e0b24a);box-shadow:0 0 0 2px color-mix(in srgb,var(--ouro,#e0b24a) 45%,transparent)}
+#arvOv{position:fixed;inset:0;z-index:9999;background:#000}#arvOv[hidden]{display:none}#arvOv iframe{width:100%;height:100%;border:0;display:block}
 .im-sec h3{margin:20px 0 8px;font-size:15px;color:var(--ouro,#e0b24a)}
 .im-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .im-card{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px;background:#17110d;border:1px solid var(--linha,#3a2e24);border-radius:10px;color:inherit;cursor:pointer;text-align:left;min-width:0}
@@ -2930,7 +2931,7 @@ function enviaTablet(src){
 // ---- escolha do inimigo: o tablet desliza entre as imagens, com as bolinhas no topo ----
 const CAR_PADRAO = ['img/esau.jpg','img/jael.jpg','img/ezequiel.jpg','img/hildegarda.jpg','img/elizabeth.jpg','img/ozymandias.jpg'];
 const carLista = () => Array.isArray(E.car) ? E.car : CAR_PADRAO.slice();
-const nomeImg = u => { const t = [...IMG_PERS, ...IMG_ESTRADA, ...IMG_VIN, ...imgExtras().map(x => [x.u, x.n || 'Minha imagem'])].find(x => x[0] === u); return t ? t[1].replace(/^\d+ · /, '') : u.split('/').pop(); };
+const nomeImg = u => { if (typeof ARV_NOMES !== 'undefined' && ARV_NOMES[u]) return ARV_NOMES[u]; const t = [...IMG_PERS, ...IMG_ESTRADA, ...IMG_EXTRAS, ...IMG_VIN, ...imgExtras().map(x => [x.u, x.n || 'Minha imagem'])].find(x => x[0] === u); return t ? t[1].replace(/^\d+ · /, '') : u.split('/').pop(); };
 function enviaCarrossel(i = 0){
   if (!TAB.ponte) { ligaTablet(); }
   const l = carLista(); if (!l.length) { aviso('Escolha antes as imagens do deslizar (botão “＋ deslizar” em cada imagem).'); return; }
@@ -2973,6 +2974,23 @@ function desenharAjCombate(){
 function desenharAjTablet(){
   const r = document.getElementById('ajTablet'); if (!r) return;
   r.replaceChildren(el('h2',{}, 'Tablet (tela dos jogadores)'), el('p',{class:'sub'}, 'Mostra no tablet as imagens escolhidas na aba Imagens. O tablet precisa de internet.'), painelTablet()); statusTablet(); }
+const ARV_NOMES = {};
+function abrirArvore(){
+  let o = document.getElementById('arvOv');
+  if (!o) {
+    o = el('div',{id:'arvOv', role:'dialog', 'aria-label':'Árvore genealógica dos Bellacord'}, el('iframe',{src:'arvore.html', title:'Árvore genealógica dos Bellacord'}));
+    document.body.appendChild(o);
+  }
+  o.hidden = false; document.documentElement.style.overflow = 'hidden';
+  const f = o.querySelector('iframe'); setTimeout(() => { try { f.focus(); } catch(e){} }, 50);
+}
+function fecharArvore(){ const o = document.getElementById('arvOv'); if (o) o.hidden = true; document.documentElement.style.overflow = ''; }
+addEventListener('message', e => {
+  if (e.origin !== location.origin && location.origin !== 'null') return;
+  const d = e.data || {};
+  if (d.tipo === 'arvoreImg' && typeof d.u === 'string' && /^img\/(arvore\/)?[\w.-]+\.jpg$/.test(d.u)) { ARV_NOMES[d.u] = String(d.n || ''); mostrarImagem(d.u); }
+  else if (d.tipo === 'arvoreFechar') fecharArvore();
+});
 function mostrarImagem(u){ imgManual = u; telaPreta = false; if (TAB.car) sairCarrossel(); atualizarTela(); marcaImagem(); }
 function marcaImagem(){ document.querySelectorAll('#imagens .im-card').forEach(c => c.setAttribute('aria-pressed', imgManual !== null && !telaPreta && c.dataset.u === imgManual ? 'true' : 'false'));
   const a = document.getElementById('imgSegue'); if (a) a.setAttribute('aria-pressed', imgManual === null && !telaPreta ? 'true' : 'false');
@@ -3020,6 +3038,9 @@ function desenharImagens(){
         el('button',{id:'imgSegue', class:'peq', type:'button', 'aria-pressed':'false', title:'A tela volta a mostrar a arte do personagem cuja música está tocando', onclick:() => { imgManual = null; telaPreta = false; if (TAB.car) sairCarrossel(); atualizarTela(); marcaImagem(); }}, 'Acompanhar a música'),
         el('p',{class:'sub'}, 'Vale para o tablet e para a janela “Tela dos jogadores”. Toque numa imagem para mostrá-la; “Tela preta” esconde tudo.'))),
     secCarrossel(),
+    el('section',{class:'im-sec'}, el('h3',{}, 'Árvore da família Bellacord'),
+      el('p',{class:'sub'}, 'Explore a árvore genealógica inteira (arraste, use o zoom, procure pelo nome). Toque numa pessoa e em “Mostrar no tablet”.'),
+      el('button',{class:'peq', type:'button', onclick:abrirArvore}, '🌳 Abrir a árvore genealógica')),
     sec('Personagens', IMG_PERS), sec('A Estrada para Maré-Alta', IMG_ESTRADA), sec('Imagens extras: outros cenários', IMG_EXTRAS), sec('Vinhetas das cartas', IMG_VIN),
     el('section',{class:'im-sec'}, el('h3',{}, 'Minhas imagens'),
       el('p',{class:'sub'}, 'Cole o link direto de uma imagem (por exemplo, um mapa já hospedado). O tablet precisa conseguir abrir esse link.'),

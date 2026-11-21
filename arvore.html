@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Árvore dos Bellacord</title>
+<style>
+:root{--fundo:#0a0a0b;--painel:#141113;--linha:#2f261d;--marfim:#f1e8dc;--apagado:#9b8f80;--ouro:#c9a24a;--terra:#dd8440}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--fundo);color:var(--marfim);font:14px/1.35 Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent}
+#vp{position:fixed;inset:0;overflow:hidden;touch-action:none;cursor:grab;background:radial-gradient(circle at 50% 40%,#17120e,#0a0a0b 70%)}
+#vp.arrasta{cursor:grabbing}
+#w{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+svg#ln{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.fr{position:absolute;border:2px solid var(--c);border-radius:18px;background:color-mix(in srgb,var(--c) 7%,transparent)}
+.fr h2{position:absolute;left:18px;top:-44px;margin:0;font:600 26px/1 'Inter Tight',Inter,sans-serif;color:var(--c);letter-spacing:.04em;white-space:nowrap}
+.gl{position:absolute;white-space:nowrap;font:600 13px/1 Inter,sans-serif;color:#6d6153;letter-spacing:.12em;text-transform:uppercase}
+.cd{position:absolute;width:180px;height:262px;border-radius:12px;background:#17130f;border:2px solid color-mix(in srgb,var(--c) 70%,#000);overflow:hidden;box-shadow:0 6px 18px #0008;transition:opacity .2s,box-shadow .2s,transform .2s}
+.cd .im{width:100%;height:190px;background:#0e0c0a center top/cover no-repeat;display:grid;place-items:center;font:300 64px/1 Georgia,serif;color:#3a3028}
+.cd b{display:block;padding:7px 9px 2px;font-size:14px;line-height:1.15;color:var(--marfim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd small{display:block;padding:0 9px;font-size:11.5px;line-height:1.2;color:var(--apagado);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cd.os{border-color:var(--ouro);box-shadow:0 0 0 3px #c9a24a55,0 0 28px #c9a24a66}
+.cd.os::after{content:'one-shot';position:absolute;top:7px;right:7px;background:var(--ouro);color:#1a1208;font:700 10px/1 Inter,sans-serif;padding:4px 6px;border-radius:5px;letter-spacing:.06em;text-transform:uppercase}
+.cd.sel{transform:scale(1.06);box-shadow:0 0 0 4px var(--marfim),0 10px 30px #000c;z-index:5}
+body.foco .cd:not(.sel):not(.viz){opacity:.28}
+body.foco .rel:not(.viz),body.foco .fam:not(.viz){opacity:.12}
+body.semrel .rel{display:none}
+.rel text{font:600 15px Inter,sans-serif;paint-order:stroke;stroke:#0a0a0b;stroke-width:5px}
+#bar{position:fixed;top:max(10px,env(safe-area-inset-top));left:10px;right:10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;z-index:10;pointer-events:none}
+#bar>*{pointer-events:auto}
+#bar button,#bar input{font:inherit;color:var(--marfim);background:#1a1612e6;border:1px solid var(--linha);border-radius:8px;padding:8px 11px;min-height:38px;backdrop-filter:blur(6px)}
+#bar button{cursor:pointer}
+#bar button[aria-pressed=true]{border-color:var(--ouro);color:#ffe7a8}
+#bar input{width:170px}
+#bar .tt{font:600 15px/1 'Inter Tight',Inter,sans-serif;color:var(--ouro);letter-spacing:.08em;margin-right:6px;text-shadow:0 1px 4px #000}
+#bar .sp{flex:1}
+#fechar{font-size:18px!important;padding:6px 13px!important}
+#pn{position:fixed;z-index:20;right:12px;top:62px;bottom:12px;width:min(360px,calc(100vw - 24px));background:#141113f2;border:1px solid var(--linha);border-radius:14px;box-shadow:0 10px 40px #000c;display:flex;flex-direction:column;overflow:hidden;transform:translateX(110%);transition:transform .25s ease;backdrop-filter:blur(8px)}
+#pn.on{transform:none}
+#pn .big{flex:1 1 auto;min-height:160px;background:#0a0908 center/contain no-repeat;position:relative}
+#pn .big.vazio{display:grid;place-items:center;color:#3a3028;font:300 90px/1 Georgia,serif}
+#pn .tx{padding:12px 14px;overflow:auto;max-height:46%}
+#pn h3{margin:0 0 3px;font:600 18px/1.2 'Inter Tight',Inter,sans-serif}
+#pn .inf{color:var(--apagado);margin:0 0 6px}
+#pn .rm{font-size:12px;color:var(--c,var(--ouro));text-transform:uppercase;letter-spacing:.1em;margin:0 0 6px}
+#pn .nt{margin:0 0 8px;font-style:italic}
+#pn .rl{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 10px}
+#pn .rl button{font:12px Inter,sans-serif;color:var(--marfim);background:#201a15;border:1px solid var(--linha);border-radius:99px;padding:4px 9px;cursor:pointer}
+#pn .ac{display:flex;gap:8px;flex-wrap:wrap}
+#pn .ac button,#pn .ac a{font:600 14px Inter,sans-serif;border-radius:9px;padding:10px 14px;border:1px solid var(--linha);background:#201a15;color:var(--marfim);cursor:pointer;text-decoration:none}
+#pn .ac .pri{background:var(--terra);border-color:var(--terra);color:#1a0f06}
+#pn .x{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:99px;border:0;background:#000a;color:#fff;font-size:18px;cursor:pointer}
+#ok{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;background:#2a1d10;border:1px solid var(--ouro);color:#ffe7a8;padding:9px 14px;border-radius:9px;transition:.25s;z-index:30;pointer-events:none}
+#ok.on{opacity:1;transform:translateX(-50%)}
+#leg{position:fixed;left:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:10;background:#141113d9;border:1px solid var(--linha);border-radius:10px;padding:7px 10px;font-size:12px;color:var(--apagado);display:flex;gap:10px;flex-wrap:wrap;max-width:calc(100vw - 20px)}
+#leg i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:4px}
+@media (max-width:640px){#bar{gap:4px}#bar input{width:96px}#bar button,#bar input{padding:7px 8px;font-size:13px}#bar .tt{display:none}#pn{top:auto;left:8px;right:8px;width:auto;height:58vh;bottom:8px;transform:translateY(110%)}#pn.on{transform:none}#pn .tx{max-height:none;flex:none}#pn .big{min-height:110px}#leg{display:none}}
+</style>
+</head>
+<body>
+<div id="vp"><div id="w"><svg id="ln"></svg></div></div>
+<div id="bar">
+  <span class="tt">ÁRVORE DOS BELLACORD</span>
+  <input id="busca" list="nomes" placeholder="Procurar pessoa…" aria-label="Procurar pessoa"><datalist id="nomes"></datalist>
+  <button id="zm" type="button" aria-label="Diminuir zoom">−</button>
+  <button id="zp" type="button" aria-label="Aumentar zoom">＋</button>
+  <button id="tudo" type="button">Ver tudo</button>
+  <button id="soOs" type="button" aria-pressed="false" title="Leva até os personagens do one-shot">One-shot</button>
+  <button id="rels" type="button" aria-pressed="true" title="Mostra ou esconde as relações que não são de sangue">Relações</button>
+  <span class="sp"></span>
+  <button id="fechar" type="button" aria-label="Fechar a árvore" hidden>✕</button>
+</div>
+<aside id="pn" aria-live="polite"></aside>
+<div id="leg"><span><i style="border-color:#bfae94"></i>pais e filhos</span><span><i style="border-color:#bfae94;border-top-style:double;border-top-width:5px"></i>casamento</span><span><i style="border-color:#c9a24a;border-top-style:dashed"></i>criou / treinou</span><span><i style="border-color:#7fb6d8;border-top-style:dashed"></i>aliado / comitiva</span><span><i style="border-color:#e0685a;border-top-style:dashed"></i>caça / rival</span></div>
+<div id="ok"></div>
+<script>
+const D = {"cards":[{"id":"abena","b":"amarelo","g":3,"img":"img/arvore/abena.jpg","th":"img/arvore/abena_t.jpg","i":"32 · Guerreira Campeã","n":"Abena Suali","o":"","x":4455,"y":1150},{"id":"abigail","b":"main","g":4,"img":"img/arvore/abigail.jpg","th":"img/arvore/abigail_t.jpg","i":"12 · Feiticeira dracônica","n":"Abigail","o":"","x":360,"y":1510},{"id":"adao","b":"main","g":1,"img":"img/arvore/adao.jpg","th":"img/arvore/adao_t.jpg","i":"Patriarca","n":"Adão Bellacord","o":"","x":1090,"y":430},{"id":"akari","b":"azul","g":3,"img":"img/arvore/akari.jpg","th":"img/arvore/akari_t.jpg","i":"22 · Guerreira Samurai","n":"Akari Bellacord Sasaya","o":"","x":2645,"y":1150},{"id":"altan","b":"amarelo","g":4,"img":"img/arvore/altan.jpg","th":"img/arvore/altan_t.jpg","i":"10 · criança","n":"Altan","o":"","x":4770,"y":1510},{"id":"bakari","b":"amarelo","g":3,"img":"img/arvore/bakari.jpg","th":"img/arvore/bakari_t.jpg","i":"22 · Cavaleiro Místico","n":"Bakari Suali","o":"","x":4875,"y":1150},{"id":"bekele","b":"amarelo","g":2,"img":"img/arvore/bekele.jpg","th":"img/arvore/bekele_t.jpg","i":"54 · Mago Evocador, patriarca","n":"Bekele Suali","o":"","x":4560,"y":790},{"id":"belistre","b":"verde","g":2,"img":"img/arvore/belistre.jpg","th":"img/arvore/belistre_t.jpg","i":"43 · Clériga da Vida","n":"Belistre Lumus","o":"","x":3760,"y":790},{"id":"benedita","b":"americas","g":2,"img":"img/arvore/benedita.jpg","th":"img/arvore/benedita_t.jpg","i":"52 · Clériga da Luz","n":"Benedita Arantes","o":"","x":7760,"y":790},{"id":"benjamin","b":"main","g":3,"img":"img/arvore/benjamin.jpg","th":"img/arvore/benjamin_t.jpg","i":"15 · Bárbaro","n":"Benjamin","o":"","x":2230,"y":1150},{"id":"bento","b":"americas","g":2,"img":"img/arvore/bento.jpg","th":"img/arvore/bento_t.jpg","i":"56 · Mago da Conjuração","n":"Dom Bento Arantes","o":"","x":7550,"y":790},{"id":"caetano","b":"americas","g":3,"img":"img/arvore/caetano.jpg","th":"img/arvore/caetano_t.jpg","i":"26 · Trapaceiro Arcano, capoeirista","n":"Caetano Arantes","o":"","x":7655,"y":1150},{"id":"caim","b":"main","g":3,"img":"img/arvore/caim.jpg","th":"img/arvore/caim_t.jpg","i":"21 · Ladino duelista","n":"Caim","o":"","x":1760,"y":1150},{"id":"chenyu","b":"azul","g":3,"img":"img/arvore/chenyu.jpg","th":"img/arvore/chenyu_t.jpg","i":"18 · Guerreiro Samurai","n":"Chen Yu Sasaya","o":"","x":3065,"y":1150},{"id":"chronos","b":"azul","g":1,"img":"img/arvore/chronos.jpg","th":"img/arvore/chronos_t.jpg","i":"83 · Mago Cronomante","n":"Chronos Bellacord Vallemyr","o":"","x":2855,"y":430},{"id":"cmvxx6bxm","b":"americas","g":1,"img":"img/arvore/cmvxx6bxm.jpg","th":"img/arvore/cmvxx6bxm_t.jpg","i":"70 anos - Mago da gravidade","n":"Ozymandias Bellacord Donovan","o":"Ele tem uma richa com Chronos para decidir quem é o mais forte. Os dois são os mais fortes da família, próximo ao poder de alguns semi-deuses.","x":8760,"y":430},{"id":"cmvxx9yu3","b":"americas","g":3,"img":"img/arvore/cmvxx9yu3.jpg","th":"img/arvore/cmvxx9yu3_t.jpg","i":"27 - Artificer Alquimista","n":"Tessa Bellacord Donovan","o":"","x":8445,"y":1150},{"id":"cmvxxa478","b":"americas","g":3,"img":"img/arvore/cmvxxa478.jpg","th":"img/arvore/cmvxxa478_t.jpg","i":"21- Artificer cartografa","n":"Ada Bellacord Donovan","o":"","x":8655,"y":1150},{"id":"cmvxxa9g2","b":"americas","g":3,"img":"img/arvore/cmvxxa9g2.jpg","th":"img/arvore/cmvxxa9g2_t.jpg","i":"19 - Artificer Forjador de batalha","n":"Matilda Bellacord Donovan","o":"","x":8865,"y":1150},{"id":"cmvxxaf59","b":"americas","g":3,"img":"img/arvore/cmvxxaf59.jpg","th":"img/arvore/cmvxxaf59_t.jpg","i":"18 - Artificer armorer","n":"Colt Bellacord Donovan","o":"","x":9075,"y":1150},{"id":"cmvxxas53","b":"americas","g":4,"img":"img/arvore/cmvxxas53.jpg","th":"img/arvore/cmvxxas53_t.jpg","i":"12 - criança","n":"Valerie Bellacord Donovan","o":"","x":8445,"y":1510},{"id":"cmvxxba0g","b":"americas","g":2,"img":"img/arvore/cmvxxba0g.jpg","th":"img/arvore/cmvxxba0g_t.jpg","i":"42 - Mago arquivista","n":"Jericho Bellacord Donovan","o":"","x":8760,"y":790},{"id":"cmvxxdo13","b":"americas","g":4,"img":"img/arvore/cmvxxdo13.jpg","th":"img/arvore/cmvxxdo13_t.jpg","i":"10 - Criança","n":"Whyatt Harrow","o":"","x":6475,"y":1510},{"id":"cmvxxs1kx","b":"americas","g":3,"img":"img/arvore/cmvxxs1kx.jpg","th":"img/arvore/cmvxxs1kx_t.jpg","i":"31 · Monge da Mão Aberta, capoeira de rua","n":"Ubirajara Arantes","o":"","x":7865,"y":1150},{"id":"cmvxxsfpr","b":"americas","g":4,"img":"img/arvore/cmvxxsfpr.jpg","th":"img/arvore/cmvxxsfpr_t.jpg","i":"14 · aprendiz de bastão (criança)","n":"Iracema Arantes","o":"","x":7865,"y":1510},{"id":"cmvxxu6qa","b":"americas","g":4,"img":"img/arvore/cmvxxu6qa.jpg","th":"img/arvore/cmvxxu6qa_t.jpg","i":"16 · Feiticeira do Fogo, bastão de rito","n":"Dandara Arantes","o":"","x":7445,"y":1510},{"id":"cmvxxv8ee","b":"americas","g":3,"img":"img/arvore/cmvxxv8ee.jpg","th":"img/arvore/cmvxxv8ee_t.jpg","i":"24 · Bruxa da Lua (Pacto), enfaixada","n":"Jaci Arantes","o":"","x":8075,"y":1150},{"id":"cmvxxx581","b":"americas","g":4,"img":"img/arvore/cmvxxx581.jpg","th":"img/arvore/cmvxxx581_t.jpg","i":"15 · capoeirista, chute de gavião (criança)","n":"Cauã Arantes","o":"","x":8075,"y":1510},{"id":"deborah","b":"main","g":3,"img":"img/arvore/deborah.jpg","th":"img/arvore/deborah_t.jpg","i":"23 · Druida da Lua","n":"Deborah Bellacord","o":"","x":60,"y":1150},{"id":"doran","b":"aliados","g":5,"img":"","th":"","i":"Humano · Paladino da Devoção","n":"Doran Whitlock","o":"","x":255,"y":2030},{"id":"elias","b":"main","g":3,"img":"img/arvore/elias.jpg","th":"img/arvore/elias_t.jpg","i":"25 · Druida da Terra","n":"Elias Bellacord","o":"","x":980,"y":1150},{"id":"elise","b":"verde","g":3,"img":"img/arvore/elise.jpg","th":"img/arvore/elise_t.jpg","i":"25 · Barda do Glamour","n":"Élise Beaumont","o":"","x":3655,"y":1150},{"id":"enoque","b":"main","g":4,"img":"img/arvore/enoque.jpg","th":"img/arvore/enoque_t.jpg","i":"8 · Druida das Estrelas","n":"Enoque","o":"","x":1080,"y":1510},{"id":"ester","b":"main","g":3,"img":"img/arvore/ester.jpg","th":"img/arvore/ester_t.jpg","i":"18 · Barda da Dança","n":"Ester Bellacord","o":"","x":780,"y":1150},{"id":"eva","b":"main","g":1,"img":"img/arvore/eva.jpg","th":"img/arvore/eva_t.jpg","i":"Matriarca","n":"Eva Rockbell","o":"","x":1290,"y":430},{"id":"ezekiel","b":"americas","g":1,"img":"img/arvore/ezekiel.jpg","th":"img/arvore/ezekiel_t.jpg","i":"63 · Paladino da Vingança","n":"Ezekiel Harrow","o":"","x":6265,"y":430},{"id":"gaspard","b":"verde","g":2,"img":"img/arvore/gaspard.jpg","th":"img/arvore/gaspard_t.jpg","i":"~50 · Cavaleiro do Florescer","n":"Sir Gaspard Veyne","o":"","x":3550,"y":790},{"id":"gideao","b":"main","g":2,"img":"img/arvore/gideao.jpg","th":"img/arvore/gideao_t.jpg","i":"45","n":"Gideão Bellacord","o":"","x":880,"y":790},{"id":"hana","b":"azul","g":3,"img":"img/arvore/hana.jpg","th":"img/arvore/hana_t.jpg","i":"21 · Monja da Mão Aberta","n":"Hana Bellacord Sasaya","o":"","x":2855,"y":1150},{"id":"iara","b":"americas","g":3,"img":"img/arvore/iara.jpg","th":"img/arvore/iara_t.jpg","i":"29 · Druida do Mar","n":"Iara Arantes","o":"","x":7445,"y":1150},{"id":"ines","b":"americas","g":1,"img":"img/arvore/ines.jpg","th":"img/arvore/ines_t.jpg","i":"68 · Bruxa do Morto-Vivo","n":"Doña Inés de la Vega","o":"","x":6960,"y":430},{"id":"jabari","b":"amarelo","g":2,"img":"img/arvore/jabari.jpg","th":"img/arvore/jabari_t.jpg","i":"43 · Monge dos Elementos","n":"Jabari Suali","o":"","x":4770,"y":790},{"id":"joana","b":"main","g":3,"img":"img/arvore/joana.jpg","th":"img/arvore/joana_t.jpg","i":"23 · Druida da Terra","n":"Joana Hawkeye","o":"","x":1180,"y":1150},{"id":"jonas","b":"main","g":2,"img":"img/arvore/jonas.jpg","th":"img/arvore/jonas_t.jpg","i":"42 · “Capitão Rabeca”, pirata exilado","n":"Jonas Bellacord","o":"","x":2000,"y":790},{"id":"juliette","b":"verde","g":3,"img":"img/arvore/juliette.jpg","th":"img/arvore/juliette_t.jpg","i":"27 · Patrulheira Andarilha Feérica","n":"Juliette Bellacord Moreau","o":"","x":3445,"y":1150},{"id":"june","b":"americas","g":3,"img":"img/arvore/june.jpg","th":"img/arvore/june_t.jpg","i":"17 · Artífice Armeira","n":"June Harrow","o":"","x":6475,"y":1150},{"id":"lbeaumont","b":"verde","g":4,"img":"img/arvore/lbeaumont.jpg","th":"img/arvore/lbeaumont_t.jpg","i":"criança","n":"Lorenzo Beaumont","o":"","x":3655,"y":1510},{"id":"lbellini","b":"verde","g":3,"img":"img/arvore/lbellini.jpg","th":"img/arvore/lbellini_t.jpg","i":"22 · Bardo das lâminas","n":"Lorenzo Bellacord Bellini","o":"","x":3865,"y":1150},{"id":"luna","b":"americas","g":4,"img":"img/arvore/luna.jpg","th":"img/arvore/luna_t.jpg","i":"9 · criança","n":"Luna de la Vega","o":"","x":6960,"y":1510},{"id":"mara","b":"aliados","g":5,"img":"","th":"","i":"Meio-elfa · Patrulheira","n":"Mara Quellwind","o":"","x":45,"y":2030},{"id":"martha","b":"americas","g":1,"img":"img/arvore/martha.jpg","th":"img/arvore/martha_t.jpg","i":"60 · Clériga do Túmulo","n":"Martha Harrow","o":"","x":6475,"y":430},{"id":"mateo","b":"americas","g":2,"img":"img/arvore/mateo.jpg","th":"img/arvore/mateo_t.jpg","i":"40 · Monge da Misericórdia, luchador","n":"Mateo de la Vega","o":"","x":6960,"y":790},{"id":"miriam","b":"main","g":2,"img":"img/arvore/miriam.jpg","th":"img/arvore/miriam_t.jpg","i":"37 · criou a Pandora","n":"Miriam Bellacord-Rockbell","o":"","x":1420,"y":790},{"id":"mirian","b":"main","g":3,"img":"img/arvore/mirian.jpg","th":"img/arvore/mirian_t.jpg","i":"26 · Maga da Abjuração · dragão de cobre","n":"Mirian Curtis","o":"","x":460,"y":1150},{"id":"nachtlied","b":"vermelho","g":4,"img":"img/arvore/nachtlied.jpg","th":"img/arvore/nachtlied_t.jpg","i":"12 · criança","n":"Nachtlied Bellacord","o":"","x":5255,"y":1510},{"id":"noemi","b":"main","g":2,"img":"img/arvore/noemi.jpg","th":"img/arvore/noemi_t.jpg","i":"40","n":"Noemi Armstrong","o":"","x":2230,"y":790},{"id":"pandora","b":"main","g":3,"img":"img/arvore/pandora.jpg","th":"img/arvore/pandora_t.jpg","i":"Humana · Maga da Adivinhação · nível 7","n":"Pandora","o":"A Ira. Filha de Rebeca e Jonas.","x":1420,"y":1210},{"id":"pietro","b":"vermelho","g":2,"img":"img/arvore/pietro.jpg","th":"img/arvore/pietro_t.jpg","i":"48 · Mago Abjurador","n":"Pietro Bellacord Caspir","o":"","x":5360,"y":790},{"id":"rafa","b":"americas","g":3,"img":"img/arvore/rafa.jpg","th":"img/arvore/rafa_t.jpg","i":"24 · Bardo do Valor, mariachi","n":"Rafa de la Vega","o":"","x":7065,"y":1150},{"id":"rebeca","b":"main","g":2,"img":"img/arvore/rebeca.jpg","th":"img/arvore/rebeca_t.jpg","i":"47 · reclusa no convento de Santa Cecília","n":"Rebeca Elric","o":"","x":360,"y":790},{"id":"rute","b":"main","g":3,"img":"img/arvore/rute.jpg","th":"img/arvore/rute_t.jpg","i":"18 · Guerreira Campeã","n":"Rute","o":"","x":2000,"y":1150},{"id":"salomao","b":"main","g":2,"img":"img/arvore/salomao.jpg","th":"img/arvore/salomao_t.jpg","i":"49","n":"Salomão Bellacord","o":"","x":160,"y":790},{"id":"samuel","b":"main","g":3,"img":"img/arvore/samuel.jpg","th":"img/arvore/samuel_t.jpg","i":"27 · Mago da Evocação","n":"Samuel Bellacord","o":"","x":260,"y":1150},{"id":"sara","b":"main","g":2,"img":"img/arvore/sara.jpg","th":"img/arvore/sara_t.jpg","i":"43","n":"Sara Mustang","o":"","x":1080,"y":790},{"id":"sayuri","b":"azul","g":4,"img":"img/arvore/sayuri.jpg","th":"img/arvore/sayuri_t.jpg","i":"~9 · criança","n":"Sayuri Bellacord","o":"","x":2855,"y":1510},{"id":"selam","b":"amarelo","g":3,"img":"img/arvore/selam.jpg","th":"img/arvore/selam_t.jpg","i":"26 · Barda da Dança","n":"Selam Suali","o":"","x":4665,"y":1150},{"id":"silas","b":"americas","g":3,"img":"img/arvore/silas.jpg","th":"img/arvore/silas_t.jpg","i":"35 · Patrulheiro Espreitador","n":"Silas Harrow","o":"","x":6265,"y":1150},{"id":"sofia","b":"vermelho","g":3,"img":"img/arvore/sofia.jpg","th":"img/arvore/sofia_t.jpg","i":"28 · Barda do Conhecimento","n":"Sofía Bellacord Cruz","o":"","x":5360,"y":1150},{"id":"taina","b":"americas","g":4,"img":"img/arvore/taina.jpg","th":"img/arvore/taina_t.jpg","i":"13 · criança","n":"Tainá Arantes","o":"","x":7655,"y":1510},{"id":"verissima","b":"vermelho","g":4,"img":"img/arvore/verissima.jpg","th":"img/arvore/verissima_t.jpg","i":"8 · criança","n":"Verissima Bellacord Janitor","o":"","x":5465,"y":1510},{"id":"vesper","b":"outros","g":5,"img":"","th":"","i":"Capitão da Mão Cinzenta · assassino contratado","n":"Vesper Kael","o":"","x":635,"y":2030},{"id":"wyatt","b":"americas","g":4,"img":"img/arvore/wyatt.jpg","th":"img/arvore/wyatt_t.jpg","i":"11 · criança","n":"Amir Harrow","o":"","x":6265,"y":1510},{"id":"xochitl","b":"americas","g":3,"img":"img/arvore/xochitl.jpg","th":"img/arvore/xochitl_t.jpg","i":"32 · Druida do Fogo Selvagem","n":"Xóchitl de la Vega","o":"","x":6855,"y":1150},{"id":"zuberi","b":"amarelo","g":4,"img":"img/arvore/zuberi.jpg","th":"img/arvore/zuberi_t.jpg","i":"14 · criança","n":"Zuberi","o":"","x":4560,"y":1510},{"id":"os-hildegarda","b":"vermelho","g":2,"n":"Hildegarda Bellacord","i":"Clériga da Vida · avó do Tobias","img":"img/hildegarda.jpg","th":"img/arvore/os-hildegarda_t.jpg","x":5680,"y":790,"o":"Comitiva do Ozymandias. Cura a família e chama os anjos na 3ª rodada.","os":1},{"id":"os-mae","b":"vermelho","g":3,"n":"Mãe do Tobias","i":"Bellacord · filha da Hildegarda","img":"","th":"","x":5680,"y":1150,"o":"Ainda sem nome.","os":1},{"id":"os-pai","b":"vermelho","g":3,"n":"Pai do Tobias","i":"personagem do Victor","img":"","th":"","x":5890,"y":1150,"o":"Casou com a filha da Hildegarda.","os":1},{"id":"os-tobias","b":"vermelho","g":4,"n":"Tobias","i":"a Gula · o Cordeiro · mudo","img":"img/tobias.jpg","th":"img/arvore/os-tobias_t.jpg","x":5785,"y":1510,"o":"“Comida dividida não acaba, só fica menor.”","os":1},{"id":"os-elizabeth","b":"verde","g":2,"n":"Elizabeth Vermeil","i":"nascida Bellacord · Pintora do Rei","img":"img/elizabeth.jpg","th":"img/arvore/os-elizabeth_t.jpg","x":3970,"y":790,"o":"Pintora da corte do Ozymandias. Só luta ao lado dele.","os":1},{"id":"os-jael","b":"azul","g":2,"n":"Jael Bellacord","i":"a Martelada · força bruta","img":"img/jael.jpg","th":"img/arvore/os-jael_t.jpg","x":2750,"y":790,"o":"Martelo de guerra e estaca.","os":1},{"id":"os-esau","b":"americas","g":2,"n":"Esaú Bellacord","i":"o Caçador · arco e cães","img":"img/esau.jpg","th":"img/arvore/os-esau_t.jpg","x":6385,"y":790,"o":"O caçador ferido do Ato 1. Mata a Rafaela com uma flecha.","os":1},{"id":"os-ezequiel","b":"americas","g":2,"n":"Ezequiel Bellacord","i":"o Vidente · rodas de fogo","img":"img/ezequiel.jpg","th":"img/arvore/os-ezequiel_t.jpg","x":8530,"y":790,"o":"Lembra das voltas a partir da volta 2.","os":1},{"id":"os-rafaela","b":"outros","g":5,"n":"Rafaela","i":"filha do personagem do Pedro · não é Bellacord","img":"img/rafaela.jpg","th":"img/arvore/os-rafaela_t.jpg","x":845,"y":2030,"o":"Mãe: Aurélia, de Maré-Alta.","os":1}],"frames":[{"id":"f-main","c":"main","t":"Família principal Bellacord","x":20,"y":380,"w":2480,"h":1410},{"id":"f-azul","c":"azul","t":"Ramo Azul · Ásia (Sasaya)","x":2620,"y":380,"w":680,"h":1410},{"id":"f-verde","c":"verde","t":"Ramo Verde · Europa","x":3420,"y":380,"w":890,"h":1410},{"id":"f-amarelo","c":"amarelo","t":"Ramo Amarelo · África (Suali)","x":4430,"y":380,"w":680,"h":1410},{"id":"f-vermelho","c":"vermelho","t":"Ramo Vermelho · Leste Europeu","x":5230,"y":380,"w":890,"h":1410},{"id":"f-harrow","c":"americas","t":"Américas · Harrow (Santa Fe)","x":6240,"y":380,"w":470,"h":1410},{"id":"f-vega","c":"americas","t":"Américas · de la Vega (Oaxaca)","x":6830,"y":380,"w":470,"h":1410},{"id":"f-arantes","c":"americas","t":"Américas · Arantes (Ouro Preto)","x":7420,"y":380,"w":890,"h":1410},{"id":"fmvxwef0q","c":"americas","t":"Américas · Donovan (Nova York)","x":8420,"y":380,"w":890,"h":1410},{"id":"f-aliados","c":"aliados","t":"Aliados da Pandora","x":20,"y":2000,"w":470,"h":330},{"id":"f-outros","c":"outros","t":"Outros","x":610,"y":2000,"w":470,"h":330}],"links":[{"f":"adao","t":"eva","k":"casamento","l":""},{"f":"salomao","t":"rebeca","k":"casamento","l":""},{"f":"gideao","t":"sara","k":"casamento","l":""},{"f":"jonas","t":"noemi","k":"casamento","l":""},{"f":"samuel","t":"mirian","k":"casamento","l":""},{"f":"elias","t":"joana","k":"casamento","l":""},{"f":"adao","t":"salomao","k":"filho","l":""},{"f":"adao","t":"gideao","k":"filho","l":""},{"f":"adao","t":"jonas","k":"filho","l":""},{"f":"adao","t":"miriam","k":"filho","l":""},{"f":"salomao","t":"samuel","k":"filho","l":""},{"f":"salomao","t":"deborah","k":"filho","l":""},{"f":"gideao","t":"elias","k":"filho","l":""},{"f":"gideao","t":"ester","k":"filho","l":""},{"f":"jonas","t":"caim","k":"filho","l":""},{"f":"jonas","t":"rute","k":"filho","l":""},{"f":"jonas","t":"benjamin","k":"filho","l":""},{"f":"samuel","t":"abigail","k":"filho","l":""},{"f":"elias","t":"enoque","k":"filho","l":""},{"f":"rebeca","t":"pandora","k":"filho","l":""},{"f":"jonas","t":"pandora","k":"filho","l":""},{"f":"rebeca","t":"deborah","k":"filho","l":""},{"f":"miriam","t":"pandora","k":"criou","l":"criou"},{"f":"akari","t":"pandora","k":"criou","l":"treinou"},{"f":"hana","t":"pandora","k":"criou","l":"treinou"},{"f":"chenyu","t":"pandora","k":"criou","l":"treinou"},{"f":"deborah","t":"pandora","k":"caca","l":""},{"f":"salomao","t":"vesper","k":"contratou","l":""},{"f":"vesper","t":"pandora","k":"caca","l":""},{"f":"mara","t":"pandora","k":"aliado","l":""},{"f":"doran","t":"pandora","k":"aliado","l":""},{"f":"abena","t":"pandora","k":"aliado","l":""},{"f":"elise","t":"pandora","k":"aliado","l":""},{"f":"rebeca","t":"samuel","k":"filho","l":""},{"f":"eva","t":"salomao","k":"filho","l":""},{"f":"eva","t":"gideao","k":"filho","l":""},{"f":"eva","t":"jonas","k":"filho","l":""},{"f":"eva","t":"miriam","k":"filho","l":""},{"f":"sara","t":"elias","k":"filho","l":""},{"f":"sara","t":"ester","k":"filho","l":""},{"f":"noemi","t":"caim","k":"filho","l":""},{"f":"noemi","t":"rute","k":"filho","l":""},{"f":"noemi","t":"benjamin","k":"filho","l":""},{"f":"mirian","t":"abigail","k":"filho","l":""},{"f":"joana","t":"enoque","k":"filho","l":""},{"f":"cmvxxba0g","t":"cmvxxa478","k":"filho","l":""},{"f":"cmvxx6bxm","t":"cmvxxba0g","k":"filho","l":""},{"f":"cmvxxba0g","t":"cmvxxa9g2","k":"criou","l":""},{"f":"cmvxx6bxm","t":"chronos","k":"rival","l":""},{"f":"martha","t":"wyatt","k":"criou","l":""},{"f":"ines","t":"luna","k":"criou","l":""},{"f":"caetano","t":"taina","k":"filho","l":""},{"f":"cmvxx9yu3","t":"cmvxxas53","k":"filho","l":""},{"f":"cmvxxa9g2","t":"cmvxxas53","k":"criou","l":""},{"f":"os-hildegarda","t":"os-mae","k":"filho","l":""},{"f":"os-mae","t":"os-pai","k":"casamento","l":""},{"f":"os-mae","t":"os-tobias","k":"filho","l":""},{"f":"os-pai","t":"os-tobias","k":"filho","l":""},{"f":"cmvxx6bxm","t":"os-hildegarda","k":"comitiva","l":"comitiva"},{"f":"cmvxx6bxm","t":"os-jael","k":"comitiva","l":"comitiva"},{"f":"cmvxx6bxm","t":"os-esau","k":"comitiva","l":"comitiva"},{"f":"cmvxx6bxm","t":"os-ezequiel","k":"comitiva","l":"comitiva"},{"f":"cmvxx6bxm","t":"os-elizabeth","k":"comitiva","l":"comitiva"},{"f":"akari","t":"cmvxx6bxm","k":"rival","l":"confronta"},{"f":"os-esau","t":"os-rafaela","k":"caca","l":"flecha"}]};
+const COR = {main:'#d9a441', azul:'#5b8fd9', verde:'#5fae6b', amarelo:'#e3c34f', vermelho:'#d9584a', americas:'#a879d4', aliados:'#7fb6d8', outros:'#9b8f80'};
+const RAMO = {main:'Família principal', azul:'Ramo Azul · Ásia', verde:'Ramo Verde · Europa', amarelo:'Ramo Amarelo · África', vermelho:'Ramo Vermelho · Leste Europeu', americas:'Américas', aliados:'Aliados da Pandora', outros:'Fora da família'};
+const REL = {casamento:'casou com', filho:'filho(a) de', criou:'criou', aliado:'aliado', comitiva:'comitiva', caca:'caça', contratou:'contratou', rival:'rival'};
+const RCOR = {criou:'#c9a24a', aliado:'#7fb6d8', comitiva:'#7fb6d8', caca:'#e0685a', contratou:'#c88d5a', rival:'#e0685a'};
+const CW = 180, CH = 262, GENS = [[430,'1ª geração'],[790,'2ª geração'],[1150,'3ª geração'],[1510,'4ª geração']];
+const embutido = window.parent !== window;
+const W = document.getElementById('w'), VP = document.getElementById('vp'), SV = document.getElementById('ln'), PN = document.getElementById('pn');
+const byId = Object.fromEntries(D.cards.map(c => [c.id, c]));
+const ns = 'http://www.w3.org/2000/svg';
+const mk = (t, a = {}, p) => { const e = document.createElementNS(ns, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+const h = (t, a = {}, ...k) => { const e = document.createElement(t); for (const x in a) { if (x === 'style' && typeof a[x] === 'object') Object.assign(e.style, a[x]); else if (x.startsWith('on')) e[x] = a[x]; else e.setAttribute(x, a[x]); } k.flat().forEach(c => c != null && e.append(c)); return e; };
+let maxX = 0, maxY = 0;
+D.frames.forEach(f => { maxX = Math.max(maxX, f.x + f.w); maxY = Math.max(maxY, f.y + f.h); });
+const MINX = -40, MINY = 260; maxX += 40; maxY += 40;
+SV.setAttribute('width', maxX); SV.setAttribute('height', maxY);
+// molduras
+D.frames.forEach(f => {
+  const d = h('div', {class:'fr', style:{left:f.x + 'px', top:f.y + 'px', width:f.w + 'px', height:f.h + 'px', '--c':COR[f.c]}}, h('h2', {}, f.t));
+  d.style.setProperty('--c', COR[f.c]); W.appendChild(d);
+  if (f.y < 1000) GENS.forEach(([y, t]) => W.appendChild(h('div', {class:'gl', style:{left:(f.x + 14) + 'px', top:(y - 24) + 'px'}}, t)));
+});
+// linhas de geração
+GENS.forEach(([y]) => mk('line', {x1:0, x2:maxX, y1:y - 30, y2:y - 30, stroke:'#2a221b', 'stroke-dasharray':'6 10', 'stroke-width':2}, SV));
+// cartões
+const ini = n => n.replace(/^(Dom|Doña|Sir)\s+/, '').trim()[0] || '?';
+D.cards.forEach(c => {
+  const im = h('div', {class:'im'}); if (c.th) im.style.backgroundImage = `url("${c.th}")`; else im.textContent = ini(c.n);
+  const e = h('div', {class:'cd' + (c.os ? ' os' : ''), 'data-id':c.id, style:{left:c.x + 'px', top:c.y + 'px'}}, im, h('b', {}, c.n), h('small', {}, c.i));
+  e.style.setProperty('--c', COR[c.b]); c.el = e; W.appendChild(e);
+});
+// relações
+const cx = c => c.x + CW / 2, mid = c => c.y + 120, bot = c => c.y + CH, top_ = c => c.y;
+const casado = (a, b) => D.links.some(l => l.k === 'casamento' && ((l.f === a && l.t === b) || (l.f === b && l.t === a)));
+const ligs = {}; const liga = (id, el) => (ligs[id] = ligs[id] || []).push(el);
+D.links.filter(l => l.k === 'casamento').forEach(l => {
+  const a = byId[l.f], b = byId[l.t]; if (!a || !b) return;
+  const [p, q] = a.x < b.x ? [a, b] : [b, a];
+  const g = mk('g', {class:'fam'}, SV);
+  mk('line', {x1:p.x + CW, x2:q.x, y1:mid(p) - 3, y2:mid(q) - 3, stroke:'#bfae94', 'stroke-width':2.5}, g);
+  mk('line', {x1:p.x + CW, x2:q.x, y1:mid(p) + 3, y2:mid(q) + 3, stroke:'#bfae94', 'stroke-width':2.5}, g);
+  liga(l.f, g); liga(l.t, g);
+});
+const filhos = {}; D.links.filter(l => l.k === 'filho').forEach(l => (filhos[l.t] = filhos[l.t] || []).push(l.f));
+Object.entries(filhos).forEach(([fid, pais]) => {
+  const f = byId[fid]; if (!f) return;
+  const grupos = []; const usados = new Set();
+  pais.forEach(p => { if (usados.has(p)) return; const par = pais.find(q => q !== p && !usados.has(q) && casado(p, q)); if (par) { grupos.push([p, par]); usados.add(par); } else grupos.push([p]); usados.add(p); });
+  grupos.forEach(gp => {
+    const ps = gp.map(i => byId[i]).filter(Boolean); if (!ps.length) return;
+    let ax, ay;
+    if (ps.length === 2) { ax = (Math.min(...ps.map(p => p.x)) + CW + Math.max(...ps.map(p => p.x))) / 2; ay = mid(ps[0]) + 3; }
+    else { ax = cx(ps[0]); ay = bot(ps[0]); }
+    const ym = top_(f) - 46 - (ps.length === 1 && ps[0].y >= f.y - 100 ? 0 : 0);
+    const g = mk('g', {class:'fam'}, SV);
+    mk('path', {d:`M${ax},${ay} V${ym} H${cx(f)} V${top_(f)}`, fill:'none', stroke:'#bfae94', 'stroke-width':2.5, 'stroke-linejoin':'round'}, g);
+    liga(fid, g); gp.forEach(p => liga(p, g));
+  });
+});
+D.links.filter(l => !['casamento', 'filho'].includes(l.k)).forEach(l => {
+  const a = byId[l.f], b = byId[l.t]; if (!a || !b) return;
+  const x1 = cx(a), y1 = mid(a), x2 = cx(b), y2 = mid(b), dx = x2 - x1, dist = Math.hypot(dx, y2 - y1);
+  const cxp = (x1 + x2) / 2, cyp = Math.min(y1, y2) - Math.min(420, 60 + dist * .18);
+  const g = mk('g', {class:'rel'}, SV), cor = RCOR[l.k] || '#bfae94';
+  mk('path', {d:`M${x1},${y1} Q${cxp},${cyp} ${x2},${y2}`, fill:'none', stroke:cor, 'stroke-width':3, 'stroke-dasharray':'10 8', opacity:.85}, g);
+  const t = l.l || REL[l.k] || l.k; const tx = (x1 + 2 * cxp + x2) / 4, ty = (y1 + 2 * cyp + y2) / 4;
+  mk('text', {x:tx, y:ty - 6, 'text-anchor':'middle', fill:cor}, g).textContent = t;
+  liga(l.f, g); liga(l.t, g);
+});
+// navegação
+let S = 1, TX = 0, TY = 0;
+const aplica = () => { W.style.transform = `translate(${TX}px,${TY}px) scale(${S})`; };
+const lim = s => Math.min(2.5, Math.max(0.05, s));
+function zoomEm(px, py, f){ const ns_ = lim(S * f); TX = px - (px - TX) * ns_ / S; TY = py - (py - TY) * ns_ / S; S = ns_; aplica(); }
+function enquadra(x0, y0, x1, y1, anim){
+  const vw = VP.clientWidth, vh = VP.clientHeight, pad = 30, topo = 60;
+  const s = lim(Math.min((vw - pad * 2) / (x1 - x0), (vh - topo - pad) / (y1 - y0)));
+  const nt = [(vw - (x1 - x0) * s) / 2 - x0 * s, topo + (vh - topo - pad - (y1 - y0) * s) / 2 - y0 * s];
+  anima(s, nt[0], nt[1], anim ? 450 : 0);
+}
+let rafA = 0;
+function anima(s2, x2, y2, ms){
+  cancelAnimationFrame(rafA); if (!ms) { S = s2; TX = x2; TY = y2; aplica(); return; }
+  const s1 = S, x1 = TX, y1 = TY, t0 = performance.now();
+  const passo = t => { const k = Math.min(1, (t - t0) / ms), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; S = s1 + (s2 - s1) * e; TX = x1 + (x2 - x1) * e; TY = y1 + (y2 - y1) * e; aplica(); if (k < 1) rafA = requestAnimationFrame(passo); };
+  rafA = requestAnimationFrame(passo);
+}
+const verTudo = a => enquadra(MINX, MINY, maxX, maxY, a);
+function centra(c, s = Math.max(S, 0.75)){
+  const vw = VP.clientWidth, vh = VP.clientHeight, larg = PN.classList.contains('on') && vw > 640 ? PN.offsetWidth + 24 : 0, alt = vw <= 640 && PN.classList.contains('on') ? vh * .58 : 0;
+  s = lim(s); anima(s, (vw - larg) / 2 - cx(c) * s, (vh - alt + 50) / 2 - (c.y + CH / 2) * s, 450);
+}
+const ptr = new Map(); let arr = null, moveu = 0, pin = null;
+VP.addEventListener('pointerdown', e => { VP.setPointerCapture(e.pointerId); ptr.set(e.pointerId, {x:e.clientX, y:e.clientY}); cancelAnimationFrame(rafA);
+  if (ptr.size === 1) { arr = {x:e.clientX, y:e.clientY, tx:TX, ty:TY, alvo:e.target.closest('.cd')}; moveu = 0; VP.classList.add('arrasta'); }
+  if (ptr.size === 2) { const [a, b] = [...ptr.values()]; pin = {d:Math.hypot(a.x - b.x, a.y - b.y), s:S, mx:(a.x + b.x) / 2, my:(a.y + b.y) / 2, tx:TX, ty:TY}; arr = null; moveu = 99; } });
+VP.addEventListener('pointermove', e => { if (!ptr.has(e.pointerId)) return; ptr.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if (pin && ptr.size >= 2) { const [a, b] = [...ptr.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const s2 = lim(pin.s * d / pin.d); TX = mx - (pin.mx - pin.tx) * s2 / pin.s; TY = my - (pin.my - pin.ty) * s2 / pin.s; S = s2; aplica(); return; }
+  if (arr) { const dx = e.clientX - arr.x, dy = e.clientY - arr.y; moveu = Math.max(moveu, Math.hypot(dx, dy)); TX = arr.tx + dx; TY = arr.ty + dy; aplica(); } });
+const solta = e => { if (!ptr.has(e.pointerId)) return; ptr.delete(e.pointerId);
+  if (ptr.size < 2) pin = null;
+  if (arr && ptr.size === 0) { if (moveu < 7) { if (arr.alvo) seleciona(arr.alvo.dataset.id); else desseleciona(); } arr = null; }
+  if (ptr.size === 1 && !arr) { const [p] = [...ptr.values()]; arr = {x:p.x, y:p.y, tx:TX, ty:TY, alvo:null}; }
+  if (!ptr.size) VP.classList.remove('arrasta'); };
+VP.addEventListener('pointerup', solta); VP.addEventListener('pointercancel', solta);
+VP.addEventListener('wheel', e => { e.preventDefault(); if (e.ctrlKey || Math.abs(e.deltaY) > 0 && !e.shiftKey && Math.abs(e.deltaX) < 2) zoomEm(e.clientX, e.clientY, Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0015))); else { TX -= e.deltaX; TY -= e.deltaY; aplica(); } }, {passive:false});
+document.getElementById('zp').onclick = () => zoomEm(VP.clientWidth / 2, VP.clientHeight / 2, 1.35);
+document.getElementById('zm').onclick = () => zoomEm(VP.clientWidth / 2, VP.clientHeight / 2, 1 / 1.35);
+document.getElementById('tudo').onclick = () => { desseleciona(); verTudo(true); };
+const bR = document.getElementById('rels'); bR.onclick = () => { const on = bR.getAttribute('aria-pressed') !== 'true'; bR.setAttribute('aria-pressed', on); document.body.classList.toggle('semrel', !on); };
+const OS = D.cards.filter(c => c.os); let osI = -1;
+const bO = document.getElementById('soOs'); bO.onclick = () => { osI = (osI + 1) % OS.length; seleciona(OS[osI].id); bO.textContent = `One-shot ${osI + 1}/${OS.length}`; };
+// busca
+const dl = document.getElementById('nomes'); D.cards.slice().sort((a, b) => a.n.localeCompare(b.n)).forEach(c => dl.append(h('option', {value:c.n})));
+const norm = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const bu = document.getElementById('busca');
+const procura = () => { const q = norm(bu.value.trim()); if (!q) return; const c = D.cards.find(c => norm(c.n) === q) || D.cards.find(c => norm(c.n).includes(q)); if (c) { seleciona(c.id); bu.blur(); } };
+bu.addEventListener('change', procura); bu.addEventListener('keydown', e => { if (e.key === 'Enter') procura(); });
+// painel
+let sel = null;
+function seleciona(id){
+  const c = byId[id]; if (!c) return;
+  if (sel) byId[sel].el.classList.remove('sel');
+  document.querySelectorAll('.viz').forEach(e => e.classList.remove('viz'));
+  sel = id; c.el.classList.add('sel'); document.body.classList.add('foco');
+  const viz = new Set([id]);
+  D.links.forEach(l => { if (l.f === id) viz.add(l.t); if (l.t === id) viz.add(l.f); });
+  viz.forEach(v => byId[v] && byId[v].el.classList.add('viz')); (ligs[id] || []).forEach(g => g.classList.add('viz'));
+  const rel = D.links.filter(l => l.f === id || l.t === id).map(l => {
+    const outro = l.f === id ? l.t : l.f, o = byId[outro]; if (!o) return null;
+    let t = l.k === 'filho' ? (l.f === id ? 'pai/mãe de ' : 'filho(a) de ') : l.k === 'casamento' ? 'casou com ' : (l.l || REL[l.k]) + (l.f === id ? ' → ' : ' ← ');
+    return h('button', {type:'button', onclick:() => seleciona(outro)}, t + o.n);
+  }).filter(Boolean);
+  const big = h('div', {class:'big' + (c.img ? '' : ' vazio')}); if (c.img) big.style.backgroundImage = `url("${c.img}")`; else big.textContent = ini(c.n);
+  const ac = h('div', {class:'ac'});
+  if (c.img && embutido) ac.append(h('button', {type:'button', class:'pri', onclick:() => { parent.postMessage({tipo:'arvoreImg', u:c.img, n:c.n}, '*'); avisa('Mostrando no tablet: ' + c.n); }}, 'Mostrar no tablet'));
+  if (c.img) ac.append(h('a', {href:c.img, target:'_blank', rel:'noopener'}, 'Abrir imagem'));
+  PN.replaceChildren(big, h('button', {class:'x', type:'button', 'aria-label':'Fechar', onclick:desseleciona}, '✕'),
+    h('div', {class:'tx', style:{'--c':COR[c.b]}}, h('p', {class:'rm'}, RAMO[c.b] + (c.g < 5 ? ' · ' + c.g + 'ª geração' : '') + (c.os ? ' · one-shot' : '')), h('h3', {}, c.n), h('p', {class:'inf'}, c.i),
+      c.o ? h('p', {class:'nt'}, c.o) : null, rel.length ? h('div', {class:'rl'}, rel) : null, ac));
+  PN.classList.add('on'); centra(c);
+}
+function desseleciona(){ if (sel) byId[sel].el.classList.remove('sel'); sel = null; document.body.classList.remove('foco'); document.querySelectorAll('.viz').forEach(e => e.classList.remove('viz')); PN.classList.remove('on'); }
+let tOk; function avisa(t){ const o = document.getElementById('ok'); o.textContent = t; o.classList.add('on'); clearTimeout(tOk); tOk = setTimeout(() => o.classList.remove('on'), 1800); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (sel) desseleciona(); else if (embutido) parent.postMessage({tipo:'arvoreFechar'}, '*'); } });
+if (embutido) { const f = document.getElementById('fechar'); f.hidden = false; f.onclick = () => parent.postMessage({tipo:'arvoreFechar'}, '*'); }
+addEventListener('resize', () => { if (!sel) verTudo(false); });
+verTudo(false);
+const q0 = new URLSearchParams(location.search).get('p'); if (q0 && byId[q0]) seleciona(q0);
+</script>
+</body>
+</html>
