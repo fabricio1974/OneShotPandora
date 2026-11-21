@@ -208,6 +208,8 @@
     coroSubida:'Coro de anjos', luz:'Luz sagrada', espada:'Espada flamejante', trombeta:'Trombeta', corrente:'Correntes', flecha:'Flecha', uivo:'Uivo de lobo', assobio:'Assobio do caçador', chifre:'Chifre de guerra', rosnado:'Rosnado', tambor:'Tambor', rufar:'Rufar de tambores', estaca:'Estaca', sussurro:'Sussurros', relogio:'Relógio e sino', orgao:'Órgão grave', katana:'Katana saindo da bainha', passos:'Passos na terra', dragao:'Rugido de dragão', asas:'Asas enormes', fogoSopro:'Sopro de fogo'};
   var CAN = {vento:'Vento', chuva:'Chuva', mar:'Ondas', fogo:'Fogueira', trovoes:'Trovões distantes', grave:'Zumbido grave', cosmos:'Cosmos e gravidade', coro:'Coro (pad)', sinos:'Sinos ao longe', coracao:'Coração batendo', sussurros:'Sussurros', tambores:'Tambores tribais', floresta:'Floresta à noite'};
   var CAT = {
+    viagem:{nome:'A viagem', ef:[], ca:['vento','floresta','fogo','mar','chuva'], fr:[]},
+    momentos:{nome:'Momentos da história', ef:['sino','coroSubida','luz'], ca:['grave','coro','vento'], fr:[]},
     clima:{nome:'Ambiente e clima', ef:['trovao','uivo'], ca:['chuva','vento','mar','fogo','floresta','trovoes'], fr:[]},
     ozy:{nome:'Ozymandias', ef:['magia','meteoro','gravidade','orbita','moedas','trovao'], ca:['cosmos','trovoes','vento'], fr:['Memento mori','Sic transit gloria mundi','Omnia mea mecum porto','Tempus rerum imperator']},
     elodie:{nome:'Elizabeth', ef:['pincelada','harpa','vitral','magia'], ca:['mar','vento','sinos'], fr:['Ars longa, vita brevis','Lux et color','Fiat lux']},
@@ -330,12 +332,13 @@
   function frasesUI(lista, trib, id){ return lista.length ? h('div', {class:'dm-frs'}, lista.map(function(x){ var t = ft(x); return h('button', {class:'peq', title:typeof x === 'string' ? 'Fala em voz grave e lenta' : x[1], onclick:function(){ fala(id, t, trib); }}, [t].concat(typeof x === 'string' ? [] : [h('small', {}, [x[1]])])); })) : null; }
   function musicasUI(id){
     var g = grupoDe(id); if (!g) return null;
-    var fs = g.faixas.filter(function(f){ return f.usar; });
+    var todas = g.id === 'viagem' || g.id === 'momentos';   // viagem e momentos: mostra todas, as marcadas primeiro
+    var fs = todas ? g.faixas.filter(function(f){ return f.usar; }).concat(g.faixas.filter(function(f){ return !f.usar; })) : g.faixas.filter(function(f){ return f.usar; });
     if (!fs.length) return h('p', {class:'sub dm-nota'}, ['Nenhuma música marcada para este inimigo na aba Seleção.']);
     var playing = (typeof tocando !== 'undefined') ? tocando : null;
     return h('div', {class:'dm-mus'}, fs.map(function(f){
       var on = playing === f;
-      return h('button', {class:'dm-m' + (on ? ' on' : ''), 'aria-pressed':String(on), title:f.momento, onclick:function(){ try { tocar(f, 600, {fila:g.faixas.filter(function(x){ return x.usar; })}); } catch (e) {} setTimeout(function(){ desenhar2(true); }, 250); }},
+      return h('button', {class:'dm-m' + (on ? ' on' : ''), 'aria-pressed':String(on), title:f.momento, onclick:function(){ try { tocar(f, 600, {fila:fs}); } catch (e) {} setTimeout(function(){ desenhar2(true); }, 250); }},
         [h('span', {class:'dm-mp'}, [on ? '■' : '▶']), h('span', {class:'dm-mn'}, [f.nome, h('small', {}, [f.momento])])]);
     }));
   }
@@ -584,6 +587,7 @@
       corpo.push(secao('Som de fundo', h('div', {class:'dm-cams'}, vis(c.ca).map(camadaUI)), true));
       if (frDe(nc.atual).length) corpo.push(secao(c.vz ? 'Gritos e falas' : 'Frases em latim', frasesUI(frDe(nc.atual), !!c.vz, nc.atual), true));
     } else corpo.push(h('p', {class:'sub dm-nota'}, ['Abra a ficha de um inimigo (ou ponha um na iniciativa) e os sons e as músicas dele aparecem aqui.']));
+    if (!nc.atual) corpo.push(secao('Músicas da viagem', musicasUI('viagem'), true));
     if (!nc.atual) corpo.push(secao('Sons gerais', h('div', {}, [efeitosUI(vis(GERAL.ef)), h('div', {class:'dm-sub'}, ['Fundo']), h('div', {class:'dm-cams'}, vis(GERAL.ca).map(camadaUI))]), true));
     var rol = dir.querySelector('.dm-corpo'), st = rol ? rol.scrollTop : 0;
     var abertos = {}; Array.prototype.forEach.call(dir.querySelectorAll('details.dm-sec'), function(d){ abertos[d.firstChild.textContent] = d.open; });
