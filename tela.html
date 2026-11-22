@@ -19,6 +19,8 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;color:var(--texto
 .sl .nome{position:absolute;left:0;right:0;bottom:max(18px,env(safe-area-inset-bottom));text-align:center;font:italic 600 clamp(18px,4vmin,34px)/1.2 Georgia,serif;color:#f1e2c0;text-shadow:0 2px 10px #000,0 0 3px #000}
 #bar{position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;padding:9px 20px;border-radius:999px;background:rgba(10,8,6,.38);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);z-index:5}
 #bar[hidden]{display:none}
+#bar.num{padding:7px 16px;font:700 15px/1 system-ui,sans-serif;color:#e8dcc6}
+body.online #bar{top:auto;bottom:max(14px,env(safe-area-inset-bottom))}
 #bar i{display:block;width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:transparent;transition:transform .25s,background .25s,border-color .25s;cursor:pointer}
 #bar i.on{background:var(--ouro);border-color:var(--ouro);transform:scale(1.3)}
 #cx{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;background:#000}
@@ -97,7 +99,7 @@ body.online #rodar,body.online #pt{display:none}
   bRodar.addEventListener('dblclick', function(e){ e.stopPropagation(); });
   function giraTudo(){ giraImg(im); car.querySelectorAll('img').forEach(giraImg); }
   addEventListener('resize', giraTudo); addEventListener('orientationchange', function(){ setTimeout(giraTudo, 200); });
-  function saiCar(){ modoCar = false; car.hidden = true; bar.hidden = true; car.replaceChildren(); nSl = 0; focoAtual = -1; }
+  function saiCar(){ modoCar = false; car.hidden = true; bar.hidden = true; car.replaceChildren(); bar.replaceChildren(); bar.classList.remove('num'); nSl = 0; focoAtual = -1; }
   function mostra(u, g, sent){
     u = u || ''; saiCar();
     var chave = u + '|' + g + '|' + sent;
@@ -115,7 +117,7 @@ body.online #rodar,body.online #pt{display:none}
     prog = !!aviso; car.scrollTo({left: i * car.clientWidth, behavior: aviso ? 'smooth' : 'auto'});
     marca(i); if (aviso) setTimeout(function(){ prog = false; }, 700);
   }
-  function marca(i){ focoAtual = i; Array.prototype.forEach.call(bar.children, function(d, k){ d.classList.toggle('on', k === i); }); }
+  function marca(i){ focoAtual = i; if (bar.classList.contains('num')) { bar.textContent = (i + 1) + ' / ' + nSl; return; } Array.prototype.forEach.call(bar.children, function(d, k){ d.classList.toggle('on', k === i); }); }
   function mostraCar(m){
     atual = ''; im.classList.remove('vis'); saiCar(); modoCar = true;
     var it = Array.isArray(m.it) ? m.it : [];
@@ -125,7 +127,8 @@ body.online #rodar,body.online #pt{display:none}
       e.src = /^https?:/i.test(x.u) ? x.u : new URL(x.u, location.href).href; sl.append(e);
       if (m.nm && x.n) { var n = document.createElement('div'); n.className = 'nome'; n.textContent = x.n; sl.append(n); }
       car.append(sl);
-      var d = document.createElement('i'); d.onclick = function(){ foca(k, true); anuncia(k); }; bar.append(d); });
+      if (it.length <= 12) { var d = document.createElement('i'); d.onclick = function(){ foca(k, true); anuncia(k); }; bar.append(d); } });
+    bar.classList.toggle('num', it.length > 12);
     nSl = it.length; bar.hidden = nSl < 2; car.hidden = false;
     foca(Math.min(Math.max(+m.i || 0, 0), nSl - 1), false); anuncia(focoAtual);
   }
