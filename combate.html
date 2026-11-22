@@ -414,6 +414,11 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 
 <style id="condensado">
 #emocoes{padding-bottom:40px}
+.emo-it{position:relative;display:grid;grid-template-columns:1fr auto;gap:4px}.emo-it .emo-f{min-width:0}
+.emo-eng{min-width:40px;min-height:40px;padding:0;font-size:18px}
+.emo-menu{grid-column:1 / -1;display:flex;gap:8px;flex-wrap:wrap;padding:6px 2px}
+.emo-rem{margin-top:12px}.emo-rem summary{cursor:pointer;color:var(--apagado)}
+.emo-linrem{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08)}
 .emo-barra{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:14px 0}
 .emo-card{border:1px solid var(--linha,rgba(255,255,255,.14));border-radius:14px;padding:14px;margin:12px 0;background:rgba(255,255,255,.03)}
 .emo-card.on{border-color:var(--ouro,#e0b24a);background:rgba(224,178,74,.07)}
@@ -1499,6 +1504,17 @@ function emoTocar(g, f){
   const l = emoLista(g); if (!l.length) return;
   const ini = f || (E.aleat && l.length > 1 ? l[Math.floor(Math.random() * l.length)] : l[0]);
   tocar(ini, null, {fila:l.slice(), lista:true, nome:g.nome.replace('Emoção — ', ''), forcar:true}); }
+let emoEng = '';
+function emoRemover(g, f){
+  const l = emoLista(g), i = l.indexOf(f), prox = l[i + 1] || l[i - 1], era = tocando === f;
+  g.faixas.splice(g.faixas.indexOf(f), 1); if (!E.rem.includes(f.id)) E.rem.push(f.id); emoEng = ''; salvar();
+  if (era) { if (prox) emoTocar(g, prox); else parar(); }
+  else if (tocando && g.faixas.includes(tocando)) { fila = fila.filter(x => x !== f); montaOrdem(tocando); }
+  desenharEmocoes(); }
+function emoRestaurar(g, pf){
+  E.rem = E.rem.filter(x => x !== pf.id); if (!g.faixas.some(x => x.id === pf.id)) g.faixas.push(novaFaixa(pf));
+  if (tocando && g.faixas.includes(tocando)) { fila = emoLista(g); montaOrdem(tocando); }
+  salvar(); desenharEmocoes(); }
 function desenharEmocoes(){
   const raiz = document.getElementById('emocoes');
   const grupos = EMO.map(e => E.grupos.find(g => g.id === 'emo-' + e.k)).filter(Boolean);
@@ -1514,8 +1530,13 @@ function desenharEmocoes(){
         el('div',{class:'emo-topo'},
           el('div',{}, el('b',{class:'emo-n'}, g.nome.replace('Emoção — ', '')), el('div',{class:'sub'}, g.sub + ' · ' + l.length + ' músicas')),
           el('button',{type:'button', class:'emo-play', onclick:() => emoTocar(g), 'aria-label':'Tocar ' + g.nome}, dentro ? 'Recomeçar' : '▶ Tocar')),
-        el('div',{class:'emo-lista'}, ...l.map(f => el('button',{type:'button', class:'emo-f' + (tocando === f ? ' atual' : ''), onclick:() => emoTocar(g, f), title:f.momento || ''},
-          el('span',{class:'ic'}, tocando === f ? '●' : '▶'), el('span',{}, f.nome))))); }));
+        el('div',{class:'emo-lista'}, ...l.map(f => el('div',{class:'emo-it' + (emoEng === f.id ? ' eng' : '')},
+          el('button',{type:'button', class:'emo-f' + (tocando === f ? ' atual' : ''), onclick:() => emoTocar(g, f), title:f.momento || ''},
+            el('span',{class:'ic'}, tocando === f ? '●' : '▶'), el('span',{}, f.nome)),
+          el('button',{type:'button', class:'emo-eng', 'aria-label':'Opções de ' + f.nome, 'aria-expanded':String(emoEng === f.id), title:'Opções desta música', onclick:() => { emoEng = emoEng === f.id ? '' : f.id; desenharEmocoes(); }}, '⚙'),
+          emoEng === f.id ? el('div',{class:'emo-menu'}, el('button',{type:'button', class:'peq perigo', onclick:() => emoRemover(g, f)}, 'Tirar desta emoção'), el('button',{type:'button', class:'peq', onclick:() => { emoEng = ''; desenharEmocoes(); }}, 'Fechar')) : null))),
+        (() => { const pg = EMO.find(e => 'emo-' + e.k === g.id), vol = PADRAO.find(p => p.id === g.id).faixas.filter(pf => E.rem.includes(pf.id));
+          return vol.length ? el('details',{class:'emo-rem'}, el('summary',{}, 'Tiradas (' + vol.length + ')'), ...vol.map(pf => el('div',{class:'emo-linrem'}, el('span',{}, pf.nome), el('button',{type:'button', class:'peq', onclick:() => emoRestaurar(g, pf)}, 'Restaurar')))) : null; })()); }));
 }
 
 // ---------- Triagem: toca um trecho do meio de cada música, para decidir quais ficam ----------

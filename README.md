@@ -143,3 +143,6 @@ Se a aba de transmissão fechar, o som volta sozinho para a aba do Mestre. As du
 
 ## Aba Emoções
 Música por sentimento (tristeza e luto, saudade e nostalgia, esperança e consolo, calma e acolhimento, maravilha e descoberta, tensão e suspense, solenidade e reverência, alegria e leveza), 10 músicas cada, sem músicas de inimigos. **▶ Tocar** começa a emoção e ela segue sozinha na mesma emoção, sem silêncio, até você trocar ou parar. Dá para clicar numa música específica e a lista continua dali. Os dados ficam em `EMO` no `combate.html`; as músicas também aparecem em Ajustes › Triagem (personagem = nome da emoção) para decidir quais ficam.
+
+### Engrenagem nas Emoções
+Cada música da aba Emoções tem um ⚙: toque nele e em "Tirar desta emoção". Se estava tocando, passa para a próxima da mesma emoção. Em "Tiradas (n)", no fim de cada emoção, há "Restaurar".
