@@ -413,6 +413,18 @@ button.perigo{background:none;border-color:#7a2a22;color:#ff9c8e}
 </style>
 
 <style id="condensado">
+#emocoes{padding-bottom:40px}
+.emo-barra{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:14px 0}
+.emo-card{border:1px solid var(--linha,rgba(255,255,255,.14));border-radius:14px;padding:14px;margin:12px 0;background:rgba(255,255,255,.03)}
+.emo-card.on{border-color:var(--ouro,#e0b24a);background:rgba(224,178,74,.07)}
+.emo-topo{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+.emo-n{font-size:20px}
+.emo-play{min-height:44px;padding:0 20px;font-weight:700;background:var(--terracota);border-color:var(--terracota);color:var(--sobre)}
+.emo-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;margin-top:12px}
+.emo-f{display:flex;gap:8px;align-items:center;text-align:left;min-height:40px;padding:6px 10px}
+.emo-f.atual{border-color:var(--ouro,#e0b24a);color:var(--ouro,#e0b24a)}
+.emo-f .ic{flex:none;width:1.2em}
+
 /* ===== Combate condensado (experimental) ===== */
 .inm-topo .arco{width:64px;height:80px;max-width:none;max-height:none;border-radius:32px 32px 4px 4px;padding:2px}
 .inm-topo .arco img{border-radius:30px 30px 2px 2px}
@@ -867,6 +879,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[dat
     <button role="tab" id="abaImg" aria-selected="false">Imagens</button>
     <button role="tab" id="abaMes" aria-selected="false">Mestre</button>
     <button role="tab" id="abaCmb" aria-selected="false">Combate</button>
+    <button role="tab" id="abaEmo" aria-selected="false">Emoções</button>
     <button role="tab" id="abaAj" aria-selected="false">Ajustes</button>
   </div>
   <button id="btLetra" class="peq" aria-pressed="false" title="Aumenta as letras e os botões">Letra grande</button>
@@ -888,6 +901,7 @@ body[data-aba="cmb"] #painelMestre > :not(:is([data-p="ini"],[data-p="inm"],[dat
   <section id="imagens" hidden></section>
   <section id="sessao" hidden></section>
   <section id="sons" hidden></section>
+  <section id="emocoes" hidden></section>
   <section id="painelMestre" hidden></section>
   <section id="ajustes" hidden></section>
 </main>
@@ -1120,6 +1134,60 @@ const PADRAO = [
   F('ban-bolero','Ravel — “Boléro”','Fundo com pulso que cresce: preparação, tensão que acumula','momento',0,['Dh9bUD-hC0A','LwLABSm0yYc']),
  ]},
 ];
+
+// ---------- Emoções: músicas por sentimento (sem músicas de inimigos). Tocam em sequência dentro da mesma emoção. ----------
+const EMO = [
+ {k:'tristeza', nome:'Tristeza e luto', sub:'Perda, despedida, o peso de uma morte.',
+  r:['via-porco','via-violet','mom-stabat','mom-dido','mom-lacrimosa','mom-departure'],
+  n:[['schindler','John Williams — Tema de “A Lista de Schindler” (violino)','Luto sereno, sem fúria',['5Ah3iPXdLn8','057A1RdssoU']],
+     ['albinoni','Albinoni/Giazotto — Adagio em Sol menor','Dor lenta, cordas e órgão',['4SRAlF_JYS4','_eLU5W1vc8Y']],
+     ['chopin4','Chopin — Prelúdio nº 4 em Mi menor','Piano curto, quase um cortejo fúnebre',['CU9RgI9j7Do','1VNKqZzPLDg']],
+     ['vocalise','Rachmaninoff — Vocalise','Lamento sem palavras',['vTFngQBB3uQ','4qcSPwMyFRQ']]]},
+ {k:'saudade', nome:'Saudade e nostalgia', sub:'Lembrar de quem ou do que ficou para trás, com ternura.',
+  r:['via-frieren-time','via-spirited','via-natsume'],
+  n:[['nuvole','Einaudi — “Nuvole Bianche”','Piano de lembrança doce',['CQ8zglIXZi8','PhXEL2FRSag']],
+     ['clair','Debussy — “Clair de Lune”','Noite, lua, memória',['-Bxpm0EmOMU','oYMmm6XckDI']],
+     ['gnoss','Satie — “Gnossienne nº 1”','Melancolia estranha e suspensa',['lqZehFAwoTM','0DvEzVhdbmY']],
+     ['itsumo','Hisaishi/Kimura — “Itsumo Nando Demo” (Viagem de Chihiro)','Saudade que consola',['oK3J0xI_KaY','tBSthP5LTZU']],
+     ['paradiso','Morricone — Tema de Amor de “Cinema Paradiso”','Nostalgia de um tempo que passou',['6lRqY7eu0BU','kKPcytAG_7s']],
+     ['comptine','Yann Tiersen — “Comptine d’un autre été”','Infância ao piano',['NvryolGa19A','znfYwABeSZ0']],
+     ['valse','Sibelius — “Valse Triste”','Valsa de despedida, agridoce',['5Ls8-pk4IS4','0bVY70dWHhI']]]},
+ {k:'esperanca', nome:'Esperança e consolo', sub:'Luz depois da perda; recomeço, cuidado, coragem tranquila.',
+  r:['via-kiki','via-mipha','ban-nowfree','ban-time','ban-onelast','via-laputa','via-frieren-journey'],
+  n:[['gabriel','Morricone — “Gabriel’s Oboe” (A Missão)','Consolo sereno, oboé e cordas',['lArnKBTe82I','nEG4QFKBe4o']],
+     ['nimrod','Elgar — “Nimrod” (Variações Enigma)','Dignidade e abraço, crescendo suave',['7iM5dymBBI4','mQTi0cr3Zz0']],
+     ['dawn','Marianelli — “Dawn” (Orgulho e Preconceito)','Amanhecer, piano leve',['ouVXykPJqvI','P6kfKxRbhLY']]]},
+ {k:'calma', nome:'Calma e acolhimento', sub:'Fogueira, estalagem, descanso, conversa baixa.',
+  r:['via-konosuba-sleeps','via-totoro','via-flyingwitch','via-yokohama','ban-gymnopedie','via-kikujiro'],
+  n:[['reverie','Debussy — “Rêverie”','Devaneio calmo ao piano',['fSToaUbll7k','3OpBHpBsEE8']],
+     ['nearlight','Ólafur Arnalds — “Near Light”','Piano e cordas bem baixinho',['-M9PnC6uJVs','0kYc55bXJFI']],
+     ['clair','Debussy — “Clair de Lune”','Noite tranquila',['-Bxpm0EmOMU','oYMmm6XckDI']],
+     ['nuvole','Einaudi — “Nuvole Bianche”','Piano lento e macio',['CQ8zglIXZi8','PhXEL2FRSag']]]},
+ {k:'maravilha', nome:'Maravilha e descoberta', sub:'Ver algo imenso ou mágico pela primeira vez; a estrada se abre.',
+  r:['via-frieren-journey','via-windrises','ban-moldau','ban-hebrides','ban-arabesque','ban-romanticflight','ban-laputa','via-howl','via-kiki'],
+  n:[['cornfield','Hans Zimmer — “Cornfield Chase” (Interestelar)','Campo aberto, órgão e crescendo',['7GlsxNI4LVI','JuSsvM8B4Jc']]]},
+ {k:'tensao', nome:'Tensão e suspense', sub:'Algo está errado, ainda sem luta. Medo que acumula, silêncio estranho.',
+  r:['via-kino','via-girlslast','via-mushishi','ban-beast','ban-baldmountain','ban-supermarine','ban-psycho','ban-polymorphia','ban-bolero'],
+  n:[['lux','Clint Mansell — “Lux Aeterna”','Cordas que sobem sem parar',['oc3Cq89P97Y','CZMuDbaXbC8']]]},
+ {k:'solenidade', nome:'Solenidade e reverência', sub:'Rito, juramento, o sagrado, o momento que pede silêncio dos jogadores.',
+  r:['ban-chevaliers','ban-finlandia','ban-dream','mom-miserere'],
+  n:[['gabriel','Morricone — “Gabriel’s Oboe” (A Missão)','Reverência calma',['lArnKBTe82I','nEG4QFKBe4o']],
+     ['nimrod','Elgar — “Nimrod” (Variações Enigma)','Cerimônia e homenagem',['7iM5dymBBI4','mQTi0cr3Zz0']],
+     ['spem','Tallis — “Spem in alium” (40 vozes)','Coro enorme, sagrado',['CkL1hdL40i0','3YdZYYZ11Wg']],
+     ['paradisum','Fauré — “In Paradisum” (Réquiem)','Coro suave, despedida luminosa',['kG8MojbMyWw','JwRZsT2Umh0']],
+     ['agnus','Barber — “Agnus Dei” (coro)','Coro lento e grave',['jGQ68JIXVWQ','-uLH27DWWZE']],
+     ['magnum','Lauridsen — “O Magnum Mysterium”','Coro luminoso e quieto',['9ZsnQDRNjrc','I9zqc1YyaFg']]]},
+ {k:'alegria', nome:'Alegria e leveza', sub:'Festa, riso, comida na mesa, dia bom de estrada.',
+  r:['via-konosuba-town','via-konosuba-chiisana','via-howl','via-kikujiro','via-shire','via-spice','via-totoro'],
+  n:[['sanpo','Hisaishi — “Sanpo” (Meu Vizinho Totoro, piano)','Passeio alegre',['cHmIJ8ZiMa4','wDM7eQBKi9U']],
+     ['kiki','Hisaishi — Tema de “Kiki” (LSO)','Voo e manhã de sol',['BAtLdmalqhg','0FqSkUuyF58']],
+     ['kleine','Mozart — “Eine kleine Nachtmusik”, 1º mov.','Elegância animada',['UhPBT0dA_oA','fyQ8PWa9b_A']]]},
+];
+(function(){ const base = {}; PADRAO.forEach(g => g.faixas.forEach(f => { base[f.id] = f; }));
+  EMO.forEach(e => PADRAO.push({id:'emo-' + e.k, nome:e.nome, sub:e.sub, faixas:[
+    ...e.r.map(id => { const f = base[id]; return F('emo-' + e.k + '-' + id, f.nome, '', 'momento', 0, f.videos); }),
+    ...e.n.map(x => F('emo-' + e.k + '-' + x[0], x[1], x[2], 'momento', 0, x[3])) ]})); })();
+const ehEmo = g => !!g && String(g.id).startsWith('emo-');
 
 const ROTEIRO_PADRAO = [
  {titulo:'Ato 1 · A estrada', nota:'A Rafaela e o Tobias na estrada. Deixe cada jogador se apresentar e dizer como conhece o pai da Rafaela.', faixa:'mom-departure'},
@@ -1424,6 +1492,32 @@ function musicaDaLuta(ids){
   const gs = [...new Set(ids.map(GRUPO_DE_INIMIGO))], l = gs.flatMap(g => listaDoGrupo(g)), nomes = gs.map(g => (E.grupos.find(x => x.id === g) || {nome:g}).nome.split(' — ')[0]).join(' e ');
   if (l.length) tocarLista(l, nomes + ' · combate'); else aviso('Nenhuma música de combate marcada para ' + nomes + '. Marque na aba Seleção.'); }
 
+
+// ---------- Aba Emoções ----------
+function emoLista(g){ return g.faixas.filter(f => videoDe(f)); }
+function emoTocar(g, f){
+  const l = emoLista(g); if (!l.length) return;
+  const ini = f || (E.aleat && l.length > 1 ? l[Math.floor(Math.random() * l.length)] : l[0]);
+  tocar(ini, null, {fila:l.slice(), lista:true, nome:g.nome.replace('Emoção — ', ''), forcar:true}); }
+function desenharEmocoes(){
+  const raiz = document.getElementById('emocoes');
+  const grupos = EMO.map(e => E.grupos.find(g => g.id === 'emo-' + e.k)).filter(Boolean);
+  raiz.replaceChildren(
+    el('h2',{style:'margin-top:18px'}, 'Emoções'),
+    el('p',{class:'sub', style:'margin-top:6px'}, 'Escolha o sentimento que a cena pede e dê play. A música segue sozinha dentro da mesma emoção, sem silêncio, até você trocar de emoção ou parar. Aqui não há músicas dos inimigos.'),
+    el('div',{class:'emo-barra'},
+      el('label',{class:'lin'}, el('input',{type:'checkbox', checked:!!E.aleat, onchange:() => { alternarAleat(); desenharEmocoes(); }}), 'Ordem aleatória'),
+      el('button',{class:'peq', type:'button', onclick:() => vizinha(1), disabled:!tocando}, 'Próxima'),
+      el('button',{class:'peq', type:'button', onclick:() => parar(1500), disabled:!tocando}, 'Parar')),
+    ...grupos.map(g => { const l = emoLista(g), dentro = !!tocando && g.faixas.includes(tocando);
+      return el('div',{class:'emo-card' + (dentro ? ' on' : '')},
+        el('div',{class:'emo-topo'},
+          el('div',{}, el('b',{class:'emo-n'}, g.nome.replace('Emoção — ', '')), el('div',{class:'sub'}, g.sub + ' · ' + l.length + ' músicas')),
+          el('button',{type:'button', class:'emo-play', onclick:() => emoTocar(g), 'aria-label':'Tocar ' + g.nome}, dentro ? 'Recomeçar' : '▶ Tocar')),
+        el('div',{class:'emo-lista'}, ...l.map(f => el('button',{type:'button', class:'emo-f' + (tocando === f ? ' atual' : ''), onclick:() => emoTocar(g, f), title:f.momento || ''},
+          el('span',{class:'ic'}, tocando === f ? '●' : '▶'), el('span',{}, f.nome))))); }));
+}
+
 // ---------- Triagem: toca um trecho do meio de cada música, para decidir quais ficam ----------
 function triLista(){ const esc = E.triEsc||'todos', q = E.triQuais||'todas';
   return E.grupos.filter(g => esc==='todos' || g.id===esc).flatMap(g => g.faixas).filter(f => q==='todas' || (q==='marcadas') === !!f.usar); }
@@ -1486,6 +1580,7 @@ function desenharElenco(){
   const sel = modo === 'sel' ? atual : atualSes;
   if (modo === 'ses') nav.append(el('button',{class:'chip so', 'aria-pressed':String(sel==='todos'), onclick:()=>{ atualSes='todos'; desenhar(); }},'Todos'));
   for (const g of E.grupos) {
+    if (ehEmo(g)) continue;
     const n = g.faixas.filter(f => f.usar).length;
     if (modo === 'ses' && !n) continue;
     nav.append(el('button',{class:'chip', 'aria-pressed':String(sel===g.id), onclick:()=>{ if (modo==='sel') atual=g.id; else atualSes=g.id; desenhar(); }},
@@ -2918,7 +3013,7 @@ function desenhar(esc){
 }
 function desenhar0(){ if (modo==='sel' && !E.grupos.some(g => g.id===atual)) atual = (E.grupos[0]||{}).id || null;
   if (modo==='ses' && atualSes!=='todos' && !E.grupos.some(g => g.id===atualSes && g.faixas.some(f => f.usar))) atualSes = 'todos';
-  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cmb' || modo==='cen' || modo==='img' || modo==='aj' || modo==='son'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='img') desenharImagens(); else if (modo==='mes' || modo==='cmb') desenharMestre(); else if (modo==='aj') desenharAjCombate(); else if (modo==='son') { /* o editor de sons se desenha sozinho */ } else desenharSessao(); atualizaFaixa(); }
+  document.getElementById('elenco').hidden = modo==='tri' || modo==='mes' || modo==='cmb' || modo==='cen' || modo==='img' || modo==='aj' || modo==='son' || modo==='emo'; desenharElenco(); if (modo==='sel') desenharSelecao(); else if (modo==='tri') desenharTriagem(); else if (modo==='cen') desenharCenas(); else if (modo==='img') desenharImagens(); else if (modo==='mes' || modo==='cmb') desenharMestre(); else if (modo==='aj') desenharAjCombate(); else if (modo==='son') { /* o editor de sons se desenha sozinho */ } else if (modo==='emo') desenharEmocoes(); else desenharSessao(); atualizaFaixa(); }
 function marcar(){ const g = tocando && grupoDe(tocando);
   document.getElementById('agoraTit').textContent = tocando ? tocando.nome : 'Silêncio';
   document.getElementById('agoraRot').textContent = g ? g.nome.split(' — ')[0] : 'Tocando agora';
@@ -3233,8 +3328,8 @@ $('btVid').onclick = () => { const p = $('players'), mini = p.classList.toggle('
 let trava = null;
 const GRUPO_AJ = ['aj','sel','tri','cen','ses','son'];
 function aba(qual){ modo = qual; document.body.dataset.aba = qual;
-  for (const [k, sec] of [['sel','selecao'],['tri','triagem'],['cen','cenas'],['img','imagens'],['ses','sessao'],['mes','painelMestre'],['cmb','painelMestre'],['aj','ajustes'],['son','sons']]) $(sec).hidden = qual!==k && !(sec === 'painelMestre' && (qual === 'mes' || qual === 'cmb'));
-  for (const [k, bt] of [['img','abaImg'],['mes','abaMes'],['cmb','abaCmb'],['sel','abaSel'],['tri','abaTri'],['cen','abaCen'],['ses','abaSes'],['aj','abaAjG'],['son','abaSon']]) $(bt).setAttribute('aria-selected', qual===k);
+  for (const [k, sec] of [['sel','selecao'],['tri','triagem'],['cen','cenas'],['img','imagens'],['ses','sessao'],['mes','painelMestre'],['cmb','painelMestre'],['aj','ajustes'],['son','sons'],['emo','emocoes']]) $(sec).hidden = qual!==k && !(sec === 'painelMestre' && (qual === 'mes' || qual === 'cmb'));
+  for (const [k, bt] of [['img','abaImg'],['mes','abaMes'],['cmb','abaCmb'],['sel','abaSel'],['tri','abaTri'],['cen','abaCen'],['ses','abaSes'],['aj','abaAjG'],['son','abaSon'],['emo','abaEmo']]) $(bt).setAttribute('aria-selected', qual===k);
   $('abaAj').setAttribute('aria-selected', GRUPO_AJ.includes(qual)); $('subAj').hidden = !GRUPO_AJ.includes(qual);
   if (window.OTLSONS) { if (qual === 'son') OTLSONS.abrir($('sons')); else OTLSONS.fechar(); }
   if (qual === 'mes' || qual === 'cmb') rotRolar = true;
@@ -3251,6 +3346,7 @@ $('abaCen').onclick = () => aba('cen');
 $('abaImg').onclick = () => aba('img');
 $('abaSes').onclick = () => aba('ses');
 $('abaSon').onclick = () => aba('son');
+$('abaEmo').onclick = () => aba('emo');
 $('abaMes').onclick = () => aba('mes');
 $('abaAj').onclick = () => aba(GRUPO_AJ.includes(modo) ? modo : 'aj');
 if (window.OTL) OTL.ui($('ajustes'));
@@ -3358,7 +3454,7 @@ let uiRest = null; try { uiRest = JSON.parse(localStorage.getItem(KU) || 'null')
 if (uiRest && typeof uiRest === 'object') {
   if (Array.isArray(uiRest.ab)) { abertas.clear(); uiRest.ab.forEach(x => abertas.add(String(x))); }
   if (uiRest.ses) atualSes = uiRest.ses; if (uiRest.falaDe) falaDe = uiRest.falaDe; if (uiRest.gatilhoDe) gatilhoDe = uiRest.gatilhoDe;
-  if (['ses','mes','cmb','aj','img','cen','tri','sel'].includes(uiRest.modo)) aba(uiRest.modo); else aba('mes');
+  if (['ses','mes','cmb','aj','img','cen','tri','sel','emo'].includes(uiRest.modo)) aba(uiRest.modo); else aba('mes');
 }
 if (!uiRest || typeof uiRest !== 'object') aba('mes'); else desenhar();
 if (uiRest && uiRest.y > 0) { const y = uiRest.y, volta = () => { if (!moveu) window.scrollTo(0, y); }; requestAnimationFrame(volta); setTimeout(volta, 400); addEventListener('load', () => setTimeout(volta, 100), {once:true}); }

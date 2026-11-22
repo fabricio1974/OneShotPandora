@@ -140,3 +140,6 @@ Painel **Ambiente · chuva, vento, raios, animais**: cenários prontos (Tempesta
 3. No Meet (Chrome): **Apresentar agora › Uma guia › a aba de transmissão**, com **Compartilhar áudio da guia** marcado. Use fones.
 4. A aba do Mestre (combate.html) segue privada e controla tudo: música, sons de ambiente e efeitos, imagens e a iniciativa (só nomes, sem PV).
 Se a aba de transmissão fechar, o som volta sozinho para a aba do Mestre. As duas abas precisam estar no mesmo navegador.
+
+## Aba Emoções
+Música por sentimento (tristeza e luto, saudade e nostalgia, esperança e consolo, calma e acolhimento, maravilha e descoberta, tensão e suspense, solenidade e reverência, alegria e leveza), 10 músicas cada, sem músicas de inimigos. **▶ Tocar** começa a emoção e ela segue sozinha na mesma emoção, sem silêncio, até você trocar ou parar. Dá para clicar numa música específica e a lista continua dali. Os dados ficam em `EMO` no `combate.html`; as músicas também aparecem em Ajustes › Triagem (personagem = nome da emoção) para decidir quais ficam.
