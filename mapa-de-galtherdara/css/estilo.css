@@ -111,6 +111,20 @@ body.lado-fechado #lado{transform:translateX(-100%)}
 #lugar .notas-perto li{padding:7px 4px;font-size:15px}
 #lugar .anotar-aqui{width:100%;margin-top:12px}
 
+#lugar .capa{display:block;width:calc(100% + 44px);margin:-20px -22px 14px;max-height:190px;object-fit:cover;border-bottom:1px solid var(--ouro-esc)}
+#lugar .texto-guilda.wiki{border-left:none;padding:0;color:var(--texto);font-style:normal;font-size:16px;line-height:1.5}
+#lugar .texto-guilda p,#lugar .secoes p{margin:0 0 10px}
+#lugar details{border-top:1px solid var(--linha);padding:8px 0}
+#lugar summary{cursor:pointer;font-family:var(--titulo);font-size:14px;color:var(--ouro);letter-spacing:.04em}
+#lugar details div{font-size:15px;line-height:1.5;margin-top:8px;color:var(--texto)}
+#lugar .fonte{margin:12px 0 4px;font-size:14px}
+#lugar .fonte a,#aba-sobre a{color:var(--turquesa)}
+#lugar .aprox{font-size:13px;color:var(--texto2);font-style:italic;margin:-6px 0 10px}
+#listaMundo h3{font-family:var(--titulo);font-size:13px;letter-spacing:.12em;color:var(--ouro);margin:16px 16px 4px;text-transform:uppercase}
+.pjs{display:flex;flex-wrap:wrap;gap:6px;max-height:150px;overflow:auto}
+.pjs button{display:flex;align-items:center;gap:6px;background:var(--fundo);border:1px solid var(--linha);padding:3px 8px 3px 3px;font-size:14px}
+.pjs button:hover{border-color:var(--ouro)}
+.pjs img{width:26px;height:26px;object-fit:cover;border-radius:50%}
 /* Ferramentas */
 #ferr{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:950;display:flex;gap:10px;box-shadow:var(--sombra)}
 #ferr .bt{padding:11px 20px;font-size:15px;background:rgba(31,27,20,.96)}

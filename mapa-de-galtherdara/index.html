@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="vendor/leaflet.css">
-<link rel="stylesheet" href="css/estilo.css?v=1">
+<link rel="stylesheet" href="css/estilo.css?v=2">
 </head>
 <body>
 
@@ -41,10 +41,12 @@
 <aside id="lado">
   <nav class="abas">
     <button data-aba="locais" class="ativa">Lugares</button>
+    <button data-aba="mundo">Mundo</button>
     <button data-aba="pers">Personagens</button>
     <button data-aba="sobre">Sobre</button>
   </nav>
   <section id="aba-locais" class="aba ativa"><ul id="listaLocais" class="lista"></ul></section>
+  <section id="aba-mundo" class="aba"><div id="listaMundo"><p class="dica">Carregando a wiki da guilda…</p></div></section>
   <section id="aba-pers" class="aba">
     <p class="dica">Cada personagem tem uma cor. Marque ou desmarque para mostrar ou esconder as notas e trilhas dele.</p>
     <ul id="listaPers" class="lista"></ul>
@@ -52,7 +54,7 @@
   </section>
   <section id="aba-sobre" class="aba">
     <h3>O que é isto</h3>
-    <p>Um protótipo de site para a guilda: o mapa de Galtherdara com zoom, os lugares marcados, e um espaço onde cada personagem guarda as suas anotações e o caminho que percorreu.</p>
+    <p>Um protótipo de site para a guilda: o mapa de Galtherdara com zoom, os lugares marcados com os textos da <a href="https://app.kanka.io/w/plano-logos" target="_blank" rel="noopener">wiki da guilda no Kanka</a>, e um espaço onde cada personagem guarda as suas anotações e o caminho que percorreu.</p>
     <h3>Como usar</h3>
     <ul class="passos">
       <li><b>Arraste</b> e use a <b>roda do mouse</b> ou a <b>pinça</b> para dar zoom.</li>
@@ -64,7 +66,7 @@
     </ul>
     <h3>O que poderia vir depois</h3>
     <ul class="passos">
-      <li>Textos de cada lugar escritos pela guilda.</li>
+      <li>Sincronizar com a wiki automaticamente (API do Kanka).</li>
       <li>Missões marcadas no mapa, ligadas aos logs.</li>
       <li>Regiões com contorno, facções, rotas.</li>
       <li>Ilustrações das cidades com zoom profundo.</li>
@@ -75,13 +77,19 @@
 <!-- Painel do lugar -->
 <article id="lugar" hidden>
   <button class="fechar" aria-label="Fechar">×</button>
+  <img class="capa" alt="" hidden referrerpolicy="no-referrer" loading="lazy">
   <p class="tipo"></p>
   <h2></h2>
   <p class="resumo"></p>
   <div class="texto-guilda"></div>
-  <h4>Anotações por perto</h4>
-  <ul class="notas-perto lista"></ul>
-  <button class="bt bt-ouro anotar-aqui">＋ Anotar aqui</button>
+  <div class="secoes"></div>
+  <div class="filhos-box" hidden><h4>Neste lugar</h4><ul class="filhos lista"></ul></div>
+  <p class="fonte" hidden><a target="_blank" rel="noopener">Ver na wiki da guilda ↗</a></p>
+  <div class="no-mapa">
+    <h4>Anotações por perto</h4>
+    <ul class="notas-perto lista"></ul>
+    <button class="bt bt-ouro anotar-aqui">＋ Anotar aqui</button>
+  </div>
 </article>
 
 <!-- Ferramentas -->
@@ -101,6 +109,7 @@
   <form method="dialog">
     <h3>Quem é você?</h3>
     <label>Nome do personagem<input id="qNome" maxlength="40" required placeholder="Ex.: Akari"></label>
+    <div id="qPjs" hidden><p class="rot">Personagens da guilda</p><div class="pjs"></div></div>
     <p class="rot">Cor</p>
     <div id="qCores" class="cores"></div>
     <menu><button value="cancel" class="bt" formnovalidate>Cancelar</button><button id="qOk" value="ok" class="bt bt-ouro">Pronto</button></menu>
@@ -129,6 +138,6 @@
 
 <script src="vendor/leaflet.js"></script>
 <script src="vendor/supabase.js"></script>
-<script src="js/app.js?v=1"></script>
+<script src="js/app.js?v=2"></script>
 </body>
 </html>

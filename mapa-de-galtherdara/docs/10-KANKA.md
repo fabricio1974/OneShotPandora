@@ -49,3 +49,14 @@ O Kanka monta as páginas com JavaScript e não libera acesso de outros sites. P
 3. **API oficial do Kanka**, com um token pessoal de alguém da guilda. É o caminho para um site definitivo, com sincronização automática.
 
 Tamanho aproximado do texto público: locais ~100 KB, raças ~46 KB, organizações ~15 KB, notas ~11 KB, eventos ~7 KB.
+
+## Feito (28/11/2026)
+
+Escolhida a **opção 1**. O conteúdo público (240 entradas) foi copiado para a tabela `galtherdara_kanka` do Supabase (ver `tools/supabase/galtherdara_002_kanka.sql`); a função de importação foi apagada em seguida, e a tabela ficou só leitura.
+
+No site:
+- cada lugar do mapa ligado à wiki (`kanka` em `dados/locais.json`) mostra imagem, texto, seções recolhíveis, o que fica dentro dele e o link para a wiki;
+- 6 lugares novos vindos dos pinos do Kanka (posição aproximada);
+- aba **Mundo**: lugares fora do mapa, organizações, história, conhecimento e raças;
+- "Quem é você?" sugere os personagens de jogador da guilda, com retrato;
+- a busca encontra também o conteúdo da wiki.

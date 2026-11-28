@@ -6,7 +6,9 @@ const SB_URL = 'https://bfommmrznwqhxnkpfjla.supabase.co';
 const SB_KEY = 'sb_publishable_U3KwXKnyb92OQyEjYwSBHA_qs9nfImW';
 const W = 8192, H = 6144, ZMAX = 5;
 const CORES = ['#e0564f','#e89a3c','#e8cf5a','#6cc56a','#4fc3c9','#5a8ee8','#9b6ee8','#e06fb8','#d9d2c0','#8b6b4a'];
-const TIPOS = {cidade:'Cidade', vila:'Vila', regiao:'Região', ruina:'Ruínas', marco:'Marco', masmorra:'Masmorra', templo:'Templo', porto:'Porto'};
+const TIPOS = {cidade:'Cidade', vila:'Vila', regiao:'Região', ruina:'Ruínas', marco:'Marco', masmorra:'Masmorra', templo:'Templo', porto:'Porto', reino:'Reino', dominio:'Domínio de Dragão', continente:'Continente', organizacao:'Organização'};
+const CATS = {location:'Lugar', organisation:'Organização', event:'Evento', note:'Nota', race:'Raça', character:'Personagem'};
+const WIKI = 'https://app.kanka.io/w/plano-logos/entities/';
 const RAIO_PERTO = 420; // px do mapa original
 
 const $ = s => document.querySelector(s);
@@ -82,17 +84,71 @@ async function carregarLocais() {
   });
 }
 
+// ---------- Wiki (Kanka) ----------
+const kanka = {};            // id -> entidade
+const filhosDe = {};         // id -> [entidades]
+const kankaParaLocal = {};   // id kanka -> local do mapa
+const paragrafos = t => String(t || '').split(/\n+/).map(x => x.trim()).filter(Boolean).map(x => `<p>${esc(x)}</p>`).join('');
+
+function preencherPainel(ent, local) {
+  const p = $('#lugar');
+  const img = p.querySelector('.capa');
+  if (ent && (ent.img || ent.thumb)) { img.src = ent.img || ent.thumb; img.hidden = false; img.onerror = () => { img.hidden = true; }; } else { img.hidden = true; img.removeAttribute('src'); }
+  p.querySelector('.tipo').textContent = (ent && ent.tipo) || (local && (TIPOS[local.tipo] || local.tipo)) || (ent && CATS[ent.cat]) || '';
+  p.querySelector('h2').textContent = local ? local.nome : ent.nome;
+  const resumo = p.querySelector('.resumo'), corpo = p.querySelector('.texto-guilda'), secoes = p.querySelector('.secoes');
+  secoes.innerHTML = '';
+  if (ent && (ent.entrada || (ent.posts || []).length)) {
+    const ps = ent.entrada.split(/\n+/).filter(x => x.trim());
+    resumo.textContent = ps[0] || (local ? local.resumo : '');
+    corpo.className = 'texto-guilda wiki'; corpo.innerHTML = paragrafos(ps.slice(1).join('\n'));
+    (ent.posts || []).filter(x => x.c && x.c.trim()).forEach(x => {
+      const d = document.createElement('details');
+      d.innerHTML = `<summary>${esc(x.t || 'Mais')}</summary><div>${paragrafos(x.c)}</div>`;
+      secoes.appendChild(d);
+    });
+  } else {
+    resumo.textContent = local ? (local.resumo || 'O que se vê no mapa.') : '';
+    corpo.className = 'texto-guilda';
+    corpo.textContent = ent ? 'Esta página ainda está vazia na wiki da guilda.' : 'Este lugar ainda não tem página na wiki da guilda.';
+  }
+  p.querySelectorAll('.aprox').forEach(x => x.remove());
+  if (local && local.posAproximada) p.querySelector('h2').insertAdjacentHTML('afterend', '<p class="aprox">Posição aproximada, trazida do mapa da wiki.</p>');
+  const filhos = ent ? (filhosDe[ent.id] || []) : [];
+  const ulF = p.querySelector('.filhos'); ulF.innerHTML = '';
+  p.querySelector('.filhos-box').hidden = !filhos.length;
+  filhos.sort((a, b) => a.nome.localeCompare(b.nome, 'pt')).forEach(f => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${esc(f.nome)}</span><span class="t">${esc(f.tipo || '')}</span>`;
+    li.onclick = () => abrirEntidade(f);
+    ulF.appendChild(li);
+  });
+  const fonte = p.querySelector('.fonte');
+  fonte.hidden = !ent; if (ent) fonte.querySelector('a').href = WIKI + ent.id;
+  p.querySelector('.no-mapa').hidden = !local;
+  p.scrollTop = 0;
+  p.hidden = false; document.body.classList.add('com-lugar');
+}
+
+// Abre uma entidade da wiki: se tiver lugar no mapa (ela ou um "pai"), voa até lá
+function abrirEntidade(ent) {
+  const l = kankaParaLocal[ent.id];
+  if (l) { abrirLugar(l); return; }
+  if (selecionado && pinos[selecionado.id]) pinos[selecionado.id].setIcon(iconePino(false));
+  selecionado = null;
+  preencherPainel(ent, null);
+  let pai = ent.pai; while (pai && !kankaParaLocal[pai] && kanka[pai]) pai = kanka[pai].pai;
+  const lp = pai && kankaParaLocal[pai];
+  if (lp) mapa.flyTo(P(lp.pos[0], lp.pos[1]), Math.max(mapa.getZoom(), 4), {duration: 1.2});
+  if (innerWidth < 760) document.body.classList.add('lado-fechado');
+}
+
 function abrirLugar(l, voar = true) {
   if (selecionado && pinos[selecionado.id]) pinos[selecionado.id].setIcon(iconePino(false));
   selecionado = l;
   pinos[l.id].setIcon(iconePino(true));
-  const p = $('#lugar');
-  p.querySelector('.tipo').textContent = TIPOS[l.tipo] || l.tipo;
-  p.querySelector('h2').textContent = l.nome;
-  p.querySelector('.resumo').textContent = l.resumo;
-  p.querySelector('.texto-guilda').textContent = l.texto || 'A história deste lugar ainda não foi escrita. No site de verdade, a guilda escreveria aqui o que se sabe dele.';
+  preencherPainel(l.kanka ? kanka[l.kanka] : null, l);
   preencherNotasPerto();
-  p.hidden = false; document.body.classList.add('com-lugar');
   if (voar) {
     const alvo = Math.max(mapa.getZoom(), 4);
     const ll = P(l.pos[0], l.pos[1]);
@@ -129,6 +185,56 @@ function preencherNotasPerto() {
 // ---------- Supabase ----------
 let sb = null;
 try { sb = supabase.createClient(SB_URL, SB_KEY, {auth: {persistSession: false}}); } catch (e) { console.error(e); }
+
+async function carregarKanka() {
+  if (!sb) return;
+  const {data, error} = await sb.from('galtherdara_kanka').select('id,cat,nome,tipo,pai,img,thumb,tags,entrada,posts').neq('cat', 'item');
+  if (error) { console.error(error); $('#listaMundo').innerHTML = '<p class="dica">Não foi possível carregar a wiki.</p>'; return; }
+  data.forEach(e => { kanka[e.id] = e; });
+  data.forEach(e => { if (e.pai) (filhosDe[e.pai] = filhosDe[e.pai] || []).push(e); });
+  locais.forEach(l => { if (l.kanka) kankaParaLocal[l.kanka] = l; });
+  montarMundo();
+  montarPjs();
+  if (selecionado) abrirLugar(selecionado, false);
+}
+
+function montarMundo() {
+  const box = $('#listaMundo'); box.innerHTML = '';
+  const grupos = [
+    ['Lugares fora do mapa', e => e.cat === 'location' && !kankaParaLocal[e.id] && !(e.pai && kanka[e.pai] && kanka[e.pai].cat === 'location')],
+    ['Organizações', e => e.cat === 'organisation'],
+    ['História', e => e.cat === 'event'],
+    ['Conhecimento', e => e.cat === 'note'],
+    ['Raças', e => e.cat === 'race']
+  ];
+  grupos.forEach(([titulo, filtro]) => {
+    const itens = Object.values(kanka).filter(filtro).filter(e => e.nome !== '???').sort((a, b) => a.nome.localeCompare(b.nome, 'pt'));
+    if (!itens.length) return;
+    box.insertAdjacentHTML('beforeend', `<h3>${esc(titulo)} · ${itens.length}</h3>`);
+    const ul = document.createElement('ul'); ul.className = 'lista';
+    itens.forEach(e => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${esc(e.nome)}</span><span class="t">${esc(e.tipo || '')}</span>`;
+      li.onclick = () => abrirEntidade(e);
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  });
+  box.insertAdjacentHTML('beforeend', '<p class="dica">Textos copiados da <a href="https://app.kanka.io/w/plano-logos" target="_blank" rel="noopener" style="color:var(--turquesa)">wiki da guilda</a> em 28/11/2026.</p>');
+}
+
+function montarPjs() {
+  const pjs = Object.values(kanka).filter(e => e.cat === 'character' && e.tipo === 'PJ').sort((a, b) => a.nome.localeCompare(b.nome, 'pt'));
+  if (!pjs.length) return;
+  const box = $('#qPjs .pjs'); box.innerHTML = '';
+  pjs.forEach(e => {
+    const b = document.createElement('button'); b.type = 'button';
+    b.innerHTML = `${e.thumb ? `<img src="${esc(e.thumb)}" alt="" referrerpolicy="no-referrer" loading="lazy">` : ''}${esc(e.nome)}`;
+    b.onclick = () => { $('#qNome').value = e.nome; };
+    box.appendChild(b);
+  });
+  $('#qPjs').hidden = false;
+}
 const cx = $('#conexao');
 function estadoConexao(ok) { cx.className = ok ? 'ok' : 'erro'; cx.title = ok ? 'Conectado: as anotações aparecem para todos' : 'Sem conexão com o banco'; }
 
@@ -370,6 +476,7 @@ busca.addEventListener('input', () => {
   const itens = [
     ...locais.filter(l => semAcento(l.nome).includes(q)).map(l => ({t: l.nome, s: TIPOS[l.tipo], ir: () => abrirLugar(l)})),
     ...notas.filter(n => semAcento(n.titulo + ' ' + n.texto + ' ' + n.personagem).includes(q)).map(n => ({t: n.titulo, s: 'Anotação de ' + n.personagem, ir: () => { ocultos.delete(n.personagem); desenhar(); const m = marcasNotas[n.id]; mapa.flyTo(m.getLatLng(), Math.max(mapa.getZoom(), 4)); setTimeout(() => m.openPopup(), 900); }})),
+    ...Object.values(kanka).filter(e => e.cat !== 'character' && !kankaParaLocal[e.id] && semAcento(e.nome).includes(q)).map(e => ({t: e.nome, s: (CATS[e.cat] || '') + (e.tipo ? ' · ' + e.tipo : '') + ' (wiki)', ir: () => abrirEntidade(e)})),
     ...trilhas.filter(t => semAcento(t.nome + ' ' + t.personagem).includes(q)).map(t => ({t: t.nome, s: 'Trilha de ' + t.personagem, ir: () => { ocultos.delete(t.personagem); desenhar(); mapa.flyToBounds(marcasTrilhas[t.id].getBounds().pad(0.3), {maxZoom: 4}); }}))
   ].slice(0, 12);
   if (!itens.length) res.innerHTML = '<li><small>Nada encontrado.</small></li>';
@@ -404,7 +511,7 @@ $('#btEntrar').onclick = () => {
 
 // ---------- Início ----------
 mostrarEu();
-carregarLocais().catch(e => { console.error(e); aviso('Não foi possível carregar os lugares.'); });
+carregarLocais().then(carregarKanka).catch(e => { console.error(e); aviso('Não foi possível carregar os lugares.'); });
 carregarTudo().then(assinar);
 window.addEventListener('resize', () => mapa.invalidateSize());
 })();

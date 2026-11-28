@@ -2,13 +2,14 @@
  {
   "id": "desfiladeiro-gelido",
   "nome": "Desfiladeiro Gélido",
-  "tipo": "regiao",
+  "tipo": "dominio",
   "pos": [
    909,
    1196
   ],
   "resumo": "Campos de gelo e picos congelados no extremo noroeste, cercados por icebergs.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9020152
  },
  {
   "id": "bradoria",
@@ -19,7 +20,8 @@
    1679
   ],
   "resumo": "Cidade de pedra escura encravada nas montanhas nevadas do norte.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9018937
  },
  {
   "id": "dolrath",
@@ -30,7 +32,8 @@
    5468
   ],
   "resumo": "Fortaleza de torres escuras na tundra do nordeste.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9019419
  },
  {
   "id": "bloompog",
@@ -41,7 +44,8 @@
    2150
   ],
   "resumo": "Povoado entre as montanhas e as florestas do oeste verde.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9019675
  },
  {
   "id": "amox",
@@ -52,7 +56,8 @@
    3637
   ],
   "resumo": "Cidade no planalto central, cercada de campos e montanhas.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9016492
  },
  {
   "id": "valantir",
@@ -63,51 +68,56 @@
    3830
   ],
   "resumo": "Cidade murada sobre um planalto, com castelo, moinhos e plantações; uma torre azul brilha a oeste.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9016763
  },
  {
   "id": "floresta-sem-retorno",
   "nome": "Floresta sem Retorno",
-  "tipo": "regiao",
+  "tipo": "dominio",
   "pos": [
    2990,
    2376
   ],
   "resumo": "Mata fechada e escura entre as montanhas e o deserto.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9020159
  },
  {
   "id": "cidade-dos-ossos",
-  "nome": "Cidade dos Ossos",
-  "tipo": "ruina",
+  "nome": "Deserto Cidade dos Ossos",
+  "tipo": "dominio",
   "pos": [
    3645,
    2367
   ],
   "resumo": "Ruínas no meio do grande deserto do oeste.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9020161
  },
  {
   "id": "feltonia",
   "nome": "Feltônia",
-  "tipo": "cidade",
+  "tipo": "reino",
   "pos": [
    3674,
    4076
   ],
   "resumo": "Cidade escura entre montanhas, junto a um lago de águas brilhantes.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9019539
  },
  {
   "id": "hafalarenn",
   "nome": "Hafalarenn",
-  "tipo": "regiao",
+  "tipo": "continente",
   "pos": [
    2703,
    7311
   ],
   "resumo": "Terras nevadas da ilha do leste, sob uma aurora violeta.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9098403
  },
  {
   "id": "lassi-norien",
@@ -118,62 +128,68 @@
    7332
   ],
   "resumo": "Cidade entre árvores rosadas, na ilha do leste.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9019518
  },
  {
   "id": "pedania",
   "nome": "Pedânia",
-  "tipo": "cidade",
+  "tipo": "reino",
   "pos": [
    4649,
    3871
   ],
   "resumo": "Cidade dourada na costa sul.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9019549
  },
  {
   "id": "artenia",
   "nome": "Artênia",
-  "tipo": "regiao",
+  "tipo": "reino",
   "pos": [
    4555,
    4854
   ],
   "resumo": "Terra negra de rocha vulcânica e fogo, no sul.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9017622
  },
  {
   "id": "pantano-dos-enforcados",
   "nome": "Pântano dos Enforcados",
-  "tipo": "regiao",
+  "tipo": "dominio",
   "pos": [
    4547,
    6103
   ],
   "resumo": "Grande pântano envolto em névoa verde, no sudeste.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9020155
  },
  {
   "id": "pebaktor-dasak",
-  "nome": "Pebaktor'dasak",
+  "nome": "Pebak Tor'Dasak",
   "tipo": "marco",
   "pos": [
    4936,
    2191
   ],
   "resumo": "Lugar no limite entre o deserto e os cânions vermelhos.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9019025
  },
  {
   "id": "wyverstone",
   "nome": "Wyverstone",
-  "tipo": "cidade",
+  "tipo": "dominio",
   "pos": [
    5292,
    1475
   ],
   "resumo": "Fortaleza escura nos cânions vermelhos do sudoeste.",
-  "texto": ""
+  "texto": "",
+  "kanka": 9020106
  },
  {
   "id": "vulcao",
@@ -196,5 +212,83 @@
   ],
   "resumo": "Um vórtice enorme no mar do leste, entre o continente e a ilha. (Nome provisório.)",
   "texto": ""
+ },
+ {
+  "id": "fabrica-do-papai-noel",
+  "nome": "Fábrica do Papai Noel",
+  "tipo": "marco",
+  "pos": [
+   1244,
+   5691
+  ],
+  "resumo": "",
+  "texto": "",
+  "kanka": 9040316,
+  "posAproximada": true
+ },
+ {
+  "id": "porto-murado",
+  "nome": "Porto Murado",
+  "tipo": "cidade",
+  "pos": [
+   2775,
+   4735
+  ],
+  "resumo": "",
+  "texto": "",
+  "kanka": 9059067,
+  "posAproximada": true
+ },
+ {
+  "id": "arthrolatt",
+  "nome": "Arthrolatt",
+  "tipo": "cidade",
+  "pos": [
+   2117,
+   4931
+  ],
+  "resumo": "",
+  "texto": "",
+  "kanka": 9266605,
+  "posAproximada": true
+ },
+ {
+  "id": "costa-funda",
+  "nome": "Costa Funda",
+  "tipo": "vila",
+  "pos": [
+   2883,
+   5302
+  ],
+  "resumo": "",
+  "texto": "",
+  "kanka": 9321280,
+  "posAproximada": true
+ },
+ {
+  "id": "instituto-colt",
+  "nome": "Instituto Colt",
+  "tipo": "organizacao",
+  "pos": [
+   2460,
+   3369
+  ],
+  "resumo": "",
+  "texto": "",
+  "kanka": 9024565,
+  "posAproximada": true
+ },
+ {
+  "id": "lake-city",
+  "nome": "Lake City",
+  "tipo": "cidade",
+  "pos": [
+   1746,
+   2271
+  ],
+  "resumo": "",
+  "texto": "",
+  "kanka": 9394098,
+  "posAproximada": true
  }
 ]
