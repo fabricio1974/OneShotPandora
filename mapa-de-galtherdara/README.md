@@ -1,6 +1,8 @@
 # Mapa de Galtherdara
 
-Mapa interativo do mundo de Galtherdara, no estilo do mapa de Runeterra: uma pintura grande com zoom profundo, regiões clicáveis, locais com histórias e camadas que se ligam e desligam. A diferença é que este mapa também é **da mesa**: o Mestre revela lugares e move o grupo, e todos os jogadores veem na hora.
+Mapa interativo de **Galtherdara**, o mundo da **Akari Bellacord Sasaya** (guilda Plano Logos, no Discord), no estilo do mapa de Runeterra: uma pintura grande com zoom profundo, regiões clicáveis, locais com histórias e camadas que se ligam e desligam.
+
+**Projeto à parte.** Não tem relação com o one-shot "O Cordeiro e o Lobo" nem com a campanha da Pandora; só divide o mesmo repositório e o mesmo GitHub Pages. Não usa nem altera os arquivos dos outros sites.
 
 Endereço (quando publicado): https://fabricio1974.github.io/OneShotPandora/mapa-de-galtherdara/
 
