@@ -21,6 +21,7 @@ Endereço (quando publicado): https://fabricio1974.github.io/OneShotPandora/mapa
 | [docs/05-SUPABASE.md](docs/05-SUPABASE.md) | Parte ao vivo: revelar, posição do grupo, notas, segredos |
 | [docs/06-ROTEIRO.md](docs/06-ROTEIRO.md) | Etapas, da primeira versão à versão completa |
 | [docs/07-PENDENCIAS.md](docs/07-PENDENCIAS.md) | O que o Fabrício precisa decidir ou entregar |
+| [docs/08-MAPA-ATUAL.md](docs/08-MAPA-ATUAL.md) | Análise do PNG atual: tamanho, qualidade, o que corrigir |
 
 ## Pastas
 

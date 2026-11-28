@@ -1,7 +1,9 @@
 # 07 · Pendências do Fabrício
 
 ## Para começar a Fase 1
-- [ ] **O PNG do mapa-mundo**: subir no Drive (ou anexar no chat) e dizer onde está. Eu meço e digo se basta.
+- [x] **O PNG do mapa-mundo**: `Galtherdara_revisado.png`, 8 192 × 6 144, basta (ver 08-MAPA-ATUAL). Guardar uma cópia no Drive.
+- [ ] **Versão sem os nomes pintados** (reexportar do Inkarnate sem a camada de texto, se foi feito lá).
+- [ ] **Nome do mundo**: Galthera ou Galtherdara?
 - [ ] **De que campanha é Galthera?** (Pandora, a mesa do Fábio, a sua mesa, um mundo novo?) Muda o que é segredo e o que é público.
 - [ ] **5–10 lugares** para o protótipo: nome, tipo e uma linha cada. Eu marco a posição no editor com você.
 
