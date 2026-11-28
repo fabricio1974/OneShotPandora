@@ -1,0 +1,241 @@
+{
+ "fonte": "https://app.kanka.io/w/plano-logos/entities/9016820/map",
+ "imagem_kanka": [
+  5815,
+  3986
+ ],
+ "conversao": "x = 1.6812*lng - 304.2 ; y = 1.7110*(3986-lat) - 318.1 (mínimos quadrados com 15 lugares; erro médio ~75 px)",
+ "pinos": [
+  {
+   "nome": "Valantir",
+   "kanka_id": 9016763,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    2811,
+    3851
+   ],
+   "id_no_site": "valantir",
+   "erro_px": 101
+  },
+  {
+   "nome": "Amox",
+   "kanka_id": 9016492,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    2475,
+    3691
+   ],
+   "id_no_site": "amox",
+   "erro_px": 73
+  },
+  {
+   "nome": "Artênia",
+   "kanka_id": 9017622,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    4499,
+    4929
+   ],
+   "id_no_site": "artenia",
+   "erro_px": 93
+  },
+  {
+   "nome": "Pebak Tor’Dasak",
+   "kanka_id": 9019025,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    4951,
+    2158
+   ],
+   "id_no_site": "pebaktor-dasak",
+   "erro_px": 37
+  },
+  {
+   "nome": "Dolrath",
+   "kanka_id": 9019419,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    1522,
+    5449
+   ],
+   "id_no_site": "dolrath",
+   "erro_px": 70
+  },
+  {
+   "nome": "Lassi-Norien",
+   "kanka_id": 9019518,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    2973,
+    7299
+   ],
+   "id_no_site": "lassi-norien",
+   "erro_px": 85
+  },
+  {
+   "nome": "Feltônia",
+   "kanka_id": 9019539,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    3811,
+    4049
+   ],
+   "id_no_site": "feltonia",
+   "erro_px": 139
+  },
+  {
+   "nome": "Pedânia",
+   "kanka_id": 9019549,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    4636,
+    3870
+   ],
+   "id_no_site": "pedania",
+   "erro_px": 13
+  },
+  {
+   "nome": "Bradória",
+   "kanka_id": 9018937,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    1540,
+    1751
+   ],
+   "id_no_site": "bradoria",
+   "erro_px": 91
+  },
+  {
+   "nome": "Bloompog",
+   "kanka_id": 9019675,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    2153,
+    2132
+   ],
+   "id_no_site": "bloompog",
+   "erro_px": 50
+  },
+  {
+   "nome": "Wyverstone",
+   "kanka_id": 9020106,
+   "grupo_kanka": "Domínio de Dragão Primordial",
+   "pos_convertida": [
+    5312,
+    1476
+   ],
+   "id_no_site": "wyverstone",
+   "erro_px": 20
+  },
+  {
+   "nome": "Desfiladeiro Gélido",
+   "kanka_id": 9020152,
+   "grupo_kanka": "Domínio de Dragão Primordial",
+   "pos_convertida": [
+    823,
+    1161
+   ],
+   "id_no_site": "desfiladeiro-gelido",
+   "erro_px": 94
+  },
+  {
+   "nome": "Floresta sem Retorno",
+   "kanka_id": 9020159,
+   "grupo_kanka": "Domínio de Dragão Primordial",
+   "pos_convertida": [
+    2911,
+    2331
+   ],
+   "id_no_site": "floresta-sem-retorno",
+   "erro_px": 91
+  },
+  {
+   "nome": "Pântano dos Enforcados",
+   "kanka_id": 9020155,
+   "grupo_kanka": "Domínio de Dragão Primordial",
+   "pos_convertida": [
+    4502,
+    6092
+   ],
+   "id_no_site": "pantano-dos-enforcados",
+   "erro_px": 46
+  },
+  {
+   "nome": "Cidade dos Ossos",
+   "kanka_id": 9020161,
+   "grupo_kanka": "Domínio de Dragão Primordial",
+   "pos_convertida": [
+    3604,
+    2366
+   ],
+   "id_no_site": "cidade-dos-ossos",
+   "erro_px": 42
+  },
+  {
+   "nome": "Fábrica do Papai Noel",
+   "kanka_id": 9040316,
+   "grupo_kanka": "",
+   "pos_convertida": [
+    1244,
+    5691
+   ],
+   "id_no_site": null,
+   "erro_px": null
+  },
+  {
+   "nome": "Porto Murado",
+   "kanka_id": 9059067,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    2775,
+    4735
+   ],
+   "id_no_site": null,
+   "erro_px": null
+  },
+  {
+   "nome": "Arthrolatt",
+   "kanka_id": 9266605,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    2117,
+    4931
+   ],
+   "id_no_site": null,
+   "erro_px": null
+  },
+  {
+   "nome": "Costa Funda",
+   "kanka_id": 9321280,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    2883,
+    5302
+   ],
+   "id_no_site": null,
+   "erro_px": null
+  },
+  {
+   "nome": "Instituto Colt",
+   "kanka_id": 9024565,
+   "grupo_kanka": "Organização",
+   "pos_convertida": [
+    2460,
+    3369
+   ],
+   "id_no_site": null,
+   "erro_px": null
+  },
+  {
+   "nome": "Lake City",
+   "kanka_id": 9394098,
+   "grupo_kanka": "Cidades",
+   "pos_convertida": [
+    1746,
+    2271
+   ],
+   "id_no_site": null,
+   "erro_px": null
+  }
+ ]
+}

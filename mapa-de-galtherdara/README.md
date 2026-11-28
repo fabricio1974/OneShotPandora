@@ -25,6 +25,7 @@ Endereço (quando publicado): https://fabricio1974.github.io/OneShotPandora/mapa
 | [docs/07-PENDENCIAS.md](docs/07-PENDENCIAS.md) | O que o Fabrício precisa decidir ou entregar |
 | [docs/08-MAPA-ATUAL.md](docs/08-MAPA-ATUAL.md) | Análise do PNG atual: tamanho, qualidade, o que corrigir |
 | [docs/09-PROTOTIPO.md](docs/09-PROTOTIPO.md) | O que o protótipo faz, como foi feito e seus limites |
+| [docs/10-KANKA.md](docs/10-KANKA.md) | O que a wiki do Kanka tem e como alimentar o site |
 
 ## Pastas
 
