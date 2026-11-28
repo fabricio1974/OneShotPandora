@@ -2,7 +2,7 @@
 
 ## Em uma frase
 
-Um atlas pintado de Galthera que os jogadores exploram no celular, no tablet ou no computador, e que o Mestre usa na mesa para mostrar e revelar o mundo.
+Um atlas pintado de Galtherdara que os jogadores exploram no celular, no tablet ou no computador, e que o Mestre usa na mesa para mostrar e revelar o mundo.
 
 ## Referência: mapa de Runeterra
 

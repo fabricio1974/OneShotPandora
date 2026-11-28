@@ -66,8 +66,8 @@ Supabase: revelados, grupo, notas ───────┘        ▲
 ## Integração com o resto do repositório
 
 - Link no `combate.html` (aba Ajustes, ao lado do atalho do mapa atual).
-- O `tela.html` pode abrir `mapa-de-galthera/?mesa` para o tablet.
-- O `mapa/` atual (Estrada para Maré-Alta) continua como está. Se a estrada fizer parte de Galthera, vira uma **rota** e um **inset** dentro do novo mapa.
+- O `tela.html` pode abrir `mapa-de-galtherdara/?mesa` para o tablet.
+- O `mapa/` atual (Estrada para Maré-Alta) continua como está. Se a estrada fizer parte de Galtherdara, vira uma **rota** e um **inset** dentro do novo mapa.
 
 ## Desempenho
 

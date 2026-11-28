@@ -1,10 +1,10 @@
-# Mapa de Galthera
+# Mapa de Galtherdara
 
-Mapa interativo do mundo de Galthera, no estilo do mapa de Runeterra: uma pintura grande com zoom profundo, regiões clicáveis, locais com histórias e camadas que se ligam e desligam. A diferença é que este mapa também é **da mesa**: o Mestre revela lugares e move o grupo, e todos os jogadores veem na hora.
+Mapa interativo do mundo de Galtherdara, no estilo do mapa de Runeterra: uma pintura grande com zoom profundo, regiões clicáveis, locais com histórias e camadas que se ligam e desligam. A diferença é que este mapa também é **da mesa**: o Mestre revela lugares e move o grupo, e todos os jogadores veem na hora.
 
-Endereço (quando publicado): https://fabricio1974.github.io/OneShotPandora/mapa-de-galthera/
+Endereço (quando publicado): https://fabricio1974.github.io/OneShotPandora/mapa-de-galtherdara/
 
-> A pasta usa hífens (`mapa-de-galthera`) porque espaços viram `%20` nos endereços e quebram links. O nome que aparece no site é "Mapa de Galthera".
+> A pasta usa hífens (`mapa-de-galtherdara`) porque espaços viram `%20` nos endereços e quebram links. O nome que aparece no site é "Mapa de Galtherdara".
 
 ## Estado
 
@@ -26,7 +26,7 @@ Endereço (quando publicado): https://fabricio1974.github.io/OneShotPandora/mapa
 ## Pastas
 
 ```
-mapa-de-galthera/
+mapa-de-galtherdara/
 ├── index.html            (futuro) o mapa para os jogadores
 ├── mestre.html           (futuro) o mesmo mapa com os controles do Mestre
 ├── editor.html           (futuro) clicar no mapa para criar e posicionar locais

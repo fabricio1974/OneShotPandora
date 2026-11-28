@@ -43,7 +43,7 @@ Extras pequenos:
 Uma "bíblia de estilo" curta, colada no começo de **todo** prompt:
 
 ```
-[ESTILO GALTHERA] hand-painted fantasy world map, top-down view,
+[ESTILO GALTHERDARA] hand-painted fantasy world map, top-down view,
 painterly digital illustration in the style of a AAA game atlas,
 soft atmospheric lighting from the upper left, rich but muted palette
 (deep teal seas, ochre and olive lands, snow-white peaks),
@@ -60,7 +60,7 @@ Preencher depois da primeira imagem aprovada (ver 07-PENDENCIAS):
 
 **Passe de detalhe (img2img sobre um bloco do mapa):**
 ```
-[ESTILO GALTHERA] Repaint this exact section of the map with much finer detail.
+[ESTILO GALTHERDARA] Repaint this exact section of the map with much finer detail.
 Keep every coastline, river, mountain and road exactly where it is.
 Add: individual trees in forests, small rivers, rocky texture on mountains,
 fields near settlements. Do not add new cities. no text.
@@ -68,7 +68,7 @@ fields near settlements. Do not add new cities. no text.
 
 **Inset de cidade:**
 ```
-[ESTILO GALTHERA] Detailed top-down painted view of the city of {NOME},
+[ESTILO GALTHERDARA] Detailed top-down painted view of the city of {NOME},
 {DESCRIÇÃO CURTA: porto no estuário, muralha em anel, castelo no morro norte}.
 Same viewpoint and lighting as the world map. Matches this crop exactly
 in shape and position (attached). no text.
@@ -76,7 +76,7 @@ in shape and position (attached). no text.
 
 **Ilustração do painel:**
 ```
-[ESTILO GALTHERA] Wide establishing shot of {NOME}, eye level, {HORA, CLIMA},
+[ESTILO GALTHERDARA] Wide establishing shot of {NOME}, eye level, {HORA, CLIMA},
 {3 DETALHES MARCANTES}. Cinematic, painterly, 16:9. no text.
 ```
 

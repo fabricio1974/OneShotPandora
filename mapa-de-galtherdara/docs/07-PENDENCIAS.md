@@ -2,9 +2,9 @@
 
 ## Para começar a Fase 1
 - [x] **O PNG do mapa-mundo**: `Galtherdara_revisado.png`, 8 192 × 6 144, basta (ver 08-MAPA-ATUAL). Guardar uma cópia no Drive.
-- [ ] **Versão sem os nomes pintados** (reexportar do Inkarnate sem a camada de texto, se foi feito lá).
-- [ ] **Nome do mundo**: Galthera ou Galtherdara?
-- [ ] **De que campanha é Galthera?** (Pandora, a mesa do Fábio, a sua mesa, um mundo novo?) Muda o que é segredo e o que é público.
+- [x] **Versão sem os nomes pintados**: não existe. Os nomes serão apagados por edição com IA (ver 08-MAPA-ATUAL, plano de limpeza).
+- [x] **Nome do mundo**: **Galtherdara** (28/11/2026).
+- [ ] **De que campanha é Galtherdara?** (Pandora, a mesa do Fábio, a sua mesa, um mundo novo?) Muda o que é segredo e o que é público.
 - [ ] **5–10 lugares** para o protótipo: nome, tipo e uma linha cada. Eu marco a posição no editor com você.
 
 ## Para a Fase 2

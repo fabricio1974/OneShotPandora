@@ -8,7 +8,7 @@ Coordenadas: `[y, x]` em pixels do PNG original.
 
 ```json
 {
-  "nome": "Galthera",
+  "nome": "Galtherdara",
   "imagem": { "largura": 16384, "altura": 12288, "tiles": "tiles/{z}/{y}/{x}.webp", "zoomMax": 6 },
   "inicio": { "centro": [6144, 8192], "zoom": 2 },
   "versao": 1

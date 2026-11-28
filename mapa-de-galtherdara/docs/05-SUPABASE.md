@@ -1,6 +1,6 @@
 # 05 · Supabase (parte ao vivo)
 
-Projeto: **oneshot-cartas** (`bfommmrznwqhxnkpfjla`, região São Paulo). Já existe a tabela `mesas`, do site de cartas. **O mapa não mexe nela**: terá tabelas próprias, com prefixo `galthera_`.
+Projeto: **oneshot-cartas** (`bfommmrznwqhxnkpfjla`, região São Paulo). Já existe a tabela `mesas`, do site de cartas. **O mapa não mexe nela**: terá tabelas próprias, com prefixo `galtherdara_`.
 
 ## O problema dos segredos
 
@@ -12,7 +12,7 @@ O repositório é público. Qualquer jogador pode abrir `dados/locais.json` no G
 
 ## Tabelas (planejadas)
 
-### `galthera_estado` — uma linha por campanha
+### `galtherdara_estado` — uma linha por campanha
 
 | coluna | tipo | exemplo |
 |---|---|---|
@@ -24,7 +24,7 @@ O repositório é público. Qualquer jogador pode abrir `dados/locais.json` no G
 | `viagem` | jsonb | pontos do caminho já percorrido |
 | `atualizado` | timestamptz | |
 
-### `galthera_segredos` — locais e textos que não podem estar no Git
+### `galtherdara_segredos` — locais e textos que não podem estar no Git
 
 | coluna | tipo |
 |---|---|
@@ -35,7 +35,7 @@ O repositório é público. Qualquer jogador pode abrir `dados/locais.json` no G
 
 Regra de leitura: `revelado = true`. Os não revelados não chegam ao navegador do jogador.
 
-### `galthera_notas` — fase posterior
+### `galtherdara_notas` — fase posterior
 
 Notas de jogadores por local: `id`, `campanha`, `local`, `autor` (nome digitado), `texto`, `criado`.
 
@@ -47,11 +47,11 @@ Não há contas. Segue o padrão do site de cartas (função `mesa_aplicar`):
 - Escrita do Mestre: só por **funções no banco** (RPC) que exigem a **chave do Mestre**. A chave fica guardada no banco como hash; o `mestre.html` pede a chave uma vez e lembra no navegador.
 - Jogadores: só podem criar notas (fase posterior), com limite de tamanho.
 
-Funções planejadas: `galthera_revelar(chave, ids[])`, `galthera_esconder(chave, ids[])`, `galthera_mover_grupo(chave, pos)`, `galthera_camera(chave, camera)`, `galthera_nevoa(chave, area)`.
+Funções planejadas: `galtherdara_revelar(chave, ids[])`, `galtherdara_esconder(chave, ids[])`, `galtherdara_mover_grupo(chave, pos)`, `galtherdara_camera(chave, camera)`, `galtherdara_nevoa(chave, area)`.
 
 ## Tempo real
 
-O site assina as mudanças de `galthera_estado` (Supabase Realtime). Quando o Mestre revela algo, os jogadores veem em 1 segundo. Se a conexão cair, o site mostra o último estado e tenta reconectar.
+O site assina as mudanças de `galtherdara_estado` (Supabase Realtime). Quando o Mestre revela algo, os jogadores veem em 1 segundo. Se a conexão cair, o site mostra o último estado e tenta reconectar.
 
 ## Limites do plano grátis
 
@@ -59,4 +59,4 @@ Sobra muito: o mapa troca poucos dados (alguns KB por sessão). Observação: pr
 
 ## Migração
 
-Nada será criado no banco antes da Fase 2 do roteiro. Quando chegar a hora, a migração fica em `tools/supabase/galthera_001.sql` e é aplicada uma vez.
+Nada será criado no banco antes da Fase 2 do roteiro. Quando chegar a hora, a migração fica em `tools/supabase/galtherdara_001.sql` e é aplicada uma vez.

@@ -22,7 +22,7 @@ Esta documentação.
 - [ ] `editor.html`: clicar para criar local, desenhar região, exportar JSON
 - [ ] Ícones dos tipos de local
 
-**Pronto quando:** dá para explorar Galthera e ler sobre os lugares sem ajuda.
+**Pronto quando:** dá para explorar Galtherdara e ler sobre os lugares sem ajuda.
 
 ## Fase 3 · A mesa ao vivo
 - [ ] Tabelas e funções no Supabase (05-SUPABASE)
