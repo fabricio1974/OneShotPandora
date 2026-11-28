@@ -10,7 +10,7 @@ const TIPOS = {cidade:'Cidade', vila:'Vila', regiao:'Região', ruina:'Ruínas', 
 const CATS = {location:'Lugar', organisation:'Organização', event:'Evento', note:'Nota', race:'Raça', character:'Personagem'};
 const WIKI = 'https://app.kanka.io/w/plano-logos/entities/';
 const RAIO_PERTO = 420; // px do mapa original
-const VERSAO = 4;
+const VERSAO = 5;
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -419,7 +419,13 @@ function abrirDiario(nome, voar = true) {
   if (voar) {
     ocultos.delete(nome); guardar('ocultos', [...ocultos]); desenhar();
     const pts = [...ns.map(n => P(n.y, n.x)), ...ts.flatMap(t => t.pontos.map(q => P(q[0], q[1])))];
-    if (pts.length) mapa.flyToBounds(L.latLngBounds(pts).pad(0.25), {maxZoom: 4, duration: 1.1, paddingBottomRight: innerWidth >= 760 ? [360, 0] : [0, innerHeight * 0.5]});
+    if (pts.length) {
+      const b = L.latLngBounds(pts).pad(0.25), pad = innerWidth >= 760 ? L.point(360, 0) : L.point(0, innerHeight * 0.5);
+      let z = mapa.getBoundsZoom(b, false, pad);
+      z = Math.min(4, Math.max(mapa.getMinZoom() + 1, isFinite(z) ? Math.floor(z) : 2));
+      const c = mapa.unproject(mapa.project(b.getCenter(), z).add(pad.divideBy(2)), z);
+      mapa.flyTo(c, z, {duration: 1.1});
+    }
     if (innerWidth < 760) document.body.classList.add('lado-fechado');
   }
 }
