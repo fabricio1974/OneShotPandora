@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="vendor/leaflet.css">
-<link rel="stylesheet" href="css/estilo.css?v=2">
+<link rel="stylesheet" href="css/estilo.css?v=4">
 </head>
 <body>
 
@@ -34,8 +34,15 @@
     <input id="busca" type="search" placeholder="Buscar lugar ou anotação…" autocomplete="off">
     <ul id="buscaRes" hidden></ul>
   </div>
+  <button id="btCamadas" class="bt-icone" aria-label="Camadas: ligar e desligar" title="Camadas">◫</button>
   <button id="btQuem" class="quem" aria-label="Escolher personagem"><span class="bolinha"></span><span class="nome">Quem é você?</span></button>
 </header>
+
+<div id="camadasPainel" hidden>
+  <p class="rot-c">Mostrar no mapa</p>
+  <div id="camadasLista"></div>
+  <p class="dica-c">Para esconder só um personagem, use a aba Personagens.</p>
+</div>
 
 <!-- Painel lateral -->
 <aside id="lado">
@@ -61,7 +68,9 @@
       <li>Toque num <b>losango dourado</b> para ver o lugar.</li>
       <li>Escolha <b>quem é você</b> no canto de cima.</li>
       <li><b>＋ Nota</b>: toque no mapa onde quer anotar.</li>
-      <li><b>✎ Trilha</b>: toque ponto a ponto pelo caminho e depois em <b>Concluir</b>.</li>
+      <li><b>✎ Trilha</b>: desenhe arrastando (ou ponto a ponto), ajuste arrastando as bolinhas e toque em <b>Concluir</b>.</li>
+      <li><b>◫</b> no topo liga e desliga lugares, anotações e trilhas.</li>
+      <li>Toque num personagem para ver o <b>diário</b> dele.</li>
       <li>O que você anota aparece na hora para todos.</li>
     </ul>
     <h3>O que poderia vir depois</h3>
@@ -98,8 +107,13 @@
   <button id="btTrilha" class="bt">✎ Trilha</button>
 </div>
 <div id="modo" hidden>
+  <div id="ferrTrilha" hidden>
+    <button class="bt" data-f="livre" title="Arraste para desenhar">✎ Desenhar</button>
+    <button class="bt" data-f="pontos" title="Toque ponto a ponto">• Pontos</button>
+    <button class="bt" data-f="mover" title="Arrastar o mapa">✋ Mover</button>
+  </div>
   <span class="txt"></span>
-  <button id="btDesfazer" class="bt" hidden>Desfazer ponto</button>
+  <button id="btDesfazer" class="bt" hidden>Desfazer</button>
   <button id="btConcluir" class="bt bt-ouro" hidden>Concluir</button>
   <button id="btCancelar" class="bt">Cancelar</button>
 </div>
@@ -121,6 +135,8 @@
     <h3 class="tit">Nova anotação</h3>
     <label>Título<input id="nTitulo" maxlength="80" required placeholder="Ex.: Taverna do Corvo"></label>
     <label>Texto<textarea id="nTexto" maxlength="2000" rows="5" placeholder="O que o seu personagem viu, ouviu ou desconfia…"></textarea></label>
+    <div id="nImgs" class="imgs-nota"></div>
+    <label id="nArquivoRot" class="bt bt-arquivo">＋ Imagens (até 4)<input id="nArquivo" type="file" accept="image/*" multiple hidden></label>
     <menu><button value="cancel" class="bt" formnovalidate>Cancelar</button><button value="ok" class="bt bt-ouro">Salvar</button></menu>
   </form>
 </dialog>
@@ -133,11 +149,12 @@
   </form>
 </dialog>
 
+<div id="visor" hidden><img alt=""></div>
 <div id="aviso" role="status" aria-live="polite"></div>
 <div id="conexao" title="Conexão com o banco"></div>
 
 <script src="vendor/leaflet.js"></script>
 <script src="vendor/supabase.js"></script>
-<script src="js/app.js?v=3"></script>
+<script src="js/app.js?v=4"></script>
 </body>
 </html>

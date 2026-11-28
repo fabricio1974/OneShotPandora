@@ -125,6 +125,45 @@ body.lado-fechado #lado{transform:translateX(-100%)}
 .pjs button{display:flex;align-items:center;gap:6px;background:var(--fundo);border:1px solid var(--linha);padding:3px 8px 3px 3px;font-size:14px}
 .pjs button:hover{border-color:var(--ouro)}
 .pjs img{width:26px;height:26px;object-fit:cover;border-radius:50%}
+/* Fundo borrado por baixo dos tiles */
+.base-borrada{filter:blur(2.5px) saturate(.95);image-rendering:auto}
+.tiles-nitidos img{transition:opacity .35s ease}
+/* Camadas */
+#camadasPainel{position:fixed;top:calc(var(--topo) + 6px);right:12px;z-index:1100;background:rgba(22,20,15,.98);border:1px solid var(--ouro-esc);box-shadow:var(--sombra);padding:12px 16px;min-width:240px}
+#camadasPainel label{display:flex;gap:10px;align-items:center;padding:6px 0;cursor:pointer}
+#camadasPainel input{accent-color:var(--ouro);width:18px;height:18px}
+.rot-c{font-family:var(--titulo);font-size:12px;letter-spacing:.12em;color:var(--ouro);margin:0 0 4px;text-transform:uppercase}
+.dica-c{font-size:13px;color:var(--texto2);margin:8px 0 0}
+/* Imagens */
+.imgs-nota{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.imgs-nota .mini{position:relative}
+.imgs-nota img{width:72px;height:72px;object-fit:cover;border:1px solid var(--linha)}
+.imgs-nota button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#000;border:1px solid var(--ouro);line-height:18px;padding:0}
+.bt-arquivo{display:inline-block;cursor:pointer;margin:4px 0 0!important;color:var(--texto)!important}
+.pop-imgs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.pop-imgs img{width:100%;max-height:180px;object-fit:cover;cursor:zoom-in;border:1px solid var(--linha)}
+.pop-imgs img:not(:first-child){width:calc(33% - 4px);height:64px}
+.pop-autor a{color:var(--texto2)}
+.nota-pin .tem-img{position:absolute;right:-3px;top:-3px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #222;transform:rotate(45deg)}
+.nota-pin{position:relative}
+#visor{position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.88);display:grid;place-items:center;cursor:zoom-out}
+#visor img{max-width:94vw;max-height:92vh;box-shadow:var(--sombra);border:1px solid var(--ouro-esc)}
+/* Diário */
+.bolinha.grande{display:inline-block;width:16px;height:16px;margin-right:10px;vertical-align:middle}
+.linha-tempo{list-style:none;margin:4px 0 0;padding:0 0 0 14px;border-left:2px solid var(--linha)}
+.linha-tempo li{position:relative;padding:8px 6px 10px 10px;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.linha-tempo li:hover{background:var(--fundo3)}
+.linha-tempo li:before{content:'';position:absolute;left:-21px;top:13px;width:10px;height:10px;border-radius:50%;background:var(--cor);border:2px solid #fff}
+.lt-data{font-size:12px;color:var(--texto2);font-family:var(--titulo);letter-spacing:.04em}
+.lt-tit{color:var(--ouro2);font-size:16px}
+.lt-txt{font-size:14px;color:var(--texto2)}
+.linha-tempo img{width:100%;max-height:110px;object-fit:cover;margin-top:4px;border:1px solid var(--linha)}
+#listaPers li{cursor:pointer}
+/* Trilha: alças e ferramentas */
+.alca{width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid;box-shadow:0 1px 4px rgba(0,0,0,.7);cursor:move}
+#ferrTrilha{display:flex;gap:4px;width:100%;justify-content:center}
+#ferrTrilha .bt{padding:6px 10px;font-size:13px}
+.bt:disabled{opacity:.45;cursor:default}
 /* Ferramentas */
 #ferr{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:950;display:flex;gap:10px;box-shadow:var(--sombra)}
 #ferr .bt{padding:11px 20px;font-size:15px;background:rgba(31,27,20,.96)}

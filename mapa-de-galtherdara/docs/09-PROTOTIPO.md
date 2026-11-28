@@ -34,3 +34,13 @@ Objetivo: **mostrar à guilda Plano Logos o que um site centralizado pode ser**,
 - Zoom em passos inteiros (evita linhas finas entre os tiles em alguns navegadores).
 - O banco é o mesmo do one-shot (projeto grátis do Fabrício). Um site de verdade da guilda deveria ter o próprio.
 - Para limpar as anotações de teste: `delete from galtherdara_notas; delete from galtherdara_trilhas;` no Supabase.
+
+## Rodada 2 (28/11/2026, pedidos do Fabrício)
+
+- **Fundo borrado**: a imagem inteira em baixa resolução fica por baixo dos tiles; ao dar zoom, em vez de quadrados pretos aparece o mapa desfocado, que vai ganhando nitidez (`tiles/base.webp`).
+- **Painel lateral começa recolhido.**
+- **Camadas** (botão ◫ no topo): liga/desliga lugares, minhas anotações, anotações dos outros, minhas trilhas, trilhas dos outros. Fica lembrado no navegador.
+- **Imagens nas anotações**: até 4 por nota, reduzidas no navegador (1600 px, WebP) e enviadas ao armazenamento do Supabase. Toque na imagem para ampliar.
+- **Diário de cada personagem**: toque no nome (aba Personagens ou no balão da nota) para ver a linha do tempo de anotações e trilhas; cada item leva ao ponto no mapa.
+- **Trilha à mão livre**: ferramentas Desenhar (arrastar), Pontos (tocar) e Mover (arrastar o mapa). A linha desenhada é simplificada; as bolinhas podem ser arrastadas para ajustar, e duplo clique apaga uma. Trilhas próprias podem ser **editadas** depois.
+- **Três personagens de exemplo** (fictícios): Liora Vennt (barda, Amox → Valantir → Porto Murado → Costa Funda), Brana Forjafunda (ferreira de Bradória até Dolrath) e Tico Pé-Ligeiro (ladino de Undermine a Bloompog). Script em `tools/supabase/galtherdara_exemplos.sql`.
