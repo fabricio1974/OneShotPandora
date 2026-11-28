@@ -10,6 +10,7 @@ const TIPOS = {cidade:'Cidade', vila:'Vila', regiao:'Região', ruina:'Ruínas', 
 const CATS = {location:'Lugar', organisation:'Organização', event:'Evento', note:'Nota', race:'Raça', character:'Personagem'};
 const WIKI = 'https://app.kanka.io/w/plano-logos/entities/';
 const RAIO_PERTO = 420; // px do mapa original
+const VERSAO = 3;
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -68,7 +69,7 @@ function iconePino(sel) {
 }
 
 async function carregarLocais() {
-  const r = await fetch('dados/locais.json', {cache: 'no-cache'});
+  const r = await fetch('dados/locais.json?v=' + VERSAO, {cache: 'no-cache'});
   locais = await r.json();
   const ul = $('#listaLocais'); ul.innerHTML = '';
   [...locais].sort((a, b) => a.nome.localeCompare(b.nome, 'pt')).forEach(l => {
