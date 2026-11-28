@@ -1,0 +1,12 @@
+{
+ "nome": "Galtherdara",
+ "imagem": {
+  "largura": 8192,
+  "altura": 6144,
+  "tiles": "tiles/{z}/{y}/{x}.webp",
+  "zoomMax": 5
+ },
+ "inicio": {
+  "zoom": 1
+ }
+}

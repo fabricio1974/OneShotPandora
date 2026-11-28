@@ -10,7 +10,7 @@ Endereço (quando publicado): https://fabricio1974.github.io/OneShotPandora/mapa
 
 ## Estado
 
-**Fase 0: estrutura.** Ainda não há código. Esta pasta guarda as decisões, a arquitetura e o plano.
+**Protótipo no ar** (28/11/2026) para mostrar a ideia à guilda: mapa com zoom, 18 lugares marcados, anotações e trilhas de cada personagem, compartilhadas ao vivo. Ver [docs/09-PROTOTIPO.md](docs/09-PROTOTIPO.md).
 
 ## Documentos
 
@@ -24,6 +24,7 @@ Endereço (quando publicado): https://fabricio1974.github.io/OneShotPandora/mapa
 | [docs/06-ROTEIRO.md](docs/06-ROTEIRO.md) | Etapas, da primeira versão à versão completa |
 | [docs/07-PENDENCIAS.md](docs/07-PENDENCIAS.md) | O que o Fabrício precisa decidir ou entregar |
 | [docs/08-MAPA-ATUAL.md](docs/08-MAPA-ATUAL.md) | Análise do PNG atual: tamanho, qualidade, o que corrigir |
+| [docs/09-PROTOTIPO.md](docs/09-PROTOTIPO.md) | O que o protótipo faz, como foi feito e seus limites |
 
 ## Pastas
 

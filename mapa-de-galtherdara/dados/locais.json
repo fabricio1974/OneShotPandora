@@ -1,0 +1,200 @@
+[
+ {
+  "id": "desfiladeiro-gelido",
+  "nome": "Desfiladeiro Gélido",
+  "tipo": "regiao",
+  "pos": [
+   909,
+   1196
+  ],
+  "resumo": "Campos de gelo e picos congelados no extremo noroeste, cercados por icebergs.",
+  "texto": ""
+ },
+ {
+  "id": "bradoria",
+  "nome": "Bradória",
+  "tipo": "cidade",
+  "pos": [
+   1483,
+   1679
+  ],
+  "resumo": "Cidade de pedra escura encravada nas montanhas nevadas do norte.",
+  "texto": ""
+ },
+ {
+  "id": "dolrath",
+  "nome": "Dolrath",
+  "tipo": "cidade",
+  "pos": [
+   1454,
+   5468
+  ],
+  "resumo": "Fortaleza de torres escuras na tundra do nordeste.",
+  "texto": ""
+ },
+ {
+  "id": "bloompog",
+  "nome": "Bloompog",
+  "tipo": "vila",
+  "pos": [
+   2200,
+   2150
+  ],
+  "resumo": "Povoado entre as montanhas e as florestas do oeste verde.",
+  "texto": ""
+ },
+ {
+  "id": "amox",
+  "nome": "Amox",
+  "tipo": "cidade",
+  "pos": [
+   2425,
+   3637
+  ],
+  "resumo": "Cidade no planalto central, cercada de campos e montanhas.",
+  "texto": ""
+ },
+ {
+  "id": "valantir",
+  "nome": "Valantir",
+  "tipo": "cidade",
+  "pos": [
+   2712,
+   3830
+  ],
+  "resumo": "Cidade murada sobre um planalto, com castelo, moinhos e plantações; uma torre azul brilha a oeste.",
+  "texto": ""
+ },
+ {
+  "id": "floresta-sem-retorno",
+  "nome": "Floresta sem Retorno",
+  "tipo": "regiao",
+  "pos": [
+   2990,
+   2376
+  ],
+  "resumo": "Mata fechada e escura entre as montanhas e o deserto.",
+  "texto": ""
+ },
+ {
+  "id": "cidade-dos-ossos",
+  "nome": "Cidade dos Ossos",
+  "tipo": "ruina",
+  "pos": [
+   3645,
+   2367
+  ],
+  "resumo": "Ruínas no meio do grande deserto do oeste.",
+  "texto": ""
+ },
+ {
+  "id": "feltonia",
+  "nome": "Feltônia",
+  "tipo": "cidade",
+  "pos": [
+   3674,
+   4076
+  ],
+  "resumo": "Cidade escura entre montanhas, junto a um lago de águas brilhantes.",
+  "texto": ""
+ },
+ {
+  "id": "hafalarenn",
+  "nome": "Hafalarenn",
+  "tipo": "regiao",
+  "pos": [
+   2703,
+   7311
+  ],
+  "resumo": "Terras nevadas da ilha do leste, sob uma aurora violeta.",
+  "texto": ""
+ },
+ {
+  "id": "lassi-norien",
+  "nome": "Lassi-Norien",
+  "tipo": "cidade",
+  "pos": [
+   3052,
+   7332
+  ],
+  "resumo": "Cidade entre árvores rosadas, na ilha do leste.",
+  "texto": ""
+ },
+ {
+  "id": "pedania",
+  "nome": "Pedânia",
+  "tipo": "cidade",
+  "pos": [
+   4649,
+   3871
+  ],
+  "resumo": "Cidade dourada na costa sul.",
+  "texto": ""
+ },
+ {
+  "id": "artenia",
+  "nome": "Artênia",
+  "tipo": "regiao",
+  "pos": [
+   4555,
+   4854
+  ],
+  "resumo": "Terra negra de rocha vulcânica e fogo, no sul.",
+  "texto": ""
+ },
+ {
+  "id": "pantano-dos-enforcados",
+  "nome": "Pântano dos Enforcados",
+  "tipo": "regiao",
+  "pos": [
+   4547,
+   6103
+  ],
+  "resumo": "Grande pântano envolto em névoa verde, no sudeste.",
+  "texto": ""
+ },
+ {
+  "id": "pebaktor-dasak",
+  "nome": "Pebaktor'dasak",
+  "tipo": "marco",
+  "pos": [
+   4936,
+   2191
+  ],
+  "resumo": "Lugar no limite entre o deserto e os cânions vermelhos.",
+  "texto": ""
+ },
+ {
+  "id": "wyverstone",
+  "nome": "Wyverstone",
+  "tipo": "cidade",
+  "pos": [
+   5292,
+   1475
+  ],
+  "resumo": "Fortaleza escura nos cânions vermelhos do sudoeste.",
+  "texto": ""
+ },
+ {
+  "id": "vulcao",
+  "nome": "Vulcão do Oeste",
+  "tipo": "marco",
+  "pos": [
+   2068,
+   1188
+  ],
+  "resumo": "Vulcão ativo entre o gelo do norte e as terras verdes. (Nome provisório.)",
+  "texto": ""
+ },
+ {
+  "id": "redemoinho",
+  "nome": "Redemoinho",
+  "tipo": "marco",
+  "pos": [
+   3891,
+   5898
+  ],
+  "resumo": "Um vórtice enorme no mar do leste, entre o continente e a ilha. (Nome provisório.)",
+  "texto": ""
+ }
+]

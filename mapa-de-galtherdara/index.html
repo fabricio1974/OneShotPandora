@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galtherdara · Atlas da Plano Logos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="css/estilo.css?v=1">
+</head>
+<body>
+
+<div id="mapa" aria-label="Mapa de Galtherdara"></div>
+
+<!-- Tela de entrada -->
+<div id="entrada">
+  <div class="entrada-caixa">
+    <p class="sobre">Atlas da guilda Plano Logos</p>
+    <h1>Galtherdara</h1>
+    <p class="linha"></p>
+    <p class="convite">Explore o mundo, deixe suas anotações e trace o caminho do seu personagem.</p>
+    <button id="btEntrar" class="bt bt-ouro">Explorar o mundo</button>
+    <p class="aviso-proto">Protótipo · uma ideia do que o site da guilda pode ser</p>
+  </div>
+</div>
+
+<!-- Barra superior -->
+<header id="topo">
+  <button id="btMenu" class="bt-icone" aria-label="Abrir painel">☰</button>
+  <div class="titulo">Galtherdara</div>
+  <div class="busca">
+    <input id="busca" type="search" placeholder="Buscar lugar ou anotação…" autocomplete="off">
+    <ul id="buscaRes" hidden></ul>
+  </div>
+  <button id="btQuem" class="quem" aria-label="Escolher personagem"><span class="bolinha"></span><span class="nome">Quem é você?</span></button>
+</header>
+
+<!-- Painel lateral -->
+<aside id="lado">
+  <nav class="abas">
+    <button data-aba="locais" class="ativa">Lugares</button>
+    <button data-aba="pers">Personagens</button>
+    <button data-aba="sobre">Sobre</button>
+  </nav>
+  <section id="aba-locais" class="aba ativa"><ul id="listaLocais" class="lista"></ul></section>
+  <section id="aba-pers" class="aba">
+    <p class="dica">Cada personagem tem uma cor. Marque ou desmarque para mostrar ou esconder as notas e trilhas dele.</p>
+    <ul id="listaPers" class="lista"></ul>
+    <p id="persVazio" class="dica">Ninguém anotou nada ainda. Seja o primeiro!</p>
+  </section>
+  <section id="aba-sobre" class="aba">
+    <h3>O que é isto</h3>
+    <p>Um protótipo de site para a guilda: o mapa de Galtherdara com zoom, os lugares marcados, e um espaço onde cada personagem guarda as suas anotações e o caminho que percorreu.</p>
+    <h3>Como usar</h3>
+    <ul class="passos">
+      <li><b>Arraste</b> e use a <b>roda do mouse</b> ou a <b>pinça</b> para dar zoom.</li>
+      <li>Toque num <b>losango dourado</b> para ver o lugar.</li>
+      <li>Escolha <b>quem é você</b> no canto de cima.</li>
+      <li><b>＋ Nota</b>: toque no mapa onde quer anotar.</li>
+      <li><b>✎ Trilha</b>: toque ponto a ponto pelo caminho e depois em <b>Concluir</b>.</li>
+      <li>O que você anota aparece na hora para todos.</li>
+    </ul>
+    <h3>O que poderia vir depois</h3>
+    <ul class="passos">
+      <li>Textos de cada lugar escritos pela guilda.</li>
+      <li>Missões marcadas no mapa, ligadas aos logs.</li>
+      <li>Regiões com contorno, facções, rotas.</li>
+      <li>Ilustrações das cidades com zoom profundo.</li>
+    </ul>
+  </section>
+</aside>
+
+<!-- Painel do lugar -->
+<article id="lugar" hidden>
+  <button class="fechar" aria-label="Fechar">×</button>
+  <p class="tipo"></p>
+  <h2></h2>
+  <p class="resumo"></p>
+  <div class="texto-guilda"></div>
+  <h4>Anotações por perto</h4>
+  <ul class="notas-perto lista"></ul>
+  <button class="bt bt-ouro anotar-aqui">＋ Anotar aqui</button>
+</article>
+
+<!-- Ferramentas -->
+<div id="ferr">
+  <button id="btNota" class="bt">＋ Nota</button>
+  <button id="btTrilha" class="bt">✎ Trilha</button>
+</div>
+<div id="modo" hidden>
+  <span class="txt"></span>
+  <button id="btDesfazer" class="bt" hidden>Desfazer ponto</button>
+  <button id="btConcluir" class="bt bt-ouro" hidden>Concluir</button>
+  <button id="btCancelar" class="bt">Cancelar</button>
+</div>
+
+<!-- Janelas -->
+<dialog id="dQuem">
+  <form method="dialog">
+    <h3>Quem é você?</h3>
+    <label>Nome do personagem<input id="qNome" maxlength="40" required placeholder="Ex.: Akari"></label>
+    <p class="rot">Cor</p>
+    <div id="qCores" class="cores"></div>
+    <menu><button value="cancel" class="bt" formnovalidate>Cancelar</button><button id="qOk" value="ok" class="bt bt-ouro">Pronto</button></menu>
+  </form>
+</dialog>
+
+<dialog id="dNota">
+  <form method="dialog">
+    <h3 class="tit">Nova anotação</h3>
+    <label>Título<input id="nTitulo" maxlength="80" required placeholder="Ex.: Taverna do Corvo"></label>
+    <label>Texto<textarea id="nTexto" maxlength="2000" rows="5" placeholder="O que o seu personagem viu, ouviu ou desconfia…"></textarea></label>
+    <menu><button value="cancel" class="bt" formnovalidate>Cancelar</button><button value="ok" class="bt bt-ouro">Salvar</button></menu>
+  </form>
+</dialog>
+
+<dialog id="dTrilha">
+  <form method="dialog">
+    <h3>Nome da trilha</h3>
+    <label>Nome<input id="tNome" maxlength="80" required placeholder="Ex.: Missão Aprimoramento"></label>
+    <menu><button value="cancel" class="bt" formnovalidate>Cancelar</button><button value="ok" class="bt bt-ouro">Salvar</button></menu>
+  </form>
+</dialog>
+
+<div id="aviso" role="status" aria-live="polite"></div>
+<div id="conexao" title="Conexão com o banco"></div>
+
+<script src="vendor/leaflet.js"></script>
+<script src="vendor/supabase.js"></script>
+<script src="js/app.js?v=1"></script>
+</body>
+</html>
