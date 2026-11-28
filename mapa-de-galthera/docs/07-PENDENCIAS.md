@@ -1,0 +1,20 @@
+# 07 · Pendências do Fabrício
+
+## Para começar a Fase 1
+- [ ] **O PNG do mapa-mundo**: subir no Drive (ou anexar no chat) e dizer onde está. Eu meço e digo se basta.
+- [ ] **De que campanha é Galthera?** (Pandora, a mesa do Fábio, a sua mesa, um mundo novo?) Muda o que é segredo e o que é público.
+- [ ] **5–10 lugares** para o protótipo: nome, tipo e uma linha cada. Eu marco a posição no editor com você.
+
+## Para a Fase 2
+- [ ] Lista das regiões e reinos.
+- [ ] Onde estão os textos dos lugares (vault do Obsidian? Drive?).
+- [ ] Identidade visual da interface: fonte dos nomes, cor dos painéis (proposta: tom de pergaminho escuro com dourado, cantos retos).
+
+## Para a Fase 3
+- [ ] Quais lugares começam revelados.
+- [ ] Escolher a chave do Mestre.
+
+## Para a arte
+- [ ] Qual IA vai usar (Gemini, Midjourney, outra). Muda como se mandam as imagens de referência.
+- [ ] Aprovar a primeira imagem de estilo; dela sai a paleta da "bíblia de estilo".
+- [ ] Confirmar a regra: nenhum texto pintado pela IA.
